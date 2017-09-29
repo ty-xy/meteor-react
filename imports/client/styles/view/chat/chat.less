@@ -1,8 +1,9 @@
 .ejianlian-chat {
     display: flex;
     flex: 1;
-    padding: 50px 30px 30px 30px;
+    padding: 40px 30px 30px 30px;
     font-size:10px;
+    box-sizing: border-box;
     .left {
         width: 450px;
         margin-right: 20px;
@@ -399,157 +400,7 @@
     }
 }
 
-.ejianlian-chat-window {
-    background-color: white;
-    width:100%;
 
-    & > .chat-to-user {
-        height: 60px;
-        line-height: 60px;
-        position: relative;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-        & > .chat-other-account {
-            width: 120px;
-            position: absolute;
-            right: 0;
-            top: 0;
-            display: flex;
-            justify-content: space-around;
-            .icon {
-               color: #C1C5D2;
-               font-size: 26px;
-            }
-        }
-    }
-    & > .chat-time {
-        height: 60px;
-        line-height: 60px;
-        text-align: center;
-    }
-    & > .chat-message-wrap {
-        width:100%;
-        height: 600px;
-        border-bottom: 1px solid #ddd;
-        & > .message-list {
-            margin: auto 40px;
-            display: flex;
-            box-sizing: border-box;
-            .user-avatar {
-                height: 55px;
-                width: 55px;
-                border-radius: 50%;
-                margin-bottom: 20px;
-                background-color: pink;
-                & > img {
-                    width: 100%;
-                    height: 100%;
-                    border-radius: 50%;
-                    border: 1px solid #ddd;
-                }
-            }
-            .user-message {
-                padding: 0px 10px;
-                height: 40px;
-                line-height: 40px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                margin-top: 8px;
-                margin-left: 20px;
-                position: relative;
-                background-color: #fff;
-            }
-            .user-message:before {
-                content: '';
-                display: block;
-                position: absolute;
-                left: -10px;
-                top: 10px;
-                border-top: 10px solid transparent ;
-                border-bottom: 10px solid transparent;
-                border-right: 10px solid #ddd;
-            }
-            .user-message:after {
-                content: '';
-                display: block;
-                position: absolute;
-                left: -8px;
-                top: 10px;
-                border-top: 10px solid transparent ;
-                border-bottom: 10px solid transparent;
-                border-right: 10px solid #fff;
-            }
-        }
-        & > .admin-message-list {
-            flex-direction: row-reverse;
-            .admin-user {
-                margin-right: 20px;
-                padding: 0px 10px;
-                height: 40px;
-                line-height: 40px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                margin-top: 8px;
-                position: relative;
-                background-color: #fff;
-            }
-            .admin-user:before {
-                content: '';
-                display: block;
-                position: absolute;
-                right: -10px;
-                top: 10px;
-                border-top: 10px solid transparent ;
-                border-bottom: 10px solid transparent;
-                border-left: 10px solid #ddd;
-            }
-            .admin-user:after {
-                content: '';
-                display: block;
-                position: absolute;
-                right: -8px;
-                top: 10px;
-                border-top: 10px solid transparent ;
-                border-bottom: 10px solid transparent;
-                border-left: 10px solid #fff;
-            }
-        }
-    }
-    .chat-send-skill {
-        height: 60px;
-        line-height: 60px;
-        border-bottom: 1px solid #ddd;
-        display: flex;
-        & > .skill-icon {
-            margin-left: 20px;
-            & > .icon {
-                color: #C1C5D2;
-                font-size: 20px;
-            }
-            & > .icon-card {
-                font-size: 25px;
-            }
-        }
-    }
-    .chat-message-input {
-        display: flex;
-        justify-content: space-between;
-        height: 100px;
-        & > textarea {
-            border: 0;
-            width: 85%;
-        }
-        & > .chat-send-message {
-            width: 15%;
-            text-align: center;
-            background-color: #29B6F6;
-            float: right;
-            line-height: 100px;
-            color: #fff;
-        }
-
-    }
-}
 .icon3:before {
     content: '\e624';
     font-family: "iconfont" !important;
