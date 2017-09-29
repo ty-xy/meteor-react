@@ -9,5 +9,10 @@
     "meteor-node-stubs": "~0.2.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
+  },
+  "devDependencies": {
+    "babel-plugin-react-transform": "^3.0.0",
+    "react-transform-log-render": "^1.0.0",
+    "react-transform-style": "^1.0.4"
   }
 }
