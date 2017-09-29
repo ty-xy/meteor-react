@@ -13,7 +13,7 @@
     ],
     "parser": "babel-eslint",
     "globals": {
-
+        "Package": true
     }, 
     "rules": {
         "indent": [2, 4],

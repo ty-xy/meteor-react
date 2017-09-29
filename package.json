@@ -13,14 +13,34 @@
     "pre-commit-log",
     "lint"
   ],
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {
+        "browsers": [
+          "last 2 versions"
+        ]
+      },
+      "postcss-pxtorem": {
+        "rootValue": 24,
+        "unitPrecision": 5,
+        "propList": ["*", "!border"],
+        "selectorBlackList": [],
+        "replace": true,
+        "mediaQuery": false,
+        "minPixelValue": 0
+      }
+    }
+  },
   "dependencies": {
     "babel-runtime": "^6.20.0",
+    "imports": "^1.0.0",
     "meteor-node-stubs": "~0.2.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },
   "devDependencies": {
     "@meteorjs/eslint-config-meteor": "^1.0.5",
+    "autoprefixer": "^7.1.4",
     "babel-eslint": "^8.0.1",
     "babel-plugin-react-transform": "^3.0.0",
     "eslint": "^4.7.2",
@@ -30,6 +50,7 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-meteor": "^4.1.4",
     "eslint-plugin-react": "^7.4.0",
+    "postcss-pxtorem": "^4.0.1",
     "pre-commit": "^1.2.2",
     "react-transform-log-render": "^1.0.0",
     "react-transform-style": "^1.0.4"
