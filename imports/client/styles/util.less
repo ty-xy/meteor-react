@@ -1,0 +1,204 @@
+* {
+    margin: 0;
+    bottom:0;
+    list-style: none;
+}
+// 常用颜色
+@border: #ddd;
+@mainColor: #29b6f6;
+@whiteColor: #fff;
+@rebColor: #ef5350;
+@yellowColor: #ffca28;
+
+@blueColor: #15b4f1;
+@color33: #333;
+@color66: #666;
+@colorB2: #b2b2b2;
+@colorBD: #bdbdbd;
+@colorEE: #eee;
+@colorBg: #f4f4f4;
+@colorCC: #ccc;
+
+@hoverColor: #e3f2fd;
+@selected: #90caf9;
+// 常用字体大小
+.font24 {
+    font-size: 24px; // 一级标题(页面title)
+}
+.font22 {
+    font-size: 22px; // 二级标题(弹窗名称,子标题)
+}
+.font22 {
+    font-size: 20px;
+}
+.font18 {
+    font-size: 18px;
+}
+.font16 {
+    font-size: 16px;
+}
+.font14 {
+    font-size: 14px;
+}
+.font10 {
+    font-size: 10px;
+}
+
+// border
+.border-line {
+    border: 1px solid @border;
+}
+.border-bottom{
+    border-bottom: 1px solid @border;
+}
+.border-radius {
+    border-radius: 4px;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: @colorBg;
+}
+@font-face {
+    font-family: 'iconfont';  /* project id 426112 */
+    src: url('//at.alicdn.com/t/font_426112_axq5vrr1uqpk3xr.eot');
+    src: url('//at.alicdn.com/t/font_426112_axq5vrr1uqpk3xr.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_426112_axq5vrr1uqpk3xr.woff') format('woff'),
+    url('//at.alicdn.com/t/font_426112_axq5vrr1uqpk3xr.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_426112_axq5vrr1uqpk3xr.svg#iconfont') format('svg');
+  }
+.icon {
+    font-family:"iconfont" !important;
+    font-style:normal;
+}
+input, button, select, textarea {
+    outline: none;
+    -webkit-appearance: none;
+    border-radius: 0;
+    border:0;
+}
+textarea{
+    resize:none;
+}
+.ejianlian-main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #f4f4f4;
+}
+.container-wrap {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color:rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    top:0;
+    left:0;
+}
+.container-middle {
+    position: absolute;
+    margin: auto;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    background-color: #fff;
+    .border-radius;
+}
+.container-title {
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+    .border-bottom;
+    background-color: #fff;
+    .font22;
+}
+.container-wrap-right {
+    width: 450px;
+    height: 100%;
+    position: fixed;
+    top:0;
+    right: 0;
+    background: #F4F4F4;
+    box-shadow: 2px 0 10px 1px rgba(153,153,153,0.30);
+    border-radius: 3px;
+}
+.icon-close {
+    float: right;
+    margin-right: 20px;
+}
+// 聊天信息/公告信息列表
+.ejianlian-chat-message-list {
+    & > .chat-user-pannel {
+        height: 90px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        padding: 0px 10px;
+        background-color: #fff;
+        .work-notice-redDot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #EF5350;
+            margin-top: 40px;
+        }
+        .user-avatar {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            background-color: pink;
+            margin: 20px 10px;
+            & > img {
+                width: 100%;
+                border: 1px solid #ddd;
+                border-radius: 50%;
+            }
+        }
+        & > .work-notice {
+            background-color: #EF5350;
+            text-align: center;
+            line-height: 50px;
+            & > .icon {
+                color: #fff;
+                font-size: 25px;
+            }
+        }
+        & > .project-notice {
+            background-color: #FFC107 ;
+            text-align: center;
+            line-height: 50px;
+            & > .icon {
+                color: #fff;
+                font-size: 25px;
+            }
+        }
+
+        .user-message {
+            width: 350px;
+            margin-top: 15px;
+            .message-createAt {
+                float: right;
+                font-size: 12px;
+                color: #999999;
+            }
+            .last-message {
+                margin-top: 15px;
+                font-size: 8px;
+                color: #666;
+                .notice-red-dot {
+                    padding: 0px 5px;
+                    height: 20px;
+                    min-width: 10px;
+                    background-color: #EF5350;
+                    border-radius: 20px;
+                    float: right;
+                    text-align: center;
+                    line-height: 20px;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}

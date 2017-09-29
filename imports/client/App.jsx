@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import Header from './views/header/header';
+import Chat from './views/chat/chat';
 
 class App extends Component {
     render() {
         return (
-            <div className="app app2">
-                App
+            <div>
+                <Header />
+                <Chat />
             </div>
         );
     }
