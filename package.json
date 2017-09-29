@@ -23,7 +23,10 @@
       "postcss-pxtorem": {
         "rootValue": 24,
         "unitPrecision": 5,
-        "propList": ["*", "!border"],
+        "propList": [
+          "*",
+          "!border"
+        ],
         "selectorBlackList": [],
         "replace": true,
         "mediaQuery": false,

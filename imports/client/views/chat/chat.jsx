@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import ContactList from './contact-list';
-import FriendsList from './friends-list';
-import GroupList from './group-list';
-import '../../styles/chat.less';
+
+import ContactList from './chatSideLeft/contactList';
+import FriendsList from './chatSideLeft/friendsList';
+import GroupList from './chatSideLeft/groupList';
+import ChatWindow from './chatWindow/chatWindow';
+
+import '../../styles/view/chat/chat.less';
 
 class Chat extends Component {
     constructor(...args) {
@@ -35,7 +38,7 @@ class Chat extends Component {
                             </div>
                             <ul className="chat-type">
                                 {
-                                    this.state.chatSideNav().map((item, index) => (
+                                    this.state.chatSideNav.map((item, index) => (
                                         <li
                                             key={index}
                                             className="chat-to-message"
@@ -121,6 +124,8 @@ class Chat extends Component {
                             {/*  */}
                         </div>
                     </div>
+                    <ChatWindow />
+
                 </div>
             </div>
         );
