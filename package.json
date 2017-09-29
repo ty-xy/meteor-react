@@ -3,11 +3,16 @@
   "private": true,
   "scripts": {
     "start": "meteor run",
+    "pre-commit-log": "echo \"开始 eslint 检测, 通过后才允许 git commit\"",
     "lint": "eslint . --ext js,jsx --ignore-pattern .eslintignore --cache"
   },
   "eslintConfig": {
     "extends": "@meteorjs/eslint-config-meteor"
   },
+  "pre-commit": [
+    "pre-commit-log",
+    "lint"
+  ],
   "dependencies": {
     "babel-runtime": "^6.20.0",
     "meteor-node-stubs": "~0.2.4",
@@ -25,6 +30,7 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-meteor": "^4.1.4",
     "eslint-plugin-react": "^7.4.0",
+    "pre-commit": "^1.2.2",
     "react-transform-log-render": "^1.0.0",
     "react-transform-style": "^1.0.4"
   }
