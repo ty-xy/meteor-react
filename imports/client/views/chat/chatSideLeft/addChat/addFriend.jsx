@@ -10,9 +10,9 @@ class AddFriend extends Component {
                         <i className="icon icon-close-addFriend icon-close">&#xe641;</i>
                     </div>
                     <div className="by-search-add-friend">
-                        <input type="text" placeholder="手机号码添加" className="search-input">
+                        <input type="text" placeholder="手机号码添加" className="search-input" />
                         <div className="search">
-                                <i className="icon icon-search-friend">&#xe628;</i>
+                            <i className="icon icon-search-friend">&#xe628;</i>
                         </div>
                     </div>
                     <ul className="friend-other-style">
