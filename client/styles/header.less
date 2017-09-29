@@ -1,0 +1,195 @@
+.ejianlian-header-bar {
+    height: 80px;
+    width: 100%;
+    z-index: 1000;
+    border: 1px solid #e5e5e5;
+    background-color: #fff;
+    display: flex;
+    .account-setting {
+        position: absolute;
+        // border: 1px solid #ddd;
+        box-shadow: 1px 1px 1px 1px #ddd;
+        width: 220px;
+        height: 240px;
+        right: 20px;
+        top: 100px;
+        background-color: #fff;
+        .triangle-up {
+            width: 0;
+            height: 0;
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid #fff;
+        }
+        & > li {
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+    }
+    & > .ejianlian-header-logo {
+        width: 20%;
+        & > img {
+            width: 110px;
+            margin-top: 18px;
+            margin-left: 20px;
+        }
+    }
+    & > .ejianlian-header-account {
+        width: 20%;
+        height: 55px;
+        margin-top:13px; 
+        display: flex;
+        justify-content: space-around;
+        & > .header-search-all {
+            border: 1px solid #ddd;
+            height: 40px;
+            border-radius: 20px;
+            position: absolute;
+            right: 250px;
+            margin-top: 5px;
+            width: 250px;
+            display: flex;
+            & > input {
+                width: 85%;
+                margin-left: 10px;
+                font-size: 16px;
+                outline: 0;
+            }
+            & > span {
+                float: right;
+                margin-top: 10px;
+            }
+        }
+        & > li {
+            position: relative;
+            .icon-notice-redDot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                right: -3px;
+                top: 5px;
+                position: absolute;
+                background: #EF5350;
+            }
+            .icon-ejianlain-search {
+                font-size: 32px;
+                display: block;
+                padding-top: 10px;
+            }
+            .icon-ejianlain-notice {
+                font-size: 24px;
+                display: block;
+                padding-top: 10px;
+            }
+            .icon-ejianlain-pc {
+                font-size: 29px;
+                display: block;
+                padding-top: 10px;
+            }
+            .account-avatar {
+                height: 50px;
+                width: 50px;
+                border-radius: 50%;
+                background-color: pink;
+                & > img {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                    border: 1px solid #ddd;
+                }
+            }
+        }
+    }
+    .account-data-block {
+        & > .container-content {
+            width: 450px;
+            height: 520px;
+            .icon-close-admin-Block {
+                float: right;
+                margin-right: 20px;
+            }
+            & > .container-title {
+                border: 0;
+            }
+            & > .account-data-content {
+                border-bottom: 1px solid #ddd;
+                .account-info {
+                    display: flex;
+                    padding: 0px 20px;
+                    margin-bottom: 30px;
+                    img {
+                        width: 55px;
+                        height: 55px;
+                        border: 1px solid #ddd;
+                        border-radius: 50%;
+                        margin-right: 20px;
+                    }
+                    .account-name-info {
+                        margin: 10px 0px;
+                        width: 300px;
+                    }
+                    .account-code {
+                        & > .icon-ercode {
+                            font-size:30px;
+                            color:#78909C; 
+                        }
+                    }
+                }
+                .account-data {
+                    margin-top: 20px;
+                    display: flex;
+                    padding: 0px 20px;
+
+                    & > .icon {
+                        color:#999;
+                    }
+                }
+                .account-signature {
+                    margin: 40px 20px 20px;
+                }
+            }
+            & > .account-btn-wrap {
+                padding-top: 45px;
+                .account-btn {
+                    background: #29B6F6;
+                    border-radius: 3px;
+                    width:300px;
+                    height: 50px;
+                    line-height: 50px;
+                    text-align: center;
+                    margin: 20px auto 0px;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}
+.color-primary-font-color {
+    background-color: #F4F4F4;
+}
+.ejianlian-header-bar-tab {
+    width: 60%;
+    & > .header-bar-tab {
+        width: 408px;
+        display: flex;
+        justify-content: space-between;
+        margin: 0 auto;
+        font-size: 20px;
+        color: #333333;
+        line-height: 72px;
+    }
+}
+.header-tab-active {
+    border-bottom: 6px solid #29B6F6;
+    width: 60px;
+}
+.header-tab {
+    width: 60px;
+    text-align: center;
+    cursor: pointer;
+}

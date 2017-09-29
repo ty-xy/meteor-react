@@ -1,0 +1,576 @@
+.ejianlian-chat {
+    display: flex;
+    flex: 1;
+    padding: 50px 30px 30px 30px;
+    font-size:10px;
+    .left {
+        width: 450px;
+        margin-right: 20px;
+    }
+    .icon-close {
+        float: right;
+        margin-right: 20px;
+    }
+    .look-code-block {
+        .container-content {
+            height: 530px;
+            width: 450px;
+            & > p {
+                text-align: center;
+            }
+        }
+        .code-wrap {
+            text-align: center;
+            margin: 50px auto;
+            & > img {
+                width: 200px;
+                height: 200px;
+            }
+        }
+        .save-btn {
+            background: #29B6F6;
+            border-radius: 3px;
+            width: 100px;
+            height: 46px;
+            text-align: center;
+            line-height: 46px;
+            margin:0 auto;
+            margin-top: 50px;
+            color: #fff;
+        }
+    }
+    .add-friend-block {
+        .container-content {
+            width: 450px;
+            height: 265px;
+            background-color: #fff;
+            & > .by-search-add-friend {
+                width: 400px;
+                height: 40px;
+                border: 1px solid #ddd;
+                background-color: #f4f4f4;;
+                margin: 20px auto;
+                border-radius: 20px;
+                margin-bottom: 40px;
+                overflow: hidden;
+                & > .search-input {
+                    height: 40px;
+                    padding-left: 20px;
+                    width: 280px;
+                    line-height: 40px;
+                }
+                & > .search {
+                    width: 64px;
+                    height:100%;
+                    background-color: #29B6F6;
+                    float: right;
+                    text-align: center;
+                    line-height: 40px;
+                    .icon-search-friend {
+                        color: #fff;
+                        font-size: 30px;
+                    }
+                }
+                
+            }
+            .friend-other-style {
+                display: flex;
+                justify-content: space-around;
+                text-align: center;
+                .icon {
+                    font-size: 26px;
+                }
+                .icon-qq {
+                    color: #29B6F6;
+                    font-size: 23px;
+                }
+                .icon-wechat {
+                    color: #7ED321;
+                    font-size: 30px;
+                }
+                .icon-ercode {
+                    color: #78909C;
+                }
+                .icon-style-info {
+                    margin-top: 20px;
+                }
+            }
+        }
+    }
+    .add-group-block {
+        & > .container-content {
+            width: 450px;
+            height: 650px;
+            .select-group {
+                .select-group-item {
+                    height: 50px;
+                    line-height: 50px;
+                    border-bottom: 1px solid #ddd;
+                    padding: 0 20px;
+                    .select-active {
+                        color: #29B6F6;
+                    }
+                    & > .icon {
+                        color: #666;
+                        float:right;
+                    }
+                }
+            }
+            .select-group-list {
+                width: 410px;
+                height: 345px;
+                border: 1px solid #ddd;
+                margin: 20px auto;
+                border-radius: 4px;
+                .group-user-item {
+                    display: flex;
+                    height: 60px;
+                    line-height: 60px;
+                }
+                .checkbox {
+                    width: 60px;
+                    text-align: center;
+                    & > .icon {
+                        font-size: 26px;
+                        color: #7ED321;
+                    }
+                }
+                .user-info {
+                    border-bottom: 1px solid #ddd;
+                    width: 100%;
+                    & > img {
+                        height: 40px;
+                        width: 40px;
+                        float: left;
+                        margin-top: 10px;
+                        margin-right: 10px;
+                        border-radius: 50%;
+                    }
+                }
+                .user-info-last {
+                    border: 0;
+                }
+            }
+            .selected-avatar {
+                margin: 0px 20px;
+                height: 40px;
+                & > img {
+                    height: 40px;
+                    width: 40px;
+                    float: left;
+                    margin-top: 10px;
+                    margin-right: 10px;
+                    border-radius: 50%;
+                }
+            }
+            .confirm-btn {
+                background: #29B6F6;
+                border-radius: 3px;
+                width: 100px;
+                height: 46px;
+                text-align: center;
+                line-height: 46px;
+                margin-top: 30px;
+                margin-right: 20px;
+                float: right;
+                color: #fff;
+            }
+
+        }
+        & > .container-active {
+            height: 750px;
+        }
+    }
+}
+
+.ejianlian-chat-nav {
+    height: 200px;
+    background-color: white;
+   & > .chat-search {
+    width: 400px;
+    margin: 0 auto;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 20px;
+    background-color: #FAFAFA;
+    border: 1px solid #ddd;
+    position: relative;
+    top: 20px;
+        & > .chat-search-wrap {
+            width: 200px;
+            margin-left: 160px;
+            & > input {
+                height: 100%;
+            }
+        }
+        & > .chat-search-focus {
+            width: 90%;
+            margin: 0 auto;
+            & > input {
+                height: 90%;
+            }
+        }
+    }
+
+    & > .chat-type {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 40px;
+        color: #BBC1D7;
+        & > li {
+            text-align: center;
+            .type-icon {
+                height: 50px;
+                width: 50px;
+                border-radius: 50%;
+                margin-bottom: 20px;
+                // background-color: pink;
+            }
+            .icon-type-logo {
+                font-size: 40px;
+                color: #BBC1D7;
+                display: block;
+                padding-top: 15px;
+            }
+            .icon-message {
+                font-size: 30px;
+                padding-top: 20px;
+            }
+        }
+        & > .chat-to-active {
+            color: #29B6F6; 
+            .icon-type-logo {
+                color: #29B6F6; 
+            }
+        }
+    }
+}
+
+.ejianlian-chat-user-list {
+    flex: 1;
+    background-color: white;
+    margin-top: 30px;
+    height: 650px;
+    position: relative;
+    & > .ejianlian-chat-friend-list {
+        width: 430px;
+        & > .chat-friend-pannel {
+            & > .friend-pannel-type {
+                height: 30px;
+                line-height: 30px;
+                margin-left: 20px;
+                background-color: #F9F9F9;
+            }
+            .friend-pannel-list {
+                border-top: 1px solid #ddd;
+                border-bottom: 1px solid #ddd;
+                & > .friend-list-item {
+                    display: flex;
+                    height: 70px;
+                    img {
+                        width: 40px;
+                        height: 40px;
+                        margin-top: 15px;
+                        border: 1px solid #ddd;
+                        border-radius: 50%;
+                        margin-left: 20px;
+                        margin-right: 20px;
+                    }
+                    .friend-name {
+                        line-height: 70px;
+                        flex: 1;
+                        border-bottom: 1px solid #ddd;
+                    }
+                    .last-type-name {
+                        border: 0;
+                    }
+                }
+            }
+
+        }
+    }
+    & > .ejianlian-chat-group-list {
+        width: 430px;
+        .friend-pannel-type {
+            height: 30px;
+            line-height: 30px;
+            margin-left: 20px;
+            background-color: #F9F9F9;
+        }
+        .friend-pannel-list {
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            & > .friend-list-item {
+                display: flex;
+                height: 70px;
+                img {
+                    width: 40px;
+                    height: 40px;
+                    margin-top: 15px;
+                    border: 1px solid #ddd;
+                    border-radius: 50%;
+                    margin-left: 20px;
+                    margin-right: 20px;
+                }
+                .friend-name {
+                    line-height: 70px;
+                    flex: 1;
+                    border-bottom: 1px solid #ddd;
+                    & > .icon {
+                        color: #999;
+                        float: right;
+                        margin-right: 20px;
+                    }
+                }
+                .last-type-name {
+                    border: 0;
+                }
+                .my-chat-group {
+                    width: 40px;
+                    height: 40px;
+                    margin-top: 15px;
+                    border-radius: 50%;
+                    margin-left: 20px;
+                    margin-right: 20px;
+                    text-align: center;
+                    line-height: 40px;
+                    background-color: #29B6F6;
+                    .icon {
+                        color: #fff;
+                        font-size: 30px;
+                    }
+                }
+            }
+        }
+    }
+
+    & > .chat-add-user {
+        position: absolute;
+        left: 50%;
+        bottom: 30px;
+        margin-left: -25px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #29B6F6;
+        text-align: center;
+        color: #fff;
+        line-height: 50px;
+        font-size: 25px;
+        box-shadow: 1px 1px 1px #ddd;
+    }
+    & > .chat-add-tab {
+        position: absolute;
+        left: 50%;
+        bottom: 90px;
+        margin-left: -70px;
+        width: 130px;
+        height: 80px;
+        border: 1px solid #ddd;
+        text-align: center;
+        border-radius: 5px;
+        & > p {
+            height: 40px;
+            line-height: 40px;
+        }
+        & > .add-friend {
+            border-bottom: 1px solid #ddd;
+        }
+        .arrow {
+            position: absolute;
+            width: 0px;
+            height: 0px;
+            line-height: 0px;
+            border-width: 15px 10px 0;
+            border-style: solid dashed dashed dashed;
+            border-left-color: transparent;
+            border-right-color: transparent;
+        }
+        .arrow-border {
+            color: #ddd;
+            bottom: -16px;
+            right: 40%;
+        }
+        .arrow-bg {
+            color: #fff;
+            bottom: -15px;
+            right: 40%;
+        }
+    }
+}
+
+.ejianlian-chat-window {
+    background-color: white;
+    width:100%;
+
+    & > .chat-to-user {
+        height: 60px;
+        line-height: 60px;
+        position: relative;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        & > .chat-other-account {
+            width: 120px;
+            position: absolute;
+            right: 0;
+            top: 0;
+            display: flex;
+            justify-content: space-around;
+            .icon {
+               color: #C1C5D2;
+               font-size: 26px;
+            }
+        }
+    }
+    & > .chat-time {
+        height: 60px;
+        line-height: 60px;
+        text-align: center;
+    }
+    & > .chat-message-wrap {
+        width:100%;
+        height: 600px;
+        border-bottom: 1px solid #ddd;
+        & > .message-list {
+            margin: auto 40px;
+            display: flex;
+            box-sizing: border-box;
+            .user-avatar {
+                height: 55px;
+                width: 55px;
+                border-radius: 50%;
+                margin-bottom: 20px;
+                background-color: pink;
+                & > img {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                    border: 1px solid #ddd;
+                }
+            }
+            .user-message {
+                padding: 0px 10px;
+                height: 40px;
+                line-height: 40px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                margin-top: 8px;
+                margin-left: 20px;
+                position: relative;
+                background-color: #fff;
+            }
+            .user-message:before {
+                content: '';
+                display: block;
+                position: absolute;
+                left: -10px;
+                top: 10px;
+                border-top: 10px solid transparent ;
+                border-bottom: 10px solid transparent;
+                border-right: 10px solid #ddd;
+            }
+            .user-message:after {
+                content: '';
+                display: block;
+                position: absolute;
+                left: -8px;
+                top: 10px;
+                border-top: 10px solid transparent ;
+                border-bottom: 10px solid transparent;
+                border-right: 10px solid #fff;
+            }
+        }
+        & > .admin-message-list {
+            flex-direction: row-reverse;
+            .admin-user {
+                margin-right: 20px;
+                padding: 0px 10px;
+                height: 40px;
+                line-height: 40px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                margin-top: 8px;
+                position: relative;
+                background-color: #fff;
+            }
+            .admin-user:before {
+                content: '';
+                display: block;
+                position: absolute;
+                right: -10px;
+                top: 10px;
+                border-top: 10px solid transparent ;
+                border-bottom: 10px solid transparent;
+                border-left: 10px solid #ddd;
+            }
+            .admin-user:after {
+                content: '';
+                display: block;
+                position: absolute;
+                right: -8px;
+                top: 10px;
+                border-top: 10px solid transparent ;
+                border-bottom: 10px solid transparent;
+                border-left: 10px solid #fff;
+            }
+        }
+    }
+    .chat-send-skill {
+        height: 60px;
+        line-height: 60px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        & > .skill-icon {
+            margin-left: 20px;
+            & > .icon {
+                color: #C1C5D2;
+                font-size: 20px;
+            }
+            & > .icon-card {
+                font-size: 25px;
+            }
+        }
+    }
+    .chat-message-input {
+        display: flex;
+        justify-content: space-between;
+        height: 100px;
+        & > textarea {
+            border: 0;
+            width: 85%;
+        }
+        & > .chat-send-message {
+            width: 15%;
+            text-align: center;
+            background-color: #29B6F6;
+            float: right;
+            line-height: 100px;
+            color: #fff;
+        }
+
+    }
+}
+.icon3:before {
+    content: '\e624';
+    font-family: "iconfont" !important;
+    font-style: normal;
+    position: relative;
+    font-size: 20px;
+    margin-top: 30px;
+}
+.icon1:before {
+    content: '\e64c';
+    font-family: "iconfont" !important;
+    font-style: normal;
+    position: relative;
+    font-size: 20px;
+    margin-top: 30px;
+}
+.icon2:before {
+    content: '\e6c3';
+    font-family: "iconfont" !important;
+    font-style: normal;
+    position: relative;
+    font-size: 20px;
+    margin-top: 30px;
+}
