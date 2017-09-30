@@ -134,6 +134,12 @@ textarea{
 }
 // 聊天信息/公告信息列表
 .ejianlian-chat-message-list {
+    .file-create-time {
+        height: 40px;
+        line-height: 40px;
+        color: #666;
+        text-indent: 20px;
+    }
     & > .chat-user-pannel {
         height: 90px;
         border-bottom: 1px solid #ddd;
@@ -151,12 +157,23 @@ textarea{
             height: 50px;
             width: 50px;
             border-radius: 50%;
-            background-color: pink;
             margin: 20px 10px;
             & > img {
                 width: 100%;
                 border: 1px solid #ddd;
                 border-radius: 50%;
+            }
+            .icon-word {
+                color: #5C6BC0;
+                font-size: 40px;
+            }
+            .icon-xls {
+                color: #66BB6A;
+                font-size: 40px;
+            }
+            .icon-jpg {
+                color: #039BE5;
+                font-size: 40px;
             }
         }
         & > .work-notice {
@@ -175,6 +192,13 @@ textarea{
             & > .icon {
                 color: #fff;
                 font-size: 25px;
+            }
+        }
+        .download-icon {
+            margin-top: 30px;
+            & > .icon {
+                font-size: 20px;
+                color: #666;
             }
         }
 

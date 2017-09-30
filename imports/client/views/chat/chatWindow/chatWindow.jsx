@@ -1,16 +1,35 @@
 import React, { Component } from 'react';
+import ChatFriendInfo from './chatFriendInfo';
+import ChatFriendFile from './chatFriendFile';
 import '../../../styles/view/chat/chatWindow/chatWindow.less';
 
 
 class ChatWindow extends Component {
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            isShowFriendInfo: false,
+            isShowFriendFile: false,
+        };
+    }
+    handleFriendInfo = () => {
+        this.setState({
+            isShowFriendInfo: !this.state.isShowFriendInfo,
+        });
+    }
+    handleFriendFile = () => {
+        this.setState({
+            isShowFriendFile: !this.state.isShowFriendFile,
+        });
+    }
     render() {
         return (
             <div className="ejianlian-chat-window">
                 <div className="chat-to-user">
                     张三
                     <div className="chat-other-account">
-                        <p><i className="icon">&#xe672;</i></p>
-                        <p><i className="icon">&#xe80d;</i></p>
+                        <p><i className="icon" onClick={this.handleFriendFile}>&#xe672;</i></p>
+                        <p><i className="icon" onClick={this.handleFriendInfo}>&#xe80d;</i></p>
                     </div>
                 </div>
                 <div className="chat-time">23:00</div>
@@ -56,6 +75,14 @@ class ChatWindow extends Component {
                         <p className="chat-send-message">发送</p>
                     </div>
                 </div>
+                <ChatFriendInfo
+                    style={{ display: this.state.isShowFriendInfo ? 'block' : 'none' }}
+                    handleFriendInfo={this.handleFriendInfo}
+                />
+                <ChatFriendFile
+                    style={{ display: this.state.isShowFriendFile ? 'block' : 'none' }}
+                    handleFriendFile={this.handleFriendFile}
+                />
             </div>
         );
     }

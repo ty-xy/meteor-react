@@ -6,6 +6,7 @@ import GroupList from './chatSideLeft/groupList';
 import AddChat from '../chat/chatSideLeft/addChat/addChat';
 import ChatWindow from './chatWindow/chatWindow';
 
+
 import '../../styles/view/chat/chat.less';
 
 class Chat extends Component {
@@ -63,8 +64,6 @@ class Chat extends Component {
                         <AddChat />
                     </div>
                     <ChatWindow />
-
-
                 </div>
             </div>
         );
