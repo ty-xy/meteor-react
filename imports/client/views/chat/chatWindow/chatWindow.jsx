@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../../styles/view/chat/chatWindow/chatWindow.less';
 
+
 class ChatWindow extends Component {
     render() {
         return (

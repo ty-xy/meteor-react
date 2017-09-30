@@ -1,0 +1,57 @@
+.ejianlian-add-chat {
+    position: relative;
+    & > .chat-add-user {
+        position: absolute;
+        left: 50%;
+        bottom: 30px;
+        margin-left: -25px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #29B6F6;
+        text-align: center;
+        color: #fff;
+        line-height: 50px;
+        font-size: 25px;
+        box-shadow: 1px 1px 1px #ddd;
+    }
+    & > .chat-add-tab {
+        position: absolute;
+        left: 50%;
+        bottom: 90px;
+        margin-left: -70px;
+        width: 130px;
+        height: 80px;
+        border: 1px solid #ddd;
+        text-align: center;
+        border-radius: 5px;
+        background-color: #fff;
+        & > p {
+            height: 40px;
+            line-height: 40px;
+        }
+        & > .add-friend {
+            border-bottom: 1px solid #ddd;
+        }
+        .arrow {
+            position: absolute;
+            width: 0px;
+            height: 0px;
+            line-height: 0px;
+            border-width: 15px 10px 0;
+            border-style: solid dashed dashed dashed;
+            border-left-color: transparent;
+            border-right-color: transparent;
+        }
+        .arrow-border {
+            color: #ddd;
+            bottom: -16px;
+            right: 40%;
+        }
+        .arrow-bg {
+            color: #fff;
+            bottom: -15px;
+            right: 40%;
+        }
+    }
+}

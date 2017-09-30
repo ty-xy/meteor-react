@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-class addGroup extends Component {
+class AddGroup extends Component {
     render() {
         return (
-            <div className="container-wrap add-group-block">
+            <div className="container-wrap add-group-block" style={{ display: this.props.isShowAddGroup ? 'block' : 'none' }}>
                 <div className="container-middle container-content">
                     <div className="container-title">
                         发起群聊
-                        <i className="icon icon-close-addGroup icon-close">&#xe641;</i>
+                        <i className="icon icon-close-addGroup icon-close" onClick={this.props.handleAddGroup}>&#xe641;</i>
                     </div>
                     <section className="select-group">
                         <div className="select-group-item">
@@ -77,5 +78,8 @@ class addGroup extends Component {
         );
     }
 }
-
-export default addGroup;
+AddGroup.propTypes = {
+    isShowAddGroup: PropTypes.bool,
+    handleAddGroup: PropTypes.func,
+};
+export default AddGroup;

@@ -4,8 +4,7 @@ class ContactList extends Component {
     render() {
         return (
             <div className="ejianlian-chat-message-list">
-                所有联系人列表
-                {/* <div className="chat-user-pannel">
+                <div className="chat-user-pannel">
                     <div className="user-avatar work-notice">
                         <i className="icon">&#xe61e;</i>
                     </div>
@@ -33,7 +32,7 @@ class ContactList extends Component {
                 </div>
                 <div className="chat-user-pannel">
                     <div className="user-avatar">
-                        <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt=""/>
+                        <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
                     </div>
                     <div className="user-message">
                         <p>张三<span className="message-createAt">12:00</span></p>
@@ -44,7 +43,7 @@ class ContactList extends Component {
                             </span>
                         </p>
                     </div>
-                </div> */}
+                </div>
             </div>
         );
     }
