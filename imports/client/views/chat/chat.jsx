@@ -26,45 +26,43 @@ class Chat extends Component {
     }
     render() {
         return (
-            <div className="ejianlianChat">
-                <div className="ejianlian-chat">
-                    <div className="left">
-                        {/* 导航部分 */}
-                        <div className="ejianlian-chat-nav">
-                            <div className="chat-search">
-                                <div className="chat-search-wrap">
-                                    <i className="icon icon-search-message">&#xe628;</i>
-                                    <input type="text" className="search-message" placeholder="搜索" />
-                                </div>
+            <div className="ejianlian-chat">
+                <div className="left">
+                    {/* 导航部分 */}
+                    <div className="ejianlian-chat-nav">
+                        <div className="chat-search">
+                            <div className="chat-search-wrap">
+                                <i className="icon icon-search-message">&#xe628;</i>
+                                <input type="text" className="search-message" placeholder="搜索" />
                             </div>
-                            <ul className="chat-type">
-                                {
-                                    this.state.chatSideNav.map((item, index) => (
-                                        <li
-                                            key={index}
-                                            className="chat-to-message"
-                                            style={{ color: this.state.selected === index + 1 ? '#29B6F6' : '#BBC1D7' }}
-                                            onClick={this.handleClick.bind(this, index + 1)}
-                                        >
-                                            <p className="type-icon">
-                                                <i className={item.content} />
-                                                {/* <i className="icon icon-message icon-type-logo">{item.content}</i> */}
-                                            </p>
-                                            <p>{item.name}</p>
-                                        </li>
-                                    ))
-                                }
-                            </ul>
                         </div>
-                        <div className="ejianlian-chat-user-list">
-                            <ContactList style={{ display: this.state.selected === 1 ? 'block' : 'none' }} />
-                            <FriendsList style={{ display: this.state.selected === 2 ? 'block' : 'none' }} />
-                            <GroupList style={{ display: this.state.selected === 3 ? 'block' : 'none' }} />
-                        </div>
-                        <AddChat />
+                        <ul className="chat-type">
+                            {
+                                this.state.chatSideNav.map((item, index) => (
+                                    <li
+                                        key={index}
+                                        className="chat-to-message"
+                                        style={{ color: this.state.selected === index + 1 ? '#29B6F6' : '#BBC1D7' }}
+                                        onClick={this.handleClick.bind(this, index + 1)}
+                                    >
+                                        <p className="type-icon">
+                                            <i className={item.content} />
+                                            {/* <i className="icon icon-message icon-type-logo">{item.content}</i> */}
+                                        </p>
+                                        <p>{item.name}</p>
+                                    </li>
+                                ))
+                            }
+                        </ul>
                     </div>
-                    <ChatWindow />
+                    <div className="ejianlian-chat-user-list">
+                        <ContactList style={{ display: this.state.selected === 1 ? 'block' : 'none' }} />
+                        <FriendsList style={{ display: this.state.selected === 2 ? 'block' : 'none' }} />
+                        <GroupList style={{ display: this.state.selected === 3 ? 'block' : 'none' }} />
+                    </div>
+                    <AddChat />
                 </div>
+                <ChatWindow />
             </div>
         );
     }

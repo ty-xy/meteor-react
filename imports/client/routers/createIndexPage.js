@@ -13,7 +13,7 @@ class IndexPageWrap extends Component {
     }
     render() {
         return (
-            <div className="view-header-index">
+            <div className="index-page-wrap">
                 <Header goto={this.goto} />
                 {this.props.children}
             </div>
