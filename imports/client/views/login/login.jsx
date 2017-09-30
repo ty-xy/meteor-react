@@ -1,7 +1,25 @@
 import React, { Component } from 'react';
+import { Meteor } from 'meteor/meteor';
+import PropTypes from 'prop-types';
+
 import '../../styles/view/login/login.less';
 
 class Login extends Component {
+    static propTypes = {
+        history: PropTypes.object,
+    }
+    login = () => {
+        Meteor.loginWithPassword(
+            this.username.value,
+            this.password.value,
+            () => {
+                this.props.history.push('/chat');
+            },
+        );
+    }
+    gotoRegister = () => {
+        this.props.history.push('/register');
+    }
     render() {
         return (
             <div className="ejianlian-login ejianlian-form-wrap">
@@ -13,16 +31,16 @@ class Login extends Component {
                         <div className="login-step">
                             <p className="login-phone login-step-item">
                                 <i className="icon">&#xe616;</i>
-                                <input type="text" placeholder="手机号" />
+                                <input type="text" placeholder="手机号" ref={i => this.username = i} />
                             </p>
                             <p className="login-passward login-step-item">
                                 <i className="icon">&#xe616;</i>
-                                <input type="text" placeholder="密码" />
+                                <input type="password" placeholder="密码" ref={i => this.password = i} />
                             </p>
                         </div>
-                        <div className="login-btn">登录</div>
+                        <div className="login-btn" onClick={this.login}>登录</div>
                         <div className="login-server">
-                            <p>注册账号</p>
+                            <p onClick={this.gotoRegister}>注册账号</p>
                             <p>忘记密码</p>
                         </div>
                         <div className="login-by-other">

@@ -1,8 +1,23 @@
 import React, { Component } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
+
 import '../../styles/view/login/register';
 
+
 class Register extends Component {
+    register = () => {
+        console.log('regiser');
+        Accounts.createUser({
+            username: this.usernmae.value,
+            password: this.password.value,
+            profile: {
+                name: this.name.value,
+            },
+        });
+    }
     render() {
+        console.log(Meteor.user());
         return (
             <div className="ejianlian-form-wrap ejianlian-register">
                 <div className="form-content-wrap container-middle">
@@ -12,20 +27,20 @@ class Register extends Component {
                     <div className="form-content">
                         <ul className="register-step">
                             <li>
-                                <input type="text" placeholder="手机号" />
+                                <input type="text" placeholder="手机号" ref={i => this.usernmae = i} />
                             </li>
                             <li>
                                 <input type="text" placeholder="验证码" />
                                 <p className="obtainCode">获取验证码</p>
                             </li>
                             <li>
-                                <input type="text" placeholder="密码" />
+                                <input type="password" placeholder="密码" ref={i => this.password = i} />
                             </li>
                             <li>
-                                <input type="text" placeholder="您的名字" />
+                                <input type="text" placeholder="您的名字" ref={i => this.name = i} />
                             </li>
                         </ul>
-                        <div className="register-btn">完成</div>
+                        <div className="register-btn" onClick={this.register}>完成</div>
                         <div className="login-by-other">
                             <div className="login-style-wrap">
                                 <p className="login-line" />
