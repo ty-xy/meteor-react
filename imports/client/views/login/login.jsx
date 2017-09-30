@@ -4,12 +4,12 @@ import '../../styles/view/login/login.less';
 class Login extends Component {
     render() {
         return (
-            <div className="ejianlian-login">
-                <div className="login-content container-middle">
+            <div className="ejianlian-login ejianlian-form-wrap">
+                <div className="login-content container-middle form-content-wrap">
                     <div className="login-title container-title">
                         登录e建联
                     </div>
-                    <div className="login-step-wrap">
+                    <div className="form-content">
                         <div className="login-step">
                             <p className="login-phone login-step-item">
                                 <i className="icon">&#xe616;</i>
