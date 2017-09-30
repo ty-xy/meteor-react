@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
+import { Meteor } from 'meteor/meteor';
+import PropTypes from 'prop-types';
+
 import ChatFriendInfo from './chatFriendInfo';
 import ChatFriendFile from './chatFriendFile';
 import '../../../styles/view/chat/chatWindow/chatWindow.less';
 
 
 class ChatWindow extends Component {
+    static propTypes = {
+        messages: PropTypes.arrayOf(PropTypes.object),
+    }
     constructor(...args) {
         super(...args);
         this.state = {
@@ -22,6 +28,11 @@ class ChatWindow extends Component {
             isShowFriendFile: !this.state.isShowFriendFile,
         });
     }
+    sendMessage = () => {
+        Meteor.call('insertMessage', this.message.value, Date.now(), (err, result) => {
+            console.log(err, result);
+        });
+    }
     render() {
         return (
             <div className="ejianlian-chat-window">
@@ -34,7 +45,19 @@ class ChatWindow extends Component {
                 </div>
                 <div className="chat-time">23:00</div>
                 <div className="chat-message-wrap">
-                    <div className="message-list">
+                    {
+                        this.props.messages.map((message, i) => (
+                            <div className="message-list" key={i}>
+                                <p className="user-avatar">
+                                    <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
+                                </p>
+                                <p className="user-message">
+                                    {message.content}
+                                </p>
+                            </div>
+                        ))
+                    }
+                    {/* <div className="message-list">
                         <p className="user-avatar">
                             <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
                         </p>
@@ -53,7 +76,7 @@ class ChatWindow extends Component {
                             <img src="http://wenwen.soso.com/p/20110819/20110819165923-448451987.jpg" alt="" />
                         </p>
                         <p className="admin-user">早上好</p>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="chat-window-bottom">
                     <div className="chat-send-skill">
@@ -71,8 +94,8 @@ class ChatWindow extends Component {
                         </p>
                     </div>
                     <div className="chat-message-input">
-                        <textarea name="" id="" cols="30" rows="10" />
-                        <p className="chat-send-message">发送</p>
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.message = i} />
+                        <p className="chat-send-message" onClick={this.sendMessage}>发送</p>
                     </div>
                 </div>
                 <ChatFriendInfo
