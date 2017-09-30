@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import Notice from './notice';
 
 import '../../styles/header.less';
 
 class Header extends Component {
+    static propTypes = {
+        goto: PropTypes.func,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
@@ -22,6 +26,9 @@ class Header extends Component {
             isShowAccount: !this.state.isShowAccount,
         });
     }
+    clickTab = (path) => {
+        this.props.goto(path);
+    }
     render() {
         return (
             <div className="ejianlianHeader">
@@ -31,10 +38,22 @@ class Header extends Component {
                     </div>
                     <div className="ejianlian-header-bar-tab">
                         <ul className="header-bar-tab">
-                            <li className="header-tab chat">消息</li>
-                            <li className="header-tab chat">项目</li>
-                            <li className="header-tab chat">管理</li>
-                            <li className="header-tab chat">百科</li>
+                            <li
+                                className="header-tab chat"
+                                onClick={this.clickTab.bind(this, '/chat')}
+                            >消息</li>
+                            <li
+                                className="header-tab chat"
+                                onClick={this.clickTab.bind(this, '/project')}
+                            >项目</li>
+                            <li
+                                className="header-tab chat"
+                                onClick={this.clickTab.bind(this, '/manage')}
+                            >管理</li>
+                            <li
+                                className="header-tab chat"
+                                onClick={this.clickTab.bind(this, '/baike')}
+                            >百科</li>
                         </ul>
                     </div>
                     <ul className="ejianlian-header-account">
