@@ -102,7 +102,17 @@
         & > .container-content {
             width: 450px;
             height: 650px;
+            
             .select-group {
+                position: relative;
+                .select-company-group {
+                    position: absolute;
+                    width: 100%;
+                    height: 100px;
+                    top: 50px;
+                    background-color: #fff;
+                    z-index: 100;
+                }
                 .select-group-item {
                     height: 50px;
                     line-height: 50px;
@@ -123,6 +133,7 @@
                 border: 1px solid #ddd;
                 margin: 20px auto;
                 border-radius: 4px;
+                padding: 0;
                 .group-user-item {
                     display: flex;
                     height: 60px;
@@ -216,12 +227,14 @@
     & > .chat-type {
         display: flex;
         justify-content: space-around;
-        margin-top: 40px;
+        // margin-top: 40px;
+        margin-top: 60px;
         color: #BBC1D7;
+        padding: 0;
         & > li {
             text-align: center;
             .type-icon {
-                height: 50px;
+                // height: 50px;
                 width: 50px;
                 border-radius: 50%;
                 margin-bottom: 20px;
@@ -257,18 +270,19 @@
     flex-direction: row;
     position: relative;
     & > .ejianlian-chat-friend-list {
-        width: 430px;
+        width: 100%;
         & > .chat-friend-pannel {
             & > .friend-pannel-type {
+                width: 100%;
                 height: 30px;
                 line-height: 30px;
-                margin-left: 20px;
+                text-indent: 20px;
                 background-color: #F9F9F9;
             }
             .friend-pannel-list {
                 border-top: 1px solid #ddd;
                 border-bottom: 1px solid #ddd;
-                & > .friend-list-item {
+                .friend-list-item {
                     display: flex;
                     height: 70px;
                     img {
@@ -294,17 +308,18 @@
         }
     }
     & > .ejianlian-chat-group-list {
-        width: 430px;
+        width: 100%;
         .friend-pannel-type {
+            width: 100%;
             height: 30px;
             line-height: 30px;
-            margin-left: 20px;
+            text-indent: 20px;
             background-color: #F9F9F9;
         }
         .friend-pannel-list {
             border-top: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
-            & > .friend-list-item {
+            .friend-list-item {
                 display: flex;
                 height: 70px;
                 img {
@@ -357,7 +372,7 @@
     font-family: "iconfont" !important;
     font-style: normal;
     position: relative;
-    font-size: 20px;
+    font-size: 25px;
     margin-top: 30px;
 }
 .icon1:before {
@@ -373,6 +388,6 @@
     font-family: "iconfont" !important;
     font-style: normal;
     position: relative;
-    font-size: 20px;
+    font-size: 25px;
     margin-top: 30px;
 }

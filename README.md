@@ -3,6 +3,7 @@
 ```
 git clone 
 npm install
+npm start
 ```
 ```js
 import PropTypes from 'prop-types';

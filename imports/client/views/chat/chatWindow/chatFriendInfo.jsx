@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import '../../../styles/view/chat/chatWindow/chatFriendInfo.less';
 
 class ChatFriendInfo extends Component {
-    test = () => {
-        console.log(666);
-    }
     render() {
         return (
             <div className="container-wrap friend-data-block">

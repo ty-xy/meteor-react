@@ -2,6 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class AddGroup extends Component {
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            isShowCompanyGroup: false,
+        };
+    }
+    handleShowCompanyGroup = () => {
+        this.setState({
+            isShowCompanyGroup: !this.state.isShowCompanyGroup,
+        });
+    }
     render() {
         return (
             <div className="container-wrap add-group-block" style={{ display: this.props.isShowAddGroup ? 'block' : 'none' }}>
@@ -13,14 +24,16 @@ class AddGroup extends Component {
                     <section className="select-group">
                         <div className="select-group-item">
                             <span className="select-active">e建联好友</span>
-                            {/* <i className="icon icon-folded">&#xe64f;</i> */}
-                            <i className="icon icon-unfolded">&#xe690;</i>
+                            <i className="icon" style={{ display: this.state.isShowCompanyGroup ? 'none' : 'block' }} onClick={this.handleShowCompanyGroup}>&#xe690;</i>
+                            <i className="icon" style={{ display: this.state.isShowCompanyGroup ? 'block' : 'none' }} onClick={this.handleShowCompanyGroup}>&#xe64f;</i>
                         </div>
-                        <div className="select-group-item">
-                            <span>中艺装饰</span>
-                        </div>
-                        <div className="select-group-item">
-                            <span>中艺装饰设计部</span>
+                        <div style={{ display: this.state.isShowCompanyGroup ? 'none' : 'block' }} className="select-company-group">
+                            <div className="select-group-item">
+                                <span>中艺装饰</span>
+                            </div>
+                            <div className="select-group-item">
+                                <span>中艺装饰设计部</span>
+                            </div>
                         </div>
                     </section>
                     <ul className="select-group-list">
