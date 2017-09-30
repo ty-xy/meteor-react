@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
+import pureRender from 'pure-render-decorator';
 
 import '../../styles/view/login/register';
 
-
+@pureRender
 class Register extends Component {
     register = () => {
         console.log('regiser');

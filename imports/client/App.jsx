@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import pureRender from 'pure-render-decorator';
 import routes from './routers/routes';
 
+@pureRender
 class App extends Component {
     render() {
         return (

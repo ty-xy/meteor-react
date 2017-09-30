@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import pureRender from 'pure-render-decorator';
+
 import '../../../styles/view/chat/chatWindow/chatFriendInfo.less';
 
+@pureRender
 class ChatFriendInfo extends Component {
     render() {
         return (

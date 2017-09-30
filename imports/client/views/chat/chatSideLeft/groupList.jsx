@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import pureRender from 'pure-render-decorator';
 
+@pureRender
 class GroupList extends Component {
     constructor(...args) {
         super(...args);

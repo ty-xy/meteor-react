@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
+import pureRender from 'pure-render-decorator';
 
 import Messages from '../../../../imports/schema/message';
 
@@ -14,6 +15,7 @@ import '../../styles/view/chat/chat.less';
 
 Meteor.subscribe('messages');
 
+@pureRender
 class Chat extends Component {
     constructor(...args) {
         super(...args);

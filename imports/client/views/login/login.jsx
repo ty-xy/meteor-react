@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
+import pureRender from 'pure-render-decorator';
 
 import '../../styles/view/login/login.less';
 
+@pureRender
 class Login extends Component {
     static propTypes = {
         history: PropTypes.object,

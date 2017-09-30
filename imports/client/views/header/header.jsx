@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import pureRender from 'pure-render-decorator';
 
 import Notice from './notice';
 
 import '../../styles/header.less';
 
+@pureRender
 class Header extends Component {
     static propTypes = {
         goto: PropTypes.func,

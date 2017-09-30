@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import pureRender from 'pure-render-decorator';
+
 // import NoticeSideRight from '../../../components/noticeSideRight';
 
+@pureRender
 class ChatFriendFile extends Component {
     render() {
         return (

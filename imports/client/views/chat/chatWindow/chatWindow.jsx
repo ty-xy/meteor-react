@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
+import pureRender from 'pure-render-decorator';
 
 import ChatFriendInfo from './chatFriendInfo';
 import ChatFriendFile from './chatFriendFile';
 import '../../../styles/view/chat/chatWindow/chatWindow.less';
 
 
+@pureRender
 class ChatWindow extends Component {
     static propTypes = {
         messages: PropTypes.arrayOf(PropTypes.object),
@@ -30,7 +32,7 @@ class ChatWindow extends Component {
     }
     sendMessage = () => {
         Meteor.call('insertMessage', this.message.value, Date.now(), (err, result) => {
-            console.log(err, result);
+            console.log('发送消息', result);
         });
     }
     render() {
