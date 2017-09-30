@@ -13,6 +13,7 @@ import Bakei from '../views/baike/baike';
 const router = (
     <Router>
         <div>
+            <Route exact path="/" render={createIndexPage(Chat)} />
             <Route path="/chat" render={createIndexPage(Chat)} />
             <Route path="/project" render={createIndexPage(Project)} />
             <Route path="/manage" render={createIndexPage(Manage)} />
