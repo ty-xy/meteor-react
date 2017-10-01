@@ -39,7 +39,7 @@ class ChatWindow extends Component {
         });
     }
     sendMessage = () => {
-        Meteor.call('insertMessage', this.message.value, Date.now(), (err) => {
+        Meteor.call('insertMessage', this.$message.value, Date.now(), (err) => {
             if (err) {
                 return console.error(err.reason);
             }
@@ -86,7 +86,7 @@ class ChatWindow extends Component {
                         </p>
                     </div>
                     <div className="chat-message-input">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.message = i} />
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
                         <p className="chat-send-message" onClick={this.sendMessage}>发送</p>
                     </div>
                 </div>
