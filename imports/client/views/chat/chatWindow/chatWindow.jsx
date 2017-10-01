@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
+import { withTracker } from 'meteor/react-meteor-data';
+import Messages from '../../../../../imports/schema/message';
 
 import ChatFriendInfo from './chatFriendInfo';
 import ChatFriendFile from './chatFriendFile';
@@ -45,8 +47,7 @@ class ChatWindow extends Component {
                         <p><i className="icon" onClick={this.handleFriendInfo}>&#xe80d;</i></p>
                     </div>
                 </div>
-                <div className="chat-time">23:00</div>
-                <div className="chat-message-wrap">
+                <div className="chat-message-list">
                     {
                         this.props.messages.map((message, i) => (
                             <div className="message-list" key={i}>
@@ -59,26 +60,6 @@ class ChatWindow extends Component {
                             </div>
                         ))
                     }
-                    {/* <div className="message-list">
-                        <p className="user-avatar">
-                            <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
-                        </p>
-                        <p className="user-message">
-                            早上好
-                        </p>
-                    </div>
-                    <div className="message-list">
-                        <p className="user-avatar">
-                            <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
-                        </p>
-                        <p className="user-message">早上好</p>
-                    </div>
-                    <div className="message-list admin-message-list">
-                        <p className="user-avatar">
-                            <img src="http://wenwen.soso.com/p/20110819/20110819165923-448451987.jpg" alt="" />
-                        </p>
-                        <p className="admin-user">早上好</p>
-                    </div> */}
                 </div>
                 <div className="chat-window-bottom">
                     <div className="chat-send-skill">
@@ -113,4 +94,9 @@ class ChatWindow extends Component {
     }
 }
 
-export default ChatWindow;
+export default withTracker(() => {
+    Meteor.subscribe('messages');
+    return {
+        messages: Messages.find({}).fetch(),
+    };
+})(ChatWindow);

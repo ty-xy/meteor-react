@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { Meteor } from 'meteor/meteor';
 import pureRender from 'pure-render-decorator';
-
-import Messages from '../../../../imports/schema/message';
 
 import ContactList from './chatSideLeft/contactList';
 import FriendsList from './chatSideLeft/friendsList';
@@ -12,8 +9,6 @@ import ChatWindow from './chatWindow/chatWindow';
 
 
 import '../../styles/view/chat/chat.less';
-
-Meteor.subscribe('messages');
 
 @pureRender
 class Chat extends Component {
@@ -69,7 +64,7 @@ class Chat extends Component {
                     </div>
                     <AddChat />
                 </div>
-                <ChatWindow messages={Messages.find({}).fetch()} />
+                <ChatWindow />
             </div>
         );
     }
