@@ -7,7 +7,7 @@ class AddGroup extends Component {
     constructor(...args) {
         super(...args);
         this.state = {
-            isShowCompanyGroup: false,
+            isShowCompanyGroup: true,
         };
     }
     handleShowCompanyGroup = () => {
