@@ -21,7 +21,7 @@
         ]
       },
       "postcss-pxtorem": {
-        "rootValue": 24,
+        "rootValue": 16,
         "unitPrecision": 5,
         "propList": [
           "*",

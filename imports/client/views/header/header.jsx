@@ -4,7 +4,6 @@ import pureRender from 'pure-render-decorator';
 
 import Notice from './notice';
 
-import '../../styles/header.less';
 
 @pureRender
 class Header extends Component {

@@ -7,7 +7,6 @@ import Messages from '../../../../../imports/schema/message';
 
 import ChatFriendInfo from './chatFriendInfo';
 import ChatFriendFile from './chatFriendFile';
-import '../../../styles/view/chat/chatWindow/chatWindow.less';
 
 
 @pureRender
@@ -43,7 +42,7 @@ class ChatWindow extends Component {
             if (err) {
                 return console.error(err.reason);
             }
-            this.message.value = '';
+            this.$message.value = '';
         });
     }
     render() {

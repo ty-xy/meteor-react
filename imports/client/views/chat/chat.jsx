@@ -8,8 +8,6 @@ import AddChat from '../chat/chatSideLeft/addChat/addChat';
 import ChatWindow from './chatWindow/chatWindow';
 
 
-import '../../styles/view/chat/chat.less';
-
 @pureRender
 class Chat extends Component {
     constructor(...args) {

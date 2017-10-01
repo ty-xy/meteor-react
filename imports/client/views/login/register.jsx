@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import pureRender from 'pure-render-decorator';
 
-import '../../styles/view/login/register';
 
 @pureRender
 class Register extends Component {
