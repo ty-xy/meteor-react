@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { Accounts } from 'meteor/accounts-base';
 import pureRender from 'pure-render-decorator';
 
 import '../../styles/view/login/register';
@@ -8,17 +7,14 @@ import '../../styles/view/login/register';
 @pureRender
 class Register extends Component {
     register = () => {
-        console.log('regiser');
-        Accounts.createUser({
-            username: this.usernmae.value,
-            password: this.password.value,
-            profile: {
-                name: this.name.value,
-            },
+        Meteor.call('register', this.usernmae.value, this.password.value, this.name.value, (err) => {
+            if (err) {
+                return console.error(err.reason);
+            }
+            Meteor.loginWithPassword(this.usernmae.value, this.password.value);
         });
     }
     render() {
-        console.log(Meteor.user());
         return (
             <div className="ejianlian-form-wrap ejianlian-register">
                 <div className="form-content-wrap container-middle">
