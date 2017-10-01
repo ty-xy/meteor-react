@@ -12,6 +12,7 @@ import Manage from '../views/manage/manage';
 import Bakei from '../views/baike/baike';
 import Login from '../views/login/login';
 import Register from '../views/login/register';
+import AdminInfo from '../views/admin-info/AdminInfo';
 
 const router = (
     <Router>
@@ -21,6 +22,7 @@ const router = (
             <Route path="/project" render={createIndexPage(Project)} />
             <Route path="/manage" render={createIndexPage(Manage)} />
             <Route path="/baike" render={createIndexPage(Bakei)} />
+            <Route path="/adminInfo" render={createIndexPage(AdminInfo)} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
         </div>
