@@ -22,6 +22,12 @@ class ChatWindow extends Component {
             isShowFriendFile: false,
         };
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length) {
+            const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
+            $lastMessage.scrollIntoView(true);
+        }
+    }
     handleFriendInfo = () => {
         this.setState({
             isShowFriendInfo: !this.state.isShowFriendInfo,
@@ -33,8 +39,11 @@ class ChatWindow extends Component {
         });
     }
     sendMessage = () => {
-        Meteor.call('insertMessage', this.message.value, Date.now(), (err, result) => {
-            console.log('发送消息', result);
+        Meteor.call('insertMessage', this.message.value, Date.now(), (err) => {
+            if (err) {
+                return console.error(err.reason);
+            }
+            this.message.value = '';
         });
     }
     render() {
@@ -47,7 +56,7 @@ class ChatWindow extends Component {
                         <p><i className="icon" onClick={this.handleFriendInfo}>&#xe80d;</i></p>
                     </div>
                 </div>
-                <div className="chat-message-list">
+                <div className="chat-message-list" ref={i => this.messageList = i}>
                     {
                         this.props.messages.map((message, i) => (
                             <div className="message-list" key={i}>
