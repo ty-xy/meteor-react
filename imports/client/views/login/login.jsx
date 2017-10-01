@@ -13,7 +13,10 @@ class Login extends Component {
         Meteor.loginWithPassword(
             this.username.value,
             this.password.value,
-            () => {
+            (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
                 this.props.history.push('/chat');
             },
         );
