@@ -1,0 +1,97 @@
+// 聊天信息/公告信息列表
+.ejianlian-chat-message-list {
+    .file-create-time {
+        height: 40px;
+        line-height: 40px;
+        color: #666;
+        text-indent: 20px;
+    }
+    & > .chat-user-pannel {
+        height: 90px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        padding: 0px 10px;
+        background-color: #fff;
+        .work-notice-redDot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #EF5350;
+            margin-top: 40px;
+        }
+        .user-avatar {
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            margin: 20px 10px;
+            & > img {
+                width: 100%;
+                border: 1px solid #ddd;
+                border-radius: 50%;
+            }
+            .icon-word {
+                color: #5C6BC0;
+                font-size: 40px;
+            }
+            .icon-xls {
+                color: #66BB6A;
+                font-size: 40px;
+            }
+            .icon-jpg {
+                color: #039BE5;
+                font-size: 40px;
+            }
+        }
+        & > .work-notice {
+            background-color: #EF5350;
+            text-align: center;
+            line-height: 50px;
+            & > .icon {
+                color: #fff;
+                font-size: 25px;
+            }
+        }
+        & > .project-notice {
+            background-color: #FFC107 ;
+            text-align: center;
+            line-height: 50px;
+            & > .icon {
+                color: #fff;
+                font-size: 25px;
+            }
+        }
+        .download-icon {
+            margin-top: 30px;
+            & > .icon {
+                font-size: 20px;
+                color: #666;
+            }
+        }
+
+        .user-message {
+            width: 350px;
+            margin-top: 15px;
+            .message-createAt {
+                float: right;
+                font-size: 12px;
+                color: #999999;
+            }
+            .last-message {
+                margin-top: 15px;
+                font-size: 8px;
+                color: #666;
+                .notice-red-dot {
+                    padding: 0px 5px;
+                    height: 20px;
+                    min-width: 10px;
+                    background-color: #EF5350;
+                    border-radius: 20px;
+                    float: right;
+                    text-align: center;
+                    line-height: 20px;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}
