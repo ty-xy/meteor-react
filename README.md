@@ -34,7 +34,7 @@ npm start
 │   │   └── views                       视图  
 │   │       ├── baike                   百科  
 │   │       ├── chat                    聊天  
-│   │       ├── header                  公共头
+│   │       ├── header                  公共头  
 │   │       ├── login                   登录注册  
 │   │       ├── manage                  管理  
 │   │       └── project                 项目  
