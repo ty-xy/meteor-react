@@ -5,8 +5,8 @@ import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import Messages from '../../../../../imports/schema/message';
 
-import ChatFriendInfo from './chatFriendInfo';
-import ChatFriendFile from './chatFriendFile';
+import ChatFriendInfo from './ChatFriendInfo';
+import ChatFriendFile from './ChatFriendFile';
 
 
 @pureRender

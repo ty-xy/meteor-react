@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Header from '../views/header/header';
+import Header from '../views/header/Header';
 
 class IndexPageWrap extends Component {
     static propTypes = {

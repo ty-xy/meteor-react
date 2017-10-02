@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
 
-import AddFriend from './addFriend';
-import AddGroup from './addGroup';
+import AddFriend from './AddFriend';
+import AddGroup from './AddGroup';
 
 @pureRender
 class AddChat extends Component {
