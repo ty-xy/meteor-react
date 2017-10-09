@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
 
-import ContactList from './chatSideLeft/contactList';
-import FriendsList from './chatSideLeft/friendsList';
-import GroupList from './chatSideLeft/groupList';
-import AddChat from '../chat/chatSideLeft/addChat/addChat';
-import ChatWindow from './chatWindow/chatWindow';
+import ContactList from './chatSideLeft/ContactList';
+import FriendsList from './chatSideLeft/FriendsList';
+import GroupList from './chatSideLeft/GroupList';
+import AddChat from '../chat/chatSideLeft/addChat/AddChat';
+import ChatWindow from './chatWindow/ChatWindow';
 
 
 @pureRender

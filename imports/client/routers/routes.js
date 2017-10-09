@@ -6,12 +6,12 @@ import {
 
 import createIndexPage from './createIndexPage';
 import Index from '../views/Index';
-import Chat from '../views/chat/chat';
-import Project from '../views/project/project';
-import Manage from '../views/manage/manage';
-import Bakei from '../views/baike/baike';
-import Login from '../views/login/login';
-import Register from '../views/login/register';
+import Chat from '../views/chat/Chat';
+import Project from '../views/project/Project';
+import Manage from '../views/manage/Manage';
+import Bakei from '../views/baike/Baike';
+import Login from '../views/login/Login';
+import Register from '../views/login/Register';
 import AdminInfo from '../views/admin-info/AdminInfo';
 
 const router = (

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
-import Notice from './notice';
+import Notice from './Notice';
 
 
 @pureRender
