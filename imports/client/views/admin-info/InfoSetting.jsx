@@ -6,7 +6,10 @@ class InfoSetting extends Component {
             <ul className="info-setting">
                 <li>
                     <label htmlFor="avatar">头像</label>
-                    <input type="file" id="avatar" />
+                    <img src="" alt="亚星" className="avatar" />
+                    <p className="edit-avatar">修改头像
+                        <input type="file" id="avatar" />
+                    </p>
                 </li>
                 <li>
                     <label htmlFor="nickname">姓名</label>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import InfoSetting from './InfoSetting';
@@ -15,9 +16,9 @@ class AdminInfo extends Component {
         this.state = {
             selected: 1,
             settingNav: [
-                { name: '资料设置', content: 'iconInfo' },
-                { name: '安全设置', content: 'iconSafe' },
-                { name: '系统设置', content: 'iconSystem' },
+                { name: '资料设置', content: 'icon-ziliao' },
+                { name: '安全设置', content: 'icon-anquan1' },
+                { name: '系统设置', content: 'icon-xitong' },
             ],
         };
     }
@@ -40,8 +41,7 @@ class AdminInfo extends Component {
                                 onClick={this.handleClick.bind(this, index + 1)}
                             >
                                 <p className="setting-icon">
-                                    <i className={item.content} />
-                                    {/* <i className="icon icon-message icon-type-logo">{item.content}</i> */}
+                                    <i className={classNames('iconfont', `${item.content}`)} />
                                 </p>
                                 <p>{item.name}</p>
                             </li>

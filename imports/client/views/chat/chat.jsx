@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import classNames from 'classnames';
 import pureRender from 'pure-render-decorator';
 
 import ContactList from './chatSideLeft/ContactList';
@@ -15,9 +16,9 @@ class Chat extends Component {
         this.state = {
             selected: 1,
             chatSideNav: [
-                { name: '消息', content: 'icon1' },
-                { name: '好友', content: 'icon2' },
-                { name: '群组', content: 'icon3' },
+                { name: '消息', content: 'icon-xiaoxi' },
+                { name: '好友', content: 'icon-group' },
+                { name: '群组', content: 'icon-qunzu' },
             ],
         };
     }
@@ -46,8 +47,7 @@ class Chat extends Component {
                                         onClick={this.handleClick.bind(this, index + 1)}
                                     >
                                         <p className="type-icon">
-                                            <i className={item.content} />
-                                            {/* <i className="icon icon-message icon-type-logo">{item.content}</i> */}
+                                            <i className={classNames('iconfont', `${item.content}`)} />
                                         </p>
                                         <p>{item.name}</p>
                                     </li>
