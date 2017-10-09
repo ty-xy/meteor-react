@@ -2,7 +2,8 @@
   "name": "eJianLian-web",
   "private": true,
   "scripts": {
-    "start": "meteor npm i && meteor run",
+		"start": "meteor npm i && meteor run",
+		"dev": "meteor run",
     "pre-commit-log": "echo \"开始 eslint 检测, 通过后才允许 git commit\"",
     "lint": "eslint . --ext js,jsx --ignore-pattern .eslintignore --cache"
   },
