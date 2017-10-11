@@ -61,7 +61,7 @@ class Chat extends Component {
                     </div>
                     <AddChat />
                 </div>
-                <ChatWindow />
+                <ChatWindow to="222" />
             </div>
         );
     }

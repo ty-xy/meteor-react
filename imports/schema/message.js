@@ -12,7 +12,6 @@ Message.schema = new SimpleSchema({
     },
     to: {
         type: String,
-        regEx: SimpleSchema.RegEx.Id,
         optional: true,
     },
     content: {

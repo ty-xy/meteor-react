@@ -8,6 +8,7 @@ Meteor.methods({
             content,
             createdAt,
             from: Meteor.userId(),
+            to: '222',
         };
         Messages.schema.validate(newMessage);
         return Messages.insert(newMessage);

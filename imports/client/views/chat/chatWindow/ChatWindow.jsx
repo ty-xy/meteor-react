@@ -110,9 +110,9 @@ class ChatWindow extends Component {
     }
 }
 
-export default withTracker(() => {
+export default withTracker(({ to }) => {
     Meteor.subscribe('message');
     return {
-        messages: Message.find({}).fetch(),
+        messages: Message.find({ to }).fetch(),
     };
 })(ChatWindow);
