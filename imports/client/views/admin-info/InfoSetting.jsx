@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 
+import Avatar from '../../components/Avatar';
+
 
 class InfoSetting extends Component {
     constructor(...args) {
@@ -27,7 +29,7 @@ class InfoSetting extends Component {
             <ul className="info-setting">
                 <li>
                     <label htmlFor="avatar">头像</label>
-                    <img src="" alt="亚星" className="avatar" />
+                    <Avatar />
                     <p className="edit-avatar">修改头像
                         <input type="file" id="avatar" onChange={this.handleUploadImg} />
                     </p>

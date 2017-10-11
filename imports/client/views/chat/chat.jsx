@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
-import { Meteor } from 'meteor/meteor';
 
 import ContactList from './chatSideLeft/ContactList';
 import FriendsList from './chatSideLeft/FriendsList';
@@ -21,13 +20,6 @@ class Chat extends Component {
                 { name: '群组', content: 'icon-qunzu' },
             ],
         };
-    }
-    componentWillMount() {
-        // console.log(10101001, Meteor);
-        // Meteor.call('findUserAvatarDefault', (result) => {
-        //     console.log(666, result);
-        // });
-        Meteor.subscribe('userData');
     }
     handleClick = (index) => {
         this.setState({ selected: index });

@@ -21,6 +21,9 @@ class ChatWindow extends Component {
             isShowFriendFile: false,
         };
     }
+    componentDidMount() {
+        this.$message.addEventListener('keydown', this.handleSendMessage);
+    }
     componentDidUpdate(prevProps) {
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
@@ -44,6 +47,11 @@ class ChatWindow extends Component {
             }
             this.$message.value = '';
         });
+    }
+    handleSendMessage = (e) => {
+        if (e.keyCode === 13) {
+            this.sendMessage();
+        }
     }
     render() {
         return (
