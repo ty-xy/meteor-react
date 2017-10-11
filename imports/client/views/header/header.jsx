@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { Meteor } from 'meteor/meteor';
-import { withTracker } from 'meteor/react-meteor-data';
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
+import Avatar from '../../components/Avatar';
 
 import Notice from './Notice';
 
@@ -12,7 +11,6 @@ import Notice from './Notice';
 class Header extends Component {
     static propTypes = {
         goto: PropTypes.func,
-        user: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
@@ -20,18 +18,7 @@ class Header extends Component {
             isShowNotice: false,
             isShowAccount: false,
             selected: 1,
-            name: '',
-            avatarColor: '',
         };
-    }
-    componentWillMount() {
-        console.log(111, this.props.user);
-        if (this.props.user) {
-            this.setState({
-                name: this.props.user.profile.name,
-                avatarColor: this.props.user.profile.avatarColor,
-            });
-        }
     }
     handleClick = () => {
         this.setState({
@@ -122,7 +109,7 @@ class Header extends Component {
                         </li>
                         <li className="admin-account" onClick={this.handleShowAccount}>
                             <p className="account-avatar">
-                                <img alt={this.state.name.slice(this.state.name.length - 2, this.state.name.length)} style={{ backgroundColor: `${this.state.avatarColor}` }} />
+                                <Avatar />
                             </p>
                         </li>
                     </ul>
@@ -140,10 +127,4 @@ class Header extends Component {
     }
 }
 
-// export default Header;
-export default withTracker(() => {
-    Meteor.subscribe('userData');
-    return {
-        user: Meteor.user(),
-    };
-})(Header);
+export default Header;
