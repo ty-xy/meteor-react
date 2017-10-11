@@ -6,10 +6,7 @@ import pureRender from 'pure-render-decorator';
 @pureRender
 class Register extends Component {
     register = () => {
-        const colorArr = ['#29b6f6', '#f58f47', '#5ad186', '#8b91e8', '#f55b89', '#ffc400'];
-        const randomIndex = Math.ceil(Math.random() * colorArr.length);
-        const avatarColor = colorArr[randomIndex];
-        Meteor.call('register', this.username.value, this.password.value, this.name.value, avatarColor, (err) => {
+        Meteor.call('register', this.username.value, this.password.value, this.name.value, (err) => {
             if (err) {
                 return console.error(err.reason);
             }
