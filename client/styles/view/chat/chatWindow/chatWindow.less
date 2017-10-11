@@ -36,24 +36,23 @@
         width:100%;
         flex: 1;
         overflow-y: auto;
-
-        & > .message-list {
+        .user-avatar {
+            height: 55px;
+            width: 55px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            background-color: pink;
+            & > img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                border: 1px solid #ddd;
+            }
+        }
+        & > .message {
             margin: auto 40px;
             display: flex;
             box-sizing: border-box;
-            .user-avatar {
-                height: 55px;
-                width: 55px;
-                border-radius: 50%;
-                margin-bottom: 20px;
-                background-color: pink;
-                & > img {
-                    width: 100%;
-                    height: 100%;
-                    border-radius: 50%;
-                    border: 1px solid #ddd;
-                }
-            }
             .user-message {
                 padding: 0px 10px;
                 height: 40px;
@@ -86,9 +85,12 @@
                 border-right: 10px solid #fff;
             }
         }
-        & > .admin-message-list {
+        & > .self-message {
+            margin: auto 40px;
+            display: flex;
+            box-sizing: border-box;
             flex-direction: row-reverse;
-            .admin-user {
+            .user-message {
                 margin-right: 20px;
                 padding: 0px 10px;
                 height: 40px;
@@ -99,7 +101,7 @@
                 position: relative;
                 background-color: #fff;
             }
-            .admin-user:before {
+            .user-message:before {
                 content: '';
                 display: block;
                 position: absolute;
@@ -109,7 +111,7 @@
                 border-bottom: 10px solid transparent;
                 border-left: 10px solid #ddd;
             }
-            .admin-user:after {
+            .user-message:after {
                 content: '';
                 display: block;
                 position: absolute;

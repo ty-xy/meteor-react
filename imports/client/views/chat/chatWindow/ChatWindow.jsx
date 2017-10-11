@@ -78,12 +78,12 @@ class ChatWindow extends Component {
                         this.props.messages.map((message, i) => {
                             console.log(message.content, message.from === Meteor.userId() ? '我应该在右边' : '我应该在左边');
                             return (
-                                <div className="message-list" key={i}>
+                                <div className={message.from === Meteor.userId() ? 'self-message' : 'message'} key={i}>
                                     <p className="user-avatar">
                                         <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
                                     </p>
                                     <p className="user-message">
-                                        {message.from + message.content}
+                                        {message.content}
                                     </p>
                                 </div>
                             );
