@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
-import Messages from '../../../../../imports/schema/message';
+import Message from '../../../../../imports/schema/message';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -41,7 +41,7 @@ class ChatWindow extends Component {
         });
     }
     sendMessage = () => {
-        Meteor.call('insertMessage', this.$message.value, Date.now(), (err) => {
+        Meteor.call('insertMessage', this.$message.value, new Date(), (err) => {
             if (err) {
                 return console.error(err.reason);
             }
@@ -111,8 +111,8 @@ class ChatWindow extends Component {
 }
 
 export default withTracker(() => {
-    Meteor.subscribe('messages');
+    Meteor.subscribe('message');
     return {
-        messages: Messages.find({}).fetch(),
+        messages: Message.find({}).fetch(),
     };
 })(ChatWindow);

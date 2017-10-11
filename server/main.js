@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-import Messages from '../imports/schema/message';
+import Message from '../imports/schema/message';
 
-Meteor.publish('messages', () => Messages.find({}));
+Meteor.publish('message', () => Message.find({}));
 Meteor.publish('userData', () => Meteor.user());
