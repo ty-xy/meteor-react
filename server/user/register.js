@@ -4,7 +4,7 @@ import RegexpUtil from '../../imports/util/regexp';
 import assert from '../../imports/util/assert';
 
 Meteor.methods({
-    register(username, password, name, avatarColor) {
+    register(username, password, name, avatarColor, signature = '', sex = '', age = '', province = '', city = '', district = '', company = '', career = '') {
         assert(RegexpUtil.phoneNumber.test(username), 400, '无效的手机号码');
         assert(password.length > 0, 400, '密码不能为空');
         assert(name.length > 0, 400, '姓名不能为空');
@@ -15,6 +15,14 @@ Meteor.methods({
             profile: {
                 name,
                 avatarColor,
+                signature,
+                sex,
+                age,
+                province,
+                city,
+                district,
+                company,
+                career,
             },
         });
     },

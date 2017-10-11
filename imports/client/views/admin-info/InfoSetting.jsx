@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
+import { Cascader } from 'antd';
 
 import Avatar from '../../components/Avatar';
 
@@ -16,6 +17,29 @@ class InfoSetting extends Component {
             isShowNotice: false,
             name: '',
             username: '',
+            options: [{
+                value: 'zhejiang',
+                label: 'Zhejiang',
+                children: [{
+                    value: 'hangzhou',
+                    label: 'Hangzhou',
+                    children: [{
+                        value: 'xihu',
+                        label: 'West Lake',
+                    }],
+                }],
+            }, {
+                value: 'jiangsu',
+                label: 'Jiangsu',
+                children: [{
+                    value: 'nanjing',
+                    label: 'Nanjing',
+                    children: [{
+                        value: 'zhonghuamen',
+                        label: 'Zhong Hua Men',
+                    }],
+                }],
+            }],
         };
     }
     componentWillMount() {
@@ -38,6 +62,9 @@ class InfoSetting extends Component {
             Meteor.call('changeAvatar', this.result, 11);
         };
         reader.readAsDataURL(image);
+    }
+    handleUserArea = (value) => {
+        console.log(value);
     }
     render() {
         return (
@@ -69,15 +96,12 @@ class InfoSetting extends Component {
                     </select>
                 </li>
                 <li>
-                    <label htmlFor="age">年龄</label>
-                    <input type="number" id="age" />
+                    <label htmlFor="age" >年龄</label>
+                    <input type="number" id="age" placeholder="请您输入年龄" />
                 </li>
                 <li>
                     <label htmlFor="avatar">所在地</label>
-                    <select name="sex" id="sex">
-                        <option value="man">男</option>
-                        <option value="women">女</option>
-                    </select>
+                    <Cascader options={this.state.options} placeholder="请选择地区" className="area-input" onChange={this.handleUserArea} />
                 </li>
                 <li>
                     <label htmlFor="company">企业</label>
