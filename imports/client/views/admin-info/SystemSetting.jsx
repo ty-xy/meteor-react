@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// import { Switch } from 'antd';
-import { Select } from 'antd';
+import { Select, Switch } from 'antd';
 
 const Option = Select.Option;
 
@@ -14,22 +13,22 @@ class SystemSetting extends Component {
     render() {
         return (
             <div className="system-setting">
-                <div>好友设置</div>
-                <div>
-                    <p>加我为好友</p>
-                    <Select defaultValue="lucy" style={{ width: 120 }}>
-                        <Option value="jack">Jack</Option>
-                        <Option value="lucy">Lucy</Option>
-                        <Option value="disabled" disabled>Disabled</Option>
-                        <Option value="Yiminghe">yiminghe</Option>
+                <div className="system-item">好友设置</div>
+                <div className="add-friend">
+                    <p className="add-friend-info">加我为好友</p>
+                    <Select defaultValue="lucy">
+                        <Option value="jack">需要好友认证</Option>
+                        <Option value="lucy">允许任何人</Option>
+                        <Option value="Yiminghe">不允许任何人</Option>
                     </Select>
                 </div>
-                <div>
-                    <p>信息设置</p>
+                <div className="system-item">
+                   信息设置
                 </div>
-                <div>
-                    <p>隐藏个人信息</p>
-                    <p>隐藏后仅可见您的头像和昵称</p>
+                <div className="hide-account">
+                    <p className="hide-account-info">隐藏个人信息</p>
+                    <Switch defaultChecked={false} />
+                    <p className="hide-account-tip">隐藏后仅可见您的头像和昵称</p>
                 </div>
             </div>
         );

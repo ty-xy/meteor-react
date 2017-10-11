@@ -76,18 +76,9 @@ class SafeSetting extends Component {
                         修改登录账号
                             <i className="icon icon-close-addFriend icon-close" onClick={this.handleEditAccount}>&#xe641;</i>
                         </div>
-                        <ul className="edit-step-tip">
-                            {/* <li>
-                                <p className="step-circle1" />
-                                <p>验证登录密码</p>
-                            </li>
-                            <li className="pass-line" />
-                            <li className="phone-line" />
-                            <li>
-                                <p className="step-circle2" />
-                                <p>设置登录手机号</p>
-                            </li> */}
-                        </ul>
+                        <div className="edit-step-tip">
+                            <img src="/editAccount1.png" alt="" />
+                        </div>
                         <div>
                             <input type="password" placeholder="请输入登录密码" className="input-password" />
                         </div>
@@ -100,18 +91,9 @@ class SafeSetting extends Component {
                             修改登录账号
                             <i className="icon icon-close-codeBlock icon-close" onClick={this.handleShowEditAccountStep2}>&#xe641;</i>
                         </div>
-                        <ul className="edit-step-tip2">
-                            {/* <li>
-                                <p className="step-circle1" />
-                                <p>验证登录密码</p>
-                            </li>
-                            <li className="pass-line" />
-                            <li className="phone-line" />
-                            <li>
-                                <p className="step-circle2" />
-                                <p>设置登录手机号</p>
-                            </li> */}
-                        </ul>
+                        <div className="edit-step-tip">
+                            <img src="/editAccount2.png" alt="" />
+                        </div>
                         <div>
                             <input type="number" placeholder="请输入手机号" className="input-password" />
                         </div>

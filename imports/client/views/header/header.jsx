@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 import pureRender from 'pure-render-decorator';
+import PropTypes from 'prop-types';
 
 import Notice from './Notice';
 
@@ -10,6 +12,7 @@ import Notice from './Notice';
 class Header extends Component {
     static propTypes = {
         goto: PropTypes.func,
+        user: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
@@ -17,7 +20,18 @@ class Header extends Component {
             isShowNotice: false,
             isShowAccount: false,
             selected: 1,
+            name: '',
+            avatarColor: '',
         };
+    }
+    componentWillMount() {
+        console.log(111, this.props.user);
+        if (this.props.user) {
+            this.setState({
+                name: this.props.user.profile.name,
+                avatarColor: this.props.user.profile.avatarColor,
+            });
+        }
     }
     handleClick = () => {
         this.setState({
@@ -59,6 +73,10 @@ class Header extends Component {
         //     break;
         // }
     }
+    handleLogin = () => {
+        this.props.goto('/login');
+    }
+
     render() {
         return (
             <div className="ejianlianHeader">
@@ -104,7 +122,7 @@ class Header extends Component {
                         </li>
                         <li className="admin-account" onClick={this.handleShowAccount}>
                             <p className="account-avatar">
-                                <img src="http://wenwen.soso.com/p/20110819/20110819165923-448451987.jpg" alt="" />
+                                <img alt={this.state.name.slice(this.state.name.length - 2, this.state.name.length)} style={{ backgroundColor: `${this.state.avatarColor}` }} />
                             </p>
                         </li>
                     </ul>
@@ -113,7 +131,7 @@ class Header extends Component {
                         <li className="account-message" onClick={this.clickTab.bind(this, '/adminInfo')}>个人资料</li>
                         <li>下载应用</li>
                         <li>使用帮助</li>
-                        <li>退出登录</li>
+                        <li onClick={this.handleLogin}>退出登录</li>
                     </ul>
                 </div>
                 <Notice style={{ display: this.state.isShowNotice ? 'block' : 'none' }} handleNotice={this.handleClick} />
@@ -122,4 +140,10 @@ class Header extends Component {
     }
 }
 
-export default Header;
+// export default Header;
+export default withTracker(() => {
+    Meteor.subscribe('userData');
+    return {
+        user: Meteor.user(),
+    };
+})(Header);
