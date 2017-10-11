@@ -1,7 +1,6 @@
 {
     "presets": [
-        "stage-0",
-        [
+        "stage-0", [
             "env",
             {
                 "targets": {
@@ -12,6 +11,7 @@
         ]
     ],
     "plugins": [
+        "transform-runtime",
         "transform-decorators-legacy",
         "transform-class-properties"
     ],
@@ -21,8 +21,7 @@
                 [
                     "react-transform",
                     {
-                        "transforms": [
-                            {
+                        "transforms": [{
                                 "transform": "react-transform-style"
                             },
                             {
