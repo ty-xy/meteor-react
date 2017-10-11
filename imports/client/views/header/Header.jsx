@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
-import Avatar from '../../components/Avatar';
+import AvatarSelf from '../../components/AvatarSelf';
 
 import Notice from './Notice';
 
@@ -109,7 +109,7 @@ class Header extends Component {
                         </li>
                         <li className="admin-account" onClick={this.handleShowAccount}>
                             <p className="account-avatar">
-                                <Avatar />
+                                <AvatarSelf />
                             </p>
                         </li>
                     </ul>

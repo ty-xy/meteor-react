@@ -4,7 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import { Cascader } from 'antd';
 
-import Avatar from '../../components/Avatar';
+import AvatarSelf from '../../components/AvatarSelf';
 
 
 class InfoSetting extends Component {
@@ -15,8 +15,6 @@ class InfoSetting extends Component {
         super(...args);
         this.state = {
             isShowNotice: false,
-            name: '',
-            username: '',
             options: [{
                 value: 'zhejiang',
                 label: 'Zhejiang',
@@ -42,14 +40,6 @@ class InfoSetting extends Component {
             }],
         };
     }
-    componentWillMount() {
-        if (this.props.user) {
-            this.setState({
-                name: this.props.user.profile.name,
-                username: this.props.user.username,
-            });
-        }
-    }
     handleUploadImg = (e) => {
         const image = e.target.files[0];
         if (!image) {
@@ -67,22 +57,24 @@ class InfoSetting extends Component {
         console.log(value);
     }
     render() {
+        const { profile, username } = this.props.user;
+        const { name } = profile;
         return (
             <ul className="info-setting">
                 <li>
                     <label htmlFor="avatar">头像</label>
-                    <Avatar />
+                    <AvatarSelf />
                     <p className="edit-avatar">修改头像
                         <input type="file" id="avatar" onChange={this.handleUploadImg} />
                     </p>
                 </li>
                 <li>
                     <label htmlFor="nickname">姓名</label>
-                    <input type="text" id="nickname" placeholder="请您输入姓名" value={this.state.name} />
+                    <input type="text" id="nickname" placeholder="请您输入姓名" defaultValue={name} />
                 </li>
                 <li>
                     <label htmlFor="phone">手机号</label>
-                    <input type="number" id="phone" value={this.state.username} disabled="true " />
+                    <input type="number" id="phone" value={username} disabled="true " />
                 </li>
                 <li>
                     <label htmlFor="signature">签名</label>
