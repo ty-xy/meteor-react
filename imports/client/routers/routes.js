@@ -13,6 +13,7 @@ import Bakei from '../views/baike/Baike';
 import Login from '../views/login/Login';
 import Register from '../views/login/Register';
 import AdminInfo from '../views/admin-info/AdminInfo';
+import ForgetPassword from '../views/login/forgetPassward/ForgetPassword';
 
 const router = (
     <Router>
@@ -25,6 +26,7 @@ const router = (
             <Route path="/adminInfo" render={createIndexPage(AdminInfo)} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
+            <Route path="/forgetPassword" component={ForgetPassword} />
         </div>
     </Router>
 );

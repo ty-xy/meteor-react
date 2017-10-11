@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 
-class ForgetPassword extends Component {
+class LoginInCode extends Component {
     render() {
         return (
-            <div className="ejianlian-form-wrap ejianlian-forget-password">
+            <div className="ejianlian-form-wrap ejianlian-login-in-code">
                 <div className="form-content-wrap container-middle">
                     <div className="register-title container-title">
-                        忘记密码
+                        扫码登录e建联
                     </div>
                     <div className="form-content">
                         <ul className="register-step">
@@ -29,4 +29,4 @@ class ForgetPassword extends Component {
     }
 }
 
-export default ForgetPassword;
+export default LoginInCode;

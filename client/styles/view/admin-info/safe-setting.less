@@ -48,4 +48,118 @@
     .save-btn {
         flex-direction: row-reverse;
     }
+    .bindLogo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 50px;
+        color: #fff;
+        margin-right: 20px;
+    }
+    .bind-other {
+        line-height: 50px;
+        position: relative;
+    }
+    .qq-logo {
+        .bindLogo;
+        background-color: @mainColor;
+        .icon-qq-copy {
+            font-size: 20px;
+        }
+    }
+    .wechat-logo {
+        .bindLogo;
+        background-color: @greenColor;
+        .icon-weixin {
+            font-size: 28px;
+        }
+    }
+    .bind-btn {
+        width: 90px;
+        height: 46px;
+        line-height: 46px;
+        color: #fff;
+        text-align: center;
+        background-color: @mainColor;
+        border-radius: 5px;
+        position: absolute;
+        right: 0;
+    }
+    .edit-step-tip {
+        height: 250px;
+        // display: flex;
+        // .step-circle {
+        //     width: 26px;
+        //     height: 26px;
+        //     border-radius: 50%;
+        // }
+        // .step-line {
+        //     width: 100px;
+        //     height: 2px !important;
+        // }
+        // .pass-line {
+        //     .step-line;
+        //     background-color: @mainColor;
+        // }
+        // .phone-line {
+        //     .step-line;
+        //     background-color: #ddd;
+        // }
+        // .step-circle1 {
+        //     .step-circle;
+        //     background-color: @mainColor;
+        // }
+        // .step-circle2 {
+        //     .step-circle;
+        //     background-color: #ddd;
+        // }
+    }
+    .edit-account-block {
+        width:600px;
+        height: 560px;
+    }
+    .edit-account-block1 {
+        .edit-account-block;
+    }
+    .edit-step {
+        width: 400px;
+        height: 46px;
+        line-height: 46px;
+        margin: 30px auto;
+    }
+    .input-password {
+        .edit-step;
+        .border-line;
+        display: block;
+        text-indent: 10px;
+    }
+    .next-btn {
+        .edit-step;
+        text-align: center;
+        background-color: @mainColor;
+        color: #fff;
+    }
+    .edit-step-tip2 {
+        height: 200px;
+    }
+    .code-container {
+        .edit-step;
+        display: flex;
+        justify-content: space-between;
+        .code {
+            width:280px;
+            .border-line;
+            text-indent: 10px;
+        }
+        & > p {
+            width: 90px;
+            height: 46px;
+            line-height: 46px;
+            color: #fff;
+            text-align: center;
+            background-color: @mainColor;
+            border-radius: 5px;
+        }
+    }
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
@@ -15,6 +16,7 @@ class Header extends Component {
         this.state = {
             isShowNotice: false,
             isShowAccount: false,
+            selected: 1,
         };
     }
     handleClick = () => {
@@ -27,8 +29,35 @@ class Header extends Component {
             isShowAccount: !this.state.isShowAccount,
         });
     }
-    clickTab = (path) => {
+    clickTab = (path, index) => {
         this.props.goto(path);
+        this.setState({
+            selected: index,
+        });
+        // switch (path) {
+        // case '/chat':
+        //     this.setState({
+        //         selected: 1,
+        //     });
+        //     break;
+        // case '/project':
+        //     this.setState({
+        //         selected: 2,
+        //     });
+        //     break;
+        // case '/manage':
+        //     this.setState({
+        //         selected: 3,
+        //     });
+        //     break;
+        // case '/baike':
+        //     this.setState({
+        //         selected: 4,
+        //     });
+        //     break;
+        // default:
+        //     break;
+        // }
     }
     render() {
         return (
@@ -38,22 +67,23 @@ class Header extends Component {
                         <img src="/logo.png" />
                     </div>
                     <div className="ejianlian-header-bar-tab">
+                        {/* <span>{this.state.selected}</span> */}
                         <ul className="header-bar-tab">
                             <li
-                                className="header-tab chat"
-                                onClick={this.clickTab.bind(this, '/chat')}
+                                className={classnames('header-tab chat', this.state.selected === 1 ? 'header-tab-active' : '')}
+                                onClick={this.clickTab.bind(this, '/chat', 1)}
                             >消息</li>
                             <li
-                                className="header-tab chat"
-                                onClick={this.clickTab.bind(this, '/project')}
+                                className={classnames('header-tab chat', this.state.selected === 2 ? 'header-tab-active' : '')}
+                                onClick={this.clickTab.bind(this, '/project', 2)}
                             >项目</li>
                             <li
-                                className="header-tab chat"
-                                onClick={this.clickTab.bind(this, '/manage')}
+                                className={classnames('header-tab chat', this.state.selected === 3 ? 'header-tab-active' : '')}
+                                onClick={this.clickTab.bind(this, '/manage', 3)}
                             >管理</li>
                             <li
-                                className="header-tab chat"
-                                onClick={this.clickTab.bind(this, '/baike')}
+                                className={classnames('header-tab chat', this.state.selected === 4 ? 'header-tab-active' : '')}
+                                onClick={this.clickTab.bind(this, '/baike', 4)}
                             >百科</li>
                         </ul>
                     </div>

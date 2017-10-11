@@ -1,6 +1,27 @@
 import React, { Component } from 'react';
+import { Meteor } from 'meteor/meteor';
+
 
 class InfoSetting extends Component {
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            isShowNotice: false,
+        };
+    }
+    handleUploadImg = (e) => {
+        const image = e.target.files[0];
+        if (!image) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            console.log(this.result);
+            Meteor.call('changeAvatar', this.result, 11);
+        };
+        reader.readAsDataURL(image);
+    }
     render() {
         return (
             <ul className="info-setting">
@@ -8,7 +29,7 @@ class InfoSetting extends Component {
                     <label htmlFor="avatar">头像</label>
                     <img src="" alt="亚星" className="avatar" />
                     <p className="edit-avatar">修改头像
-                        <input type="file" id="avatar" />
+                        <input type="file" id="avatar" onChange={this.handleUploadImg} />
                     </p>
                 </li>
                 <li>

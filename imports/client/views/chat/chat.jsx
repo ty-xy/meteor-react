@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import pureRender from 'pure-render-decorator';
 
 import ContactList from './chatSideLeft/ContactList';
@@ -47,7 +46,7 @@ class Chat extends Component {
                                         onClick={this.handleClick.bind(this, index + 1)}
                                     >
                                         <p className="type-icon">
-                                            <i className={classNames('iconfont', `${item.content}`)} />
+                                            <i className={`iconfont ${item.content}`} />
                                         </p>
                                         <p>{item.name}</p>
                                     </li>

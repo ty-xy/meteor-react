@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
+import 'antd/dist/antd.css';
+
 import routes from './routers/routes';
 
 @pureRender

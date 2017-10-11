@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import InfoSetting from './InfoSetting';
@@ -40,8 +39,8 @@ class AdminInfo extends Component {
                                 style={{ color: this.state.selected === index + 1 ? '#29B6F6' : '#333' }}
                                 onClick={this.handleClick.bind(this, index + 1)}
                             >
-                                <p className="setting-icon">
-                                    <i className={classNames('iconfont', `${item.content}`)} />
+                                <p className="setting-icon" style={{ backgroundColor: this.state.selected === index + 1 ? '#fff' : '#fff' }}>
+                                    <i className={`iconfont ${item.content}`} />
                                 </p>
                                 <p>{item.name}</p>
                             </li>

@@ -24,6 +24,9 @@ class Login extends Component {
     gotoRegister = () => {
         this.props.history.push('/register');
     }
+    gotoForgetPassword = () => {
+        this.props.history.push('/forgetPassword');
+    }
     render() {
         return (
             <div className="ejianlian-login ejianlian-form-wrap">
@@ -45,7 +48,7 @@ class Login extends Component {
                         <div className="login-btn" onClick={this.login}>登录</div>
                         <div className="login-server">
                             <p onClick={this.gotoRegister}>注册账号</p>
-                            <p>忘记密码</p>
+                            <p onClick={this.gotoForgetPassword}>忘记密码</p>
                         </div>
                         <div className="login-by-other">
                             <div className="login-style-wrap">
