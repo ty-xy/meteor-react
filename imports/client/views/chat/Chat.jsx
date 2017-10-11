@@ -19,10 +19,14 @@ class Chat extends Component {
                 { name: '好友', content: 'icon-group' },
                 { name: '群组', content: 'icon-qunzu' },
             ],
+            to: '',
         };
     }
     handleClick = (index) => {
         this.setState({ selected: index });
+    }
+    changeTo = (to) => {
+        this.setState({ to });
     }
     render() {
         return (
@@ -55,13 +59,13 @@ class Chat extends Component {
                         </ul>
                     </div>
                     <div className="ejianlian-chat-user-list">
-                        <ContactList style={{ display: this.state.selected === 1 ? 'block' : 'none' }} />
-                        <FriendsList style={{ display: this.state.selected === 2 ? 'block' : 'none' }} />
-                        <GroupList style={{ display: this.state.selected === 3 ? 'block' : 'none' }} />
+                        { this.state.selected === 1 ? <ContactList changeTo={this.changeTo} /> : null }
+                        { this.state.selected === 2 ? <FriendsList /> : null }
+                        { this.state.selected === 3 ? <GroupList /> : null }
                     </div>
                     <AddChat />
                 </div>
-                <ChatWindow to="222" />
+                <ChatWindow to={this.state.to} />
             </div>
         );
     }

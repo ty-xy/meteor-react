@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
+import { Meteor } from 'meteor/meteor';
+import PropTypes from 'prop-types';
+
+import IdUtil from '../../../../util/id';
 
 @pureRender
 class ContactList extends Component {
+    static propTypes = {
+        changeTo: PropTypes.func.isRequired,
+    }
     render() {
         return (
             <div className="ejianlian-chat-message-list">
@@ -32,12 +39,56 @@ class ContactList extends Component {
                         </p>
                     </div>
                 </div>
-                <div className="chat-user-pannel">
+
+                <div className="chat-user-pannel" onClick={() => this.props.changeTo('111')}>
                     <div className="user-avatar">
                         <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
                     </div>
                     <div className="user-message">
-                        <p>张三<span className="message-createAt">12:00</span></p>
+                        <p>群聊111<span className="message-createAt">12:00</span></p>
+                        <p className="last-message">
+                            <span>The Weather is good!</span>
+                            <span className="notice-red-dot">
+                                    200
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div className="chat-user-pannel" onClick={() => this.props.changeTo('222')}>
+                    <div className="user-avatar">
+                        <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
+                    </div>
+                    <div className="user-message">
+                        <p>群聊222<span className="message-createAt">12:00</span></p>
+                        <p className="last-message">
+                            <span>The Weather is good!</span>
+                            <span className="notice-red-dot">
+                                    200
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <div className="chat-user-pannel" onClick={() => this.props.changeTo(IdUtil.merge(Meteor.userId(), 'aaa'))}>
+                    <div className="user-avatar">
+                        <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
+                    </div>
+                    <div className="user-message">
+                        <p>个人aaa<span className="message-createAt">12:00</span></p>
+                        <p className="last-message">
+                            <span>The Weather is good!</span>
+                            <span className="notice-red-dot">
+                                    200
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div className="chat-user-pannel" onClick={() => this.props.changeTo(IdUtil.merge(Meteor.userId(), 'bbb'))}>
+                    <div className="user-avatar">
+                        <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
+                    </div>
+                    <div className="user-message">
+                        <p>个人bbb<span className="message-createAt">12:00</span></p>
                         <p className="last-message">
                             <span>The Weather is good!</span>
                             <span className="notice-red-dot">

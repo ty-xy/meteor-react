@@ -13,6 +13,7 @@ import ChatFriendFile from './ChatFriendFile';
 class ChatWindow extends Component {
     static propTypes = {
         messages: PropTypes.arrayOf(PropTypes.object),
+        to: PropTypes.string.isRequired,
     }
     constructor(...args) {
         super(...args);
@@ -27,7 +28,9 @@ class ChatWindow extends Component {
     componentDidUpdate(prevProps) {
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
-            $lastMessage.scrollIntoView(true);
+            if ($lastMessage) {
+                $lastMessage.scrollIntoView(true);
+            }
         }
     }
     handleFriendInfo = () => {
@@ -41,12 +44,19 @@ class ChatWindow extends Component {
         });
     }
     sendMessage = () => {
-        Meteor.call('insertMessage', this.$message.value, new Date(), (err) => {
-            if (err) {
-                return console.error(err.reason);
-            }
-            this.$message.value = '';
-        });
+        Meteor.call(
+            'insertMessage',
+            {
+                content: this.$message.value,
+                createdAt: new Date(),
+                to: this.props.to,
+            },
+            (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
+                this.$message.value = '';
+            });
     }
     handleSendMessage = (e) => {
         if (e.keyCode === 13) {
@@ -71,7 +81,7 @@ class ChatWindow extends Component {
                                     <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
                                 </p>
                                 <p className="user-message">
-                                    {message.content}
+                                    {message.from + message.content}
                                 </p>
                             </div>
                         ))
@@ -114,5 +124,7 @@ export default withTracker(({ to }) => {
     Meteor.subscribe('message');
     return {
         messages: Message.find({ to }).fetch(),
+        to,
     };
 })(ChatWindow);
+

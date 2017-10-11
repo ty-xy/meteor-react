@@ -12,7 +12,6 @@ Message.schema = new SimpleSchema({
     },
     to: {
         type: String,
-        optional: true,
     },
     content: {
         type: String,
