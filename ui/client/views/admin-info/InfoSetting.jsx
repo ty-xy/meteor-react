@@ -1,15 +1,30 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+import PropTypes from 'prop-types';
 
 import Avatar from '../../components/Avatar';
 
 
 class InfoSetting extends Component {
+    static propTypes = {
+        user: PropTypes.object,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
             isShowNotice: false,
+            name: '',
+            username: '',
         };
+    }
+    componentWillMount() {
+        if (this.props.user) {
+            this.setState({
+                name: this.props.user.profile.name,
+                username: this.props.user.username,
+            });
+        }
     }
     handleUploadImg = (e) => {
         const image = e.target.files[0];
@@ -36,15 +51,15 @@ class InfoSetting extends Component {
                 </li>
                 <li>
                     <label htmlFor="nickname">姓名</label>
-                    <input type="text" id="nickname" placeholder="请您输入姓名" />
+                    <input type="text" id="nickname" placeholder="请您输入姓名" value={this.state.name} />
                 </li>
                 <li>
                     <label htmlFor="phone">手机号</label>
-                    <input type="number" id="phone" />
+                    <input type="number" id="phone" value={this.state.username} disabled="true " />
                 </li>
                 <li>
                     <label htmlFor="signature">签名</label>
-                    <input type="text" id="signature" />
+                    <input type="text" id="signature" placeholder="请您输入签名" />
                 </li>
                 <li>
                     <label htmlFor="sex">性别</label>
@@ -80,4 +95,9 @@ class InfoSetting extends Component {
     }
 }
 
-export default InfoSetting;
+export default withTracker(() => {
+    Meteor.subscribe('userData');
+    return {
+        user: Meteor.user(),
+    };
+})(InfoSetting);
