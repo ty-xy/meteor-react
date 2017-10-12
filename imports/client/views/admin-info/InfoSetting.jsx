@@ -48,8 +48,7 @@ class InfoSetting extends Component {
 
         const reader = new FileReader();
         reader.onloadend = function () {
-            console.log(this.result);
-            Meteor.call('changeAvatar', this.result, 11);
+            Meteor.call('changeAvatar', this.result);
         };
         reader.readAsDataURL(image);
     }
