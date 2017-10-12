@@ -47,19 +47,19 @@ class Header extends Component {
                     <div className="ejianlian-header-bar-tab">
                         <ul className="header-bar-tab">
                             <li
-                                className={classnames('header-tab chat', { 'header-tab-active': this.context.location.pathname === '/chat' })}
+                                className={classnames('header-tab chat', { active: this.context.location.pathname === '/chat' })}
                                 onClick={this.clickTab.bind(this, '/chat')}
                             >消息</li>
                             <li
-                                className={classnames('header-tab chat', { 'header-tab-active': this.context.location.pathname === '/project' })}
+                                className={classnames('header-tab chat', { active: this.context.location.pathname === '/project' })}
                                 onClick={this.clickTab.bind(this, '/project')}
                             >项目</li>
                             <li
-                                className={classnames('header-tab chat', { 'header-tab-active': this.context.location.pathname === '/manage' })}
+                                className={classnames('header-tab chat', { active: this.context.location.pathname === '/manage' })}
                                 onClick={this.clickTab.bind(this, '/manage')}
                             >管理</li>
                             <li
-                                className={classnames('header-tab chat', { 'header-tab-active': this.context.location.pathname === '/baike' })}
+                                className={classnames('header-tab chat', { active: this.context.location.pathname === '/baike' })}
                                 onClick={this.clickTab.bind(this, '/baike')}
                             >百科</li>
                         </ul>
