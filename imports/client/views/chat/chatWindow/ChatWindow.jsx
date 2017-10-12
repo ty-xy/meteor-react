@@ -81,15 +81,11 @@ class ChatWindow extends Component {
                 <div className="chat-message-list" ref={i => this.messageList = i}>
                     {
                         this.props.messages.map((message, i) => {
-                            console.log(message.content, message.from === Meteor.userId() ? '我应该在右边' : '我应该在左边');
+                            console.log(message.content, message.from._id === Meteor.userId() ? '我应该在右边' : '我应该在左边');
                             return (
-                                <div className={message.from === Meteor.userId() ? 'self-message' : 'message'} key={i}>
+                                <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'} key={i}>
                                     <p className="user-avatar">
-                                        {message.from === Meteor.userId()
-                                            ? <AvatarSelf />
-                                            : <Avatar name="大傻子" avatarColor="#8b91e8" />
-                                        }
-
+                                        <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} />
                                     </p>
                                     <p className="user-message">
                                         {message.content}
