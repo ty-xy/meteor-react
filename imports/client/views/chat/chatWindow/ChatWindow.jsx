@@ -7,7 +7,6 @@ import Message from '../../../../../imports/schema/message';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
-import AvatarSelf from '../../../components/AvatarSelf';
 import Avatar from '../../../components/Avatar';
 
 
