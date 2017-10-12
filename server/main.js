@@ -7,8 +7,6 @@ import {
 
 import Message from '../imports/schema/message';
 
-Meteor.publish('userData', () => Meteor.user());
-
 publishComposite('message', {
     find() {
         return Message.find({});

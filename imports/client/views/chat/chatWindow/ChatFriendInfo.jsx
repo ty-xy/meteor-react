@@ -90,9 +90,6 @@ class ChatFriendInfo extends Component {
         );
     }
 }
-export default withTracker(() => {
-    Meteor.subscribe('userData');
-    return {
-        user: Meteor.user(),
-    };
-})(ChatFriendInfo);
+export default withTracker(() => ({
+    user: Meteor.user(),
+}))(ChatFriendInfo);

@@ -111,9 +111,6 @@ class InfoSetting extends Component {
     }
 }
 
-export default withTracker(() => {
-    Meteor.subscribe('userData');
-    return {
-        user: Meteor.user(),
-    };
-})(InfoSetting);
+export default withTracker(() => ({
+    user: Meteor.user(),
+}))(InfoSetting);

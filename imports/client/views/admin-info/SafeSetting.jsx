@@ -81,7 +81,7 @@ class SafeSetting extends Component {
                 <div className="container-wrap" style={{ display: this.state.isShowEditAccount ? 'block' : 'none' }}>
                     <div className="container-middle container-content edit-account-block1" >
                         <div className="container-title">
-                        修改登录账号
+                            修改登录账号
                             <i className="icon icon-close-addFriend icon-close" onClick={this.handleEditAccount}>&#xe641;</i>
                         </div>
                         <div className="edit-step-tip">
@@ -118,9 +118,6 @@ class SafeSetting extends Component {
 }
 
 
-export default withTracker(() => {
-    Meteor.subscribe('userData');
-    return {
-        user: Meteor.user(),
-    };
-})(SafeSetting);
+export default withTracker(() => ({
+    user: Meteor.user(),
+}))(SafeSetting);
