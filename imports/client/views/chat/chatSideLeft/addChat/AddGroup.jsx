@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
+import { Select } from 'antd';
 
+const Option = Select.Option;
 @pureRender
 class AddGroup extends Component {
-    constructor(...args) {
-        super(...args);
-        this.state = {
-            isShowCompanyGroup: true,
-        };
-    }
-    handleShowCompanyGroup = () => {
-        this.setState({
-            isShowCompanyGroup: !this.state.isShowCompanyGroup,
-        });
+    static propTypes = {
+        isShowAddGroup: PropTypes.bool,
+        handleAddGroup: PropTypes.func,
+    };
+    handleChange = (value) => {
+        console.log(`selected ${value}`);
     }
     render() {
         return (
@@ -23,21 +21,11 @@ class AddGroup extends Component {
                         发起群聊
                         <i className="icon icon-close-addGroup icon-close" onClick={this.props.handleAddGroup}>&#xe641;</i>
                     </div>
-                    <section className="select-group">
-                        <div className="select-group-item">
-                            <span className="select-active">e建联好友</span>
-                            <i className="icon" style={{ display: this.state.isShowCompanyGroup ? 'none' : 'block' }} onClick={this.handleShowCompanyGroup}>&#xe690;</i>
-                            <i className="icon" style={{ display: this.state.isShowCompanyGroup ? 'block' : 'none' }} onClick={this.handleShowCompanyGroup}>&#xe64f;</i>
-                        </div>
-                        <div style={{ display: this.state.isShowCompanyGroup ? 'none' : 'block' }} className="select-company-group">
-                            <div className="select-group-item">
-                                <span>中艺装饰</span>
-                            </div>
-                            <div className="select-group-item">
-                                <span>中艺装饰设计部</span>
-                            </div>
-                        </div>
-                    </section>
+                    <Select defaultValue="lucy" onChange={this.handleChange} className="select-group-item">
+                        <Option value="jack">Jack</Option>
+                        <Option value="lucy">Lucy</Option>
+                        <Option value="Yiminghe">yiminghe</Option>
+                    </Select>
                     <ul className="select-group-list">
                         <li className="group-user-item">
                             <p className="checkbox">
@@ -84,7 +72,7 @@ class AddGroup extends Component {
                     </div>
                     <div>
                         <div className="confirm-btn">
-                                    确定(2)
+                            确定(2)
                         </div>
                     </div>
 
@@ -93,8 +81,5 @@ class AddGroup extends Component {
         );
     }
 }
-AddGroup.propTypes = {
-    isShowAddGroup: PropTypes.bool,
-    handleAddGroup: PropTypes.func,
-};
+
 export default AddGroup;

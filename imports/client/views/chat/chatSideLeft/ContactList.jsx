@@ -40,7 +40,7 @@ class ContactList extends Component {
                     </div>
                 </div>
 
-                <div className="chat-user-pannel" onClick={() => this.props.changeTo('111')}>
+                <div className="chat-user-pannel" onClick={() => this.props.changeTo('群聊111')}>
                     <div className="user-avatar">
                         <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
                     </div>
@@ -54,7 +54,7 @@ class ContactList extends Component {
                         </p>
                     </div>
                 </div>
-                <div className="chat-user-pannel" onClick={() => this.props.changeTo('222')}>
+                <div className="chat-user-pannel" onClick={() => this.props.changeTo('群聊222')}>
                     <div className="user-avatar">
                         <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
                     </div>

@@ -6,12 +6,12 @@ import pureRender from 'pure-render-decorator';
 
 @pureRender
 class ChatFriendFile extends Component {
+    static propTypes = {
+        handleFriendFile: PropTypes.func,
+    };
     render() {
         return (
             <div>
-                {/* <NoticeSideRight
-                    noticeTitle="聊天文件"
-                /> */}
                 <div className="container-wrap-right">
                     <div className="container-title">
                         聊天文件
@@ -79,7 +79,5 @@ class ChatFriendFile extends Component {
         );
     }
 }
-ChatFriendFile.propTypes = {
-    handleFriendFile: PropTypes.func,
-};
+
 export default ChatFriendFile;
