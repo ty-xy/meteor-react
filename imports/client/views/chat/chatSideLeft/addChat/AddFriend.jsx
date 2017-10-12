@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
+import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
 @pureRender
 class AddFriend extends Component {
+    searchFriend = () => {
+        // console.log(444, Meteor.users.find({ username: this.username.value }));
+        Meteor.call('searchFriend', this.username.value, (err, result) => {
+            if (err) {
+                return console.error(err.reason);
+            }
+            console.log(6666, result);
+        });
+    }
     render() {
         return (
             <div>
@@ -14,8 +24,8 @@ class AddFriend extends Component {
                             <i className="icon icon-close-addFriend icon-close" onClick={this.props.handleAddFriend}>&#xe641;</i>
                         </div>
                         <div className="by-search-add-friend">
-                            <input type="text" placeholder="手机号码添加" className="search-input" />
-                            <div className="search">
+                            <input type="text" placeholder="手机号码添加" className="search-input" ref={i => this.username = i} />
+                            <div className="search" onClick={this.searchFriend}>
                                 <i className="icon icon-search-friend">&#xe628;</i>
                             </div>
                         </div>

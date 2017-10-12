@@ -67,7 +67,7 @@ class ChatWindow extends Component {
         return (
             <div className="ejianlian-chat-window">
                 <div className="chat-to-user">
-                    张三
+                    {this.props.to}
                     <div className="chat-other-account">
                         <p><i className="icon" onClick={this.handleFriendFile}>&#xe672;</i></p>
                         <p><i className="icon" onClick={this.handleFriendInfo}>&#xe80d;</i></p>
