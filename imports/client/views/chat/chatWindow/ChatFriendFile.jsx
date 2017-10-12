@@ -6,12 +6,12 @@ import pureRender from 'pure-render-decorator';
 
 @pureRender
 class ChatFriendFile extends Component {
+    static propTypes = {
+        handleFriendFile: PropTypes.func,
+    };
     render() {
         return (
             <div>
-                {/* <NoticeSideRight
-                    noticeTitle="聊天文件"
-                /> */}
                 <div className="container-wrap-right">
                     <div className="container-title">
                         聊天文件
@@ -24,7 +24,7 @@ class ChatFriendFile extends Component {
                         </div>
                         <div className="chat-user-pannel">
                             <div className="user-avatar">
-                                <i className="icon icon-word">&#xe63f;</i>
+                                <i className="icon icon-word" />
                             </div>
                             <div className="user-message">
                                 <p>#817项目招标文件.docx</p>
@@ -40,7 +40,7 @@ class ChatFriendFile extends Component {
                         </div>
                         <div className="chat-user-pannel ">
                             <div className="user-avatar">
-                                <i className="icon icon-xls">&#xe61a;</i>
+                                <i className="icon icon-xls" />
                             </div>
                             <div className="user-message">
                                 <p>#817项目报表.xls</p>
@@ -59,7 +59,7 @@ class ChatFriendFile extends Component {
                         </div>
                         <div className="chat-user-pannel">
                             <div className="user-avatar">
-                                <i className="icon icon-jpg">&#xe60f;</i>
+                                <i className="icon icon-jpg" />
                             </div>
                             <div className="user-message">
                                 <p>#817项目效果图演示.jpg</p>
@@ -79,7 +79,5 @@ class ChatFriendFile extends Component {
         );
     }
 }
-ChatFriendFile.propTypes = {
-    handleFriendFile: PropTypes.func,
-};
+
 export default ChatFriendFile;

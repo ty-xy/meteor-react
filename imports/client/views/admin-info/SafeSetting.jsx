@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+import PropTypes from 'prop-types';
+
 
 class SafeSetting extends Component {
+    static propTypes = {
+        user: PropTypes.object,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
@@ -20,12 +27,13 @@ class SafeSetting extends Component {
         });
     }
     render() {
+        const { username } = this.props.user;
         return (
             <div className="safe-setting">
                 <div className="login-account">
                     <div className="login-account-edit">
                         <p className="login-title">登录账号</p>
-                        <p>15313385909 &nbsp;
+                        <p>{username} &nbsp;
                             <span className="change-account" onClick={this.handleEditAccount}>修改</span>
                         </p>
                     </div>
@@ -109,4 +117,10 @@ class SafeSetting extends Component {
     }
 }
 
-export default SafeSetting;
+
+export default withTracker(() => {
+    Meteor.subscribe('userData');
+    return {
+        user: Meteor.user(),
+    };
+})(SafeSetting);

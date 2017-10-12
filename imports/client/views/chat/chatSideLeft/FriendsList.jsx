@@ -3,12 +3,18 @@ import pureRender from 'pure-render-decorator';
 
 @pureRender
 class FriendsList extends Component {
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            isShowFriendsList: false,
+        };
+    }
     render() {
         return (
             <div className="ejianlian-chat-friend-list">
                 <div className="chat-friend-pannel">
                     <div className="friend-pannel-type">
-                        A
+                            A
                     </div>
                     <div className="friend-pannel-list">
                         <div className="friend-list-item">
@@ -27,7 +33,7 @@ class FriendsList extends Component {
                 </div>
                 <div className="chat-friend-pannel">
                     <div className="friend-pannel-type">
-                        B
+                            B
                     </div>
                     <div className="friend-pannel-list">
                         <div className="friend-list-item">

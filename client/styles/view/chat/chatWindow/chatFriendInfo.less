@@ -1,62 +1,99 @@
+@import '../../util/util.less';
 .friend-data-block {
     & > .container-content {
-        width: 450px;
+        width: 400px;
         height: 520px;
-        .icon-close-admin-Block {
-            float: right;
-            margin-right: 20px;
-        }
-        & > .container-title {
-            border: 0;
-        }
+        display: flex;
+        flex-direction: column;
         & > .friend-data-content {
-            border-bottom: 1px solid #ddd;
-            .friend-info {
-                display: flex;
-                padding: 0px 20px;
-                margin-bottom: 30px;
-                img {
-                    width: 55px;
-                    height: 55px;
-                    border: 1px solid #ddd;
-                    border-radius: 50%;
-                    margin-right: 20px;
+            height: 158px;
+            background: url('/infoBg.png') center center no-repeat;
+            .close-wrap {
+                text-align: right;
+                margin-right: 20px;
+                & > i {
+                    color: #fff;
+                    font-size: 40px;
                 }
-                .friend-name-info {
-                    margin: 10px 0px;
-                    width: 300px;
-                }
-                .friend-code {
-                    & > .icon-ercode {
-                        font-size:30px;
-                        color:#78909C; 
+            }
+        }
+        .friend-info {
+            display: flex;
+            margin: 15px 25px;
+            .friend-name-info {
+                color: #fff;
+                font-size: 20px;
+                margin-right: 140px;
+                margin-left: 10px;
+                line-height: 50px;
+            }
+            .friend-btn {
+                color: @mainColor;
+                padding: 5px 8px;
+                background: @colorBg;
+                font-size: 12px;
+                margin-top: 5px;
+                border-radius: 5px;
+            }
+        }
+        .friend-details {
+            height: 300px;
+            margin: 25px;
+                & > li {
+                    display: flex;
+                    margin-bottom: 20px;
+                    & > p:nth-of-type(1) {
+                        width: 80px;
+                        .icon-bianji1 {
+                            color: @mainColor;
+                        }
                     }
                 }
-            }
-            .friend-data {
-                margin-top: 20px;
-                display: flex;
-                padding: 0px 20px;
-
-                & > .icon {
-                    color:#999;
+        }
+        .friend-btn-wrap {
+            flex: 1;
+            background-color: @colorBg;
+            text-align: center;
+            & > button {
+                color: @mainColor;
+                font-size: 20px;
+                line-height: 60px;
+                & > i {
+                    font-size: 30px;
+                    padding-top: -4px;
                 }
             }
-            .friend-signature {
-                margin: 40px 20px 20px;
-            }
         }
-        & > .friend-btn-wrap {
-            padding-top: 45px;
-            .friend-btn {
-                background: #29B6F6;
-                border-radius: 3px;
-                width:300px;
-                height: 50px;
-                line-height: 50px;
-                text-align: center;
-                margin: 20px auto 0px;
-                color: #fff;
+        .friend-add-send {
+            height: 80px;
+            background-color: @colorBg; 
+            .send-item {
+                width: 360px;
+                margin: 0 auto;
+                display: flex;
+                margin-top: 5px;
+                justify-content: space-between;
+            }
+            .send-info {
+                .send-item;
+                font-size: 12px;
+                & > p:nth-of-type(2) {
+                    color: @mainColor;
+                }
+            }
+            .send-confirm {
+                .send-item;
+                font-size: 14px;
+                & > input {
+                    background-color: #fff;
+                    width: 256px;
+                    padding: 0px 4px;
+                    .border-line;
+                }
+                button {
+                    .btn;
+                    width: 76px;
+                }
             }
         }
     }

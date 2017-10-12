@@ -7,6 +7,8 @@ import Message from '../../../../../imports/schema/message';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
+import AvatarSelf from '../../../components/AvatarSelf';
+import Avatar from '../../../components/Avatar';
 
 
 @pureRender
@@ -20,6 +22,9 @@ class ChatWindow extends Component {
         this.state = {
             isShowFriendInfo: false,
             isShowFriendFile: false,
+            name: '哈哈',
+            avatarColor: '#f58f47',
+            username: '15733258134',
         };
     }
     componentDidMount() {
@@ -80,7 +85,11 @@ class ChatWindow extends Component {
                             return (
                                 <div className={message.from === Meteor.userId() ? 'self-message' : 'message'} key={i}>
                                     <p className="user-avatar">
-                                        <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
+                                        {message.from === Meteor.userId()
+                                            ? <AvatarSelf />
+                                            : <Avatar name="大傻子" avatarColor="#8b91e8" />
+                                        }
+
                                     </p>
                                     <p className="user-message">
                                         {message.content}
@@ -99,7 +108,7 @@ class ChatWindow extends Component {
                             <i className="icon">&#xe672;</i>
                         </p>
                         <p className="skill-icon">
-                            <i className="icon icon-card">&#xe652;</i>
+                            <i className="icon icon-card" />
                         </p>
                         <p className="skill-icon">
                             <i className="icon">&#xe66c;</i>
@@ -113,6 +122,9 @@ class ChatWindow extends Component {
                 <ChatFriendInfo
                     style={{ display: this.state.isShowFriendInfo ? 'block' : 'none' }}
                     handleFriendInfo={this.handleFriendInfo}
+                    name={this.state.name}
+                    avatarColor={this.state.avatarColor}
+                    username={this.state.username}
                 />
                 <ChatFriendFile
                     style={{ display: this.state.isShowFriendFile ? 'block' : 'none' }}

@@ -3,15 +3,43 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
+import ChatFriendInfo from '../../chatWindow/ChatFriendInfo';
+
 @pureRender
 class AddFriend extends Component {
+    static propTypes = {
+        isShowAddFriend: PropTypes.bool,
+        handleAddFriend: PropTypes.func,
+        handleFriendCode: PropTypes.func,
+        isShowFriendCode: PropTypes.bool,
+    };
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            isShowFriendInfo: false,
+            name: '哈哈',
+            avatarColor: '#f58f47',
+            username: '15733258134',
+        };
+    }
     searchFriend = () => {
-        // console.log(444, Meteor.users.find({ username: this.username.value }));
         Meteor.call('searchFriend', this.username.value, (err, result) => {
             if (err) {
                 return console.error(err.reason);
             }
             console.log(6666, result);
+            this.setState({
+                isShowAddFriend: false,
+                isShowFriendInfo: true,
+                name: result.profile.name || '',
+                avatarColor: result.profile.avatarColor || '',
+                username: result.username || '',
+            });
+        });
+    }
+    handleCloseResult = () => {
+        this.setState({
+            isShowFriendInfo: false,
         });
     }
     render() {
@@ -66,14 +94,16 @@ class AddFriend extends Component {
                         </div>
                     </div>
                 </div>
+                {/* 搜索到的好友信息 */}
+                <ChatFriendInfo
+                    style={{ display: this.state.isShowFriendInfo ? 'block' : 'none' }}
+                    handleFriendInfo={this.handleCloseResult}
+                    name={this.state.name}
+                    avatarColor={this.state.avatarColor}
+                    username={this.state.username}
+                />
             </div>
         );
     }
 }
-AddFriend.propTypes = {
-    isShowAddFriend: PropTypes.bool,
-    handleAddFriend: PropTypes.func,
-    handleFriendCode: PropTypes.func,
-    isShowFriendCode: PropTypes.bool,
-};
 export default AddFriend;
