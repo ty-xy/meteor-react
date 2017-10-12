@@ -20,3 +20,4 @@ less@2.7.9
 accounts-password@1.4.0
 react-meteor-data
 aldeed:simple-schema
+reywood:publish-composite
