@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
-import { Cascader } from 'antd';
+import { Cascader, Select } from 'antd';
 
 import AvatarSelf from '../../components/AvatarSelf';
 
+const Option = Select.Option;
 
 class InfoSetting extends Component {
     static propTypes = {
@@ -55,8 +56,14 @@ class InfoSetting extends Component {
     handleUserArea = (value) => {
         console.log(value);
     }
+    handleUserSex = (value) => {
+        console.log(value);
+    }
+    handleSaveInfo = () => {
+        console.log(1111111, this.signature.value);
+    }
     render() {
-        const { profile, username } = this.props.user;
+        const { profile = {}, username } = this.props.user;
         const { name } = profile;
         return (
             <ul className="info-setting">
@@ -77,14 +84,14 @@ class InfoSetting extends Component {
                 </li>
                 <li>
                     <label htmlFor="signature">签名</label>
-                    <input type="text" id="signature" placeholder="请您输入签名" />
+                    <input type="text" id="signature" placeholder="请您输入签名" ref={i => this.signature = i} />
                 </li>
                 <li>
                     <label htmlFor="sex">性别</label>
-                    <select name="sex" id="sex">
-                        <option value="man">男</option>
-                        <option value="women">女</option>
-                    </select>
+                    <Select defaultValue="男"onChange={this.handleUserSex}>
+                        <Option value="man">男</Option>
+                        <Option value="woman">女</Option>
+                    </Select>
                 </li>
                 <li>
                     <label htmlFor="age" >年龄</label>
@@ -103,7 +110,7 @@ class InfoSetting extends Component {
                     <input type="职业" id="career" />
                 </li>
                 <li>
-                    <button>保存</button>
+                    <button onClick={this.handleSaveInfo}>保存</button>
                 </li>
             </ul>
         );
@@ -111,5 +118,5 @@ class InfoSetting extends Component {
 }
 
 export default withTracker(() => ({
-    user: Meteor.user(),
+    user: Meteor.user() || {},
 }))(InfoSetting);
