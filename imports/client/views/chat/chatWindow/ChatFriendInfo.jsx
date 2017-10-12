@@ -91,5 +91,5 @@ class ChatFriendInfo extends Component {
     }
 }
 export default withTracker(() => ({
-    user: Meteor.user(),
+    user: Meteor.user() || {},
 }))(ChatFriendInfo);

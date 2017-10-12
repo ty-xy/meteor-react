@@ -119,5 +119,5 @@ class SafeSetting extends Component {
 
 
 export default withTracker(() => ({
-    user: Meteor.user(),
+    user: Meteor.user() || {},
 }))(SafeSetting);
