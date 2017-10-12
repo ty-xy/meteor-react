@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 import pureRender from 'pure-render-decorator';
 import Avatar from '../../../components/Avatar';
 
@@ -11,6 +13,7 @@ class ChatFriendInfo extends Component {
         name: PropTypes.string,
         avatarColor: PropTypes.string,
         username: PropTypes.string,
+        user: PropTypes.object,
     };
     constructor(...args) {
         super(...args);
@@ -24,6 +27,8 @@ class ChatFriendInfo extends Component {
         });
     }
     render() {
+        const { profile } = this.props.user || {};
+        const { name } = profile || '';
         return (
             <div className="container-wrap friend-data-block">
                 <div className="container-middle container-content">
@@ -76,7 +81,7 @@ class ChatFriendInfo extends Component {
                             <p onClick={this.handleAddFriend}>返回</p>
                         </div>
                         <div className="send-confirm">
-                            <input type="text" placeholder="我是xxx" />
+                            <input type="text" defaultValue={`我是${name}`} />
                             <button>发送</button>
                         </div>
                     </div>
@@ -85,4 +90,9 @@ class ChatFriendInfo extends Component {
         );
     }
 }
-export default ChatFriendInfo;
+export default withTracker(() => {
+    Meteor.subscribe('userData');
+    return {
+        user: Meteor.user(),
+    };
+})(ChatFriendInfo);

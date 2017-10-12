@@ -108,7 +108,7 @@ class ChatWindow extends Component {
                             <i className="icon">&#xe672;</i>
                         </p>
                         <p className="skill-icon">
-                            <i className="icon icon-card">&#xe652;</i>
+                            <i className="icon icon-card" />
                         </p>
                         <p className="skill-icon">
                             <i className="icon">&#xe66c;</i>
