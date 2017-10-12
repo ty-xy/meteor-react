@@ -9,15 +9,15 @@ import Notice from './Notice';
 
 @pureRender
 class Header extends Component {
-    static propTypes = {
-        goto: PropTypes.func,
+    static contextTypes = {
+        history: PropTypes.object,
+        location: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
         this.state = {
             isShowNotice: false,
             isShowAccount: false,
-            selected: 1,
         };
     }
     handleClick = () => {
@@ -30,38 +30,11 @@ class Header extends Component {
             isShowAccount: !this.state.isShowAccount,
         });
     }
-    clickTab = (path, index) => {
-        this.props.goto(path);
-        this.setState({
-            selected: index,
-        });
-        // switch (path) {
-        // case '/chat':
-        //     this.setState({
-        //         selected: 1,
-        //     });
-        //     break;
-        // case '/project':
-        //     this.setState({
-        //         selected: 2,
-        //     });
-        //     break;
-        // case '/manage':
-        //     this.setState({
-        //         selected: 3,
-        //     });
-        //     break;
-        // case '/baike':
-        //     this.setState({
-        //         selected: 4,
-        //     });
-        //     break;
-        // default:
-        //     break;
-        // }
+    clickTab = (path) => {
+        this.context.history.push(path);
     }
     handleLogin = () => {
-        this.props.goto('/login');
+        this.context.history.push('/login');
     }
 
     render() {
@@ -72,23 +45,22 @@ class Header extends Component {
                         <img src="/logo.png" />
                     </div>
                     <div className="ejianlian-header-bar-tab">
-                        {/* <span>{this.state.selected}</span> */}
                         <ul className="header-bar-tab">
                             <li
-                                className={classnames('header-tab chat', this.state.selected === 1 ? 'header-tab-active' : '')}
-                                onClick={this.clickTab.bind(this, '/chat', 1)}
+                                className={classnames('header-tab chat', { 'header-tab-active': this.context.location.pathname === '/chat' })}
+                                onClick={this.clickTab.bind(this, '/chat')}
                             >消息</li>
                             <li
-                                className={classnames('header-tab chat', this.state.selected === 2 ? 'header-tab-active' : '')}
-                                onClick={this.clickTab.bind(this, '/project', 2)}
+                                className={classnames('header-tab chat', { 'header-tab-active': this.context.location.pathname === '/project' })}
+                                onClick={this.clickTab.bind(this, '/project')}
                             >项目</li>
                             <li
-                                className={classnames('header-tab chat', this.state.selected === 3 ? 'header-tab-active' : '')}
-                                onClick={this.clickTab.bind(this, '/manage', 3)}
+                                className={classnames('header-tab chat', { 'header-tab-active': this.context.location.pathname === '/manage' })}
+                                onClick={this.clickTab.bind(this, '/manage')}
                             >管理</li>
                             <li
-                                className={classnames('header-tab chat', this.state.selected === 4 ? 'header-tab-active' : '')}
-                                onClick={this.clickTab.bind(this, '/baike', 4)}
+                                className={classnames('header-tab chat', { 'header-tab-active': this.context.location.pathname === '/baike' })}
+                                onClick={this.clickTab.bind(this, '/baike')}
                             >百科</li>
                         </ul>
                     </div>

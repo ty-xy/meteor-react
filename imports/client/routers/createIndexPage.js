@@ -5,11 +5,23 @@ import Header from '../views/header/Header';
 
 class IndexPageWrap extends Component {
     static propTypes = {
-        history: PropTypes.object,
+        history: PropTypes.object.isRequired,
+        location: PropTypes.object.isRequired,
+        match: PropTypes.object.isRequired,
         children: PropTypes.element,
     }
-    goto = (path) => {
-        this.props.history.push(path);
+    static childContextTypes = {
+        history: PropTypes.object.isRequired,
+        location: PropTypes.object.isRequired,
+        match: PropTypes.object.isRequired,
+    }
+    getChildContext() {
+        const { history, location, match } = this.props;
+        return {
+            history,
+            location,
+            match,
+        };
     }
     render() {
         return (
