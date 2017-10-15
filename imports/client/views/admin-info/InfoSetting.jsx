@@ -52,7 +52,12 @@ class InfoSetting extends Component {
         const { _id = '' } = this.props.user;
 
         reader.onloadend = function () {
-            Meteor.call('changeAvatar', this.result, _id);
+            Meteor.call('changeAvatar', this.result, _id, (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
+                console.log('修改头像成功');
+            });
         };
         reader.readAsDataURL(image);
     }
