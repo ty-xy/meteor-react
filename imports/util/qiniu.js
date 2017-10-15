@@ -2,6 +2,7 @@ import qiniu from 'qiniu';
 
 const accessKey = 'ptgtsBOAlMf_mihyVKf6Zbjor7JgiSs2wWM7zj4b';
 const secretKey = 'ZN6cH2DawqguO-sQFL7AaDnldpvGNl6Vt7iCd9G_';
+const domain = '//oxldjnom8.bkt.clouddn.com/';
 const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
 const putPolicy = new qiniu.rs.PutPolicy({ scope: 'ejianlian', expires: 60 * 60 * 24 * 30 });
 
@@ -25,16 +26,14 @@ function uploadBytes(key, bytes) {
     return new Promise((resolve, reject) => {
         formUploader.put(token, key, bytes, putExtra, (respErr, respBody, respInfo) => {
             if (respErr) {
-                reject(respErr);
-                return;
+                return reject(respErr);
             }
             if (!respInfo) {
                 console.log(respErr, respBody, respInfo);
-                reject();
-                return;
+                return reject();
             }
             if (respInfo.statusCode === 200) {
-                resolve(respBody.key);
+                resolve(domain + respBody.key);
             } else {
                 reject({
                     code: respInfo.statusCode,
