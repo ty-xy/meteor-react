@@ -61,20 +61,23 @@ class ContactList extends Component {
                 </div>
                 {
                     this.props.chatList.map((item, i) => (
-                        <div className="chat-user-pannel" onClick={() => this.props.changeTo(IdUtil.merge(Meteor.userId(), item.userId))} key={i}>
-                            <div className="user-avatar">
-                                <Avatar avatarColor={item.user ? item.user.profile.avatarColor : ''} name={item.user ? item.user.profile.name : ''} />
-                            </div>
-                            <div className="user-message">
-                                <p>{item.user ? item.user.profile.name : ''}<span className="message-createAt">{item.lastMessage ? format('hh:mm', new Date(item.lastMessage.createdAt)) : ''} </span></p>
-                                <p className="last-message">
-                                    <span>{item.lastMessage ? item.lastMessage.content : ''}</span>
-                                    {/* <span className="notice-red-dot">
+                        item.user ?
+                            <div className="chat-user-pannel" onClick={() => this.props.changeTo(IdUtil.merge(Meteor.userId(), item.userId), item.userId)} key={i}>
+                                <div className="user-avatar">
+                                    <Avatar avatarColor={item.user.profile.avatarColor} name={item.user.profile.name} avatar={item.user.profile.avatar} />
+                                </div>
+                                <div className="user-message">
+                                    <p>{item.user.profile.name}<span className="message-createAt">{item.lastMessage ? format('hh:mm', new Date(item.lastMessage.createdAt)) : ''} </span></p>
+                                    <p className="last-message">
+                                        <span>{item.lastMessage ? item.lastMessage.content : ''}</span>
+                                        {/* <span className="notice-red-dot">
                                             200
                                     </span> */}
-                                </p>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
+                            :
+                            null
                     ))
                 }
             </div>

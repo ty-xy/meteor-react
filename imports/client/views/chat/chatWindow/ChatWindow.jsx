@@ -15,15 +15,13 @@ class ChatWindow extends Component {
     static propTypes = {
         messages: PropTypes.arrayOf(PropTypes.object),
         to: PropTypes.string.isRequired,
+        chatUser: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
         this.state = {
             isShowFriendInfo: false,
             isShowFriendFile: false,
-            name: '哈哈',
-            avatarColor: '#f58f47',
-            username: '15733258134',
         };
     }
     componentDidMount() {
@@ -68,10 +66,12 @@ class ChatWindow extends Component {
         }
     }
     render() {
+        const { profile = {}, username = '' } = this.props.chatUser || {};
+        const { name = '', avatarColor = '', avatar = '' } = profile;
         return (
             <div className="ejianlian-chat-window">
                 <div className="chat-to-user">
-                    {this.props.to}
+                    {name}
                     <div className="chat-other-account">
                         <p><i className="icon" onClick={this.handleFriendFile}>&#xe672;</i></p>
                         <p><i className="icon" onClick={this.handleFriendInfo}>&#xe80d;</i></p>
@@ -84,7 +84,7 @@ class ChatWindow extends Component {
                             return (
                                 <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'} key={i}>
                                     <p className="user-avatar">
-                                        <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} />
+                                        <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
                                     </p>
                                     <p className="user-message">
                                         {message.content}
@@ -117,9 +117,10 @@ class ChatWindow extends Component {
                 <ChatFriendInfo
                     style={{ display: this.state.isShowFriendInfo ? 'block' : 'none' }}
                     handleFriendInfo={this.handleFriendInfo}
-                    name={this.state.name}
-                    avatarColor={this.state.avatarColor}
-                    username={this.state.username}
+                    name={name}
+                    avatarColor={avatarColor}
+                    username={username}
+                    avatar={avatar}
                 />
                 <ChatFriendFile
                     style={{ display: this.state.isShowFriendFile ? 'block' : 'none' }}
@@ -130,11 +131,12 @@ class ChatWindow extends Component {
     }
 }
 
-export default withTracker(({ to }) => {
+export default withTracker(({ to, userId }) => {
     Meteor.subscribe('message');
     return {
         messages: Message.find({ to }).fetch(),
         to,
+        chatUser: Meteor.users.findOne({ _id: userId }),
     };
 })(ChatWindow);
 

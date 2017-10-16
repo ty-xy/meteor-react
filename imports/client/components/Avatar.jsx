@@ -13,7 +13,6 @@ class Avatar extends Component {
             avatar ?
                 <img
                     alt={name.slice(name.length - 2, name.length)}
-                    style={{ backgroundColor: `${avatarColor}` }}
                     src={avatar}
                     className="avatar"
                 />

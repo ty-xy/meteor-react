@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
 
 import ContactList from './chatSideLeft/ContactList';
+
 import FriendsList from './chatSideLeft/FriendsList';
 import GroupList from './chatSideLeft/GroupList';
 import AddChat from '../chat/chatSideLeft/addChat/AddChat';
@@ -20,13 +21,14 @@ class Chat extends Component {
                 { name: '群组', content: 'icon-qunzu' },
             ],
             to: '',
+            userId: '',
         };
     }
     handleClick = (index) => {
         this.setState({ selected: index });
     }
-    changeTo = (to) => {
-        this.setState({ to });
+    changeTo = (to, userId) => {
+        this.setState({ to, userId });
     }
     render() {
         return (
@@ -65,7 +67,7 @@ class Chat extends Component {
                     </div>
                     <AddChat />
                 </div>
-                <ChatWindow to={this.state.to} />
+                <ChatWindow to={this.state.to} userId={this.state.userId} />
             </div>
         );
     }
