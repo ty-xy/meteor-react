@@ -20,6 +20,9 @@ Meteor.methods({
                 name,
                 avatarColor,
                 avatar: '',
+                friends: [],
+                groups: [],
+                chatList: [],
             },
         });
     },

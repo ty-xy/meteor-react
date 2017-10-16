@@ -153,3 +153,14 @@ Meteor.call('register', 'username', 'password', 'name', (err) => {
     }
 });
 ```
+### Add element to array collections.update in meteor
+```js
+Meteor.users.update(
+    Meteor.userId(),
+    {
+        $push: {
+            'profile.friends': friendId,
+        },
+    },
+);
+```

@@ -10,12 +10,15 @@ class Avatar extends Component {
     render() {
         const { name, avatar, avatarColor } = this.props;
         return (
-            <img
-                alt={name.slice(name.length - 2, name.length)}
-                style={{ backgroundColor: `${avatarColor}` }}
-                src={avatar}
-                className="avatar"
-            />
+            avatar ?
+                <img
+                    alt={name.slice(name.length - 2, name.length)}
+                    style={{ backgroundColor: `${avatarColor}` }}
+                    src={avatar}
+                    className="avatar"
+                />
+                :
+                <span className="avatar" style={{ backgroundColor: `${avatarColor}` }}>{name.slice(name.length - 2, name.length)}</span>
         );
     }
 }
