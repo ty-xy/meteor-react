@@ -9,12 +9,21 @@ class Login extends Component {
     static propTypes = {
         history: PropTypes.object,
     }
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            loginError: '',
+        };
+    }
     login = () => {
         Meteor.loginWithPassword(
             this.username.value,
             this.password.value,
             (err) => {
                 if (err) {
+                    this.setState({
+                        loginError: err.reason,
+                    });
                     return console.error(err.reason);
                 }
                 this.props.history.push('/chat');
@@ -37,14 +46,15 @@ class Login extends Component {
                     <div className="form-content">
                         <div className="login-step">
                             <p className="login-phone login-step-item">
-                                <i className="icon">&#xe616;</i>
+                                <i className="iconfont icon-user" />
                                 <input type="text" placeholder="手机号" ref={i => this.username = i} />
                             </p>
                             <p className="login-passward login-step-item">
-                                <i className="icon">&#xe616;</i>
+                                <i className="iconfont icon-denglu-mima" />
                                 <input type="password" placeholder="密码" ref={i => this.password = i} />
                             </p>
                         </div>
+                        <p className="login-error">{this.state.loginError}</p>
                         <div className="login-btn" onClick={this.login}>登录</div>
                         <div className="login-server">
                             <p onClick={this.gotoRegister}>注册账号</p>
@@ -58,8 +68,8 @@ class Login extends Component {
 
                             </div>
                             <div className="login-style" >
-                                <p><i className="icon">&#xe601;</i></p>
-                                <p><i className="icon icon-wechat">&#xe6f6;</i></p>
+                                <p><i className="iconfont icon-qq-copy" /></p>
+                                <p><i className="iconfont icon-weixin icon-wechat" /></p>
                             </div>
                         </div>
                     </div>

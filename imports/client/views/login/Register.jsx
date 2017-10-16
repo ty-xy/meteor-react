@@ -1,17 +1,33 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
+import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
 
 @pureRender
 class Register extends Component {
+    static propTypes = {
+        history: PropTypes.object,
+    }
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            registerError: '',
+        };
+    }
     register = () => {
         Meteor.call('register', this.username.value, this.password.value, this.name.value, (err) => {
             if (err) {
+                this.setState({
+                    registerError: err.reason,
+                });
                 return console.error(err.reason);
             }
             Meteor.loginWithPassword(this.username.value, this.password.value);
         });
+    }
+    login = () => {
+        this.props.history.push('/chat');
     }
     render() {
         return (
@@ -36,7 +52,9 @@ class Register extends Component {
                                 <input type="text" placeholder="您的名字" ref={i => this.name = i} />
                             </li>
                         </ul>
+                        <p className="register-error">{this.state.registerError}</p>
                         <div className="register-btn" onClick={this.register}>完成</div>
+                        <div className="registered">已有账号,<span onClick={this.login}>立即登录</span></div>
                         <div className="login-by-other">
                             <div className="login-style-wrap">
                                 <p className="login-line" />
@@ -45,8 +63,8 @@ class Register extends Component {
 
                             </div>
                             <div className="login-style" >
-                                <p><i className="icon">&#xe601;</i></p>
-                                <p><i className="icon icon-wechat">&#xe6f6;</i></p>
+                                <p><i className="iconfont icon-qq-copy" /></p>
+                                <p><i className="iconfont icon-weixin icon-wechat" /></p>
                             </div>
                         </div>
                         <p className="agreeProto">注册即同意知工应用<span>服务条款</span></p>
