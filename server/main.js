@@ -6,6 +6,7 @@ import {
 } from 'meteor/reywood:publish-composite';
 
 import Message from '../imports/schema/message';
+import fields from '../imports/util/fields';
 
 publishComposite('message', {
     find() {
@@ -16,12 +17,17 @@ publishComposite('message', {
             message.from = Meteor.users.findOne(
                 { _id: message.from },
                 {
-                    fields: {
-                        username: 1,
-                        profile: 1,
-                    },
+                    fields: fields.user,
                 },
             );
         },
     }],
 });
+
+Meteor.publish('users', () => Meteor.users.find(
+    {},
+    {
+        fields: fields.user,
+    },
+));
+

@@ -14,6 +14,7 @@ class ChatFriendInfo extends Component {
         avatarColor: PropTypes.string,
         username: PropTypes.string,
         user: PropTypes.object,
+        friendId: PropTypes.string,
     };
     constructor(...args) {
         super(...args);
@@ -24,6 +25,16 @@ class ChatFriendInfo extends Component {
     handleAddFriend = () => {
         this.setState({
             isAddFriend: !this.state.isAddFriend,
+        });
+    }
+    handleRequest = () => {
+        this.setState({
+            isAddFriend: !this.state.isAddFriend,
+        });
+        Meteor.call('addFriend', this.props.friendId, (err) => {
+            if (err) {
+                console.error(err.reason);
+            }
         });
     }
     render() {
@@ -82,7 +93,7 @@ class ChatFriendInfo extends Component {
                         </div>
                         <div className="send-confirm">
                             <input type="text" defaultValue={`我是${name}`} />
-                            <button>发送</button>
+                            <button onClick={this.handleRequest}>发送</button>
                         </div>
                     </div>
                 </div>

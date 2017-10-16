@@ -20,6 +20,7 @@ class AddFriend extends Component {
             name: '哈哈',
             avatarColor: '#f58f47',
             username: '15733258134',
+            friendId: '',
         };
     }
     searchFriend = () => {
@@ -34,6 +35,7 @@ class AddFriend extends Component {
                 name: result.profile.name || '',
                 avatarColor: result.profile.avatarColor || '',
                 username: result.username || '',
+                friendId: result._id || '',
             });
         });
     }
@@ -58,7 +60,7 @@ class AddFriend extends Component {
                             </div>
                         </div>
                         <ul className="friend-other-style">
-                            <li>
+                            <li className="qq-style">
                                 <p>
                                     <i className="icon icon-qq">&#xe601;</i>
                                 </p>
@@ -101,6 +103,7 @@ class AddFriend extends Component {
                     name={this.state.name}
                     avatarColor={this.state.avatarColor}
                     username={this.state.username}
+                    friendId={this.state.friendId}
                 />
             </div>
         );
