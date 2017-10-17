@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
 
+import Icon from '../../../components/Icon';
+
 @pureRender
 class FriendsList extends Component {
     constructor(...args) {
@@ -13,8 +15,16 @@ class FriendsList extends Component {
         return (
             <div className="ejianlian-chat-friend-list">
                 <div className="chat-friend-pannel">
+                    <div className="new-friend-pannel">
+                        <p className="new-friend">
+                            <Icon icon="icon-icon15" />
+                        </p>
+                        <p>新的好友</p>
+                    </div>
+                </div>
+                <div className="chat-friend-pannel">
                     <div className="friend-pannel-type">
-                            A
+                        A
                     </div>
                     <div className="friend-pannel-list">
                         <div className="friend-list-item">
@@ -33,7 +43,7 @@ class FriendsList extends Component {
                 </div>
                 <div className="chat-friend-pannel">
                     <div className="friend-pannel-type">
-                            B
+                        B
                     </div>
                     <div className="friend-pannel-list">
                         <div className="friend-list-item">

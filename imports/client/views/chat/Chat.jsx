@@ -8,6 +8,10 @@ import GroupList from './chatSideLeft/GroupList';
 import AddChat from '../chat/chatSideLeft/addChat/AddChat';
 import ChatWindow from './chatWindow/ChatWindow';
 
+// import NewFriend from './chatWindow/NewFriend';
+// import ProjectNotice from './chatWindow/ProjectNotice';
+// import ChatGroupWindow from './chatWindow/ChatGroupWindow';
+
 
 @pureRender
 class Chat extends Component {
@@ -68,6 +72,9 @@ class Chat extends Component {
                     <AddChat />
                 </div>
                 <ChatWindow to={this.state.to} userId={this.state.userId} />
+                {/* <NewFriend /> */}
+                {/* <ProjectNotice /> */}
+                {/* <ChatGroupWindow /> */}
             </div>
         );
     }
