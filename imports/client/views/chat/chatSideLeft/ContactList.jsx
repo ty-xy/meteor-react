@@ -8,6 +8,7 @@ import format from 'date-format';
 import IdUtil from '../../../../util/id';
 import Message from '../../../../schema/message';
 import Avatar from '../../../components/Avatar';
+import UserUtil from '../../../../util/user';
 
 @pureRender
 class ContactList extends Component {
@@ -87,8 +88,8 @@ class ContactList extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('users');
-    const { profile = {} } = Meteor.user() || {};
-    const { chatList = [] } = profile;
+    const chatList = UserUtil.getChatList();
+
     chatList.forEach((x) => {
         if (x.type === 'user') {
             x.user = Meteor.users.findOne({ _id: x.userId });
