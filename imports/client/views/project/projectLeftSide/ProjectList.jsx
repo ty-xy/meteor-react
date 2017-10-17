@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
+import AddProject from './Addproject'
 @pureRender
 export default class ProjectList extends Component {
     constructor(...arg) {
@@ -11,16 +12,35 @@ export default class ProjectList extends Component {
             ],
         };
     }
+    handleClick(){
+        
+    }
     render() {
         return (
             <div className="ejianlian-project-list">
                 <ul >
-                    <li>
-                        <p>{this.state.name}</p>
-                        <p>{this.state.time}</p>
-                        <p>{this.state.num}</p>
+                    <li className="list-item">
+                        <div className="list-img">
+                        <img src="http://img.duoziwang.com/2016/10/02/15235311191.jpg" alt="" />
+                        </div>
+                        <div className="list-right">
+                        <p>{this.state.message[0].name}</p>
+                        <p>周晓梅创建于：{this.state.message[0].time}</p>
+                        <p>项目成员：{this.state.message[0].num}</p>
+                        </div>
+                    </li>
+                    <li className="list-item">
+                        <div className="list-img">
+                        <img src="http://img.duoziwang.com/2016/10/02/15235311191.jpg" alt="" />
+                        </div>
+                        <div className="list-right">
+                        <p>{this.state.message[1].name}</p>
+                        <p>周晓梅创建于：{this.state.message[1].time}</p>
+                        <p>项目成员：{this.state.message[1].num}</p>
+                        </div>
                     </li>
                 </ul>
+                <AddProject onClick={this.handleClick}/>
             </div>
         );
     }
