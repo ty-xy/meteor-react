@@ -38,7 +38,7 @@ class Chat extends Component {
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
                             <div className="chat-search-wrap">
-                                <i className="icon icon-search-message">&#xe628;</i>
+                                <i className="iconfont icon-search-message icon-sousuo" />
                                 <input type="text" className="search-message" placeholder="搜索" />
                             </div>
                         </div>

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { Select } from 'antd';
 
+import Icon from '../../../../components/Icon';
+
 const Option = Select.Option;
 @pureRender
 class AddGroup extends Component {
@@ -19,7 +21,7 @@ class AddGroup extends Component {
                 <div className="container-middle container-content">
                     <div className="container-title">
                         发起群聊
-                        <i className="icon icon-close-addGroup icon-close" onClick={this.props.handleAddGroup}>&#xe641;</i>
+                        <Icon icon="icon-guanbi icon icon-close-addGroup icon-close"onClick={this.props.handleAddGroup} />
                     </div>
                     <Select defaultValue="lucy" onChange={this.handleChange} className="select-group-item">
                         <Option value="jack">Jack</Option>
@@ -29,7 +31,7 @@ class AddGroup extends Component {
                     <ul className="select-group-list">
                         <li className="group-user-item">
                             <p className="checkbox">
-                                <i className="icon">&#xe60d;</i>
+                                <Icon icon="icon-weixuanzhong icon" />
                             </p>
                             <p className="user-info">
                                 <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1506511526484&di=1b6057880338f100af8c233684f0c1a0&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20160920%2Fc524ae81c00c40899838f22519f3c46f_th.jpg" alt="" />
@@ -38,8 +40,7 @@ class AddGroup extends Component {
                         </li>
                         <li className="group-user-item">
                             <p className="checkbox">
-                                {/* <i className="icon">&#xe60d;</i> */}
-                                <i className="icon">&#xe675;</i>
+                                <Icon icon="icon-weixuanzhong icon" />
                             </p>
                             <p className="user-info">
                                 <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1506511364502&di=898073fad78c6ab59a9e5d5f44931047&imgtype=0&src=http%3A%2F%2Fi7.download.fd.pchome.net%2Ft_960x600%2Fg1%2FM00%2F0C%2F1A%2FooYBAFR4MlGIGMtrAAF0dYwq03MAACHlQP3vm4AAXSN055.jpg" alt="" />
@@ -48,8 +49,7 @@ class AddGroup extends Component {
                         </li>
                         <li className="group-user-item">
                             <p className="checkbox">
-                                {/* <i className="icon">&#xe60d;</i>  */}
-                                <i className="icon">&#xe675;</i>
+                                <Icon icon="icon-chuangyikongjianICON_fuzhi- icon" />
                             </p>
                             <p className="user-info">
                                 <img src="http://i1.qhimg.com/t019b6071c1f0fc1532.jpg" alt="" />
@@ -58,7 +58,7 @@ class AddGroup extends Component {
                         </li>
                         <li className="group-user-item">
                             <p className="checkbox">
-                                <i className="icon">&#xe60d;</i>
+                                <Icon icon="icon-chuangyikongjianICON_fuzhi- icon" />
                             </p>
                             <p className="user-info user-info-last">
                                 <img src="http://b.hiphotos.baidu.com/baike/pic/item/91ef76c6a7efce1b4c2344b8ac51f3deb48f65bc.jpg" alt="" />

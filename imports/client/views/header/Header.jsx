@@ -70,14 +70,14 @@ class Header extends Component {
                             <span className="close-search">X</span>
                         </li> */}
                         <li>
-                            <i className="icon icon-ejianlain-search">&#xe628;</i>
+                            <i className="iconfont icon-ejianlain-search icon-sousuo" />
                         </li>
                         <li className="icon-all-notice" onClick={this.handleClick}>
                             <p className="icon-notice-redDot" />
-                            <i className="icon icon-ejianlain-notice">&#xe65e;</i>
+                            <i className="iconfont icon-ejianlain-notice icon-tongzhi" />
                         </li>
                         <li>
-                            <i className="icon icon-ejianlain-pc">&#xe77c;</i>
+                            <i className="iconfont icon-ejianlain-pc icon-diannao" />
                         </li>
                         <li className="admin-account" onClick={this.handleShowAccount}>
                             <p className="account-avatar">

@@ -8,6 +8,7 @@ import Message from '../../../../../imports/schema/message';
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
 import Avatar from '../../../components/Avatar';
+import Icon from '../../../components/Icon';
 
 
 @pureRender
@@ -41,6 +42,7 @@ class ChatWindow extends Component {
         });
     }
     handleFriendFile = () => {
+        console.log(222222);
         this.setState({
             isShowFriendFile: !this.state.isShowFriendFile,
         });
@@ -73,8 +75,12 @@ class ChatWindow extends Component {
                 <div className="chat-to-user">
                     {name}
                     <div className="chat-other-account">
-                        <p><i className="icon" onClick={this.handleFriendFile}>&#xe672;</i></p>
-                        <p><i className="icon" onClick={this.handleFriendInfo}>&#xe80d;</i></p>
+                        <p>
+                            <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
+                        </p>
+                        <p>
+                            <Icon icon="icon-gerenziliao icon" onClick={this.handleFriendInfo} />
+                        </p>
                     </div>
                 </div>
                 <div className="chat-message-list" ref={i => this.messageList = i}>
@@ -97,16 +103,16 @@ class ChatWindow extends Component {
                 <div className="chat-window-bottom">
                     <div className="chat-send-skill">
                         <p className="skill-icon">
-                            <i className="icon">&#xe61b;</i>
+                            <Icon icon="icon-biaoqing icon" />
                         </p>
                         <p className="skill-icon">
-                            <i className="icon">&#xe672;</i>
+                            <Icon icon="icon-wenjian icon" />
                         </p>
                         <p className="skill-icon">
-                            <i className="icon icon-card" />
+                            <Icon icon="icon-card icon" />
                         </p>
                         <p className="skill-icon">
-                            <i className="icon">&#xe66c;</i>
+                            <Icon icon="icon-dingwei icon" />
                         </p>
                     </div>
                     <div className="chat-message-input">
