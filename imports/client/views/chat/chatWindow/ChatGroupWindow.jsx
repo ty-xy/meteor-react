@@ -52,7 +52,6 @@ class ChatGroupWindow extends Component {
             'insertMessage',
             {
                 content: this.$message.value,
-                createdAt: new Date(),
                 to: this.props.to,
             },
             (err) => {

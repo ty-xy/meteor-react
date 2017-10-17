@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import Message from '../../../../../imports/schema/message';
+import Group from '../../../../../imports/schema/group';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -139,6 +140,8 @@ class ChatWindow extends Component {
 
 export default withTracker(({ to, userId }) => {
     Meteor.subscribe('message');
+    Meteor.subscribe('group');
+    console.log(Group.find({}).fetch());
     return {
         messages: Message.find({ to }).fetch(),
         to,

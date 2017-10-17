@@ -41,11 +41,17 @@ class AddGroup extends Component {
         });
     }
     createGroup = () => {
-        const selectedUsers = this.getSelectedUsers();
+        const selectedUsers = [Meteor.user(), ...this.getSelectedUsers()];
         const forwardFourUsers = selectedUsers.slice(0, 4);
         let groupName = forwardFourUsers.reduce((name, user) => `${name}、${user.profile.name}`, '');
         groupName = groupName.slice(1, groupName.length);
-        console.log(groupName);
+        Meteor.call(
+            'createGroup',
+            {
+                name: groupName,
+                members: selectedUsers.map(user => user._id),
+            },
+        );
     }
     render() {
         const selectedUsers = this.getSelectedUsers();

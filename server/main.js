@@ -6,6 +6,7 @@ import {
 } from 'meteor/reywood:publish-composite';
 
 import Message from '../imports/schema/message';
+import Group from '../imports/schema/group';
 import fields from '../imports/util/fields';
 
 publishComposite('message', {
@@ -30,4 +31,29 @@ Meteor.publish('users', () => Meteor.users.find(
         fields: fields.user,
     },
 ));
+
+publishComposite('group', {
+    find() {
+        return Group.find({});
+    },
+    children: [{
+        find(group) {
+            group.members = Meteor.users.find(
+                { _id: { $in: group.members } },
+                {
+                    fields: fields.user,
+                },
+            ).fetch();
+        },
+    }, {
+        find(group) {
+            group.admin = Meteor.users.findOne(
+                { _id: group.admin },
+                {
+                    fields: fields.user,
+                },
+            );
+        },
+    }],
+});
 
