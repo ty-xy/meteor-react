@@ -195,31 +195,26 @@
                 line-height: 30px;
                 text-indent: 20px;
                 background-color: #F9F9F9;
+                border-bottom: 1px solid #ddd;
             }
             .friend-pannel-list {
-                border-top: 1px solid #ddd;
                 border-bottom: 1px solid #ddd;
-                .friend-list-item {
-                    display: flex;
-                    height: 70px;
-                    img {
-                        width: 40px;
-                        height: 40px;
-                        margin-top: 15px;
-                        border: 1px solid #ddd;
-                        border-radius: 50%;
-                        margin-left: 20px;
-                        margin-right: 20px;
-                    }
-                    .friend-name {
-                        line-height: 70px;
-                        flex: 1;
-                        border-bottom: 1px solid #ddd;
-                        font-size: 16px;
-                    }
-                    .last-type-name {
-                        border: 0;
-                    }
+                display: flex;
+                padding: 10px 20px;
+                .avatar {
+                    width: 40px;
+                    height: 40px;
+                    line-height: 40px;
+                    margin-top: 8px;
+                    margin-right: 20px;
+                }
+                .last-type-name {
+                    border: 0;
+                }
+                .friend-name {
+                    line-height: 55px;
+                    flex: 1;
+                    font-size: 16px;
                 }
             }
 
@@ -241,12 +236,12 @@
             .friend-list-item {
                 display: flex;
                 height: 70px;
-                img {
+                .avatar {
                     width: 40px;
                     height: 40px;
+                    line-height: 40px;
                     margin-top: 15px;
                     border: 1px solid #ddd;
-                    border-radius: 50%;
                     margin-left: 20px;
                     margin-right: 20px;
                 }

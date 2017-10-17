@@ -109,7 +109,6 @@ export default withTracker(() => {
             x.user = Meteor.users.findOne({ _id: x.userId });
             const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }).fetch();
             x.lastMessage = messages.length === 0 ? null : messages[messages.length - 1];
-            console.log(3333, x);
         }
     });
     return {

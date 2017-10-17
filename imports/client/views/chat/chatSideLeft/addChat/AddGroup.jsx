@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { Select } from 'antd';
 
 import Icon from '../../../../components/Icon';
+import Avatar from '../../../../components/Avatar';
+import UserUtil from '../../../../../util/user';
 
 const Option = Select.Option;
 @pureRender
@@ -11,68 +15,88 @@ class AddGroup extends Component {
     static propTypes = {
         isShowAddGroup: PropTypes.bool,
         handleAddGroup: PropTypes.func,
+        users: PropTypes.array,
     };
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            selected: {},
+        };
+    }
+    getSelectedUsers = () => {
+        const selectedIds = Object.keys(this.state.selected).filter(id => this.state.selected[id]);
+        return selectedIds.map((selectId) => {
+            const user = this.props.users.find(x => x._id === selectId);
+            return user;
+        });
+    }
     handleChange = (value) => {
         console.log(`selected ${value}`);
     }
+    handleToggle = (value) => {
+        this.setState({
+            selected: Object.assign({}, this.state.selected, {
+                [value]: !this.state.selected[value],
+            }),
+        });
+    }
+    createGroup = () => {
+        const selectedUsers = this.getSelectedUsers();
+        const forwardFourUsers = selectedUsers.slice(0, 4);
+        let groupName = forwardFourUsers.reduce((name, user) => `${name}、${user.profile.name}`, '');
+        groupName = groupName.slice(1, groupName.length);
+        console.log(groupName);
+    }
     render() {
+        const selectedUsers = this.getSelectedUsers();
         return (
             <div className="container-wrap add-group-block" style={{ display: this.props.isShowAddGroup ? 'block' : 'none' }}>
                 <div className="container-middle container-content">
                     <div className="container-title">
                         发起群聊
-                        <Icon icon="icon-guanbi icon icon-close-addGroup icon-close"onClick={this.props.handleAddGroup} />
+                        <Icon icon="icon-guanbi icon icon-close-addGroup icon-close" onClick={this.props.handleAddGroup} />
                     </div>
-                    <Select defaultValue="lucy" onChange={this.handleChange} className="select-group-item">
-                        <Option value="jack">Jack</Option>
-                        <Option value="lucy">Lucy</Option>
-                        <Option value="Yiminghe">yiminghe</Option>
+                    <Select defaultValue="e建联好友" onChange={this.handleChange} className="select-group-item">
+                        <Option value="jack">e建联好友</Option>
                     </Select>
                     <ul className="select-group-list">
-                        <li className="group-user-item">
-                            <p className="checkbox">
-                                <Icon icon="icon-weixuanzhong icon" />
-                            </p>
-                            <p className="user-info">
-                                <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1506511526484&di=1b6057880338f100af8c233684f0c1a0&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20160920%2Fc524ae81c00c40899838f22519f3c46f_th.jpg" alt="" />
-                                李荣浩
-                            </p>
-                        </li>
-                        <li className="group-user-item">
-                            <p className="checkbox">
-                                <Icon icon="icon-weixuanzhong icon" />
-                            </p>
-                            <p className="user-info">
-                                <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1506511364502&di=898073fad78c6ab59a9e5d5f44931047&imgtype=0&src=http%3A%2F%2Fi7.download.fd.pchome.net%2Ft_960x600%2Fg1%2FM00%2F0C%2F1A%2FooYBAFR4MlGIGMtrAAF0dYwq03MAACHlQP3vm4AAXSN055.jpg" alt="" />
-                                黄晓明
-                            </p>
-                        </li>
-                        <li className="group-user-item">
-                            <p className="checkbox">
-                                <Icon icon="icon-chuangyikongjianICON_fuzhi- icon" />
-                            </p>
-                            <p className="user-info">
-                                <img src="http://i1.qhimg.com/t019b6071c1f0fc1532.jpg" alt="" />
-                                罗志祥
-                            </p>
-                        </li>
-                        <li className="group-user-item">
-                            <p className="checkbox">
-                                <Icon icon="icon-chuangyikongjianICON_fuzhi- icon" />
-                            </p>
-                            <p className="user-info user-info-last">
-                                <img src="http://b.hiphotos.baidu.com/baike/pic/item/91ef76c6a7efce1b4c2344b8ac51f3deb48f65bc.jpg" alt="" />
-                                孙红雷
-                            </p>
-                        </li>
+                        {
+                            this.props.users.map((item, index) => (
+                                item && item.profile ?
+                                    <li
+                                        key={index}
+                                        className="group-user-item"
+                                        onClick={this.handleToggle.bind(this, item._id)}
+                                    >
+                                        <p className="checkbox">
+                                            {
+                                                this.state.selected && this.state.selected[item._id] ?
+                                                    <Icon icon="icon-chuangyikongjianICON_fuzhi- icon" />
+                                                    :
+                                                    <Icon icon="icon-weixuanzhong icon" />
+
+                                            }
+                                        </p>
+                                        <p className={this.props.users.length - 1 !== index ? 'user-info' : 'user-info user-info-last'}>
+                                            <Avatar avatarColor={item.profile.avatarColor} name={item.profile.name} avatar={item.profile.avatar} />
+                                            {item.profile.name}
+                                        </p>
+                                    </li>
+                                    :
+                                    <div key={index}>暂无好友</div>
+                            ))
+                        }
                     </ul>
                     <div className="selected-avatar">
-                        <img src="http://i1.qhimg.com/t019b6071c1f0fc1532.jpg" alt="" />
-                        <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1506511364502&di=898073fad78c6ab59a9e5d5f44931047&imgtype=0&src=http%3A%2F%2Fi7.download.fd.pchome.net%2Ft_960x600%2Fg1%2FM00%2F0C%2F1A%2FooYBAFR4MlGIGMtrAAF0dYwq03MAACHlQP3vm4AAXSN055.jpg" />
+                        {
+                            selectedUsers.map((user, index) => (
+                                <Avatar key={index} avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
+                            ))
+                        }
                     </div>
                     <div>
-                        <div className="confirm-btn">
-                            确定(2)
+                        <div className="confirm-btn" onClick={this.createGroup}>
+                            确定({selectedUsers.length})
                         </div>
                     </div>
 
@@ -82,4 +106,12 @@ class AddGroup extends Component {
     }
 }
 
-export default AddGroup;
+
+export default withTracker(() => {
+    Meteor.subscribe('users');
+    const friendIds = UserUtil.getFriends();
+    const users = friendIds.map(_id => Meteor.users.findOne({ _id }));
+    return {
+        users,
+    };
+})(AddGroup);
