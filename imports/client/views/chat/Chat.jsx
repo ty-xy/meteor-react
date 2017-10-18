@@ -25,7 +25,6 @@ class Chat extends Component {
             ],
             to: '',
             userId: '',
-            toGroupId: '',
         };
     }
     handleClick = (index) => {

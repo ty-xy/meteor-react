@@ -18,6 +18,47 @@ class ContactList extends Component {
         changeTo: PropTypes.func.isRequired,
         chatList: PropTypes.array,
     }
+    renderUser = (user, lastMessage) => (
+        <div className="chat-user-pannel" onClick={() => this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id)} key={user._id}>
+            <div className="user-avatar">
+                <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
+            </div>
+            <div className="user-message">
+                <p>{user.profile.name}<span className="message-createAt">{lastMessage ? format('hh:mm', new Date(lastMessage.createdAt)) : format('hh:mm', new Date())} </span></p>
+                <p className="last-message">
+                    <span>{lastMessage ? lastMessage.content : '可以开始聊天了'}</span>
+                    {/* <span className="notice-red-dot">
+                        200
+                </span> */}
+                </p>
+            </div>
+        </div>
+    )
+    renderGroup = (group, lastMessage) => (
+        <div className="chat-user-pannel" onClick={() => this.props.changeTo(group._id, group._id)} key={group._id}>
+            <div className="user-avatar">
+                <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
+            </div>
+            <div className="user-message">
+                <p>{group.name}<span className="message-createAt">{lastMessage ? format('hh:mm', new Date(lastMessage.createdAt)) : format('hh:mm', new Date())} </span></p>
+                <p className="last-message">
+                    <span>{lastMessage ? lastMessage.content : '可以开始聊天了'}</span>
+                    {/* <span className="notice-red-dot">
+                    200
+            </span> */}
+                </p>
+            </div>
+        </div>
+    )
+    renderChatListItem = (item) => {
+        if (item.user) {
+            return this.renderUser(item.user, item.lastMessage);
+        } else if (item.group) {
+            return this.renderGroup(item.group, item.lastMessage);
+        }
+        console.error('不支持的聊天类型', item);
+        return null;
+    }
 
     render() {
         return (
@@ -76,41 +117,7 @@ class ContactList extends Component {
                     </div>
                 </div>
                 {
-                    this.props.chatList.map((item, i) => (
-                        item.user ?
-                            <div className="chat-user-pannel" onClick={() => this.props.changeTo(IdUtil.merge(Meteor.userId(), item.userId), item.userId)} key={i}>
-                                <div className="user-avatar">
-                                    <Avatar avatarColor={item.user.profile.avatarColor} name={item.user.profile.name} avatar={item.user.profile.avatar} />
-                                </div>
-                                <div className="user-message">
-                                    <p>{item.user.profile.name}<span className="message-createAt">{item.lastMessage ? format('hh:mm', new Date(item.lastMessage.createdAt)) : format('hh:mm', new Date(new Date()))} </span></p>
-                                    <p className="last-message">
-                                        <span>{item.lastMessage ? item.lastMessage.content : '可以开始聊天了'}</span>
-                                        {/* <span className="notice-red-dot">
-                                            200
-                                    </span> */}
-                                    </p>
-                                </div>
-                            </div>
-                            :
-                            item.group ?
-                                <div className="chat-user-pannel" onClick={() => this.props.changeTo(item.groupId, item.groupId)} key={i}>
-                                    <div className="user-avatar">
-                                        <Avatar avatar={item.group.avatar ? item.group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
-                                    </div>
-                                    <div className="user-message">
-                                        <p>{item.group.name}<span className="message-createAt">{item.lastMessage ? format('hh:mm', new Date(item.lastMessage.createdAt)) : format('hh:mm', new Date(new Date()))} </span></p>
-                                        <p className="last-message">
-                                            <span>{item.lastMessage ? item.lastMessage.content : '可以开始聊天了'}</span>
-                                            {/* <span className="notice-red-dot">
-                                            200
-                                    </span> */}
-                                        </p>
-                                    </div>
-                                </div>
-                                :
-                                null
-                    ))
+                    this.props.chatList.map((item, i) => this.renderChatListItem(item, i))
                 }
             </div>
         );
