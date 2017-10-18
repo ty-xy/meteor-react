@@ -50,6 +50,7 @@
     "qiniu": "^7.0.8",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-modal-dialog": "^4.0.7",
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
