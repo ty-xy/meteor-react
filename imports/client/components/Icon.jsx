@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function Icon({ icon, size, iconColor, onClick }) {
+export default function Icon({ icon = 'icon-jibenxinxi', size = 22, iconColor = '#15B4F1', onClick = Function }) {
     return (
         <i className={`iconfont ${icon}`} style={{ fontSize: size, color: iconColor }} onClick={onClick} />
     );
