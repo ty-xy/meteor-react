@@ -8,6 +8,7 @@ import Group from '../../../../../imports/schema/group';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
+import GroupSetting from './GroupSetting';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 
@@ -25,6 +26,7 @@ class ChatWindow extends Component {
         this.state = {
             isShowFriendInfo: false,
             isShowFriendFile: false,
+            isShowGroupSet: false,
         };
     }
     componentDidMount() {
@@ -44,9 +46,13 @@ class ChatWindow extends Component {
         });
     }
     handleFriendFile = () => {
-        console.log(222222);
         this.setState({
             isShowFriendFile: !this.state.isShowFriendFile,
+        });
+    }
+    showGroupSet = () => {
+        this.setState({
+            isShowGroupSet: !this.state.isShowGroupSet,
         });
     }
     sendMessage = () => {
@@ -74,6 +80,7 @@ class ChatWindow extends Component {
         const { name = '', avatarColor = '', avatar = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
+        const members = this.props.chatGroup ? this.props.chatGroup.members : [];
         return (
             <div className="ejianlian-chat-window">
                 {
@@ -100,7 +107,7 @@ class ChatWindow extends Component {
                                     <Icon icon="icon-wenjian icon" />
                                 </p>
                                 <p>
-                                    <Icon icon="icon-shezhi icon" />
+                                    <Icon icon="icon-shezhi icon" onClick={this.showGroupSet} />
                                 </p>
                             </div>
                         </div>
@@ -160,6 +167,12 @@ class ChatWindow extends Component {
                     style={{ display: this.state.isShowFriendFile ? 'block' : 'none' }}
                     handleFriendFile={this.handleFriendFile}
                 />
+                <GroupSetting
+                    style={{ display: this.state.isShowGroupSet ? 'block' : 'none' }}
+                    showGroupSet={this.showGroupSet}
+                    groupName={groupName}
+                    members={members}
+                />
             </div>
         );
     }
@@ -168,7 +181,6 @@ class ChatWindow extends Component {
 export default withTracker(({ to, userId }) => {
     Meteor.subscribe('message');
     Meteor.subscribe('group');
-    console.log(Group.find({}).fetch());
     const chatGroup = Group.findOne({ _id: to });
     if (chatGroup && chatGroup.members) {
         chatGroup.members.forEach((x) => {
