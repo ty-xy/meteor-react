@@ -31,15 +31,5 @@ Meteor.methods({
             },
         );
     },
-    addGroup(groupId) {
-        Meteor.users.update(
-            Meteor.userId(),
-            {
-                $push: {
-                    'profile.groups': groupId,
-                },
-            },
-        );
-    },
 });
 

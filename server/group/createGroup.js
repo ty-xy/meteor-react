@@ -13,6 +13,20 @@ Meteor.methods({
             notice: '',
         };
         Group.schema.validate(newGroup);
-        return Group.insert(newGroup);
+        const groupId = Group.insert(newGroup);
+        members.map((user =>
+            Meteor.users.update(
+                { _id: user },
+                {
+                    $push: {
+                        'profile.groups': groupId,
+                        'profile.chatList': {
+                            type: 'group',
+                            groupId,
+                        },
+                    },
+                },
+            )
+        ));
     },
 });

@@ -51,6 +51,11 @@ class AddGroup extends Component {
                 name: groupName,
                 members: selectedUsers.map(user => user._id),
             },
+            (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
+            },
         );
     }
     render() {
