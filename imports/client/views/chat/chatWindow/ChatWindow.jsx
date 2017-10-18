@@ -16,8 +16,9 @@ import Icon from '../../../components/Icon';
 class ChatWindow extends Component {
     static propTypes = {
         messages: PropTypes.arrayOf(PropTypes.object),
-        to: PropTypes.string.isRequired,
+        to: PropTypes.string,
         chatUser: PropTypes.object,
+        chatGroup: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
@@ -71,19 +72,38 @@ class ChatWindow extends Component {
     render() {
         const { profile = {}, username = '' } = this.props.chatUser || {};
         const { name = '', avatarColor = '', avatar = '' } = profile;
+        const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         return (
             <div className="ejianlian-chat-window">
-                <div className="chat-to-user">
-                    {name}
-                    <div className="chat-other-account">
-                        <p>
-                            <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
-                        </p>
-                        <p>
-                            <Icon icon="icon-gerenziliao icon" onClick={this.handleFriendInfo} />
-                        </p>
-                    </div>
-                </div>
+                {
+                    name ?
+                        <div className="chat-to-user">
+                            {name}
+                            <div className="chat-other-account">
+                                <p>
+                                    <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
+                                </p>
+                                <p>
+                                    <Icon icon="icon-gerenziliao icon" onClick={this.handleFriendInfo} />
+                                </p>
+                            </div>
+                        </div>
+                        :
+                        <div className="chat-to-user">
+                            {groupName}
+                            <div className="chat-other-account">
+                                <p>
+                                    <Icon icon="icon-tongzhi2 icon" />
+                                </p>
+                                <p>
+                                    <Icon icon="icon-wenjian icon" />
+                                </p>
+                                <p>
+                                    <Icon icon="icon-shezhi icon" />
+                                </p>
+                            </div>
+                        </div>
+                }
                 <div className="chat-message-list" ref={i => this.messageList = i}>
                     {
                         this.props.messages.map((message, i) => {
@@ -146,6 +166,7 @@ export default withTracker(({ to, userId }) => {
         messages: Message.find({ to }).fetch(),
         to,
         chatUser: Meteor.users.findOne({ _id: userId }),
+        chatGroup: Group.findOne({ _id: to }),
     };
 })(ChatWindow);
 

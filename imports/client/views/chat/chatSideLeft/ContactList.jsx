@@ -7,6 +7,7 @@ import format from 'date-format';
 
 import IdUtil from '../../../../util/id';
 import Message from '../../../../schema/message';
+import Group from '../../../../schema/group';
 import Avatar from '../../../components/Avatar';
 import UserUtil from '../../../../util/user';
 import Icon from '../../../components/Icon';
@@ -82,9 +83,9 @@ class ContactList extends Component {
                                     <Avatar avatarColor={item.user.profile.avatarColor} name={item.user.profile.name} avatar={item.user.profile.avatar} />
                                 </div>
                                 <div className="user-message">
-                                    <p>{item.user.profile.name}<span className="message-createAt">{item.lastMessage ? format('hh:mm', new Date(item.lastMessage.createdAt)) : ''} </span></p>
+                                    <p>{item.user.profile.name}<span className="message-createAt">{item.lastMessage ? format('hh:mm', new Date(item.lastMessage.createdAt)) : format('hh:mm', new Date(new Date()))} </span></p>
                                     <p className="last-message">
-                                        <span>{item.lastMessage ? item.lastMessage.content : ''}</span>
+                                        <span>{item.lastMessage ? item.lastMessage.content : '可以开始聊天了'}</span>
                                         {/* <span className="notice-red-dot">
                                             200
                                     </span> */}
@@ -92,7 +93,23 @@ class ContactList extends Component {
                                 </div>
                             </div>
                             :
-                            null
+                            item.group ?
+                                <div className="chat-user-pannel" onClick={() => this.props.changeTo(item.groupId, item.groupId)} key={i}>
+                                    <div className="user-avatar">
+                                        <Avatar avatar={item.group.avatar ? item.group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
+                                    </div>
+                                    <div className="user-message">
+                                        <p>{item.group.name}<span className="message-createAt">{item.lastMessage ? format('hh:mm', new Date(item.lastMessage.createdAt)) : format('hh:mm', new Date(new Date()))} </span></p>
+                                        <p className="last-message">
+                                            <span>{item.lastMessage ? item.lastMessage.content : '可以开始聊天了'}</span>
+                                            {/* <span className="notice-red-dot">
+                                            200
+                                    </span> */}
+                                        </p>
+                                    </div>
+                                </div>
+                                :
+                                null
                     ))
                 }
             </div>
@@ -102,6 +119,7 @@ class ContactList extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('users');
+    Meteor.subscribe('group');
     const chatList = UserUtil.getChatList();
 
     chatList.forEach((x) => {
@@ -109,8 +127,13 @@ export default withTracker(() => {
             x.user = Meteor.users.findOne({ _id: x.userId });
             const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }).fetch();
             x.lastMessage = messages.length === 0 ? null : messages[messages.length - 1];
+        } else if (x.type === 'group') {
+            x.group = Group.findOne({ _id: x.groupId });
+            const messages = Message.find({ to: x.groupId }).fetch();
+            x.lastMessage = messages.length === 0 ? null : messages[messages.length - 1];
         }
     });
+    console.log(chatList);
     return {
         chatList,
     };
