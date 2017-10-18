@@ -7,6 +7,9 @@ npm start
 ```
 
 ## 代码规范
+### Commit Message 编写规范
+编写Commit Message需要遵循一定的范式，内容应该清晰明了，指明本次提交的目的，便于日后追踪问题。
+[规则参照](https://blog.suisuijiang.com/git-commit-written-guide/)
 
 ### 命名
 
