@@ -73,6 +73,7 @@ class ChatWindow extends Component {
         const { profile = {}, username = '' } = this.props.chatUser || {};
         const { name = '', avatarColor = '', avatar = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
+        const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         return (
             <div className="ejianlian-chat-window">
                 {
@@ -113,9 +114,15 @@ class ChatWindow extends Component {
                                     <p className="user-avatar">
                                         <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
                                     </p>
-                                    <p className="user-message">
-                                        {message.content}
-                                    </p>
+                                    <div className="user-message-wrap">
+                                        {
+                                            message.to === groupId ?
+                                                <p className="user-nickname">{message.from.profile.name}</p>
+                                                :
+                                                null
+                                        }
+                                        <p className="user-message">{message.content}</p>
+                                    </div>
                                 </div>
                             );
                         })
@@ -162,11 +169,17 @@ export default withTracker(({ to, userId }) => {
     Meteor.subscribe('message');
     Meteor.subscribe('group');
     console.log(Group.find({}).fetch());
+    const chatGroup = Group.findOne({ _id: to });
+    if (chatGroup && chatGroup.members) {
+        chatGroup.members.forEach((x) => {
+            x.user = Meteor.users.findOne({ _id: x });
+        });
+    }
     return {
         messages: Message.find({ to }).fetch(),
         to,
         chatUser: Meteor.users.findOne({ _id: userId }),
-        chatGroup: Group.findOne({ _id: to }),
+        chatGroup,
     };
 })(ChatWindow);
 

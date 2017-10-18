@@ -42,7 +42,7 @@
             width: 55px;
             border-radius: 50%;
             margin-bottom: 20px;
-            & > img {
+            & > .avatar {
                 width: 100%;
                 height: 100%;
                 border-radius: 50%;
@@ -53,6 +53,7 @@
             margin: auto 40px;
             display: flex;
             box-sizing: border-box;
+            margin-bottom: 30px;
             .user-message {
                 padding: 0px 10px;
                 height: 40px;
@@ -85,12 +86,19 @@
                 border-bottom: 10px solid transparent;
                 border-right: 10px solid #fff;
             }
+            .user-nickname {
+                text-align: left;
+                margin-left: 20px;
+                color: #bdbdbd;
+                font-size: 13px;
+            }
         }
         & > .self-message {
             margin: auto 40px;
             display: flex;
             box-sizing: border-box;
             flex-direction: row-reverse;
+            margin-bottom: 30px;
             .user-message {
                 margin-right: 20px;
                 padding: 0px 10px;
@@ -100,7 +108,8 @@
                 border-radius: 4px;
                 margin-top: 8px;
                 position: relative;
-                background-color: #fff;
+                background-color: #29b6f6;
+                color: #fff;
                 font-size: 14px;
             }
             .user-message:before {
@@ -121,9 +130,16 @@
                 top: 10px;
                 border-top: 10px solid transparent ;
                 border-bottom: 10px solid transparent;
-                border-left: 10px solid #fff;
+                border-left: 10px solid #29b6f6;
+            }
+            .user-nickname {
+                text-align: right;
+                margin-right: 20px;
+                color: #bdbdbd;
+                font-size: 13px;
             }
         }
+        
     }
     .chat-window-bottom {
         height: 160px;
