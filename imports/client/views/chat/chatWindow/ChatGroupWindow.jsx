@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import Message from '../../../../../imports/schema/message';
-import Group from '../../../../../imports/schema/group';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -13,7 +12,7 @@ import Icon from '../../../components/Icon';
 
 
 @pureRender
-class ChatWindow extends Component {
+class ChatGroupWindow extends Component {
     static propTypes = {
         messages: PropTypes.arrayOf(PropTypes.object),
         to: PropTypes.string.isRequired,
@@ -53,7 +52,6 @@ class ChatWindow extends Component {
             'insertMessage',
             {
                 content: this.$message.value,
-                createdAt: new Date(),
                 to: this.props.to,
             },
             (err) => {
@@ -74,13 +72,16 @@ class ChatWindow extends Component {
         return (
             <div className="ejianlian-chat-window">
                 <div className="chat-to-user">
-                    {name}
+                    群聊
                     <div className="chat-other-account">
                         <p>
-                            <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
+                            <Icon icon="icon-tongzhi2 icon" />
                         </p>
                         <p>
-                            <Icon icon="icon-gerenziliao icon" onClick={this.handleFriendInfo} />
+                            <Icon icon="icon-wenjian icon" />
+                        </p>
+                        <p>
+                            <Icon icon="icon-shezhi icon" />
                         </p>
                     </div>
                 </div>
@@ -140,12 +141,9 @@ class ChatWindow extends Component {
 
 export default withTracker(({ to, userId }) => {
     Meteor.subscribe('message');
-    Meteor.subscribe('group');
-    console.log(Group.find({}).fetch());
     return {
         messages: Message.find({ to }).fetch(),
         to,
         chatUser: Meteor.users.findOne({ _id: userId }),
     };
-})(ChatWindow);
-
+})(ChatGroupWindow);

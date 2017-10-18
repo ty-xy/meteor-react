@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
 import ChatFriendInfo from '../../chatWindow/ChatFriendInfo';
+import Icon from '../../../../components/Icon';
 
 @pureRender
 class AddFriend extends Component {
@@ -28,7 +29,6 @@ class AddFriend extends Component {
             if (err) {
                 return console.error(err.reason);
             }
-            console.log(6666, result);
             this.setState({
                 isShowAddFriend: false,
                 isShowFriendInfo: true,
@@ -51,30 +51,30 @@ class AddFriend extends Component {
                     <div className="container-middle container-content" >
                         <div className="container-title">
                         添加好友
-                            <i className="icon icon-close-addFriend icon-close" onClick={this.props.handleAddFriend}>&#xe641;</i>
+                            <Icon icon="icon-guanbi icon icon-close" onClick={this.props.handleAddFriend} />
                         </div>
                         <div className="by-search-add-friend">
                             <input type="text" placeholder="手机号码添加" className="search-input" ref={i => this.username = i} />
                             <div className="search" onClick={this.searchFriend}>
-                                <i className="icon icon-search-friend">&#xe628;</i>
+                                <Icon icon="icon-sousuo icon icon-search-friend" onClick={this.props.handleAddFriend} />
                             </div>
                         </div>
                         <ul className="friend-other-style">
                             <li className="qq-style">
                                 <p>
-                                    <i className="icon icon-qq">&#xe601;</i>
+                                    <Icon icon="icon-qq-copy icon icon-qq" />
                                 </p>
                                 <p className="icon-style-info">QQ</p>
                             </li>
                             <li>
                                 <p>
-                                    <i className="icon icon-wechat">&#xe6f6;</i>
+                                    <Icon icon="icon-weixin icon icon-wechat" />
                                 </p>
                                 <p className="icon-style-info">微信</p>
                             </li>
                             <li className="by-code" onClick={this.props.handleFriendCode}>
                                 <p>
-                                    <i className="icon icon-ercode">&#xe619;</i>
+                                    <Icon icon="icon-erweima icon icon-ercode" />
                                 </p>
                                 <p className="icon-style-info" >二维码</p>
                             </li>
@@ -85,7 +85,7 @@ class AddFriend extends Component {
                     <div className="container-middle container-content">
                         <div className="container-title">
                              扫一扫
-                            <i className="icon icon-close-codeBlock icon-close" onClick={this.props.handleFriendCode}>&#xe641;</i>
+                            <Icon icon="icon-guanbi icon icon-close-codeBlock icon-close"onClick={this.props.handleFriendCode} />
                         </div>
                         <div className="code-wrap">
                             <img src="http://upload-images.jianshu.io/upload_images/3297464-bcc37825a913c8ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" />

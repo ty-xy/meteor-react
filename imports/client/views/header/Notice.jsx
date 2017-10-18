@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
+import Icon from '../../components/Icon';
+
 @pureRender
 class Notice extends Component {
     render() {
@@ -9,7 +11,7 @@ class Notice extends Component {
             <div className="container-wrap-right">
                 <div className="container-title">
                     通知
-                    <i className="icon icon-close-codeBlock icon-close" onClick={this.props.handleNotice}>&#xe641;</i>
+                    <Icon icon="icon-guanbi icon icon-close-codeBlock icon-close" onClick={this.props.handleNotice} />
                 </div>
                 {/* 工作和项目通知 */}
                 <div className="ejianlian-chat-message-list">

@@ -3,10 +3,10 @@ import { Meteor } from 'meteor/meteor';
 import Messages from '../../imports/schema/message';
 
 Meteor.methods({
-    insertMessage({ content, createdAt, to }) {
+    insertMessage({ content, to }) {
         const newMessage = {
             content,
-            createdAt,
+            createdAt: new Date(),
             from: Meteor.userId(),
             to,
         };

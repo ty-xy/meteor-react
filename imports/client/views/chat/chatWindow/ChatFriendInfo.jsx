@@ -15,6 +15,7 @@ class ChatFriendInfo extends Component {
         username: PropTypes.string,
         user: PropTypes.object,
         friendId: PropTypes.string,
+        avatar: PropTypes.string,
     };
     constructor(...args) {
         super(...args);
@@ -48,7 +49,7 @@ class ChatFriendInfo extends Component {
 
                         <ul className="friend-info">
                             <li>
-                                <Avatar name={this.props.name} avatarColor={this.props.avatarColor} />
+                                <Avatar name={this.props.name} avatarColor={this.props.avatarColor} avatar={this.props.avatar} />
                             </li>
                             <li>
                                 <p className="friend-name-info">

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
-// import NoticeSideRight from '../../../components/noticeSideRight';
+import Icon from '../../../components/Icon';
 
 @pureRender
 class ChatFriendFile extends Component {
@@ -15,7 +15,7 @@ class ChatFriendFile extends Component {
                 <div className="container-wrap-right">
                     <div className="container-title">
                         聊天文件
-                        <i className="icon icon-close-codeBlock icon-close" onClick={this.props.handleFriendFile}>&#xe641;</i>
+                        <Icon icon="icon-guanbi icon icon-close-codeBlock icon-close" onClick={this.props.handleFriendFile} />
                     </div>
                     {/* 好友聊天文件 */}
                     <div className="ejianlian-chat-message-list">
@@ -24,7 +24,7 @@ class ChatFriendFile extends Component {
                         </div>
                         <div className="chat-user-pannel">
                             <div className="user-avatar">
-                                <i className="icon icon-word" />
+                                <Icon icon="icon-word icon" />
                             </div>
                             <div className="user-message">
                                 <p>#817项目招标文件.docx</p>
@@ -35,12 +35,12 @@ class ChatFriendFile extends Component {
                                 </p>
                             </div>
                             <div className="download-icon">
-                                <i className="icon">&#xe602;</i>
+                                <Icon icon="icon-xiazai icon" />
                             </div>
                         </div>
                         <div className="chat-user-pannel ">
                             <div className="user-avatar">
-                                <i className="icon icon-xls" />
+                                <Icon icon="icon-xls icon" />
                             </div>
                             <div className="user-message">
                                 <p>#817项目报表.xls</p>
@@ -51,7 +51,7 @@ class ChatFriendFile extends Component {
                                 </p>
                             </div>
                             <div className="download-icon">
-                                <i className="icon">&#xe602;</i>
+                                <Icon icon="icon-xiazai icon" />
                             </div>
                         </div>
                         <div className="file-create-time">
@@ -59,7 +59,7 @@ class ChatFriendFile extends Component {
                         </div>
                         <div className="chat-user-pannel">
                             <div className="user-avatar">
-                                <i className="icon icon-jpg" />
+                                <Icon icon="icon-jpg icon" />
                             </div>
                             <div className="user-message">
                                 <p>#817项目效果图演示.jpg</p>
@@ -70,7 +70,7 @@ class ChatFriendFile extends Component {
                                 </p>
                             </div>
                             <div className="download-icon">
-                                <i className="icon">&#xe602;</i>
+                                <Icon icon="icon-xiazai icon" />
                             </div>
                         </div>
                     </div>

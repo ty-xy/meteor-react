@@ -8,6 +8,8 @@ import format from 'date-format';
 import IdUtil from '../../../../util/id';
 import Message from '../../../../schema/message';
 import Avatar from '../../../components/Avatar';
+import UserUtil from '../../../../util/user';
+import Icon from '../../../components/Icon';
 
 @pureRender
 class ContactList extends Component {
@@ -21,7 +23,7 @@ class ContactList extends Component {
             <div className="ejianlian-chat-message-list">
                 <div className="chat-user-pannel">
                     <div className="user-avatar work-notice">
-                        <i className="icon">&#xe61e;</i>
+                        <Icon icon="icon-tongzhi1 icon" />
                     </div>
                     <div className="user-message">
                         <p>工作通知<span className="message-createAt">12:00</span></p>
@@ -34,7 +36,7 @@ class ContactList extends Component {
                 </div>
                 <div className="chat-user-pannel ">
                     <div className="user-avatar project-notice">
-                        <i className="icon">&#xe600;</i>
+                        <Icon icon="icon-xiangmu icon" />
                     </div>
                     <div className="user-message">
                         <p>项目通知<span className="message-createAt">12:00</span></p>
@@ -55,6 +57,19 @@ class ContactList extends Component {
                             <span>The Weather is good!</span>
                             <span className="notice-red-dot">
                                 200
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div className="chat-user-pannel ">
+                    <div className="user-avatar new-friend-notice">
+                        <Icon icon="icon-icon15 icon" />
+                    </div>
+                    <div className="user-message">
+                        <p>新的好友<span className="message-createAt">12:00</span></p>
+                        <p className="last-message">许林伟请求添加好友
+                            <span className="notice-red-dot">
+                                1
                             </span>
                         </p>
                     </div>
@@ -87,14 +102,13 @@ class ContactList extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('users');
-    const { profile = {} } = Meteor.user() || {};
-    const { chatList = [] } = profile;
+    const chatList = UserUtil.getChatList();
+
     chatList.forEach((x) => {
         if (x.type === 'user') {
             x.user = Meteor.users.findOne({ _id: x.userId });
             const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }).fetch();
             x.lastMessage = messages.length === 0 ? null : messages[messages.length - 1];
-            console.log(3333, x);
         }
     });
     return {
