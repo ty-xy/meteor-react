@@ -70,7 +70,6 @@ export default withTracker(() => {
     const friendIds = UserUtil.getFriends();
 
     const users = friendIds.map(_id => Meteor.users.findOne({ _id }));
-    console.log(111, users);
     return {
         users,
     };
