@@ -36,6 +36,7 @@ class GroupSetting extends Component {
         });
     }
     render() {
+        console.log(44444, this.props.members);
         return (
             <div className="container-wrap group-setting-block">
                 <div className="container-middle container-content">
@@ -57,7 +58,10 @@ class GroupSetting extends Component {
                     <div className="members-avatar">
                         {
                             this.props.members.map((item, i) =>
-                                <Avatar key={i} name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />,
+                                (item.profile ?
+                                    <Avatar key={i} name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
+                                    :
+                                    null),
                             )
                         }
 

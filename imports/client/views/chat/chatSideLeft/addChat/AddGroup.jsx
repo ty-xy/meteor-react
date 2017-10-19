@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
-import { Select } from 'antd';
+import { Select, Modal, message } from 'antd';
 
 import Icon from '../../../../components/Icon';
 import Avatar from '../../../../components/Avatar';
@@ -41,6 +41,15 @@ class AddGroup extends Component {
         groupName = groupName.slice(1, groupName.length);
         return groupName;
     }
+    dealError = (err) => {
+        if (err) {
+            Modal.error({
+                title: '提示',
+                content: err.reason,
+            });
+            return console.error(err.reason);
+        }
+    }
     handleChange = (value) => {
         console.log(`selected ${value}`);
     }
@@ -61,9 +70,9 @@ class AddGroup extends Component {
                 members: selectedUsers.map(user => user._id),
             },
             (err) => {
-                if (err) {
-                    return console.error(err.reason);
-                }
+                this.dealError(err);
+                message.success('成功创建群聊');
+                this.props.handleAddGroup();
             },
         );
     }
@@ -78,9 +87,7 @@ class AddGroup extends Component {
                     name: this.getFourUsers(newMembers),
                 },
                 (err) => {
-                    if (err) {
-                        return console.error(err.reason);
-                    }
+                    this.dealError(err);
                 },
             );
         }
@@ -91,9 +98,8 @@ class AddGroup extends Component {
                 newMembers: selectedUsers.map(user => user._id),
             },
             (err) => {
-                if (err) {
-                    return console.error(err.reason);
-                }
+                this.dealError(err);
+                message.success('邀请好友成功');
             },
         );
     }
