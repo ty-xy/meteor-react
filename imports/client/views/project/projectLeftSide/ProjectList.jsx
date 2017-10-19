@@ -15,13 +15,13 @@ export default class ProjectList extends Component {
             ],
         };
     }
-    handleClick() {
+    handleClick = () => {
         this.setState({ model: !this.state.model });
     }
     render() {
         return (
             <div className="ejianlian-project-list">
-                <Dialog style={{ display: this.state.model ? 'block' : 'none' }} />
+                <Dialog style={{ display: this.state.model ? 'none' : 'block' }} click={this.handleClick} />
                 <ul >
                     <li className="list-item">
                         <div className="list-img">
@@ -44,7 +44,7 @@ export default class ProjectList extends Component {
                         </div>
                     </li>
                 </ul>
-                <AddProject onClick={this.handleClick.bind(this)} />
+                <AddProject onClick={this.handleClick} value="项目" />
             </div>
         );
     }
