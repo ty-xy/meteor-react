@@ -18,13 +18,13 @@ class ContactList extends Component {
         changeTo: PropTypes.func.isRequired,
         chatList: PropTypes.array,
     }
-    renderUser = (user, lastMessage) => (
+    renderUser = (user, lastMessage, time) => (
         <div className="chat-user-pannel" onClick={() => this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id)} key={user._id}>
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
             </div>
             <div className="user-message">
-                <p>{user.profile.name}<span className="message-createAt">{lastMessage ? format('hh:mm', new Date(lastMessage.createdAt)) : format('hh:mm', new Date())} </span></p>
+                <p>{user.profile.name}<span className="message-createAt">{lastMessage ? format('hh:mm', lastMessage.createdAt) : format('hh:mm', time)} </span></p>
                 <p className="last-message">
                     <span>{lastMessage ? lastMessage.content : '可以开始聊天了'}</span>
                     {/* <span className="notice-red-dot">
@@ -34,13 +34,13 @@ class ContactList extends Component {
             </div>
         </div>
     )
-    renderGroup = (group, lastMessage) => (
+    renderGroup = (group, lastMessage, time) => (
         <div className="chat-user-pannel" onClick={() => this.props.changeTo(group._id, group._id)} key={group._id}>
             <div className="user-avatar">
                 <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
             </div>
             <div className="user-message">
-                <p>{group.name}<span className="message-createAt">{lastMessage ? format('hh:mm', new Date(lastMessage.createdAt)) : format('hh:mm', new Date())} </span></p>
+                <p>{group.name}<span className="message-createAt">{lastMessage ? format('hh:mm', lastMessage.createdAt) : format('hh:mm', time)} </span></p>
                 <p className="last-message">
                     <span>{lastMessage ? lastMessage.content : '可以开始聊天了'}</span>
                     {/* <span className="notice-red-dot">
@@ -52,9 +52,9 @@ class ContactList extends Component {
     )
     renderChatListItem = (item) => {
         if (item.user) {
-            return this.renderUser(item.user, item.lastMessage);
+            return this.renderUser(item.user, item.lastMessage, item.time);
         } else if (item.group) {
-            return this.renderGroup(item.group, item.lastMessage);
+            return this.renderGroup(item.group, item.lastMessage, item.time);
         }
         console.error('不支持的聊天类型', item);
         return null;
@@ -85,20 +85,6 @@ class ContactList extends Component {
                         <p className="last-message">这是最后一条消息
                             <span className="notice-red-dot">
                                 2
-                            </span>
-                        </p>
-                    </div>
-                </div>
-                <div className="chat-user-pannel" onClick={() => this.props.changeTo('群聊222')}>
-                    <div className="user-avatar">
-                        <img src="http://wx.qlogo.cn/mmopen/An3cibgIYjcYeukMFYO9PdZCJbP5ftnShbibRKJ8RHX26qIV6FSJkribZCbTmv8Vlib8NVzvJCBtM2qMQBuzsdvDxUxcE7K8qTlV/0" alt="" />
-                    </div>
-                    <div className="user-message">
-                        <p>群聊222<span className="message-createAt">12:00</span></p>
-                        <p className="last-message">
-                            <span>The Weather is good!</span>
-                            <span className="notice-red-dot">
-                                200
                             </span>
                         </p>
                     </div>

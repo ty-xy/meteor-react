@@ -23,6 +23,7 @@ Meteor.methods({
                         'profile.chatList': {
                             type: 'group',
                             groupId,
+                            time: new Date(),
                         },
                     },
                 },
