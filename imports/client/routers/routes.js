@@ -19,11 +19,11 @@ const router = (
     <Router>
         <div>
             <Route path="/" component={Index} />
-            <Route path="/chat" component={createIndexPage(Chat)} />
-            <Route path="/project" component={createIndexPage(Project)} />
-            <Route path="/manage" component={createIndexPage(Manage)} />
-            <Route path="/baike" component={createIndexPage(Bakei)} />
-            <Route path="/adminInfo" component={createIndexPage(AdminInfo)} />
+            <Route path="/chat" render={createIndexPage(Chat)} />
+            <Route path="/project" render={createIndexPage(Project)} />
+            <Route path="/manage" render={createIndexPage(Manage)} />
+            <Route path="/baike" render={createIndexPage(Bakei)} />
+            <Route path="/adminInfo" render={createIndexPage(AdminInfo)} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/forgetPassword" component={ForgetPassword} />

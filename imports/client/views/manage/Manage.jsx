@@ -1,5 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 import { Col, Row } from 'antd';
+import PropTypes from 'prop-types';
 import LeftCard from './component/LeftCard';
 
 
@@ -17,7 +18,7 @@ class Manage extends (PureComponent || Component) {
         console.error('e', key);
     }
     render() {
-        console.error('Switch', this.props);
+        console.error('Switch', this.context);
         return (
             <Row className="ejianlian-chat">
                 <LeftCard {...this.props} {...this.state} clickCompany={this.clickCompany} />
@@ -26,5 +27,10 @@ class Manage extends (PureComponent || Component) {
         );
     }
 }
+
+Manage.contextTypes = {
+    location: PropTypes.object,
+    history: PropTypes.object,
+};
 
 export default Manage;
