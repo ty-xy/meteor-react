@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+import PropTypes from 'prop-types';
 
 import AddFriend from './AddFriend';
 import AddGroup from './AddGroup';
+import UserUtil from '../../../../../util/user';
 
 @pureRender
 class AddChat extends Component {
+    static propTypes = {
+        users: PropTypes.array,
+    };
     constructor(...args) {
         super(...args);
         this.state = {
@@ -56,10 +63,20 @@ class AddChat extends Component {
                 <AddGroup
                     handleAddGroup={this.handleAddGroup}
                     isShowAddGroup={this.state.isShowAddGroup}
+                    users={this.props.users}
+                    type="createGroup"
                 />
             </div>
         );
     }
 }
 
-export default AddChat;
+
+export default withTracker(() => {
+    Meteor.subscribe('users');
+    const friendIds = UserUtil.getFriends();
+    const users = friendIds.map(_id => Meteor.users.findOne({ _id }));
+    return {
+        users,
+    };
+})(AddChat);

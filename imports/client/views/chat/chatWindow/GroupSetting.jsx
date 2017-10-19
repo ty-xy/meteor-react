@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { Switch } from 'antd';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
+import AddGroup from '../chatSideLeft/addChat/AddGroup';
+import UserUtil from '../../../../util/user';
 
 @pureRender
 class GroupSetting extends Component {
@@ -12,7 +16,25 @@ class GroupSetting extends Component {
         showGroupSet: PropTypes.func,
         groupName: PropTypes.string,
         members: PropTypes.array,
+        users: PropTypes.array,
+        groupId: PropTypes.string,
     };
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            isShowAddGroup: false,
+            restUsers: [],
+        };
+    }
+    handleAddGroup = () => {
+        const { users = [], members } = this.props;
+        const restMembers = members.filter(x => x._id !== Meteor.userId());
+        const restUsers = users.filter(x => restMembers.every(y => y._id !== x._id));
+        this.setState({
+            isShowAddGroup: !this.state.isShowAddGroup,
+            restUsers,
+        });
+    }
     render() {
         return (
             <div className="container-wrap group-setting-block">
@@ -23,7 +45,7 @@ class GroupSetting extends Component {
                     </div>
                     <div className="group-info">
                         <div className="group-base-info">
-                            <Avatar avatar="http://oxldjnom8.bkt.clouddn.com/team.jpeg"name="群聊" />
+                            <Avatar avatar="http://oxldjnom8.bkt.clouddn.com/team.jpeg" name="群聊" />
                             <p>{this.props.groupName}</p>
                         </div>
                         <button>编辑</button>
@@ -39,7 +61,7 @@ class GroupSetting extends Component {
                             )
                         }
 
-                        <div className="avatar avatar-add">+</div>
+                        <div className="avatar avatar-add" onClick={this.handleAddGroup}>+</div>
                     </div>
                     <div className="group-members">
                         <p>消息免打扰</p>
@@ -53,11 +75,27 @@ class GroupSetting extends Component {
                         <button className="exit-group">退出群聊</button>
                         <button className="dissolve-group">解散群聊</button>
                     </div>
-
                 </div>
+                <AddGroup
+                    handleAddGroup={this.handleAddGroup}
+                    isShowAddGroup={this.state.isShowAddGroup}
+                    users={this.state.restUsers}
+                    type="addMember"
+                    groupId={this.props.groupId}
+                    isEditGroupName={this.props.members.length < 4}
+                    members={this.props.members}
+                />
             </div>
         );
     }
 }
 
-export default GroupSetting;
+export default withTracker(() => {
+    Meteor.subscribe('users');
+    const friendIds = UserUtil.getFriends();
+    const users = friendIds.map(_id => Meteor.users.findOne({ _id }));
+    return {
+        users,
+    };
+})(GroupSetting);
+

@@ -172,6 +172,7 @@ class ChatWindow extends Component {
                     showGroupSet={this.showGroupSet}
                     groupName={groupName}
                     members={members}
+                    groupId={groupId}
                 />
             </div>
         );

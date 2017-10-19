@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { Select } from 'antd';
 
 import Icon from '../../../../components/Icon';
 import Avatar from '../../../../components/Avatar';
-import UserUtil from '../../../../../util/user';
+
 
 const Option = Select.Option;
 @pureRender
@@ -16,6 +15,10 @@ class AddGroup extends Component {
         isShowAddGroup: PropTypes.bool,
         handleAddGroup: PropTypes.func,
         users: PropTypes.array,
+        type: PropTypes.string,
+        groupId: PropTypes.string,
+        isEditGroupName: PropTypes.bool,
+        members: PropTypes.array,
     };
     constructor(...args) {
         super(...args);
@@ -23,6 +26,7 @@ class AddGroup extends Component {
             selected: {},
         };
     }
+    // 获取选中的好友
     getSelectedUsers = () => {
         const selectedIds = Object.keys(this.state.selected).filter(id => this.state.selected[id]);
         return selectedIds.map((selectId) => {
@@ -30,9 +34,17 @@ class AddGroup extends Component {
             return user;
         });
     }
+    // 取前四个群成员的名字为群默认昵称
+    getFourUsers = (arr) => {
+        const forwardFourUsers = arr.slice(0, 4);
+        let groupName = forwardFourUsers.reduce((name, user) => `${name}、${user.profile.name}`, '');
+        groupName = groupName.slice(1, groupName.length);
+        return groupName;
+    }
     handleChange = (value) => {
         console.log(`selected ${value}`);
     }
+    // 点击按钮,选择或取消选择
     handleToggle = (value) => {
         this.setState({
             selected: Object.assign({}, this.state.selected, {
@@ -42,13 +54,10 @@ class AddGroup extends Component {
     }
     createGroup = () => {
         const selectedUsers = [Meteor.user(), ...this.getSelectedUsers()];
-        const forwardFourUsers = selectedUsers.slice(0, 4);
-        let groupName = forwardFourUsers.reduce((name, user) => `${name}、${user.profile.name}`, '');
-        groupName = groupName.slice(1, groupName.length);
         Meteor.call(
             'createGroup',
             {
-                name: groupName,
+                name: this.getFourUsers(selectedUsers),
                 members: selectedUsers.map(user => user._id),
             },
             (err) => {
@@ -57,6 +66,45 @@ class AddGroup extends Component {
                 }
             },
         );
+    }
+    addGroupMembers = () => {
+        const selectedUsers = [...this.getSelectedUsers()];
+        if (this.props.isEditGroupName) {
+            const newMembers = this.props.members.concat(this.getSelectedUsers());
+            Meteor.call(
+                'changeGroupName',
+                {
+                    groupId: this.props.groupId,
+                    name: this.getFourUsers(newMembers),
+                },
+                (err) => {
+                    if (err) {
+                        return console.error(err.reason);
+                    }
+                },
+            );
+        }
+        Meteor.call(
+            'addGroupMembers',
+            {
+                groupId: this.props.groupId,
+                newMembers: selectedUsers.map(user => user._id),
+            },
+            (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
+            },
+        );
+    }
+    handleConfirmGroup = () => {
+        if (this.props.type === 'createGroup') {
+            this.createGroup();
+        } else if (this.props.type === 'addMember') {
+            this.addGroupMembers();
+        } else {
+            console.log(this.props.type);
+        }
     }
     render() {
         const selectedUsers = this.getSelectedUsers();
@@ -106,7 +154,7 @@ class AddGroup extends Component {
                         }
                     </div>
                     <div>
-                        <div className="confirm-btn" onClick={this.createGroup}>
+                        <div className="confirm-btn" onClick={this.handleConfirmGroup}>
                             确定({selectedUsers.length})
                         </div>
                     </div>
@@ -118,11 +166,4 @@ class AddGroup extends Component {
 }
 
 
-export default withTracker(() => {
-    Meteor.subscribe('users');
-    const friendIds = UserUtil.getFriends();
-    const users = friendIds.map(_id => Meteor.users.findOne({ _id }));
-    return {
-        users,
-    };
-})(AddGroup);
+export default AddGroup;
