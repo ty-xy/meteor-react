@@ -14,6 +14,7 @@ Meteor.methods({
                     'profile.chatList': {
                         type: 'user',
                         userId: friendId,
+                        time: new Date(),
                     },
                 },
             },

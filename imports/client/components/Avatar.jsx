@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class Avatar extends Component {
     static propTypes = {
-        name: PropTypes.string,
+        name: PropTypes.string.isRequired,
         avatarColor: PropTypes.string,
         avatar: PropTypes.string,
     }

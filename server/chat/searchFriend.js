@@ -1,7 +1,11 @@
 import { Meteor } from 'meteor/meteor';
+import assert from '../../imports/util/assert';
 
 Meteor.methods({
     searchFriend(username) {
-        return Meteor.users.findOne({ username });
+        const findResult = Meteor.users.findOne({ username });
+        assert(findResult !== undefined, 400, '搜索不到该用户');
+        assert(findResult._id !== Meteor.userId(), 400, '不能添加自己为好友');
+        return findResult;
     },
 });
