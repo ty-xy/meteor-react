@@ -3,8 +3,10 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
+
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
+import PopulateUtil from '../../../../util/populate';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -167,13 +169,17 @@ class ChatWindow extends Component {
                     style={{ display: this.state.isShowFriendFile ? 'block' : 'none' }}
                     handleFriendFile={this.handleFriendFile}
                 />
-                <GroupSetting
-                    style={{ display: this.state.isShowGroupSet ? 'block' : 'none' }}
-                    showGroupSet={this.showGroupSet}
-                    groupName={groupName}
-                    members={members}
-                    groupId={groupId}
-                />
+                {
+                    this.state.isShowGroupSet ?
+                        <GroupSetting
+                            showGroupSet={this.showGroupSet}
+                            groupName={groupName}
+                            members={members}
+                            groupId={groupId}
+                        />
+                        :
+                        null
+                }
             </div>
         );
     }
@@ -183,11 +189,8 @@ export default withTracker(({ to, userId }) => {
     Meteor.subscribe('message');
     Meteor.subscribe('group');
     const chatGroup = Group.findOne({ _id: to });
-    if (chatGroup && chatGroup.members) {
-        chatGroup.members.forEach((x) => {
-            x.user = Meteor.users.findOne({ _id: x });
-        });
-    }
+    PopulateUtil.group(chatGroup);
+
     return {
         messages: Message.find({ to }).fetch(),
         to,

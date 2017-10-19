@@ -126,7 +126,6 @@ export default withTracker(() => {
             x.lastMessage = messages.length === 0 ? null : messages[messages.length - 1];
         }
     });
-    console.log(chatList);
     return {
         chatList,
     };
