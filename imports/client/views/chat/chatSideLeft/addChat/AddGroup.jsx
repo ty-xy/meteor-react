@@ -36,10 +36,12 @@ class AddGroup extends Component {
     }
     // 取前四个群成员的名字为群默认昵称
     getFourUsers = (arr) => {
-        const forwardFourUsers = arr.slice(0, 4);
-        let groupName = forwardFourUsers.reduce((name, user) => `${name}、${user.profile.name}`, '');
-        groupName = groupName.slice(1, groupName.length);
-        return groupName;
+        if (arr) {
+            const forwardFourUsers = arr.slice(0, 4);
+            let groupName = forwardFourUsers.reduce((name, user) => `${name}、${user.profile.name}`, '');
+            groupName = groupName.slice(1, groupName.length);
+            return groupName;
+        }
     }
     dealError = (err) => {
         if (err) {
@@ -73,6 +75,9 @@ class AddGroup extends Component {
                 this.dealError(err);
                 message.success('成功创建群聊');
                 this.props.handleAddGroup();
+                this.setState({
+                    selected: {},
+                });
             },
         );
     }
@@ -88,9 +93,13 @@ class AddGroup extends Component {
                 },
                 (err) => {
                     this.dealError(err);
+                    this.setState({
+                        selected: {},
+                    });
                 },
             );
         }
+        console.log(selectedUsers);
         Meteor.call(
             'addGroupMembers',
             {
@@ -100,6 +109,9 @@ class AddGroup extends Component {
             (err) => {
                 this.dealError(err);
                 message.success('邀请好友成功');
+                this.setState({
+                    selected: {},
+                });
             },
         );
     }
@@ -155,7 +167,10 @@ class AddGroup extends Component {
                     <div className="selected-avatar">
                         {
                             selectedUsers.map((user, index) => (
-                                <Avatar key={index} avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
+                                user ?
+                                    <Avatar key={index} avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
+                                    :
+                                    null
                             ))
                         }
                     </div>

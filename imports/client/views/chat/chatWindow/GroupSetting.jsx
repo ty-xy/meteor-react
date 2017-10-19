@@ -28,15 +28,13 @@ class GroupSetting extends Component {
     }
     handleAddGroup = () => {
         const { users = [], members } = this.props;
-        const restMembers = members.filter(x => x._id !== Meteor.userId());
-        const restUsers = users.filter(x => restMembers.every(y => y._id !== x._id));
+        const restUsers = users.filter(x => !members.find(y => y._id === x._id));
         this.setState({
             isShowAddGroup: !this.state.isShowAddGroup,
             restUsers,
         });
     }
     render() {
-        console.log(44444, this.props.members);
         return (
             <div className="container-wrap group-setting-block">
                 <div className="container-middle container-content">
