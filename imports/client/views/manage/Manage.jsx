@@ -17,6 +17,7 @@ class Manage extends (PureComponent || Component) {
         console.error('e', key);
     }
     render() {
+        console.error('Switch', this.props);
         return (
             <Row className="ejianlian-chat">
                 <LeftCard {...this.props} {...this.state} clickCompany={this.clickCompany} />

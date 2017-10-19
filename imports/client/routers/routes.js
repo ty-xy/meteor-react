@@ -21,7 +21,7 @@ const router = (
             <Route path="/" component={Index} />
             <Route path="/chat" render={createIndexPage(Chat)} />
             <Route path="/project" render={createIndexPage(Project)} />
-            <Route path="/manage" render={createIndexPage(Manage)} />
+            <Route path="/manage" component={createIndexPage(Manage)} />
             <Route path="/baike" render={createIndexPage(Bakei)} />
             <Route path="/adminInfo" render={createIndexPage(AdminInfo)} />
             <Route path="/login" component={Login} />
