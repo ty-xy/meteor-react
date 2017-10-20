@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 @pureRender
 export default class AddProject extends Component {
     static propTypes = {
-        onClick: PropTypes.func.isRequired,
+        getItem: PropTypes.func.isRequired,
         value: PropTypes.string,
     }
     render() {
         return (
             <div className="ejianlian-add-projectf">
-                <div className="add-button" onClick={this.props.onClick}>
+                <div className="add-button" onClick={this.props.getItem}>
                     {/* <input type="button" value="创建项目" >' */}
                     {this.props.value}
                 </div>

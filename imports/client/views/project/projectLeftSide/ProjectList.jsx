@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Modal } from 'antd';
 import pureRender from 'pure-render-decorator';
 import AddProject from './Addproject';
-import Dialog from './ProjectAdd';
+import ProjectAdd from './ProjectAdd';
 
 
 @pureRender
@@ -43,7 +43,7 @@ export default class ProjectList extends Component {
                     onOk={this.hideModal}
                     width={450}
                 >
-                    <Dialog click={this.hideModal} />
+                    <ProjectAdd click={this.hideModal} />
                 </Modal>
                 <ul >
                     <li className="list-item">
@@ -67,7 +67,7 @@ export default class ProjectList extends Component {
                         </div>
                     </li>
                 </ul>
-                <AddProject onClick={this.showModal} value="创建项目" />
+                <AddProject getItem={this.showModal} value="创建项目" />
             </div >
         );
     }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
 import OverProject from './projectLeftSide/OverProject';
 import ProjectList from './projectLeftSide/ProjectList';
-import ProjectW from './ProjectWindow/ProjectWindow';
+import ProjectWindow from './ProjectWindow/ProjectWindow';
 
 @pureRender
 class Project extends Component {
@@ -16,7 +16,7 @@ class Project extends Component {
                     </div>
                 </div>
                 <div className="ejianlian-project-window">
-                    <ProjectW />
+                    <ProjectWindow />
                 </div>
             </div>
         );

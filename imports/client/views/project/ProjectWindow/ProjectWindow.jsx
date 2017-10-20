@@ -9,12 +9,12 @@ export default class ProjectWindow extends Component {
     constructor(...args) {
         super(...args);
         this.state = {
-            IsShowInfo: false,
+            IsShowInfo: true,
         };
     }
     handleClick = () => {
         this.SetState({
-            IsShowInfo: true,
+            IsShowInfo: false,
         });
     }
     render() {
