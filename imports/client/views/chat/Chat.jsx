@@ -10,7 +10,6 @@ import ChatWindow from './chatWindow/ChatWindow';
 
 // import NewFriend from './chatWindow/NewFriend';
 // import ProjectNotice from './chatWindow/ProjectNotice';
-// import ChatGroupWindow from './chatWindow/ChatGroupWindow';
 
 
 @pureRender
@@ -74,7 +73,6 @@ class Chat extends Component {
                 <ChatWindow to={this.state.to} userId={this.state.userId} />
                 {/* <NewFriend /> */}
                 {/* <ProjectNotice /> */}
-                {/* <ChatGroupWindow /> */}
             </div>
         );
     }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
+import { Modal } from 'antd';
 
 import ChatFriendInfo from '../../chatWindow/ChatFriendInfo';
 import Icon from '../../../../components/Icon';
@@ -25,18 +26,24 @@ class AddFriend extends Component {
         };
     }
     searchFriend = () => {
+        console.log(1111);
         Meteor.call('searchFriend', this.username.value, (err, result) => {
             if (err) {
+                Modal.error({
+                    title: '提示',
+                    content: err.reason,
+                });
                 return console.error(err.reason);
+            } else if (result) {
+                this.setState({
+                    isShowAddFriend: false,
+                    isShowFriendInfo: true,
+                    name: result.profile.name || '',
+                    avatarColor: result.profile.avatarColor || '',
+                    username: result.username || '',
+                    friendId: result._id || '',
+                });
             }
-            this.setState({
-                isShowAddFriend: false,
-                isShowFriendInfo: true,
-                name: result.profile.name || '',
-                avatarColor: result.profile.avatarColor || '',
-                username: result.username || '',
-                friendId: result._id || '',
-            });
         });
     }
     handleCloseResult = () => {
@@ -56,7 +63,7 @@ class AddFriend extends Component {
                         <div className="by-search-add-friend">
                             <input type="text" placeholder="手机号码添加" className="search-input" ref={i => this.username = i} />
                             <div className="search" onClick={this.searchFriend}>
-                                <Icon icon="icon-sousuo icon icon-search-friend" onClick={this.props.handleAddFriend} />
+                                <Icon icon="icon-sousuo icon icon-search-friend" />
                             </div>
                         </div>
                         <ul className="friend-other-style">

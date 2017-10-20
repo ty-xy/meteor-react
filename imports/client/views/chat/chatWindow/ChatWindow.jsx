@@ -3,11 +3,14 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
+
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
+import PopulateUtil from '../../../../util/populate';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
+import GroupSetting from './GroupSetting';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 
@@ -16,14 +19,16 @@ import Icon from '../../../components/Icon';
 class ChatWindow extends Component {
     static propTypes = {
         messages: PropTypes.arrayOf(PropTypes.object),
-        to: PropTypes.string.isRequired,
+        to: PropTypes.string,
         chatUser: PropTypes.object,
+        chatGroup: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
         this.state = {
             isShowFriendInfo: false,
             isShowFriendFile: false,
+            isShowGroupSet: false,
         };
     }
     componentDidMount() {
@@ -43,9 +48,13 @@ class ChatWindow extends Component {
         });
     }
     handleFriendFile = () => {
-        console.log(222222);
         this.setState({
             isShowFriendFile: !this.state.isShowFriendFile,
+        });
+    }
+    showGroupSet = () => {
+        this.setState({
+            isShowGroupSet: !this.state.isShowGroupSet,
         });
     }
     sendMessage = () => {
@@ -71,19 +80,40 @@ class ChatWindow extends Component {
     render() {
         const { profile = {}, username = '' } = this.props.chatUser || {};
         const { name = '', avatarColor = '', avatar = '' } = profile;
+        const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
+        const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
+        const members = this.props.chatGroup ? this.props.chatGroup.members : [];
         return (
             <div className="ejianlian-chat-window">
-                <div className="chat-to-user">
-                    {name}
-                    <div className="chat-other-account">
-                        <p>
-                            <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
-                        </p>
-                        <p>
-                            <Icon icon="icon-gerenziliao icon" onClick={this.handleFriendInfo} />
-                        </p>
-                    </div>
-                </div>
+                {
+                    name ?
+                        <div className="chat-to-user">
+                            {name}
+                            <div className="chat-other-account">
+                                <p>
+                                    <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
+                                </p>
+                                <p>
+                                    <Icon icon="icon-gerenziliao icon" onClick={this.handleFriendInfo} />
+                                </p>
+                            </div>
+                        </div>
+                        :
+                        <div className="chat-to-user">
+                            {groupName}
+                            <div className="chat-other-account">
+                                <p>
+                                    <Icon icon="icon-tongzhi2 icon" />
+                                </p>
+                                <p>
+                                    <Icon icon="icon-wenjian icon" />
+                                </p>
+                                <p>
+                                    <Icon icon="icon-shezhi icon" onClick={this.showGroupSet} />
+                                </p>
+                            </div>
+                        </div>
+                }
                 <div className="chat-message-list" ref={i => this.messageList = i}>
                     {
                         this.props.messages.map((message, i) => {
@@ -93,9 +123,15 @@ class ChatWindow extends Component {
                                     <p className="user-avatar">
                                         <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
                                     </p>
-                                    <p className="user-message">
-                                        {message.content}
-                                    </p>
+                                    <div className="user-message-wrap">
+                                        {
+                                            message.to === groupId ?
+                                                <p className="user-nickname">{message.from.profile.name}</p>
+                                                :
+                                                null
+                                        }
+                                        <p className="user-message">{message.content}</p>
+                                    </div>
                                 </div>
                             );
                         })
@@ -133,6 +169,17 @@ class ChatWindow extends Component {
                     style={{ display: this.state.isShowFriendFile ? 'block' : 'none' }}
                     handleFriendFile={this.handleFriendFile}
                 />
+                {
+                    this.state.isShowGroupSet ?
+                        <GroupSetting
+                            showGroupSet={this.showGroupSet}
+                            groupName={groupName}
+                            members={members}
+                            groupId={groupId}
+                        />
+                        :
+                        null
+                }
             </div>
         );
     }
@@ -141,11 +188,14 @@ class ChatWindow extends Component {
 export default withTracker(({ to, userId }) => {
     Meteor.subscribe('message');
     Meteor.subscribe('group');
-    console.log(Group.find({}).fetch());
+    const chatGroup = Group.findOne({ _id: to });
+    PopulateUtil.group(chatGroup);
+
     return {
         messages: Message.find({ to }).fetch(),
         to,
         chatUser: Meteor.users.findOne({ _id: userId }),
+        chatGroup,
     };
 })(ChatWindow);
 

@@ -3,18 +3,19 @@ import { Meteor } from 'meteor/meteor';
 import Group from '../../imports/schema/group';
 
 Meteor.methods({
-    createGroup({ name, members }) {
-        const newGroup = {
-            createdAt: new Date(),
-            name,
-            avatar: '',
-            members,
-            admin: Meteor.userId(),
-            notice: '',
-        };
-        Group.schema.validate(newGroup);
-        const groupId = Group.insert(newGroup);
-        members.map((user =>
+    addGroupMembers({ groupId, newMembers }) {
+        console.log(newMembers);
+        newMembers.map(user =>
+            Group.update(
+                { _id: groupId },
+                {
+                    $push: {
+                        members: user,
+                    },
+                },
+            ),
+        );
+        newMembers.map((user =>
             Meteor.users.update(
                 { _id: user },
                 {
