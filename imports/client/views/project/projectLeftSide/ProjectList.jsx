@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { Modal } from 'antd';
 import pureRender from 'pure-render-decorator';
 import AddProject from './Addproject';
 import Dialog from './ProjectAdd';
+
 
 @pureRender
 export default class ProjectList extends Component {
@@ -9,11 +11,24 @@ export default class ProjectList extends Component {
         super(...arg);
         this.state = {
             model: false,
+            visible: false,
             message: [
                 { name: '公元九里写字楼项目', time: '2017-05-30', num: 29 },
                 { name: '公元九里写字楼项目', time: '2017-02-23', num: 45 },
             ],
         };
+    }
+
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
+        console.log(1);
+    }
+    hideModal = () => {
+        this.setState({
+            visible: false,
+        });
     }
     handleClick = () => {
         this.setState({ model: !this.state.model });
@@ -21,7 +36,15 @@ export default class ProjectList extends Component {
     render() {
         return (
             <div className="ejianlian-project-list">
-                <Dialog style={{ display: this.state.model ? 'none' : 'block' }} click={this.handleClick} />
+                <Modal
+                    visible={this.state.visible}
+                    footer={null}
+                    onCancel={this.hideModal}
+                    onOk={this.hideModal}
+                    width={450}
+                >
+                    <Dialog click={this.hideModal} />
+                </Modal>
                 <ul >
                     <li className="list-item">
                         <div className="list-img">
@@ -44,8 +67,8 @@ export default class ProjectList extends Component {
                         </div>
                     </li>
                 </ul>
-                <AddProject onClick={this.handleClick} value="项目" />
-            </div>
+                <AddProject onClick={this.showModal} value="创建项目" />
+            </div >
         );
     }
 }
