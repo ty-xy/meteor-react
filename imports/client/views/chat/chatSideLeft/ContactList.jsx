@@ -56,7 +56,7 @@ class ContactList extends Component {
         } else if (item.group) {
             return this.renderGroup(item.group, item.lastMessage, item.time);
         }
-        console.error('不支持的聊天类型', item);
+        // console.error('不支持的聊天类型', item);
         return null;
     }
 

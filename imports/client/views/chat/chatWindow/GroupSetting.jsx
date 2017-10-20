@@ -73,6 +73,10 @@ class GroupSetting extends Component {
                         <p>群聊置顶</p>
                         <p><Switch defaultChecked={false} /></p>
                     </div>
+                    <div className="group-members">
+                        <p>群主设置</p>
+                        <p className="all">选择新群主</p>
+                    </div>
                     <div className="btn-wrap">
                         <button className="exit-group">退出群聊</button>
                         <button className="dissolve-group">解散群聊</button>

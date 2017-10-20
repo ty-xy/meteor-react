@@ -36,6 +36,7 @@ class ChatFriendInfo extends Component {
             if (err) {
                 console.error(err.reason);
             }
+            this.props.handleFriendInfo();
         });
     }
     render() {
@@ -81,12 +82,12 @@ class ChatFriendInfo extends Component {
                                 <span><i className="iconfont icon-bianji1" /></span></p>
                         </li> */}
                     </ul>
-                    <div className="friend-btn-wrap" style={{ display: this.state.isAddFriend ? 'none' : 'block' }}>
+                    {/* <div className="friend-btn-wrap" style={{ display: this.state.isAddFriend ? 'none' : 'block' }}>
                         <button className="friend-btn">
                             <i className="iconfont icon-xiaoxi1" />&nbsp;
                             发送消息
                         </button>
-                    </div>
+                    </div> */}
                     <div className="friend-add-send" style={{ display: this.state.isAddFriend ? 'block' : 'none' }}>
                         <div className="send-info">
                             <p>请输入请求好友说明:</p>
