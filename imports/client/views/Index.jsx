@@ -11,13 +11,12 @@ class Index extends Component {
     componentWillMount() {
         Meteor.autorun(() => {
             const user = Meteor.user();
-
             if (!user && this.isLogin === true) {
                 this.isLogin = false;
                 this.props.history.push('/login');
             } else if (user && this.isLogin === false) {
                 this.isLogin = true;
-                this.props.history.push('/chat');
+                this.props.history.push('/manage');
             }
         });
     }

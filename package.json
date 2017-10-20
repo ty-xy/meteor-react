@@ -41,6 +41,7 @@
     "bcrypt": "^1.0.3",
     "classnames": "^2.2.5",
     "date-format": "^1.1.0",
+    "history": "^4.7.2",
     "imports": "^1.0.0",
     "indexof": "0.0.1",
     "meteor-node-stubs": "~0.2.4",
