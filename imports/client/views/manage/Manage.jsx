@@ -2,7 +2,7 @@ import React, { Component, PureComponent } from 'react';
 import { Col, Row, Card } from 'antd';
 import PropTypes from 'prop-types';
 import LeftCard from './component/LeftCard';
-import ManageRoute from './routers';
+import ManageRoute from './routes';
 
 
 class Manage extends (PureComponent || Component) {

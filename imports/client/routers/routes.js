@@ -27,7 +27,6 @@ const router = (
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/forgetPassword" component={ForgetPassword} />
-            <Route render={() => <h1>Page not found</h1>} />
         </div>
     </Router>
 );
