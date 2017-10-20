@@ -14,6 +14,7 @@ Meteor.methods({
                     'profile.chatList': {
                         type: 'user',
                         userId: friendId,
+                        time: new Date(),
                     },
                 },
             },
@@ -26,17 +27,8 @@ Meteor.methods({
                     'profile.chatList': {
                         type: 'user',
                         userId: Meteor.userId(),
+                        time: new Date(),
                     },
-                },
-            },
-        );
-    },
-    addGroup(groupId) {
-        Meteor.users.update(
-            Meteor.userId(),
-            {
-                $push: {
-                    'profile.groups': groupId,
                 },
             },
         );
