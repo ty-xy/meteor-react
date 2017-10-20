@@ -103,7 +103,26 @@ publishComposite('message', {
     }],
 });
 ```
+### 自己定义populate方法
+在做邀请新的好友入群的时候,添加新的好友,利用[reywood:publish-composite](https://atmospherejs.com/reywood/publish-composite)并不会自动更新数据,所以以后直接自己在客户端定义方法
+这样做的好处是解决了取关联数据不会自动更新的bug,但是有点麻烦的是每次需要关联数据的时候必须在客户端调用一次方法,正在考虑有没有更好的解决方法
+```js
+import { Meteor } from 'meteor/meteor';
 
+const PopulateUtil = {
+    group(group) {
+        if (group) {
+            group.members = Meteor.users.find({ _id: { $in: group.members } }).fetch();
+            group.admin = Meteor.users.findOne({ _id: group.admin });
+        }
+    },
+    groups(groups) {
+        groups.forEach(group => PopulateUtil.group(group));
+    },
+};
+
+export default PopulateUtil;
+```
 ## 前后端通讯
 
 前端出于安全考虑, 已禁止直接操作数据库, 前后端数据交互可通过以下方式
