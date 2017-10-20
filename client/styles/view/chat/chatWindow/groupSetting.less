@@ -1,0 +1,66 @@
+@import '../../util/util.less';
+.group-setting-block {
+    & > .container-content {
+        width: 450px;
+        height: 604px;
+        font-size:16px;
+        .group-item {
+            display: flex;
+            padding: 10px 20px;
+        }
+        .group-item-flex {
+            justify-content: space-between;
+            .border-bottom;
+        }
+        .group-info {
+            .group-item;
+            .group-item-flex;
+            .group-base-info {
+                display: flex;
+                p {
+                    line-height: 50px;
+                    margin-left: 20px;
+                }
+            }
+            button {
+                color: @mainColor;
+            }
+        }
+        .group-members {
+            .group-item;
+            .group-item-flex ;
+            .all {
+                color: @mainColor;
+            }
+        }
+        .members-avatar {
+            .group-item;
+            .avatar {
+                margin-right: 20px;
+            }
+            .avatar-add {
+                color: #ddd;
+                font-size: 40px;
+                line-height: 45px;
+            }
+        }
+        .btn-wrap {
+            margin-top: 70px;
+            text-align: center;
+            & > button {
+                width: 300px;
+                height: 50px;
+                line-height: 50px;
+                text-align: center;
+                border: 1px solid @redColor;
+                color: @redColor;
+                border-radius: 4px;
+            }
+            .dissolve-group {
+                margin-top: 20px;
+                color: #fff;
+                background-color: @redColor;
+            }
+        }
+    }
+}

@@ -1,6 +1,23 @@
-node_modules/
+# visual studio code
 .DS_Store
+.vscode
+typings
+tsconfig.json
+
+# node.js
+node_modules
 npm-debug.log
 yarn-error.log
 .eslintcache
 imports/client/views/Index.jsx
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# yarn
+yarn.lock
+
+# eslint cache
+.eslintcache
