@@ -1,5 +1,5 @@
 import React, { PureComponent, Component } from 'react';
-import { Tabs, Row, Form, Button } from 'antd';
+import { Tabs, Row } from 'antd';
 import Tab1 from './Tab1';
 
 const TabPane = Tabs.TabPane;
@@ -13,7 +13,7 @@ class Logging extends (PureComponent || Component) {
     }
     componentWillMount() {
         // console.error('props', this.props);
-        const { location } = this.props;
+        // const { location } = this.props;
     }
     tabChange = (e) => {
         console.error('props', this.props);
