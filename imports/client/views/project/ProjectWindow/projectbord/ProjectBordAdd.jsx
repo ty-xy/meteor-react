@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
-import MyIcon from '../../../components/Icon';
+import MyIcon from '../../../../components/Icon';
 import ProjectBordItem from './projectBordItem';
 
 @pureRender
