@@ -1,115 +1,47 @@
-// import React from 'react';
-// import {
-//     BrowserRouter as Router,
-//     Route,
-//     Link,
-//     Redirect,
-//     withRouter,
-//     NavLink,
-// } from 'react-router-dom';
+import React, { PureComponent, Component } from 'react';
+import { Tabs, Row, Form, Button } from 'antd';
+import Tab1 from './Tab1';
 
-// // //////////////////////////////////////////////////////////
-// // 1. Click the public page
-// // 2. Click the protected page
-// // 3. Log in
-// // 4. Click the back button, note the URL each time
+const TabPane = Tabs.TabPane;
 
-// const AuthExample = () => (
-//     <Router>
-//         <div>
-//             <AuthButton />
-//             <ul>
-//                 <li><Link to="/public">Public Page</Link></li>
-//                 <li><Link to="/protected">Protected Page</Link></li>
-//             </ul>
-//             <Route path="/public" component={Public} />
-//             <Route path="/login" component={Login} />
-//             <PrivateRoute path="/protected" component={Protected} />
-//         </div>
-//     </Router>
-// );
+class Logging extends (PureComponent || Component) {
+    constructor(props) {
+        super(props);
+        this.state = {
+            defaultActiveKey: 'write',
+        };
+    }
+    componentWillMount() {
+        // console.error('props', this.props);
+        const { location } = this.props;
+    }
+    tabChange = (e) => {
+        console.error('props', this.props);
+        console.error('e', e);
+        this.props.history.replace(`${this.props.location.pathname}${e}`, 'df');
+    }
+    tabSubmit = (e) => {
+        console.error('form', e);
+    }
+    render() {
+        const defaultActiveKey = this.props.location.hash || '#write';
+        console.error(this.props, this.context);
+        return (
+            <Row>
+                <Tabs className="e-mg-tab-scroll" defaultActiveKey={defaultActiveKey} onChange={this.tabChange}>
+                    <TabPane tab="写日报" key="#write">
+                        <Tab1 tab1Submit={this.tabSubmit} {...this.props} />
+                    </TabPane>
+                    <TabPane tab="我发出的" key="#send">
+                        我发出的
+                    </TabPane>
+                    <TabPane tab="我收到的" key="#get">我收到的</TabPane>
+                </Tabs>
+            </Row>
+        );
+    }
+}
 
-// const fakeAuth = {
-//     isAuthenticated: false,
-//     authenticate(cb) {
-//         this.isAuthenticated = true;
-//         setTimeout(cb, 100); // fake async
-//     },
-//     signout(cb) {
-//         this.isAuthenticated = false;
-//         setTimeout(cb, 100);
-//     },
-// };
+// Logging = Form.create()(Logging);
 
-// const AuthButton = withRouter(({ history }) => (
-//     fakeAuth.isAuthenticated ? (
-//         <p>
-//       Welcome! <button onClick={() => {
-//                 fakeAuth.signout(() => history.push('/'));
-//             }}
-//             >Sign out</button>
-//         </p>
-//     ) : (
-//         <p>You are not logged in.</p>
-//     )
-// ));
-
-// const PrivateRoute = ({ component: Component, ...rest }) => (
-//     <Route
-//         {...rest}
-//         render={props => (
-//             fakeAuth.isAuthenticated ? (
-//                 <Component {...props} />
-//             ) : (
-//                 <Redirect to={{
-//                     pathname: '/login',
-//                     state: { from: props.location },
-//                 }}
-//                 />
-//             )
-//         )}
-//     />
-// );
-
-// const Public = () => <h3>Public</h3>;
-// const Protected = () => <h3>Protected</h3>;
-
-// class Login extends React.Component {
-//   state = {
-//       redirectToReferrer: false,
-//   }
-
-//   login = () => {
-//       fakeAuth.authenticate(() => {
-//           this.setState({ redirectToReferrer: true });
-//       });
-//   }
-
-//   render() {
-//       const { from } = this.props.location.state || { from: { pathname: '/' } };
-//       const { redirectToReferrer } = this.state;
-
-//       if (redirectToReferrer) {
-//           return (
-//               <Redirect to={from} />
-//           );
-//       }
-
-//       return (
-//           <div>
-//               <p>You must log in to view the page at {from.pathname}</p>
-//               <button onClick={this.login}>Log in</button>
-//           </div>
-//       );
-//   }
-// }
-
-// export default AuthExample;
-
-import React from 'react';
-
-const AuthExample = () => (
-    <div>log</div>
-);
-
-export default AuthExample;
+export default Logging;
