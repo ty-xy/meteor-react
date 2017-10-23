@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Popover } from 'antd';
+import { Popover, Tooltip } from 'antd';
 
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
@@ -99,6 +99,26 @@ class ChatWindow extends Component {
             },
         ),
     })
+    sendFilesendFile = () => {
+        this.fileInput.click();
+    }
+    selectFile = () => {
+        const file = this.fileInput.files[0];
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            Meteor.call('sendFile', this.result, this.props.to, (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
+                console.log('发送文件成功');
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    }
     renderDefaultExpression = () => (
         <div className="default-expression" style={{ width: '400px', height: '200px' }}>
             {
@@ -115,6 +135,7 @@ class ChatWindow extends Component {
             }
         </div>
     )
+
     render() {
         const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
         const { name = '', avatarColor = '', avatar = '' } = profile;
@@ -183,7 +204,16 @@ class ChatWindow extends Component {
                             </Popover>
                         </p>
                         <p className="skill-icon">
-                            <Icon icon="icon-wenjian icon" />
+                            <Tooltip title="发送文件" mouseEnterDelay={1}>
+                                <Icon icon="icon-wenjian icon" onClick={this.sendFile} />
+                                <input
+                                    className="input-file"
+                                    type="file"
+                                    ref={i => this.fileInput = i}
+                                    onChange={this.selectFile}
+                                />
+                            </Tooltip>
+
                         </p>
                         <p className="skill-icon">
                             <Icon icon="icon-card icon" />

@@ -151,14 +151,18 @@
             border-top: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
             display: flex;
-            & > .skill-icon {
+            .skill-icon {
                 margin-left: 20px;
-                & > .icon {
+                position: relative;
+                .icon {
                     color: #C1C5D2;
                     font-size: 20px;
                 }
-                & > .icon-card {
+                .icon-card {
                     font-size: 25px;
+                }
+                .input-file {
+                    position: absolute;
                 }
             }
         }
