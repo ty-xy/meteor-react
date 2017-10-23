@@ -82,19 +82,6 @@ class ChatWindow extends Component {
             this.sendMessage();
         }
     }
-    handleInputKeyDown = (e) => {
-        if (e[`${expressions.shortcut.funcKey}Key`]) {
-            const insertValue = expressions.shortcut.keys[e.key];
-            if (insertValue) {
-                this.setInsertInputValue(`#(${insertValue})`);
-                e.preventDefault();
-            }
-        }
-        if (e.keyCode === 9) {
-            e.preventDefault();
-            return 0;
-        }
-    }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
         this.$message.value = `#(${name})`;
@@ -106,7 +93,7 @@ class ChatWindow extends Component {
             (r, e) => {
                 const index = expressions.default.indexOf(e);
                 if (index !== -1) {
-                    return `<img class="expression-default-message" src="${transparentImage}" style="background-position: left ${-30 * index}px; background-image: url('/expressions.png'); width: '30px', height: '30px'" onerror="this.style.display='none'" alt="${r}">`;
+                    return `<img class="expression-default-message" src="${transparentImage}" style="background-position: left ${-30 * index}px; background-image: url('/expressions.png'); width: 30px ;height: 30px;" onerror="this.style.display='none'" alt="${r}">`;
                 }
                 return r;
             },
@@ -203,7 +190,7 @@ class ChatWindow extends Component {
                         </p>
                     </div>
                     <div className="chat-message-input">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} onKeyDown={this.handleInputKeyDown} />
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
                         <p className="chat-send-message" onClick={this.sendMessage}>发送</p>
                     </div>
                 </div>
