@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Popover, Button } from 'antd';
+import { Popover } from 'antd';
 
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
@@ -95,20 +95,20 @@ class ChatWindow extends Component {
     }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
-        this.$message.value = `#(${name})`
+        this.$message.value = `#(${name})`;
         // must use setTimeout, otherwise the exit animation does not display properly
     }
     renderDefaultExpression = () => (
-        <div className="default-expression" style={{width: '400px', height: `200px`}}>
+        <div className="default-expression" style={{ width: '400px', height: '200px' }}>
             {
                 expressions.default.map((e, index) => (
                     <div
                         key={index}
                         data-name={e}
                         onClick={this.handleClick}
-                        style={{width: '40px', height: `40px`, padding: '5px'}}
+                        style={{ width: '40px', height: '40px', padding: '5px' }}
                     >
-                        <div className="no-click" style={{ backgroundPosition: `left ${-30 * index}px`, backgroundImage: 'url(\'/expressions.png\')',width: '30px', height: `30px` }} />
+                        <div className="no-click" style={{ backgroundPosition: `left ${-30 * index}px`, backgroundImage: 'url(\'/expressions.png\')', width: '30px', height: '30px' }} />
                     </div>
                 ))
             }
@@ -189,7 +189,7 @@ class ChatWindow extends Component {
                         </p>
                     </div>
                     <div className="chat-message-input">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} onKeyDown={this.handleInputKeyDown}/>
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} onKeyDown={this.handleInputKeyDown} />
                         <p className="chat-send-message" onClick={this.sendMessage}>发送</p>
                     </div>
                 </div>
