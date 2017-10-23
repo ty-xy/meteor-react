@@ -78,7 +78,7 @@ class ChatWindow extends Component {
         }
     }
     render() {
-        const { profile = {}, username = '' } = this.props.chatUser || {};
+        const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
         const { name = '', avatarColor = '', avatar = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
@@ -161,6 +161,7 @@ class ChatWindow extends Component {
                     avatarColor={avatarColor}
                     username={username}
                     avatar={avatar}
+                    friendId={_id}
                 />
                 <ChatFriendFile
                     style={{ display: this.state.isShowFriendFile ? 'block' : 'none' }}

@@ -18,15 +18,14 @@ const feedback = {
             content,
         });
     },
-    dealDelete(title, content) {
+    dealDelete(title, content, func) {
         confirm({
             title: title || 'Are you sure delete this task?',
             content,
             okText: '确定',
-            okType: 'danger',
             cancelText: '取消',
             onOk() {
-                console.log('OK');
+                func();
             },
             onCancel() {
                 console.log('Cancel');

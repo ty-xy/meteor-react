@@ -41,9 +41,9 @@ class ContactList extends Component {
             </div>
         </div>
     )
-    renderGroup = (group, lastMessage, time) => (
+    renderGroup = (group, lastMessage, time, type) => (
         <div className="chat-user-pannel" onClick={() => this.props.changeTo(group._id, group._id)} key={group._id}>
-            <Icon icon="icon-chuyidong" size={20} />
+            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type)} />
             <div className="user-avatar">
                 <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
             </div>
