@@ -94,6 +94,7 @@ function handleHistoryMessages(messages) {
 }
 
 export default {
+    convertExpression,
     handleReceiveMessage,
     handleInitMessages,
     handleSendMessage,

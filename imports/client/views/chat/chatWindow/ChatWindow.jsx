@@ -16,6 +16,8 @@ import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 import expressions from '../../../../util/expressions';
 
+// import messageTool from '../../../../util/message';
+const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
 
 @pureRender
 class ChatWindow extends Component {
@@ -98,6 +100,18 @@ class ChatWindow extends Component {
         this.$message.value = `#(${name})`;
         // must use setTimeout, otherwise the exit animation does not display properly
     }
+    convertExpression = txt => ({
+        __html: txt.replace(
+            /#\(([\u4e00-\u9fa5a-z]+)\)/g,
+            (r, e) => {
+                const index = expressions.default.indexOf(e);
+                if (index !== -1) {
+                    return `<img class="expression-default-message" src="${transparentImage}" style="background-position: left ${-30 * index}px; background-image: url('/expressions.png'); width: '30px', height: '30px'" onerror="this.style.display='none'" alt="${r}">`;
+                }
+                return r;
+            },
+        ),
+    })
     renderDefaultExpression = () => (
         <div className="default-expression" style={{ width: '400px', height: '200px' }}>
             {
@@ -167,7 +181,7 @@ class ChatWindow extends Component {
                                                 :
                                                 null
                                         }
-                                        <p className="user-message">{message.content}</p>
+                                        <p className="user-message" dangerouslySetInnerHTML={this.convertExpression(message.content)} />
                                     </div>
                                 </div>
                             );
