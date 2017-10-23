@@ -35,6 +35,23 @@
         }
         .members-avatar {
             .group-item;
+            .avatar-wrap {
+                position: relative;
+                width: 50px;
+                height: 45px;
+                & > .icon-cuowu {
+                    position: absolute;
+                    font-size: 15px;
+                    right: 8px;
+                    bottom: 0px;
+                    opacity: 0;
+                }
+            }
+            .avatar-wrap:hover {
+                & > .icon-cuowu {
+                    opacity: 1;
+                }
+            }
             .avatar {
                 margin-right: 20px;
                 width: 40px;

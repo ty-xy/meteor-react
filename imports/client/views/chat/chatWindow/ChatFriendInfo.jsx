@@ -50,7 +50,7 @@ class ChatFriendInfo extends Component {
         });
     }
     handleDeleteFriend = () => {
-        feedback.dealDelete('提示', '确定要删除该好友么', this.deleteFriend);
+        feedback.dealDelete('提示', '确定要删除该好友么?', this.deleteFriend);
     }
     render() {
         const { profile } = this.props.user || {};

@@ -9,6 +9,7 @@ import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
 import AddGroup from '../chatSideLeft/addChat/AddGroup';
 import UserUtil from '../../../../util/user';
+import feedback from '../../../../util/feedback';
 
 @pureRender
 class GroupSetting extends Component {
@@ -34,6 +35,20 @@ class GroupSetting extends Component {
             restUsers,
         });
     }
+    deleteMember = (memberId, content) => {
+        Meteor.call('deleteMember', this.props.groupId, memberId, (err) => {
+            if (err) {
+                console.error(err.reason);
+            }
+            feedback.dealSuccess(content);
+        });
+    }
+    handleDeleteMember = (memberId) => {
+        feedback.dealDelete('移出成员', '您确定移除该成员?', () => this.deleteMember(memberId, '移除成功'));
+    }
+    exitGroupChat = () => {
+        feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.deleteMember(Meteor.userId(), '退出成功'));
+    }
     render() {
         return (
             <div className="container-wrap group-setting-block">
@@ -57,7 +72,11 @@ class GroupSetting extends Component {
                         {
                             this.props.members.map((item, i) =>
                                 (item.profile ?
-                                    <Avatar key={i} name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
+                                    <div className="avatar-wrap" key={i}>
+                                        <Avatar name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
+                                        <Icon icon="icon-cuowu" iconColor="#ef5350" onClick={() => this.handleDeleteMember(item._id)} />
+                                    </div>
+
                                     :
                                     null),
                             )
@@ -78,7 +97,7 @@ class GroupSetting extends Component {
                         <p className="all">选择新群主</p>
                     </div>
                     <div className="btn-wrap">
-                        <button className="exit-group">退出群聊</button>
+                        <button className="exit-group" onClick={this.exitGroupChat}>退出群聊</button>
                         <button className="dissolve-group">解散群聊</button>
                     </div>
                 </div>
