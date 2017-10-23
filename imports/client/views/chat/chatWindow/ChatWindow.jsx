@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
+import { Popover, Button } from 'antd';
 
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
@@ -13,6 +14,7 @@ import ChatFriendFile from './ChatFriendFile';
 import GroupSetting from './GroupSetting';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
+import expressions from '../../../../util/expressions';
 
 
 @pureRender
@@ -74,9 +76,44 @@ class ChatWindow extends Component {
     }
     handleSendMessage = (e) => {
         if (e.keyCode === 13) {
+            e.preventDefault();
             this.sendMessage();
         }
     }
+    handleInputKeyDown = (e) => {
+        if (e[`${expressions.shortcut.funcKey}Key`]) {
+            const insertValue = expressions.shortcut.keys[e.key];
+            if (insertValue) {
+                this.setInsertInputValue(`#(${insertValue})`);
+                e.preventDefault();
+            }
+        }
+        if (e.keyCode === 9) {
+            e.preventDefault();
+            return 0;
+        }
+    }
+    handleClick = (e) => {
+        const name = e.currentTarget.dataset.name;
+        this.$message.value = `#(${name})`
+        // must use setTimeout, otherwise the exit animation does not display properly
+    }
+    renderDefaultExpression = () => (
+        <div className="default-expression" style={{width: '400px', height: `200px`}}>
+            {
+                expressions.default.map((e, index) => (
+                    <div
+                        key={index}
+                        data-name={e}
+                        onClick={this.handleClick}
+                        style={{width: '40px', height: `40px`, padding: '5px'}}
+                    >
+                        <div className="no-click" style={{ backgroundPosition: `left ${-30 * index}px`, backgroundImage: 'url(\'/expressions.png\')',width: '30px', height: `30px` }} />
+                    </div>
+                ))
+            }
+        </div>
+    )
     render() {
         const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
         const { name = '', avatarColor = '', avatar = '' } = profile;
@@ -140,7 +177,9 @@ class ChatWindow extends Component {
                 <div className="chat-window-bottom">
                     <div className="chat-send-skill">
                         <p className="skill-icon">
-                            <Icon icon="icon-biaoqing icon" />
+                            <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
+                                <Icon icon="icon-biaoqing icon" />
+                            </Popover>
                         </p>
                         <p className="skill-icon">
                             <Icon icon="icon-wenjian icon" />
@@ -150,7 +189,7 @@ class ChatWindow extends Component {
                         </p>
                     </div>
                     <div className="chat-message-input">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} onKeyDown={this.handleInputKeyDown}/>
                         <p className="chat-send-message" onClick={this.sendMessage}>发送</p>
                     </div>
                 </div>

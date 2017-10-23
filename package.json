@@ -52,7 +52,8 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-modal-dialog": "^4.0.7",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "xss": "^0.3.4"
   },
   "devDependencies": {
     "@meteorjs/eslint-config-meteor": "^1.0.5",
