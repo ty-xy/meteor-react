@@ -186,3 +186,18 @@ Meteor.users.update(
     },
 );
 ```
+### How to delete an array item in meteor using mongo?
+
+```js
+Meteor.users.update(
+    { _id: Meteor.userId() },
+    {
+        $pull: {
+            'profile.chatList': {
+                userId: chatId,
+            },
+        },
+
+    },
+);
+```
