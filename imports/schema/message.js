@@ -17,6 +17,9 @@ Message.schema = new SimpleSchema({
     content: {
         type: String,
     },
+    // type: {
+    //     type: String,
+    // },
 });
 
 export default Message;

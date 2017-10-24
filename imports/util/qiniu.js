@@ -47,29 +47,6 @@ function uploadBytes(key, bytes) {
     });
 }
 
-function uploadFile(key, localFile) {
-    return new Promise((resolve, reject) => {
-        formUploader.putFile(token, key, localFile, putExtra, (respErr, respBody, respInfo) => {
-            if (respErr) {
-                reject(respErr);
-            }
-            if (!respInfo) {
-                console.log(respErr, respBody, respInfo);
-                reject();
-                return;
-            }
-            if (respInfo.statusCode === 200) {
-                resolve(`${domain}/${respBody.key}`);
-            } else {
-                reject({
-                    code: respInfo.statusCode,
-                    body: respBody,
-                });
-            }
-        });
-    });
-}
 module.exports = {
     uploadBytes,
-    uploadFile,
 };

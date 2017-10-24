@@ -109,15 +109,17 @@ class ChatWindow extends Component {
         }
 
         const reader = new FileReader();
+        const toId = this.props.to;
+        // console.log(toId);
         reader.onloadend = function () {
-            Meteor.call('sendFile', this.result, this.props.to, (err) => {
+            Meteor.call('sendFile', this.result, toId, (err) => {
                 if (err) {
                     return console.error(err.reason);
                 }
                 console.log('发送文件成功');
             });
         };
-        reader.readAsArrayBuffer(file);
+        reader.readAsDataURL(file);
     }
     renderDefaultExpression = () => (
         <div className="default-expression" style={{ width: '400px', height: '200px' }}>
@@ -135,7 +137,34 @@ class ChatWindow extends Component {
             }
         </div>
     )
+    renderFile = () => (
+        <div className="file">
+            <div className="file-icon">
+                <Icon icon="icon-wenjian" size={30} iconColor="#ffca28" />
+            </div>
+            <div>
+                <p>文件.zip</p>
+                <p className="file-size">111kb</p>
+            </div>
+            <a href="http://oxldjnom8.bkt.clouddn.com/file__1508829439943.zip" download>
+                下载
+            </a>
+        </div>
+    )
+    renderUrl = () => (
+        <a href="https://www.baidu.com/" rel="noopener noreferrer" target="_blank">https://www.baidu.com/</a>
+    )
+    renderImage = () => (
+        <div className="user-img">
+            <img
+                src="http://pic.58pic.com/58pic/13/23/37/01958PICjAH_1024.jpg"
+                ref={i => this.img = i}
+                onLoad={this.imageLoad}
 
+                onError={() => this.img.src = require('../assets/images/image_not_found.png')}
+            />
+        </div>
+    )
     render() {
         const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
         const { name = '', avatarColor = '', avatar = '' } = profile;
@@ -188,7 +217,7 @@ class ChatWindow extends Component {
                                             :
                                             null
                                     }
-                                    <p className="user-message" dangerouslySetInnerHTML={this.convertExpression(message.content)} />
+                                    <div className="user-message" dangerouslySetInnerHTML={this.convertExpression(message.content)} />
                                 </div>
                             </div>
                         ))
@@ -214,6 +243,9 @@ class ChatWindow extends Component {
                         </p>
                         <p className="skill-icon">
                             <Icon icon="icon-card icon" />
+                        </p>
+                        <p className="skill-icon">
+                            <Icon icon="icon-dakaishipin icon" size={20} />
                         </p>
                     </div>
                     <div className="chat-message-input">
