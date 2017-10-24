@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Modal } from 'antd';
+import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 import Day from './component/Day';
 import Week from './component/Week';
@@ -22,12 +22,8 @@ class Tab1 extends (React.PureComponent || React.Component) {
         };
     }
     componentWillMount() {
+        // console.log('object', this.props.location);
         this.setState({ template: this.state.templates.slice(0, 2) });
-    }
-    tabsubmit = (e) => {
-        e.preventDefault();
-        const { form, tab1Submit } = this.props;
-        tab1Submit(form.getFieldsValue());
     }
     // 日报， 周报切换
     handleLogChange = (e) => {
@@ -53,19 +49,18 @@ class Tab1 extends (React.PureComponent || React.Component) {
         this.setState({ expand: !expand, template });
     }
     render() {
-        console.error('tab1', this.props);
+        // console.error('tab1', this.props);
         const { logType } = this.state;
         return (
-            <Form onSubmit={this.tabsubmit}>
+            <div>
                 <ButtonTab handleLogChange={this.handleLogChange} moreChange={this.moreChange} {...this.state} {...this.props} />
                 {this.showLogtype()[logType]}
-            </Form>
+            </div>
         );
     }
 }
 
 Tab1.propTypes = {
-    tab1Submit: PropTypes.func,
     form: PropTypes.object,
 };
-export default Form.create()(Tab1);
+export default Tab1;

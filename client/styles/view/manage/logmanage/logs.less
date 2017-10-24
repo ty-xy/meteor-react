@@ -19,6 +19,17 @@
         background: #fff;
     }
 }
+// 我发出的
+.e-mg-log-filter{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    width: 98.5% !important;
+    > .ant-col-24{
+        padding-left: 0px !important;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #BDBDBD;
+    }
+}
 
 // log card
 .e-mg-log-card{
@@ -50,6 +61,9 @@
         p{
             margin-top: 5px;
             line-height: 1.8;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
         }
     }
     .e-mg-log-card-footer{
@@ -59,6 +73,9 @@
         border-radius: 6px;
         >.right{
             text-align: right;
+            a {
+                color: #15B4F1 !important;
+            }
         }
     }
 }

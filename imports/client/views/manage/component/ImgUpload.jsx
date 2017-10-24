@@ -60,6 +60,7 @@ class ImgUpload extends (PureComponent || Component) {
       const data = {
           token: 'ptgtsBOAlMf_mihyVKf6Zbjor7JgiSs2wWM7zj4b',
       };
+      //   console.log(uploadBytes);
       return (
           <div className="clearfix">
               <p style={{ marginBottom: '10px' }}>{this.props.title}</p>

@@ -7,7 +7,7 @@ Meteor.methods({
         const newCompany = {
             createdAt: new Date(),
             name,
-            // avatar: '',
+            avatar: '',
             id,
         };
         Company.schema.validate(newCompany);

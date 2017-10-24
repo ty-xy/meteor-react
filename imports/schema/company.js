@@ -12,9 +12,9 @@ Company.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
-    // avatar: {
-    //     type: String,
-    // },
+    avatar: {
+        type: String,
+    },
 });
 
 export default Company;

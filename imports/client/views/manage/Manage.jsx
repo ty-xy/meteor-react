@@ -5,9 +5,8 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import LeftCard from './component/LeftCard';
 import ManageRoute from './routes';
-import Company from '../../../schema/company';
 
-let i = 0;
+let i = 22;
 
 class Manage extends (PureComponent || Component) {
     constructor(props) {
@@ -36,6 +35,7 @@ class Manage extends (PureComponent || Component) {
                 name: 'test',
                 createdAt: new Date(),
                 id,
+                avatar: '',
             },
             (err) => {
                 if (err) {
@@ -72,7 +72,6 @@ Manage.contextTypes = {
 export default withTracker(() => {
     Meteor.subscribe('company');
     return {
-        companys: Company.find().fetch(),
         users: Meteor.user() || {},
     };
 })(Manage);
