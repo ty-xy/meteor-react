@@ -213,7 +213,6 @@ class ChatWindow extends Component {
                                     onChange={this.selectFile}
                                 />
                             </Tooltip>
-
                         </p>
                         <p className="skill-icon">
                             <Icon icon="icon-card icon" />

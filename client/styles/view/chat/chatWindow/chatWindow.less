@@ -101,9 +101,9 @@
             margin-bottom: 30px;
             .user-message {
                 margin-right: 20px;
-                padding: 0px 10px;
-                height: 40px;
-                line-height: 40px;
+                padding: 5px 10px;
+                // height: 40px;
+                // line-height: 40px;
                 border: 1px solid #ddd;
                 border-radius: 4px;
                 margin-top: 8px;
@@ -163,6 +163,8 @@
                 }
                 .input-file {
                     position: absolute;
+                    width: 100%;
+                    height: 100%;
                 }
             }
         }
@@ -211,4 +213,8 @@
 .expression-default-message {
     background-repeat: no-repeat;
     background-size: cover;
+    margin-bottom: -6px;
+}
+.ant-popover-placement-topLeft > .ant-popover-content > .ant-popover-arrow {
+    left: 0 !important;
 }
