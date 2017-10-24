@@ -1,7 +1,9 @@
 .e-mg-tab-scroll{
+    height: 100%;
     > .ant-tabs-content{
-        height: 670px;
-        margin-top: 60px;
+        height: 100%;
+        // overflow: auto;
+        padding-top: 70px;
         .ant-tabs-tabpane{
             // overflow: auto;
             width: 102%;
@@ -15,5 +17,48 @@
         top: 0px;
         width: 100%;
         background: #fff;
+    }
+}
+
+// log card
+.e-mg-log-card{
+    background: #FFFFFF;
+    border: 1px solid #BDBDBD;
+    border-radius: 6px;
+    width: 32%;
+    margin-bottom: 25px;
+    .e-mg-log-card-header{
+        height: 50px;
+        padding: 10px;
+        img{
+            border-radius: 50%;
+        }
+        .e-mg-log-card-header-left{
+            line-height: 80px;
+            vertical-align: bottom;
+            padding-left: 15px;
+        }
+        .e-mg-log-card-header-right{
+            line-height: 80px;
+            text-align: right;
+        }
+    }
+    .e-mg-log-card-body{
+        clear: both;
+        padding: 10px;
+        border-top: 1px solid #BDBDBD;
+        p{
+            margin-top: 5px;
+            line-height: 1.8;
+        }
+    }
+    .e-mg-log-card-footer{
+        padding: 10px;
+        height: 40px;
+        background: #F7F7F7;
+        border-radius: 6px;
+        >.right{
+            text-align: right;
+        }
     }
 }

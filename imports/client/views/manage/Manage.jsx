@@ -13,10 +13,6 @@ class Manage extends (PureComponent || Component) {
     constructor(props) {
         super(props);
         this.state = {
-            // companys: [
-            //     { id: '23', name: '中亿装饰中亿装饰' },
-            //     { id: '22', name: '博彩装亿装饰' },
-            // ],
             // 按钮组
             btns: [
                 { key: 'checking', name: '考勤', icon: 'icon-kaoqin--', url: '/manage/checking' },
@@ -77,5 +73,6 @@ export default withTracker(() => {
     Meteor.subscribe('company');
     return {
         companys: Company.find().fetch(),
+        users: Meteor.user() || {},
     };
 })(Manage);

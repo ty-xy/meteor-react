@@ -1,6 +1,7 @@
 import React, { PureComponent, Component } from 'react';
 import { Tabs, Row } from 'antd';
-import Tab1 from './Tab1';
+import Write from './Write';
+import Self from './Self';
 
 const TabPane = Tabs.TabPane;
 
@@ -15,6 +16,7 @@ class Logging extends (PureComponent || Component) {
         // console.error('props', this.props);
         // const { location } = this.props;
     }
+    // 日报，收到的 切换
     tabChange = (e) => {
         console.error('props', this.props);
         console.error('e', e);
@@ -27,13 +29,13 @@ class Logging extends (PureComponent || Component) {
         const defaultActiveKey = this.props.location.hash || '#write';
         console.error(this.props, this.context);
         return (
-            <Row>
+            <Row style={{ height: '100%' }}>
                 <Tabs className="e-mg-tab-scroll" defaultActiveKey={defaultActiveKey} onChange={this.tabChange}>
                     <TabPane tab="写日报" key="#write">
-                        <Tab1 tab1Submit={this.tabSubmit} {...this.props} />
+                        <Write tab1Submit={this.tabSubmit} {...this.props} />
                     </TabPane>
                     <TabPane tab="我发出的" key="#send">
-                        我发出的
+                        <Self tab1Submit={this.tabSubmit} {...this.props} />
                     </TabPane>
                     <TabPane tab="我收到的" key="#get">我收到的</TabPane>
                 </Tabs>

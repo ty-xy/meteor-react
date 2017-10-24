@@ -23,6 +23,7 @@ Meteor.methods({
                 friends: [],
                 groups: [],
                 chatList: [],
+                company: '',
             },
         });
     },

@@ -6,7 +6,7 @@ import Welcome from './component/Welcome';
 import Log from './logmanage/Log';
 
 export default () => (
-    <div className="">
+    <div style={{ height: '100%' }}>
         <Route exact path="/manage" component={Welcome} />
         <Route path="/manage/checking" component={() => <h1>checking</h1>} />
         <Route path="/manage/logging" component={Log} />
