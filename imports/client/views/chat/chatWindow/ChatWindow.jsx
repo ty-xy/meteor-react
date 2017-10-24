@@ -89,7 +89,7 @@ class ChatWindow extends Component {
     }
     convertExpression = txt => ({
         __html: txt.replace(
-            /#\(([\u4e00-\u9fa5a-z]+)\)/g,
+            /#\(([\u4e00-\u9fa5a-z0-9-]+)\)/g,
             (r, e) => {
                 const index = expressions.default.indexOf(e);
                 if (index !== -1) {
@@ -142,6 +142,7 @@ class ChatWindow extends Component {
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const members = this.props.chatGroup ? this.props.chatGroup.members : [];
+        const admin = this.props.chatGroup ? this.props.chatGroup.admin._id : '';
         return (
             <div className="ejianlian-chat-window">
                 {
@@ -175,25 +176,22 @@ class ChatWindow extends Component {
                 }
                 <div className="chat-message-list" ref={i => this.messageList = i}>
                     {
-                        this.props.messages.map((message, i) => {
-                            console.log(message.content, message.from._id === Meteor.userId() ? '我应该在右边' : '我应该在左边');
-                            return (
-                                <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'} key={i}>
-                                    <p className="user-avatar">
-                                        <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
-                                    </p>
-                                    <div className="user-message-wrap">
-                                        {
-                                            message.to === groupId ?
-                                                <p className="user-nickname">{message.from.profile.name}</p>
-                                                :
-                                                null
-                                        }
-                                        <p className="user-message" dangerouslySetInnerHTML={this.convertExpression(message.content)} />
-                                    </div>
+                        this.props.messages.map((message, i) => (
+                            <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'} key={i}>
+                                <p className="user-avatar">
+                                    <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
+                                </p>
+                                <div className="user-message-wrap">
+                                    {
+                                        message.to === groupId ?
+                                            <p className="user-nickname">{message.from.profile.name}</p>
+                                            :
+                                            null
+                                    }
+                                    <p className="user-message" dangerouslySetInnerHTML={this.convertExpression(message.content)} />
                                 </div>
-                            );
-                        })
+                            </div>
+                        ))
                     }
                 </div>
                 <div className="chat-window-bottom">
@@ -243,6 +241,7 @@ class ChatWindow extends Component {
                             groupName={groupName}
                             members={members}
                             groupId={groupId}
+                            admin={admin}
                         />
                         :
                         null
