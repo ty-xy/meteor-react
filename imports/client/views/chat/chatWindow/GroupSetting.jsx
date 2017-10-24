@@ -19,6 +19,7 @@ class GroupSetting extends Component {
         members: PropTypes.array,
         users: PropTypes.array,
         groupId: PropTypes.string,
+        admin: PropTypes.string,
     };
     constructor(...args) {
         super(...args);
@@ -43,9 +44,21 @@ class GroupSetting extends Component {
             feedback.dealSuccess(content);
         });
     }
+    // 解散群聊
+    deleteGroup = () => {
+        Meteor.call('deleteGroup', this.props.groupId, (err) => {
+            if (err) {
+                console.error(err.reason);
+            }
+            feedback.dealSuccess('解散群聊成功');
+            this.props.showGroupSet();
+        });
+    }
+    // 移除群成员
     handleDeleteMember = (memberId) => {
         feedback.dealDelete('移出成员', '您确定移除该成员?', () => this.deleteMember(memberId, '移除成功'));
     }
+    // 退出群聊
     exitGroupChat = () => {
         feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.deleteMember(Meteor.userId(), '退出成功'));
     }
@@ -97,8 +110,15 @@ class GroupSetting extends Component {
                         <p className="all">选择新群主</p>
                     </div>
                     <div className="btn-wrap">
-                        <button className="exit-group" onClick={this.exitGroupChat}>退出群聊</button>
-                        <button className="dissolve-group">解散群聊</button>
+                        {
+                            this.props.admin === Meteor.userId() ?
+                                <div>
+                                    <button className="exit-group" onClick={this.exitGroupChat}>退出群聊</button>
+                                    <button className="dissolve-group" onClick={this.deleteGroup}>解散群聊</button>
+                                </div>
+                                :
+                                <button className="exit-group" onClick={this.exitGroupChat}>退出群聊</button>
+                        }
                     </div>
                 </div>
                 <AddGroup
