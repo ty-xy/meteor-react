@@ -2,15 +2,15 @@ import React from 'react';
 import {
     Route,
 } from 'react-router-dom';
+import RouterPage from './RouterPage';
 import ProjectWindow from './ProjectWindow/ProjectWindow';
+import ProjectStart from './ProjectWindow/ProjectStart';
+import ProjectOverFile from './ProjectWindow/ProjectBord/projectOverFile';
 
 export default () => (
-    <div>
-        <Route exact path="/project" component={ProjectWindow} />
-        <Route path="/project/task" render={() => <h1>checking</h1>} />
-        <Route path="/project/lender" render={() => <h1>checking</h1>} />
-        <Route path="/project/file" render={() => <h1>notice</h1>} />
-        <Route path="/project/chat" render={() => <h1>audit</h1>} />
-        <Route path="/project/action" render={() => <h1>net</h1>} />
+    <div style={{ height: '100%' }}>
+        <Route exact path="/project" render={RouterPage(ProjectStart)} />
+        <Route path="/project/task" render={RouterPage(ProjectWindow)} />
+        <Route Path="/project/over" render={RouterPage(ProjectOverFile)} />
     </div>
 );

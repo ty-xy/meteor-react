@@ -83,16 +83,55 @@
     width:337px;
     height:146px;
     box-sizing:border-box;
+    background-color:#eee;
     box-shadow: 1px 1px 3px 0 rgba(102,102,102,0.50);
     border-radius: 3px;
     margin-top:30px;
+    padding:20px;
     text-align:center;
      .project-input{
-        padding-top:20px;
+       // padding-top:20px;
         height:70px;
     }
     .project-button{
-        margin-top:20px;
-    }
-}
+       // margin-top:20px;
+         text-align:right;
+         button:first-child{
+             margin-right:20px;
+             font-size:16px;
+            }
+        }  
+     }
+     .ejianlian-project-item-list{
+         width:337px;
+         height:730px;
+         background: #EEEEEE;
+         box-shadow: 1px 1px 3px 0 rgba(102,102,102,0.50);
+         border-radius: 5px;
+         margin-left:30px;
+         padding:20px;
+          .list-title{
+             p{
+            font-family: PingFangSC-Medium;
+            font-size: 16px;
+            color: #333333;
+            letter-spacing: 0.19px;}
+             .icon{
+                color: #999999;
+                font-size:18px;
+            }
+          }
+          .list-add{
+              display:flex;
+              margin-top:12px;
+              &>p{
+                font-family: PingFangSC-Regular;
+                font-size: 16px;
+                color: #999999;
+                letter-spacing: 0.19px;
+                margin-left:8px;
+
+              }
+          }
+     }
 }

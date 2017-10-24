@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
 import MyIcon from '../../../components/Icon';
+
 
 export default class DefaultProject extends Component {
     render() {

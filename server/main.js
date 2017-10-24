@@ -8,6 +8,7 @@ import {
 import Message from '../imports/schema/message';
 import Group from '../imports/schema/group';
 import fields from '../imports/util/fields';
+import Project from '../imports/schema/project';
 
 publishComposite('message', {
     find() {
@@ -59,3 +60,4 @@ Meteor.publish('users', () => Meteor.users.find(
 // });
 Meteor.publish('group', () => Group.find({}));
 
+Meteor.publish('project', () => Project.find({}));

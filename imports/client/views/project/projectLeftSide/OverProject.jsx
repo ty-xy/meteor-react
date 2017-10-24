@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
+import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import Icon from '../../../components/Icon';
 import ProjectAdd from './ProjectAdd';
+// import ProjectStart from '../ProjectWindow/ProjectStart';
 
-// import PropTypes from 'prop-types';
+// import ProjectWindow from './ProjectWindow/ProjectWindow';
+// import ProjectStart from './ProjectWindow/ProjectStart';
 
 @pureRender
 export default class OverProject extends Component {
+    static propTypes = {
+        showProject: PropTypes.func,
+    }
     constructor(...arg) {
         super(...arg);
         this.state = {
@@ -43,12 +50,17 @@ export default class OverProject extends Component {
                     </div>
                     <p className="over-project">创建项目</p>
                 </div>
-                <div className="ejianlian-add-project  project-over">
-                    <div className="project-notice user-avatar">
-                        <Icon icon="icon-guidangxiangmu  icon" />
+                <Link to="/project/over">
+                    <div className="ejianlian-add-project  project-over" onClick={this.props.showProject}>
+
+                        <div className="project-notice user-avatar">
+                            <Icon icon="icon-guidangxiangmu  icon" />
+                        </div>
+                        <p className="over-project">已归档的项目</p>
+
                     </div>
-                    <p className="over-project">已归档的项目</p>
-                </div>
+                </Link>
+                { /* <Route path="over" component={ProjectStart} /> */}
             </div>
         );
     }
