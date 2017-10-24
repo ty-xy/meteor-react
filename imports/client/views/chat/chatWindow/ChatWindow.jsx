@@ -61,13 +61,14 @@ class ChatWindow extends Component {
             isShowGroupSet: !this.state.isShowGroupSet,
         });
     }
-    sendMessage = () => {
+    sendMessage = (content, type) => {
         Meteor.call(
             'insertMessage',
             {
-                content: this.$message.value,
+                content,
                 createdAt: new Date(),
                 to: this.props.to,
+                type,
             },
             (err) => {
                 if (err) {
@@ -79,7 +80,7 @@ class ChatWindow extends Component {
     handleSendMessage = (e) => {
         if (e.keyCode === 13) {
             e.preventDefault();
-            this.sendMessage();
+            this.sendMessage(this.$message.value, 'text');
         }
     }
     handleClick = (e) => {
@@ -107,7 +108,7 @@ class ChatWindow extends Component {
         if (!file) {
             return;
         }
-
+        console.log(111, file.name);
         const reader = new FileReader();
         const toId = this.props.to;
         // console.log(toId);

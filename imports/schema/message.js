@@ -17,9 +17,13 @@ Message.schema = new SimpleSchema({
     content: {
         type: String,
     },
-    // type: {
-    //     type: String,
-    // },
+    type: {
+        type: String,
+    },
+    fileName: {
+        type: String,
+        optional: true,
+    },
 });
 
 export default Message;
