@@ -122,7 +122,9 @@ class AddGroup extends Component {
             <div className="container-wrap add-group-block" style={{ display: this.props.isShowAddGroup ? 'block' : 'none' }}>
                 <div className="container-middle container-content">
                     <div className="container-title">
-                        发起群聊
+                        {
+                            this.props.type === 'createGroup' ? '发起群聊' : '邀请好友'
+                        }
                         <Icon icon="icon-guanbi icon icon-close-addGroup icon-close" onClick={this.props.handleAddGroup} />
                     </div>
                     <Select defaultValue="e建联好友" onChange={this.handleChange} className="select-group-item">

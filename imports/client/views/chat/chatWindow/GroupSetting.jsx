@@ -8,6 +8,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
 import AddGroup from '../chatSideLeft/addChat/AddGroup';
+import SeleteAdmin from './SeleteAdmin';
 import UserUtil from '../../../../util/user';
 import feedback from '../../../../util/feedback';
 
@@ -25,9 +26,26 @@ class GroupSetting extends Component {
         super(...args);
         this.state = {
             isShowAddGroup: false,
+            isShowSeleteAdmin: false,
             restUsers: [],
+            restMembers: [],
         };
     }
+    // 选择新的群主
+    selectAdmin = () => {
+        const { members } = this.props;
+        const restMembers = members.filter(x => x._id !== Meteor.userId());
+        this.setState({
+            isShowSeleteAdmin: true,
+            restMembers,
+        });
+    }
+    closeSeleteAdmin = () => {
+        this.setState({
+            isShowSeleteAdmin: false,
+        });
+    }
+    // 邀请更多好友
     handleAddGroup = () => {
         const { users = [], members } = this.props;
         const restUsers = users.filter(x => !members.find(y => y._id === x._id));
@@ -105,9 +123,16 @@ class GroupSetting extends Component {
                         <p>群聊置顶</p>
                         <p><Switch defaultChecked={false} /></p>
                     </div>
-                    <div className="group-members">
-                        <p>群主设置</p>
-                        <p className="all">选择新群主</p>
+                    <div>
+                        {
+                            this.props.admin === Meteor.userId() ?
+                                <div className="group-members">
+                                    <p>群主设置</p>
+                                    <button className="all" onClick={this.selectAdmin}>选择新群主</button>
+                                </div>
+                                :
+                                null
+                        }
                     </div>
                     <div className="btn-wrap">
                         {
@@ -130,6 +155,16 @@ class GroupSetting extends Component {
                     isEditGroupName={this.props.members.length < 4}
                     members={this.props.members}
                 />
+                {
+                    this.state.isShowSeleteAdmin ?
+                        <SeleteAdmin
+                            users={this.state.restMembers}
+                            groupId={this.props.groupId}
+                            closeSeleteAdmin={this.closeSeleteAdmin}
+                        />
+                        :
+                        null
+                }
             </div>
         );
     }
