@@ -32,6 +32,12 @@ const feedback = {
             },
         });
     },
+    dealWarning(content) {
+        Modal.warning({
+            title: '提示',
+            content,
+        });
+    },
     successToast(conetnt) {
         message.success(conetnt);
     },

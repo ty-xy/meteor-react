@@ -78,7 +78,11 @@ class GroupSetting extends Component {
     }
     // 退出群聊
     exitGroupChat = () => {
-        feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.deleteMember(Meteor.userId(), '退出成功'));
+        if (this.props.admin === Meteor.userId()) {
+            feedback.dealWarning('您需要先转让群主，才可退出该群聊');
+        } else {
+            feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.deleteMember(Meteor.userId(), '退出成功'));
+        }
     }
     render() {
         return (
