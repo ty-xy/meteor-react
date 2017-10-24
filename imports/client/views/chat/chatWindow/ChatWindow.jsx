@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
+import { Popover, Tooltip } from 'antd';
 
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
@@ -13,7 +14,10 @@ import ChatFriendFile from './ChatFriendFile';
 import GroupSetting from './GroupSetting';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
+import expressions from '../../../../util/expressions';
 
+// import messageTool from '../../../../util/message';
+const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
 
 @pureRender
 class ChatWindow extends Component {
@@ -74,15 +78,71 @@ class ChatWindow extends Component {
     }
     handleSendMessage = (e) => {
         if (e.keyCode === 13) {
+            e.preventDefault();
             this.sendMessage();
         }
     }
+    handleClick = (e) => {
+        const name = e.currentTarget.dataset.name;
+        this.$message.value = `#(${name})`;
+        // must use setTimeout, otherwise the exit animation does not display properly
+    }
+    convertExpression = txt => ({
+        __html: txt.replace(
+            /#\(([\u4e00-\u9fa5a-z0-9-]+)\)/g,
+            (r, e) => {
+                const index = expressions.default.indexOf(e);
+                if (index !== -1) {
+                    return `<img class="expression-default-message" src="${transparentImage}" style="background-position: left ${-30 * index}px; background-image: url('/expressions.png'); width: 30px ;height: 30px;" onerror="this.style.display='none'" alt="${r}">`;
+                }
+                return r;
+            },
+        ),
+    })
+    sendFilesendFile = () => {
+        this.fileInput.click();
+    }
+    selectFile = () => {
+        const file = this.fileInput.files[0];
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            Meteor.call('sendFile', this.result, this.props.to, (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
+                console.log('发送文件成功');
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    }
+    renderDefaultExpression = () => (
+        <div className="default-expression" style={{ width: '400px', height: '200px' }}>
+            {
+                expressions.default.map((e, index) => (
+                    <div
+                        key={index}
+                        data-name={e}
+                        onClick={this.handleClick}
+                        style={{ width: '40px', height: '40px', padding: '5px' }}
+                    >
+                        <div className="no-click" style={{ backgroundPosition: `left ${-30 * index}px`, backgroundImage: 'url(\'/expressions.png\')', width: '30px', height: '30px' }} />
+                    </div>
+                ))
+            }
+        </div>
+    )
+
     render() {
-        const { profile = {}, username = '' } = this.props.chatUser || {};
+        const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
         const { name = '', avatarColor = '', avatar = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const members = this.props.chatGroup ? this.props.chatGroup.members : [];
+        const admin = this.props.chatGroup ? this.props.chatGroup.admin._id : '';
         return (
             <div className="ejianlian-chat-window">
                 {
@@ -116,40 +176,44 @@ class ChatWindow extends Component {
                 }
                 <div className="chat-message-list" ref={i => this.messageList = i}>
                     {
-                        this.props.messages.map((message, i) => {
-                            console.log(message.content, message.from._id === Meteor.userId() ? '我应该在右边' : '我应该在左边');
-                            return (
-                                <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'} key={i}>
-                                    <p className="user-avatar">
-                                        <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
-                                    </p>
-                                    <div className="user-message-wrap">
-                                        {
-                                            message.to === groupId ?
-                                                <p className="user-nickname">{message.from.profile.name}</p>
-                                                :
-                                                null
-                                        }
-                                        <p className="user-message">{message.content}</p>
-                                    </div>
+                        this.props.messages.map((message, i) => (
+                            <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'} key={i}>
+                                <p className="user-avatar">
+                                    <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
+                                </p>
+                                <div className="user-message-wrap">
+                                    {
+                                        message.to === groupId ?
+                                            <p className="user-nickname">{message.from.profile.name}</p>
+                                            :
+                                            null
+                                    }
+                                    <p className="user-message" dangerouslySetInnerHTML={this.convertExpression(message.content)} />
                                 </div>
-                            );
-                        })
+                            </div>
+                        ))
                     }
                 </div>
                 <div className="chat-window-bottom">
                     <div className="chat-send-skill">
                         <p className="skill-icon">
-                            <Icon icon="icon-biaoqing icon" />
+                            <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
+                                <Icon icon="icon-biaoqing icon" />
+                            </Popover>
                         </p>
                         <p className="skill-icon">
-                            <Icon icon="icon-wenjian icon" />
+                            <Tooltip title="发送文件" mouseEnterDelay={1}>
+                                <Icon icon="icon-wenjian icon" onClick={this.sendFile} />
+                                <input
+                                    className="input-file"
+                                    type="file"
+                                    ref={i => this.fileInput = i}
+                                    onChange={this.selectFile}
+                                />
+                            </Tooltip>
                         </p>
                         <p className="skill-icon">
                             <Icon icon="icon-card icon" />
-                        </p>
-                        <p className="skill-icon">
-                            <Icon icon="icon-dingwei icon" />
                         </p>
                     </div>
                     <div className="chat-message-input">
@@ -164,6 +228,7 @@ class ChatWindow extends Component {
                     avatarColor={avatarColor}
                     username={username}
                     avatar={avatar}
+                    friendId={_id}
                 />
                 <ChatFriendFile
                     style={{ display: this.state.isShowFriendFile ? 'block' : 'none' }}
@@ -176,6 +241,7 @@ class ChatWindow extends Component {
                             groupName={groupName}
                             members={members}
                             groupId={groupId}
+                            admin={admin}
                         />
                         :
                         null

@@ -35,19 +35,40 @@
         }
         .members-avatar {
             .group-item;
+            .avatar-wrap {
+                position: relative;
+                width: 50px;
+                height: 45px;
+                & > .icon-cuowu {
+                    position: absolute;
+                    font-size: 15px;
+                    right: 8px;
+                    bottom: 0px;
+                    opacity: 0;
+                }
+            }
+            .avatar-wrap:hover {
+                & > .icon-cuowu {
+                    opacity: 1;
+                }
+            }
             .avatar {
                 margin-right: 20px;
+                width: 40px;
+                height: 40px;
+                line-height: 40px;
+                font-size: 13px;
             }
             .avatar-add {
                 color: #ddd;
                 font-size: 40px;
-                line-height: 45px;
+                line-height: 34px;
             }
         }
         .btn-wrap {
             margin-top: 70px;
             text-align: center;
-            & > button {
+             button {
                 width: 300px;
                 height: 50px;
                 line-height: 50px;
@@ -63,4 +84,9 @@
             }
         }
     }
+}
+.selete-admin-block {
+   & > .container-content {
+       height: 550px;
+   }
 }
