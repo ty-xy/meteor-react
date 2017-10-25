@@ -6,6 +6,9 @@ File.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
+    from: {
+        type: String,
+    },
     name: {
         type: String,
     },
@@ -13,7 +16,7 @@ File.schema = new SimpleSchema({
         type: String,
     },
     size: {
-        type: Number,
+        type: String,
     },
     url: {
         type: String,

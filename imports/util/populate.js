@@ -4,7 +4,6 @@ import Files from '../schema/file';
 const PopulateUtil = {
     group(group) {
         if (group) {
-            console.log(111, Meteor.users);
             group.members = Meteor.users.find({ _id: { $in: group.members } }).fetch();
             group.admin = Meteor.users.findOne({ _id: group.admin });
         }
@@ -15,6 +14,11 @@ const PopulateUtil = {
     file(file) {
         if (file) {
             return Files.findOne({ _id: file });
+        }
+    },
+    user(user) {
+        if (user) {
+            return Meteor.users.findOne({ _id: user });
         }
     },
 };

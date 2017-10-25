@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
+import format from 'date-format';
 
 import Icon from '../../../components/Icon';
 
 @pureRender
 class ChatFriendFile extends Component {
+    static propTypes = {
+        files: PropTypes.array,
+    }
     static propTypes = {
         handleFriendFile: PropTypes.func,
     };
@@ -17,63 +21,40 @@ class ChatFriendFile extends Component {
                         聊天文件
                         <Icon icon="icon-guanbi icon icon-close-codeBlock icon-close" onClick={this.props.handleFriendFile} />
                     </div>
-                    {/* 好友聊天文件 */}
-                    <div className="ejianlian-chat-message-list">
-                        <div className="file-create-time">
-                            2017年2月
-                        </div>
-                        <div className="chat-user-pannel">
-                            <div className="user-avatar">
-                                <Icon icon="icon-word icon" />
-                            </div>
-                            <div className="user-message">
-                                <p>#817项目招标文件.docx</p>
-                                <p className="last-message">
-                                    <span>来自周小妹 &nbsp;</span>
-                                    <span>2017-02-20 &nbsp;</span>
-                                    <span>100KB</span>
-                                </p>
-                            </div>
-                            <div className="download-icon">
-                                <Icon icon="icon-xiazai icon" />
-                            </div>
-                        </div>
-                        <div className="chat-user-pannel ">
-                            <div className="user-avatar">
-                                <Icon icon="icon-xls icon" />
-                            </div>
-                            <div className="user-message">
-                                <p>#817项目报表.xls</p>
-                                <p className="last-message">
-                                    <span>来自周小妹 &nbsp;</span>
-                                    <span>2017-02-20 &nbsp;</span>
-                                    <span>100KB</span>
-                                </p>
-                            </div>
-                            <div className="download-icon">
-                                <Icon icon="icon-xiazai icon" />
-                            </div>
-                        </div>
-                        <div className="file-create-time">
-                            2017年1月
-                        </div>
-                        <div className="chat-user-pannel">
-                            <div className="user-avatar">
-                                <Icon icon="icon-jpg icon" />
-                            </div>
-                            <div className="user-message">
-                                <p>#817项目效果图演示.jpg</p>
-                                <p className="last-message">
-                                    <span>来自周小妹 &nbsp;</span>
-                                    <span>2017-02-20 &nbsp;</span>
-                                    <span>100KB</span>
-                                </p>
-                            </div>
-                            <div className="download-icon">
-                                <Icon icon="icon-xiazai icon" />
-                            </div>
-                        </div>
-                    </div>
+                    {
+                        this.props.files.map((item, index) =>
+                            (
+                                <div className="ejianlian-chat-message-list" key={index}>
+                                    {
+                                        item.showYearMonth ?
+                                            <div className="file-create-time">
+                                                {format('yyyy年MM月', item.createdAt)}
+                                            </div>
+                                            :
+                                            null
+                                    }
+                                    <div className="chat-user-pannel">
+                                        <div className="user-avatar">
+                                            <Icon icon="icon-word icon" />
+                                        </div>
+                                        <div className="user-message">
+                                            <p>{item.name}</p>
+                                            <p className="last-message">
+                                                <span>来自{item.fileFrom} &nbsp;</span>
+                                                <span>{format('yyyy-MM-dd ', item.createdAt)} &nbsp;</span>
+                                                <span>{item.size}</span>
+                                            </p>
+                                        </div>
+                                        <div className="download-icon">
+                                            <a href={item.url} download>
+                                                <Icon icon="icon-xiazai icon" />
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                </div>),
+                        )
+                    }
                 </div>
             </div>
         );
@@ -81,3 +62,4 @@ class ChatFriendFile extends Component {
 }
 
 export default ChatFriendFile;
+

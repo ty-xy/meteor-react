@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Popover, Tooltip } from 'antd';
+import format from 'date-format';
 
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
@@ -27,6 +28,7 @@ class ChatWindow extends Component {
         to: PropTypes.string,
         chatUser: PropTypes.object,
         chatGroup: PropTypes.object,
+        files: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
@@ -114,6 +116,7 @@ class ChatWindow extends Component {
         const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
         const size = file.size;
         const sendMessage = this.sendMessage;
+
         reader.onloadend = function () {
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 feedback.dealError(err);
@@ -140,16 +143,10 @@ class ChatWindow extends Component {
     )
     renderFile = (content) => {
         const result = PopulateUtil.file(content);
-        let size = result.size;
-        let unit = 'B';
-        if (size > 1024) {
-            size /= 1024;
-            unit = 'KB';
+        if (/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(result.type)) {
+            return this.renderImage(result.url);
         }
-        if (size > 1024) {
-            size /= 1024;
-            unit = 'MB';
-        }
+
         return (
             <div className="file">
                 <div className="file-icon">
@@ -157,7 +154,7 @@ class ChatWindow extends Component {
                 </div>
                 <div>
                     <p>{result.name}</p>
-                    <p className="file-size">{size.toFixed(2) + unit}</p>
+                    <p className="file-size">{result.size}</p>
                 </div>
                 <a href={result.url} download>
                 下载
@@ -168,14 +165,14 @@ class ChatWindow extends Component {
     renderUrl = content => (
         <a href={content} rel="noopener noreferrer" target="_blank">{content}</a>
     )
-    renderImage = () => (
+    renderImage = url => (
         <div className="user-img">
             <img
-                src="http://pic.58pic.com/58pic/13/23/37/01958PICjAH_1024.jpg"
+                src={url}
                 ref={i => this.img = i}
                 onLoad={this.imageLoad}
 
-                onError={() => this.img.src = require('../assets/images/image_not_found.png')}
+                onError={() => this.img.src = 'http://oxldjnom8.bkt.clouddn.com/404Img.jpeg'}
             />
         </div>
     )
@@ -295,10 +292,15 @@ class ChatWindow extends Component {
                     avatar={avatar}
                     friendId={_id}
                 />
-                <ChatFriendFile
-                    style={{ display: this.state.isShowFriendFile ? 'block' : 'none' }}
-                    handleFriendFile={this.handleFriendFile}
-                />
+                {
+                    this.state.isShowFriendFile ?
+                        <ChatFriendFile
+                            handleFriendFile={this.handleFriendFile}
+                            files={this.props.files}
+                        />
+                        :
+                        null
+                }
                 {
                     this.state.isShowGroupSet ?
                         <GroupSetting
@@ -322,11 +324,24 @@ export default withTracker(({ to, userId }) => {
     Meteor.subscribe('file');
     const chatGroup = Group.findOne({ _id: to });
     PopulateUtil.group(chatGroup);
+    const files = Message.find({ to, type: 'file' }).fetch().map(msg => PopulateUtil.file(msg.content));
+    files.forEach((d, i, data) => {
+        d.showYearMonth = false;
+        d.fileFrom = PopulateUtil.user(d.from).profile.name;
+        if (i) {
+            const prev = data[i - 1];
+            d.showYearMonth = format('yyyy-MM', d.createdAt) !== format('yyyy-MM', prev.createdAt);
+        } else {
+            d.showYearMonth = true;
+        }
+    });
+    console.log(files);
     return {
         messages: Message.find({ to }).fetch(),
         to,
         chatUser: Meteor.users.findOne({ _id: userId }),
         chatGroup,
+        files,
     };
 })(ChatWindow);
 
