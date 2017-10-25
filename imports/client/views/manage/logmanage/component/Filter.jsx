@@ -5,21 +5,22 @@ import PropTypes from 'prop-types';
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
-const MySelect = ({ data, title, keyword, width, handleChange, handleFocus }) => (
-    <span data-info={data}>
+const MySelect = ({ title, data, keyword, width, handleChange, handleFocus }) => (
+    <span>
         {title}：
         <Select
             showSearch
+            allowClear
             style={{ width: (width || 200) }}
-            placeholder="Select a person"
+            placeholder="请选择模板"
             optionFilterProp="children"
             onChange={val => handleChange(val, keyword)}
             onFocus={handleFocus}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
-            <Option value="jack">Jack</Option>
-            <Option value="lucy">Lucy</Option>
-            <Option value="tom">Tom</Option>
+            {
+                data.map((item, index) => <Option key={index} value={item.name || item.username}>{item.value || item.profile.name}</Option>)
+            }
         </Select>
     </span>
 );
@@ -28,17 +29,17 @@ const MyDatepicker = ({ handleChange, keyword, title }) => (
         {title}：
         <RangePicker
             format="YYYY-MM-DD"
-            placeholder={['Start Time', 'End Time']}
+            placeholder={['开始时间', '结束时间']}
             onChange={(date, dateString) => handleChange(dateString, keyword)}
         />
     </span>
 );
 
 MySelect.propTypes = {
-    data: PropTypes.array,
     handleFocus: PropTypes.func,
     handleChange: PropTypes.func,
     width: PropTypes.number,
+    data: PropTypes.array,
     title: PropTypes.string,
     keyword: PropTypes.string,
 };

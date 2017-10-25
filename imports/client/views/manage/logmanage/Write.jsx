@@ -15,15 +15,20 @@ class Tab1 extends (React.PureComponent || React.Component) {
             templates: [
                 { name: 'day', value: '日报' },
                 { name: 'week', value: '周报' },
-                { name: 'month', value: '月报' },
-                { name: 'business', value: '营业日报' },
+                // { name: 'month', value: '月报' },
+                // { name: 'business', value: '营业日报' },
             ],
             template: [],
+            editData: {},
         };
     }
     componentWillMount() {
-        // console.log('object', this.props.location);
         this.setState({ template: this.state.templates.slice(0, 2) });
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.editInfo._id) {
+            this.setState({ logType: nextProps.editInfo.type, editData: nextProps.editInfo });
+        }
     }
     // 日报， 周报切换
     handleLogChange = (e) => {
@@ -33,7 +38,7 @@ class Tab1 extends (React.PureComponent || React.Component) {
             content: '您尚未保存，确定要离开？',
             okText: '确认',
             cancelText: '取消',
-            onOk: () => { _this.setState({ logType: e.target.value }); },
+            onOk: () => { _this.setState({ logType: e.target.value, editData: {} }); },
         });
     }
     showLogtype = () => ({
@@ -49,10 +54,10 @@ class Tab1 extends (React.PureComponent || React.Component) {
         this.setState({ expand: !expand, template });
     }
     render() {
-        // console.error('tab1', this.props);
         const { logType } = this.state;
+        // console.log('componentWillReceiveProps=www', this.props.editInfo, logType);
         return (
-            <div>
+            <div style={{ height: '100%' }}>
                 <ButtonTab handleLogChange={this.handleLogChange} moreChange={this.moreChange} {...this.state} {...this.props} />
                 {this.showLogtype()[logType]}
             </div>

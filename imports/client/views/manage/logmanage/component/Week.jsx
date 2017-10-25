@@ -16,6 +16,10 @@ class Week extends (React.PureComponent || React.Component) {
         const { form, tab1Submit, logType } = this.props;
         const fields = form.getFieldsValue();
         fields.type = logType;
+        fields.file = [];
+        fields.img = [];
+        fields.peo = [];
+        fields.group = [];
         tab1Submit(fields);
     }
     render() {

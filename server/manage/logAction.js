@@ -3,10 +3,11 @@ import { Meteor } from 'meteor/meteor';
 import Log from '../../imports/schema/log';
 
 Meteor.methods({
-    createLog({ username, type, finish, plan, help, file, img, peo, group }) {
+    createLog({ username, type, finish, plan, help, file, img, peo, nickname, group }) {
         const newLog = {
             createdAt: new Date(),
             username,
+            nickname,
             type,
             finish,
             plan,
@@ -19,7 +20,8 @@ Meteor.methods({
         Log.schema.validate(newLog);
         Log.insert(newLog);
     },
-    updateLog({ username, type, _id, finish, plan, help, file, img, peo, group }) {
+    // 修改
+    updateLog({ type, _id, finish, username, nickname, plan, help, file, img, peo, group }) {
         const updateLog = {
             createdAt: new Date(),
             type,
@@ -30,13 +32,19 @@ Meteor.methods({
             img,
             peo,
             group,
+            username,
+            nickname,
         };
         Log.schema.validate(updateLog);
         Log.update(
-            { username, _id },
+            { _id },
             {
                 $set: updateLog,
             },
         );
+    },
+    // 删除
+    deleteLog({ _id }) {
+        Log.remove({ _id });
     },
 });

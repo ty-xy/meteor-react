@@ -9,6 +9,9 @@ log.schema = new SimpleSchema({
     username: {
         type: String,
     },
+    nickname: {
+        type: String,
+    },
     type: {
         type: String,
     },
