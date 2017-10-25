@@ -15,6 +15,7 @@ import GroupSetting from './GroupSetting';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 import expressions from '../../../../util/expressions';
+import feedback from '../../../../util/feedback';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -66,7 +67,6 @@ class ChatWindow extends Component {
             'insertMessage',
             {
                 content,
-                createdAt: new Date(),
                 to: this.props.to,
                 type,
             },
@@ -100,7 +100,7 @@ class ChatWindow extends Component {
             },
         ),
     })
-    sendFilesendFile = () => {
+    sendFile = () => {
         this.fileInput.click();
     }
     selectFile = () => {
@@ -108,16 +108,15 @@ class ChatWindow extends Component {
         if (!file) {
             return;
         }
-        console.log(111, file.name);
         const reader = new FileReader();
-        const toId = this.props.to;
-        // console.log(toId);
+        const name = file.name;
+        const type = name.slice(name.lastIndexOf('.') + 1);
+        const size = file.size;
+        const sendMessage = this.sendMessage;
         reader.onloadend = function () {
-            Meteor.call('sendFile', this.result, toId, (err) => {
-                if (err) {
-                    return console.error(err.reason);
-                }
-                console.log('发送文件成功');
+            Meteor.call('insertFile', name, type, size, (err, res) => {
+                feedback.dealError(err);
+                sendMessage(res, 'file');
             });
         };
         reader.readAsDataURL(file);
@@ -138,22 +137,35 @@ class ChatWindow extends Component {
             }
         </div>
     )
-    renderFile = () => (
-        <div className="file">
-            <div className="file-icon">
-                <Icon icon="icon-wenjian" size={30} iconColor="#ffca28" />
-            </div>
-            <div>
-                <p>文件.zip</p>
-                <p className="file-size">111kb</p>
-            </div>
-            <a href="http://oxldjnom8.bkt.clouddn.com/file__1508829439943.zip" download>
+    renderFile = (content) => {
+        const result = PopulateUtil.file(content);
+        let size = result.size;
+        let unit = 'B';
+        if (size > 1024) {
+            size /= 1024;
+            unit = 'KB';
+        }
+        if (size > 1024) {
+            size /= 1024;
+            unit = 'MB';
+        }
+        return (
+            <div className="file">
+                <div className="file-icon">
+                    <Icon icon="icon-wenjian" size={30} iconColor="#ffca28" />
+                </div>
+                <div>
+                    <p>{result.name}</p>
+                    <p className="file-size">{size.toFixed(2) + unit}</p>
+                </div>
+                <a href={result.url} download>
                 下载
-            </a>
-        </div>
-    )
-    renderUrl = () => (
-        <a href="https://www.baidu.com/" rel="noopener noreferrer" target="_blank">https://www.baidu.com/</a>
+                </a>
+            </div>
+        );
+    }
+    renderUrl = content => (
+        <a href={content} rel="noopener noreferrer" target="_blank">{content}</a>
     )
     renderImage = () => (
         <div className="user-img">
@@ -166,6 +178,23 @@ class ChatWindow extends Component {
             />
         </div>
     )
+    renderText = content => (
+        <div className="user-message" dangerouslySetInnerHTML={this.convertExpression(content)} />
+    )
+    renderContent = (type, content) => {
+        switch (type) {
+        case 'text':
+            return this.renderText(content);
+        case 'url':
+            return this.renderUrl(content);
+        case 'image':
+            return this.renderImage(content);
+        case 'file':
+            return this.renderFile(content);
+        default:
+            return <span>未知消息</span>;
+        }
+    }
     render() {
         const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
         const { name = '', avatarColor = '', avatar = '' } = profile;
@@ -218,7 +247,9 @@ class ChatWindow extends Component {
                                             :
                                             null
                                     }
-                                    <div className="user-message" dangerouslySetInnerHTML={this.convertExpression(message.content)} />
+                                    {
+                                        this.renderContent(message.type, message.content)
+                                    }
                                 </div>
                             </div>
                         ))
@@ -287,9 +318,9 @@ class ChatWindow extends Component {
 export default withTracker(({ to, userId }) => {
     Meteor.subscribe('message');
     Meteor.subscribe('group');
+    Meteor.subscribe('file');
     const chatGroup = Group.findOne({ _id: to });
     PopulateUtil.group(chatGroup);
-
     return {
         messages: Message.find({ to }).fetch(),
         to,

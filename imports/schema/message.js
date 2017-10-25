@@ -19,9 +19,6 @@ Message.schema = new SimpleSchema({
     },
     type: {
         type: String,
-    },
-    fileName: {
-        type: String,
         optional: true,
     },
 });
