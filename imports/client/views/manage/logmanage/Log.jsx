@@ -1,11 +1,13 @@
 import React, { PureComponent, Component } from 'react';
 import { Tabs, Row, Modal } from 'antd';
+import { Route } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import Log from '../../../../../imports/schema/log';
 import Write from './Write';
 import MyLog from './MyLog';
 import Look from './Look';
+import Detail from './Detail';
 
 
 const TabPane = Tabs.TabPane;
@@ -32,6 +34,7 @@ class Logging extends (PureComponent || Component) {
     }
     // 日报，收到的 切换
     tabChange = (hash, e, _id) => {
+        console.log(hash, e, _id);
         if (e) {
             e.preventDefault();
             const editInfo = (Log.find({ _id }).fetch() || []).length ? (Log.find({ _id }).fetch() || [])[0] : {};
@@ -49,7 +52,7 @@ class Logging extends (PureComponent || Component) {
             // } else {
             //     _this.setState({ defaultActiveKey: hash, editInfo: {} });
             // }
-            _this.setState({ defaultActiveKey: hash });
+            _this.setState({ defaultActiveKey: hash, editInfo: {} });
         }
     }
     // 写日志
@@ -141,24 +144,32 @@ class Logging extends (PureComponent || Component) {
         });
     }
     render() {
+        console.log('this.props', this.props, this.state);
+        const Content = () => (
+            <Tabs className="e-mg-tab-scroll" activeKey={this.state.defaultActiveKey} onChange={this.tabChange}>
+                <TabPane tab="写日报" key="#write">
+                    <Write tab1Submit={this.tabSubmit} {...this.state} {...this.props} />
+                </TabPane>
+                <TabPane tab="我发出的" key="#send">
+                    <MyLog delLog={this.delLog} searchMyLog={this.searchMyLog} editJump={this.tabChange} myLogs={this.state.myLogs} {...this.props} />
+                </TabPane>
+                <TabPane tab="我收到的" key="#get">
+                    <Look searchLog={this.searchLog} {...this.state} {...this.props} />
+                </TabPane>
+            </Tabs>
+        );
         return (
             <Row style={{ height: '100%' }}>
-                <Tabs className="e-mg-tab-scroll" activeKey={this.state.defaultActiveKey} onChange={this.tabChange}>
-                    <TabPane tab="写日报" key="#write">
-                        <Write tab1Submit={this.tabSubmit} {...this.state} {...this.props} />
-                    </TabPane>
-                    <TabPane tab="我发出的" key="#send">
-                        <MyLog delLog={this.delLog} searchMyLog={this.searchMyLog} editJump={this.tabChange} myLogs={this.state.myLogs} {...this.props} />
-                    </TabPane>
-                    <TabPane tab="我收到的" key="#get">
-                        <Look searchLog={this.searchLog} {...this.state} {...this.props} />
-                    </TabPane>
-                </Tabs>
+                <Route
+                    exact
+                    path="/manage/logging"
+                    component={Content}
+                />
+                <Route path="/manage/logging/de" component={Detail} />
             </Row>
         );
     }
 }
-
 
 export default withTracker(() => {
     Meteor.subscribe('log');

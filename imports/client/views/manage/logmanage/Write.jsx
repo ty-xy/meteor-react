@@ -12,6 +12,7 @@ class Tab1 extends (React.PureComponent || React.Component) {
         this.state = {
             logType: 'day',
             expand: false,
+            disabledType: false,
             templates: [
                 { name: 'day', value: '日报' },
                 { name: 'week', value: '周报' },
@@ -23,11 +24,12 @@ class Tab1 extends (React.PureComponent || React.Component) {
         };
     }
     componentWillMount() {
-        this.setState({ template: this.state.templates.slice(0, 2) });
-    }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.editInfo._id) {
-            this.setState({ logType: nextProps.editInfo.type, editData: nextProps.editInfo });
+        console.log('componentWillMount', this.props);
+        const { editInfo } = this.props;
+        if (editInfo._id) {
+            this.setState({ template: this.state.templates.slice(0, 2), editData: editInfo, logType: editInfo.type, disabledType: true });
+        } else {
+            this.setState({ template: this.state.templates.slice(0, 2) });
         }
     }
     // 日报， 周报切换
@@ -55,7 +57,6 @@ class Tab1 extends (React.PureComponent || React.Component) {
     }
     render() {
         const { logType } = this.state;
-        // console.log('componentWillReceiveProps=www', this.props.editInfo, logType);
         return (
             <div style={{ height: '100%' }}>
                 <ButtonTab handleLogChange={this.handleLogChange} moreChange={this.moreChange} {...this.state} {...this.props} />

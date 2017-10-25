@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
-const MySelect = ({ title, data, keyword, width, handleChange, handleFocus }) => (
+const MySelect = ({ title, data, keyword, width, handleChange }) => (
     <span>
         {title}：
         <Select
@@ -15,7 +15,6 @@ const MySelect = ({ title, data, keyword, width, handleChange, handleFocus }) =>
             placeholder="请选择模板"
             optionFilterProp="children"
             onChange={val => handleChange(val, keyword)}
-            onFocus={handleFocus}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
             {
@@ -36,7 +35,6 @@ const MyDatepicker = ({ handleChange, keyword, title }) => (
 );
 
 MySelect.propTypes = {
-    handleFocus: PropTypes.func,
     handleChange: PropTypes.func,
     width: PropTypes.number,
     data: PropTypes.array,
