@@ -110,11 +110,12 @@ class ChatWindow extends Component {
         }
         const reader = new FileReader();
         const name = file.name;
-        const type = name.slice(name.lastIndexOf('.') + 1);
+        const fileType = file.type;
+        const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
         const size = file.size;
         const sendMessage = this.sendMessage;
         reader.onloadend = function () {
-            Meteor.call('insertFile', name, type, size, (err, res) => {
+            Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 feedback.dealError(err);
                 sendMessage(res, 'file');
             });
