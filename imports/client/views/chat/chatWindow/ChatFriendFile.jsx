@@ -13,6 +13,22 @@ class ChatFriendFile extends Component {
     static propTypes = {
         handleFriendFile: PropTypes.func,
     };
+    renderIcon = (type) => {
+        switch (type) {
+        case 'jpg':
+            return <Icon icon="icon-png icon" />;
+        case 'pdf':
+            return <Icon icon="icon-pdf icon" />;
+        case 'png':
+            return <Icon icon="icon-png icon" />;
+        case 'xls':
+            return <Icon icon="icon-xlx icon" />;
+        case 'ppt':
+            return <Icon icon="icon-ppt icon" />;
+        default:
+            return <Icon icon="icon-word icon" />;
+        }
+    }
     render() {
         return (
             <div>
@@ -35,7 +51,9 @@ class ChatFriendFile extends Component {
                                     }
                                     <div className="chat-user-pannel">
                                         <div className="user-avatar">
-                                            <Icon icon="icon-word icon" />
+                                            {
+                                                this.renderIcon(item.type.toLowerCase())
+                                            }
                                         </div>
                                         <div className="user-message">
                                             <p>{item.name}</p>

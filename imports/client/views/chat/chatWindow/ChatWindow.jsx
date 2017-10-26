@@ -356,7 +356,6 @@ export default withTracker(({ to, userId }) => {
             d.showYearMonth = true;
         }
     });
-    console.log(files);
     return {
         messages: Message.find({ to }).fetch(),
         to,
