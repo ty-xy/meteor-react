@@ -9,6 +9,7 @@ import format from 'date-format';
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
 import PopulateUtil from '../../../../util/populate';
+import feedback from '../../../../util/feedback';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -16,7 +17,7 @@ import GroupSetting from './GroupSetting';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 import expressions from '../../../../util/expressions';
-import feedback from '../../../../util/feedback';
+import ImageViewer from '../../../features/ImageViewer';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -36,6 +37,8 @@ class ChatWindow extends Component {
             isShowFriendInfo: false,
             isShowFriendFile: false,
             isShowGroupSet: false,
+            showImgViewer: false,
+            image: '',
         };
     }
     componentDidMount() {
@@ -100,6 +103,11 @@ class ChatWindow extends Component {
                 }
                 return r;
             },
+        ).replace(
+            /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
+            r => (
+                `<a href="${r}" rel="noopener noreferrer" target="_blank">${r}</a>`
+            ),
         ),
     })
     sendFile = () => {
@@ -124,6 +132,17 @@ class ChatWindow extends Component {
             });
         };
         reader.readAsDataURL(file);
+    }
+    handleImageDoubleClick = (url) => {
+        this.setState({
+            showImgViewer: true,
+            image: url,
+        });
+    }
+    closeImageViewer = () => {
+        this.setState({
+            showImgViewer: false,
+        });
     }
     renderDefaultExpression = () => (
         <div className="default-expression" style={{ width: '400px', height: '200px' }}>
@@ -162,16 +181,13 @@ class ChatWindow extends Component {
             </div>
         );
     }
-    renderUrl = content => (
-        <a href={content} rel="noopener noreferrer" target="_blank">{content}</a>
-    )
     renderImage = url => (
         <div className="user-img">
             <img
                 src={url}
                 ref={i => this.img = i}
                 onLoad={this.imageLoad}
-
+                onDoubleClick={() => this.handleImageDoubleClick(url)}
                 onError={() => this.img.src = 'http://oxldjnom8.bkt.clouddn.com/404Img.jpeg'}
             />
         </div>
@@ -183,10 +199,6 @@ class ChatWindow extends Component {
         switch (type) {
         case 'text':
             return this.renderText(content);
-        case 'url':
-            return this.renderUrl(content);
-        case 'image':
-            return this.renderImage(content);
         case 'file':
             return this.renderFile(content);
         default:
@@ -309,6 +321,15 @@ class ChatWindow extends Component {
                             members={members}
                             groupId={groupId}
                             admin={admin}
+                        />
+                        :
+                        null
+                }
+                {
+                    this.state.showImgViewer ?
+                        <ImageViewer
+                            image={this.state.image}
+                            closeImage={this.closeImageViewer}
                         />
                         :
                         null
