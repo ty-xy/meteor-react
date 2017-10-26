@@ -18,6 +18,7 @@ import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 import expressions from '../../../../util/expressions';
 import ImageViewer from '../../../features/ImageViewer';
+import Video from '../../../features/Video';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -39,10 +40,22 @@ class ChatWindow extends Component {
             isShowGroupSet: false,
             showImgViewer: false,
             image: '',
+            videoTracks: null,
+            isShowVideo: false,
         };
     }
+
     componentDidMount() {
         this.$message.addEventListener('keydown', this.handleSendMessage);
+        // const WebSocket = require('ws');
+        // const ws = new WebSocket('ws://192.168.1.128:3000/websocket');
+
+        // ws.addEventListener('open', () => {
+        //     console.log('connection open.');
+        //     ws.send('something');
+        // });
+
+        // ws.addEventListener('message', msg => console.log(msg));
     }
     componentDidUpdate(prevProps) {
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length) {
@@ -133,6 +146,12 @@ class ChatWindow extends Component {
         };
         reader.readAsDataURL(file);
     }
+    sendVideo = () => {
+        this.setState({
+            isShowVideo: !this.state.isShowVideo,
+        });
+        console.log(1111);
+    }
     handleImageDoubleClick = (url) => {
         this.setState({
             showImgViewer: true,
@@ -176,7 +195,7 @@ class ChatWindow extends Component {
                     <p className="file-size">{result.size}</p>
                 </div>
                 <a href={result.url} download>
-                下载
+                    下载
                 </a>
             </div>
         );
@@ -214,6 +233,14 @@ class ChatWindow extends Component {
         const admin = this.props.chatGroup ? this.props.chatGroup.admin._id : '';
         return (
             <div className="ejianlian-chat-window">
+                {
+                    this.state.isShowVideo ?
+                        <Video
+                            closeVideo={this.sendVideo}
+                        />
+                        :
+                        null
+                }
                 {
                     name ?
                         <div className="chat-to-user">
@@ -287,7 +314,7 @@ class ChatWindow extends Component {
                             <Icon icon="icon-card icon" />
                         </p>
                         <p className="skill-icon">
-                            <Icon icon="icon-dakaishipin icon" size={20} />
+                            <Icon icon="icon-dakaishipin icon" size={20} onClick={this.sendVideo} />
                         </p>
                     </div>
                     <div className="chat-message-input">
