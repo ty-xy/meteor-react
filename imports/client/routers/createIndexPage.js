@@ -37,7 +37,7 @@ function createIndexPage(PageComponent) {
     return function render(router) {
         return (
             <IndexPageWrap {...router}>
-                <PageComponent />
+                <PageComponent {...router} />
             </IndexPageWrap>
         );
     };
