@@ -4,28 +4,13 @@ import pureRender from 'pure-render-decorator';
 import format from 'date-format';
 
 import Icon from '../../../components/Icon';
+import FileIcon from '../../../components/FileIcon';
 
 @pureRender
 class ChatFriendFile extends Component {
     static propTypes = {
         files: PropTypes.array,
         handleFriendFile: PropTypes.func,
-    }
-    renderIcon = (type) => {
-        switch (type) {
-        case 'jpg':
-            return <Icon icon="icon-png icon" />;
-        case 'pdf':
-            return <Icon icon="icon-pdf icon" />;
-        case 'png':
-            return <Icon icon="icon-png icon" />;
-        case 'xls':
-            return <Icon icon="icon-xlx icon" />;
-        case 'ppt':
-            return <Icon icon="icon-ppt icon" />;
-        default:
-            return <Icon icon="icon-word icon" />;
-        }
     }
     render() {
         return (
@@ -51,9 +36,7 @@ class ChatFriendFile extends Component {
                                         }
                                         <div className="chat-user-pannel">
                                             <div className="user-avatar">
-                                                {
-                                                    this.renderIcon(item.type.toLowerCase())
-                                                }
+                                                <FileIcon type={item.type} />
                                             </div>
                                             <div className="user-message">
                                                 <p>{item.name}</p>

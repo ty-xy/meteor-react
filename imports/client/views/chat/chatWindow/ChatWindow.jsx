@@ -145,7 +145,9 @@ class ChatWindow extends Component {
         reader.onloadend = function () {
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 feedback.dealError(err);
-                sendMessage(res, 'file');
+                if (res) {
+                    sendMessage(res, 'file');
+                }
             });
         };
         reader.readAsDataURL(file);
