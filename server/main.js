@@ -8,6 +8,8 @@ import {
 import Message from '../imports/schema/message';
 import Group from '../imports/schema/group';
 import fields from '../imports/util/fields';
+import Project from '../imports/schema/project';
+import TaskBoard from '../imports/schema/taskBoard';
 import File from '../imports/schema/file';
 
 publishComposite('message', {
@@ -35,4 +37,7 @@ Meteor.publish('users', () => Meteor.users.find(
 
 Meteor.publish('group', () => Group.find({}));
 Meteor.publish('file', () => File.find({}));
+
+Meteor.publish('project', () => Project.find({}));
+Meteor.publish('taskboard', () => TaskBoard.find({}));
 

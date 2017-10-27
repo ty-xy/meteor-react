@@ -28,7 +28,7 @@ const router = (
             <Route path="/register" component={Register} />
             <Route path="/forgetPassword" component={ForgetPassword} />
         </div>
-    </Router>
+    </Router >
 );
 
 export default router;
