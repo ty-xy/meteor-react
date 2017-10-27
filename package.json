@@ -54,7 +54,6 @@
     "react-dom": "^16.0.0",
     "react-modal-dialog": "^4.0.7",
     "react-router-dom": "^4.2.2",
-    "ws": "^3.2.0",
     "xss": "^0.3.4"
   },
   "devDependencies": {
