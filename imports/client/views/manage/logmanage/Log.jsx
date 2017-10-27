@@ -144,7 +144,7 @@ class Logging extends (PureComponent || Component) {
         });
     }
     render() {
-        console.log('this.props', this.props, this.state);
+        // console.log('this.props', this.props, this.state);
         const Content = () => (
             <Tabs className="e-mg-tab-scroll" activeKey={this.state.defaultActiveKey} onChange={this.tabChange}>
                 <TabPane tab="写日报" key="#write">

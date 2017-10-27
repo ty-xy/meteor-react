@@ -24,7 +24,7 @@ class Tab1 extends (React.PureComponent || React.Component) {
         };
     }
     componentWillMount() {
-        console.log('componentWillMount', this.props);
+        // console.log('componentWillMount', this.props);
         const { editInfo } = this.props;
         if (editInfo._id) {
             this.setState({ template: this.state.templates.slice(0, 2), editData: editInfo, logType: editInfo.type, disabledType: true });
