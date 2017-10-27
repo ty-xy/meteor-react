@@ -1,13 +1,18 @@
 .ejianlian-project-list{
     position:relative;
     margin-top:30px;
-    height:820px;
+    min-height:750px;
+    flex:1;
     width:450px;
     background-color: #fff;
     border:1px solid #fff;
     border-radius:10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
      .list-item{
          display:flex;
+         display: -webkit-flex;
          width:450px;
          height:100px;
          border-bottom:1px solid #fff;
@@ -16,26 +21,58 @@
          border-bottom: 1px solid #DDDDDD;
          border-top-left-radius: 10px;
          border-top-right-radius:10px;
+         align-items:center;
+         padding-left:20px;
+         &>p{
+            font-family: PingFangSC-Regular;
+            font-size: 16px;
+            color: #333333;
+            letter-spacing: 0.19px;
+         }
+          &> .project-icon-avatar{
+             height:50px;
+             width:50px;
+             border-radius:50%;
+             background-color:#78909C;
+             margin-right:16px;
+             text-align: center;
+             line-height:50px;
+             &>p{
+                font-family: PingFangSC-Regular;
+                font-size: 16px;
+                color: #333333;
+                letter-spacing: 0.19px;
+             }
+             &>.icon{
+                 //text-align:center;
+                 color:white;
+                 font-size:20px;
+             }
+         }
          .list-right{
              margin-left:10px;
              height:100px;
              text-align:left;
-             p:nth-child(1){
+             line-height:100px;
+             &>p{
+                font-family: PingFangSC-Regular;
                 font-size: 16px;
                 color: #333333;
                 letter-spacing: 0.19p;
-                margin-top:19px;
+                width:146px;
+                height:22px;
+                
              }
-             p:nth-child(2){
-                font-size: 14px;
-                color: #666666;
-                letter-spacing: 0.17px;
-             }
-             p:nth-child(3){
-                font-size: 12px;
-                color: #666666;
-                letter-spacing: 0.14px;
-             }
+            //  p:nth-child(2){
+            //     font-size: 14px;
+            //     color: #666666;
+            //     letter-spacing: 0.17px;
+            //  }
+            //  p:nth-child(3){
+            //     font-size: 12px;
+            //     color: #666666;
+            //     letter-spacing: 0.14px;
+            //  }
 
          }
          img{
@@ -44,26 +81,8 @@
             margin-top: 30px;
             border: 1px solid #ddd;
             border-radius: 50%;
-            margin-left: 20px;
+            //margin-left: 20px;
             margin-right: 20px
          }
-     }
-     .ejianlian-add-project{
-        position: absolute;
-        left: 50%;
-        bottom:40px;
-        margin-left: -35%;
-        .add-button{
-            width: 300px;
-            height: 50px;
-            background-color: #29B6F6;
-            text-align: center;
-            color: #fff;
-            line-height: 50px;
-            font-size: 16px;
-            box-shadow: 1px 1px 1px #ddd;
-            border-radius:5px;
-        }
-     }
-      
+     }    
 }

@@ -1,0 +1,48 @@
+@import '../view/util/util.less';
+
+.image-viewer {
+    background-color:rgba(0, 0, 0, 0.6) !important;
+    & > .image-title{
+        height: 60px;
+        text-align: center;
+        line-height: 60px;
+        .font22;
+        & > .icon-guanbi {
+            position: absolute;
+            z-index: 200;
+            right: 20px;
+        }
+        .icon-guanbi:hover {
+           color: @mainColor !important;
+        }
+    }
+    & > img {
+        position: absolute;
+        margin: auto;
+        left: 0;
+        bottom: 0;
+        top: 0;
+        right: 0;
+    }
+    .image-tool {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        position: absolute;
+        margin: auto;
+        left: 0;
+        right: 0;
+        width: 300px;
+        height: 60px;
+        background-color: rgba(0,0,0,.7);
+        bottom: 150px;
+        border-radius: 30px;
+        & > span {
+            cursor: pointer;
+            user-select: none;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+    }
+}

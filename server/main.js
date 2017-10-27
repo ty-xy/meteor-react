@@ -10,6 +10,9 @@ import Group from '../imports/schema/group';
 import fields from '../imports/util/fields';
 import Company from '../imports/schema/company';
 import Log from '../imports/schema/log';
+import Project from '../imports/schema/project';
+import TaskBoard from '../imports/schema/taskBoard';
+import File from '../imports/schema/file';
 
 publishComposite('message', {
     find() {
@@ -34,32 +37,11 @@ Meteor.publish('users', () => Meteor.users.find(
     },
 ));
 
-// publishComposite('group', {
-//     find() {
-//         return Group.find({});
-//     },
-//     children: [{
-//         find(group) {
-//             // group.members111 = group.members;
-//             group.members111 = Meteor.users.find(
-//                 { _id: { $in: group.members } },
-//                 {
-//                     fields: fields.user,
-//                 },
-//             ).fetch();
-//         },
-//     }, {
-//         find(group) {
-//             group.admin = Meteor.users.findOne(
-//                 { _id: group.admin },
-//                 {
-//                     fields: fields.user,
-//                 },
-//             );
-//         },
-//     }],
-// });
 Meteor.publish('group', () => Group.find({}));
+Meteor.publish('file', () => File.find({}));
+
+Meteor.publish('project', () => Project.find({}));
+Meteor.publish('taskboard', () => TaskBoard.find({}));
 
 Meteor.publish('company', () => Company.find({}));
 

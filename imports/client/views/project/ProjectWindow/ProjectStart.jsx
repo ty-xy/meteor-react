@@ -9,6 +9,7 @@ export default class ProjectStart extends Component {
                 <p>开启您的团队协作之旅</p>
                 <p><img src="/start.jpg" /></p>
             </div>
+
         );
     }
 }

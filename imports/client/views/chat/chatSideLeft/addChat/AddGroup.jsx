@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
-import { Select, Modal, message } from 'antd';
+import { Select } from 'antd';
 
 import Icon from '../../../../components/Icon';
 import Avatar from '../../../../components/Avatar';
 
+import feedback from '../../../../../util/feedback';
 
 const Option = Select.Option;
 @pureRender
@@ -43,15 +44,6 @@ class AddGroup extends Component {
             return groupName;
         }
     }
-    dealError = (err) => {
-        if (err) {
-            Modal.error({
-                title: '提示',
-                content: err.reason,
-            });
-            return console.error(err.reason);
-        }
-    }
     handleChange = (value) => {
         console.log(`selected ${value}`);
     }
@@ -72,8 +64,8 @@ class AddGroup extends Component {
                 members: selectedUsers.map(user => user._id),
             },
             (err) => {
-                this.dealError(err);
-                message.success('成功创建群聊');
+                feedback.dealError(err);
+                feedback.dealSuccess('成功创建群聊');
                 this.props.handleAddGroup();
                 this.setState({
                     selected: {},
@@ -92,14 +84,13 @@ class AddGroup extends Component {
                     name: this.getFourUsers(newMembers),
                 },
                 (err) => {
-                    this.dealError(err);
+                    feedback.dealError(err);
                     this.setState({
                         selected: {},
                     });
                 },
             );
         }
-        console.log(selectedUsers);
         Meteor.call(
             'addGroupMembers',
             {
@@ -107,11 +98,12 @@ class AddGroup extends Component {
                 newMembers: selectedUsers.map(user => user._id),
             },
             (err) => {
-                this.dealError(err);
-                message.success('邀请好友成功');
+                feedback.dealError(err);
+                feedback.dealSuccess('邀请好友成功');
                 this.setState({
                     selected: {},
                 });
+                this.props.handleAddGroup();
             },
         );
     }
@@ -130,7 +122,9 @@ class AddGroup extends Component {
             <div className="container-wrap add-group-block" style={{ display: this.props.isShowAddGroup ? 'block' : 'none' }}>
                 <div className="container-middle container-content">
                     <div className="container-title">
-                        发起群聊
+                        {
+                            this.props.type === 'createGroup' ? '发起群聊' : '邀请好友'
+                        }
                         <Icon icon="icon-guanbi icon icon-close-addGroup icon-close" onClick={this.props.handleAddGroup} />
                     </div>
                     <Select defaultValue="e建联好友" onChange={this.handleChange} className="select-group-item">

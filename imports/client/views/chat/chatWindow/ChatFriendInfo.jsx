@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import pureRender from 'pure-render-decorator';
-import Avatar from '../../../components/Avatar';
 
+import Avatar from '../../../components/Avatar';
+import feedback from '../../../../util/feedback';
 
 @pureRender
 class ChatFriendInfo extends Component {
@@ -36,11 +37,25 @@ class ChatFriendInfo extends Component {
             if (err) {
                 console.error(err.reason);
             }
+            this.props.handleFriendInfo();
         });
+    }
+    deleteFriend = () => {
+        Meteor.call('deleteFriend', this.props.friendId, (err) => {
+            if (err) {
+                console.error(err.reason);
+            }
+            feedback.dealSuccess('删除好友成功');
+            this.props.handleFriendInfo();
+        });
+    }
+    handleDeleteFriend = () => {
+        feedback.dealDelete('提示', '确定要删除该好友么?', this.deleteFriend);
     }
     render() {
         const { profile } = this.props.user || {};
         const { name } = profile || '';
+        const isFriend = profile && profile.friends.includes(this.props.friendId);
         return (
             <div className="container-wrap friend-data-block">
                 <div className="container-middle container-content">
@@ -57,7 +72,12 @@ class ChatFriendInfo extends Component {
                                 </p>
                             </li>
                             <li >
-                                <button className="friend-btn" onClick={this.handleAddFriend}>添加好友</button>
+                                {
+                                    isFriend ?
+                                        <button className="friend-btn" onClick={this.handleDeleteFriend}>删除好友</button>
+                                        :
+                                        <button className="friend-btn" onClick={this.handleAddFriend}>添加好友</button>
+                                }
                             </li>
                         </ul>
                     </div>
@@ -81,12 +101,12 @@ class ChatFriendInfo extends Component {
                                 <span><i className="iconfont icon-bianji1" /></span></p>
                         </li> */}
                     </ul>
-                    <div className="friend-btn-wrap" style={{ display: this.state.isAddFriend ? 'none' : 'block' }}>
+                    {/* <div className="friend-btn-wrap" style={{ display: this.state.isAddFriend ? 'none' : 'block' }}>
                         <button className="friend-btn">
                             <i className="iconfont icon-xiaoxi1" />&nbsp;
                             发送消息
                         </button>
-                    </div>
+                    </div> */}
                     <div className="friend-add-send" style={{ display: this.state.isAddFriend ? 'block' : 'none' }}>
                         <div className="send-info">
                             <p>请输入请求好友说明:</p>

@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
+import feedback from '../../../util/feedback';
 
 @pureRender
 class Register extends Component {
@@ -24,6 +25,7 @@ class Register extends Component {
                 return console.error(err.reason);
             }
             Meteor.loginWithPassword(this.username.value, this.password.value);
+            feedback.dealSuccess('注册成功');
         });
     }
     login = () => {

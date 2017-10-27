@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
-import { Modal } from 'antd';
 
 import ChatFriendInfo from '../../chatWindow/ChatFriendInfo';
 import Icon from '../../../../components/Icon';
+import feedback from '../../../../../util/feedback';
 
 @pureRender
 class AddFriend extends Component {
@@ -26,15 +26,9 @@ class AddFriend extends Component {
         };
     }
     searchFriend = () => {
-        console.log(1111);
         Meteor.call('searchFriend', this.username.value, (err, result) => {
-            if (err) {
-                Modal.error({
-                    title: '提示',
-                    content: err.reason,
-                });
-                return console.error(err.reason);
-            } else if (result) {
+            feedback.dealError(err);
+            if (result) {
                 this.setState({
                     isShowAddFriend: false,
                     isShowFriendInfo: true,
@@ -50,6 +44,7 @@ class AddFriend extends Component {
         this.setState({
             isShowFriendInfo: false,
         });
+        this.props.handleAddFriend();
     }
     render() {
         return (
@@ -88,30 +83,40 @@ class AddFriend extends Component {
                         </ul>
                     </div>
                 </div>
-                <div className="container-wrap look-code-block" style={{ display: this.props.isShowFriendCode ? 'block' : 'none' }} >
-                    <div className="container-middle container-content">
-                        <div className="container-title">
+
+                {
+                    this.props.isShowFriendCode ?
+                        <div className="container-wrap look-code-block">
+                            <div className="container-middle container-content">
+                                <div className="container-title">
                              扫一扫
-                            <Icon icon="icon-guanbi icon icon-close-codeBlock icon-close"onClick={this.props.handleFriendCode} />
-                        </div>
-                        <div className="code-wrap">
-                            <img src="http://upload-images.jianshu.io/upload_images/3297464-bcc37825a913c8ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" />
-                        </div>
-                        <p>保存或复制二维码发送好友成为e建联好友</p>
-                        <div className="save-btn">
+                                    <Icon icon="icon-guanbi icon icon-close-codeBlock icon-close"onClick={this.props.handleFriendCode} />
+                                </div>
+                                <div className="code-wrap">
+                                    <img src="http://upload-images.jianshu.io/upload_images/3297464-bcc37825a913c8ac.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="" />
+                                </div>
+                                <p>保存或复制二维码发送好友成为e建联好友</p>
+                                <div className="save-btn">
                             保存
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                        :
+                        null
+                }
                 {/* 搜索到的好友信息 */}
-                <ChatFriendInfo
-                    style={{ display: this.state.isShowFriendInfo ? 'block' : 'none' }}
-                    handleFriendInfo={this.handleCloseResult}
-                    name={this.state.name}
-                    avatarColor={this.state.avatarColor}
-                    username={this.state.username}
-                    friendId={this.state.friendId}
-                />
+                {
+                    this.state.isShowFriendInfo ?
+                        <ChatFriendInfo
+                            handleFriendInfo={this.handleCloseResult}
+                            name={this.state.name}
+                            avatarColor={this.state.avatarColor}
+                            username={this.state.username}
+                            friendId={this.state.friendId}
+                        />
+                        :
+                        null
+                }
             </div>
         );
     }
