@@ -9,7 +9,6 @@ node_modules
 npm-debug.log
 yarn-error.log
 .eslintcache
-imports/client/views/Index.jsx
 
 # Logs
 logs

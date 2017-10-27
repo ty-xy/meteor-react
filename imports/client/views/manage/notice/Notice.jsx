@@ -13,13 +13,18 @@ class App extends Component {
         super(props);
         this.state = {};
     }
+    jump = (e) => {
+        e.preventDefault();
+        this.context.history.push('/manage/notice/about');
+    }
     render() {
+        console.log(this.props);
         return (
             <div>
                 <h1>App</h1>
                 <ul>
                     <li><Link to="/manage/notice">Home</Link></li>
-                    <li><Link to="/manage/notice/about">About</Link></li>
+                    <li><a href="" onClick={this.jump}>About</a></li>
                     <li><Link to="/manage/notice/inbox">Inbox</Link></li>
                 </ul>
                 {this.props.children}
@@ -28,6 +33,10 @@ class App extends Component {
         );
     }
 }
+App.contextTypes = {
+    history: PropTypes.object,
+    location: PropTypes.object,
+};
 
 
 export default App;

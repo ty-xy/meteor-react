@@ -23,10 +23,6 @@ class Manage extends (PureComponent || Component) {
             ],
         };
     }
-    static contextTypes = {
-        history: PropTypes.object,
-        location: PropTypes.object,
-    }
     componentWillMount() {
         // if (this.props.companys.length <= 0) {
         //     this.addCompany();
@@ -54,7 +50,7 @@ class Manage extends (PureComponent || Component) {
         this.addCompany(`${i}`);
     }
     render() {
-        console.log('manage', this.props);
+        console.log('manage', this.props, { ...this.context });
         return (
             <Row className="e-mg-container" gutter={50}>
                 <LeftCard {...this.props} {...this.context} {...this.state} changeCompany={this.clickCompany} />
@@ -67,7 +63,10 @@ class Manage extends (PureComponent || Component) {
         );
     }
 }
-
+Manage.contextTypes = {
+    history: PropTypes.object,
+    location: PropTypes.object,
+};
 
 export default withTracker(() => {
     Meteor.subscribe('company');
