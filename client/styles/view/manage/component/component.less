@@ -1,0 +1,49 @@
+@buttonBg: #D1D1D1;
+@buttonBgCheck: #15B4F1;
+@color: #fff;
+
+// InputArea
+.e-mg-input-label{
+    margin: 30px 0 10px 0;
+}
+.e-mg-input-area{
+    min-height: 100px;
+    overflow: hidden;
+}
+
+
+// buttontab
+.e-mg-buttonTab{
+    .ant-radio-button-wrapper{
+        border: none !important;
+        background: @buttonBg;
+        color: @color;
+        margin-right: 20px;
+        border-radius: 0 !important;
+    }
+    .ant-radio-button-wrapper-checked{
+        border: none !important;
+        background: @buttonBgCheck;
+        color: @color;
+        box-shadow: none;
+    }
+    .ant-radio-button-wrapper:hover, .ant-radio-button-wrapper-focused{
+        color: @color;
+    }
+}
+
+// imgUplaod
+.e-mg-imgupload{
+    .ant-upload-list-item{
+        width: 88px !important;
+        height: 88px !important;
+        padding: 0px !important;
+    }
+    .ant-upload-select-picture-card{
+        width: 88px !important;
+        height: 88px !important;
+        .ant-upload{
+            padding: 10px 0 !important;
+        }
+    }
+}

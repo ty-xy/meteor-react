@@ -1,0 +1,163 @@
+.e-mg-tab-scroll{
+    height: 100%;
+    > .ant-tabs-content{
+        height: 100%;
+        // overflow: auto;
+        padding-top: 70px;
+        .ant-tabs-tabpane{
+            // overflow: auto;
+            width: 102%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    }
+    > .ant-tabs-bar{
+        position: absolute;
+        top: 0px;
+        width: 100%;
+        background: #fff;
+    }
+}
+// 我发出的
+.e-mg-log-filter{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    width: 98.5% !important;
+    > .ant-col-24{
+        padding-left: 0px !important;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #BDBDBD;
+    }
+}
+
+// log card
+.e-mg-log-card{
+    background: #FFFFFF;
+    border: 1px solid #BDBDBD;
+    border-radius: 6px;
+    width: 31%;
+    margin-bottom: 25px;
+    margin-right: 3%;
+    &:nth-child(3n+1){
+        margin-right: 0;
+    }
+    .e-mg-log-card-header{
+        height: 50px;
+        padding: 10px;
+        img{
+            border-radius: 50%;
+        }
+        .e-mg-log-card-header-left{
+            line-height: 80px;
+            vertical-align: bottom;
+            padding-left: 15px;
+        }
+        .e-mg-log-card-header-right{
+            line-height: 80px;
+            text-align: right;
+        }
+    }
+    .e-mg-log-card-body{
+        clear: both;
+        padding: 10px;
+        border-top: 1px solid #BDBDBD;
+        p{
+            margin-top: 5px;
+            line-height: 1.8;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+        }
+    }
+    .e-mg-log-card-footer{
+        padding: 10px;
+        height: 40px;
+        background: #F7F7F7;
+        border-radius: 6px;
+        >.right{
+            text-align: right;
+            a {
+                color: #15B4F1 !important;
+            }
+        }
+    }
+}
+
+// 详情
+.e-mg-log-details {
+    height: 100% !important;
+    .e-mg-log-details-header{
+        text-align: center;
+        font-size: 24px;
+        color: #666666;
+        letter-spacing: 0.29px;
+        line-height: 80px;
+        border-bottom: 1px solid #eee;
+        // padding: 0px !important;
+        overflow: hidden;
+        margin: -32px;
+        width: 106%;
+        margin-bottom: 0px;
+        a{
+            float: left;
+            margin-left: 20px;
+        }
+    }
+    .e-mg-log-details-content{
+        overflow: auto;
+        height: 100%;
+    }
+    
+    .e-mg-log-details-area{
+        margin-top: 20px;
+        img{
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .title{
+            font-size: 24px;
+            color: #666666;
+            letter-spacing: 0.29px;
+            padding-top: 2px;
+        }
+        p{
+            font-size: 20px;
+            color: #666666;
+            letter-spacing: 0.24px;
+            line-height: 34px;
+        }
+        p:first-child{
+            font-size: 20px;
+            color: #999999;
+            letter-spacing: 0.24px;
+        }
+    }
+    .e-mg-log-details-footer{
+        margin: 30px 0 10px 0;
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+        p{
+            font-size: 20px;
+            color: #666666;
+            letter-spacing: 0.24px;
+        }
+        .ant-col-24{
+            margin-top: 10px;
+            font-size: 20px;
+            color: #666666;
+            letter-spacing: 0.24px;
+            span{
+                float: left;
+                margin-right: 10px;
+                display: inline-block;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            img{
+                border-radius: 50%;
+            }
+        }
+    }
+}

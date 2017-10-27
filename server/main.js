@@ -8,6 +8,8 @@ import {
 import Message from '../imports/schema/message';
 import Group from '../imports/schema/group';
 import fields from '../imports/util/fields';
+import Company from '../imports/schema/company';
+import Log from '../imports/schema/log';
 import Project from '../imports/schema/project';
 import TaskBoard from '../imports/schema/taskBoard';
 import File from '../imports/schema/file';
@@ -40,4 +42,8 @@ Meteor.publish('file', () => File.find({}));
 
 Meteor.publish('project', () => Project.find({}));
 Meteor.publish('taskboard', () => TaskBoard.find({}));
+
+Meteor.publish('company', () => Company.find({}));
+
+Meteor.publish('log', () => Log.find({}));
 

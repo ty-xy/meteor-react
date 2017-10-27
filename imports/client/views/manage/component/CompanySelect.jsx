@@ -4,16 +4,26 @@ import PropTypes from 'prop-types';
 
 const Option = Select.Option;
 
-const CompanySelect = ({ companys, onChange }) => (
-    <Row className="e-mg-text-center e-mg-left-link">
-        <Select defaultValue={(companys.length && companys[0].name) || '暂无可选'} className="e-mg-left-company" onChange={onChange}>
-            {companys.map(item => (<Option value={`${item.id}`} key={item.id}>{item.name}</Option>))}
-        </Select>
-    </Row>
-);
+const CompanySelect = ({ users, changeCompany }) => {
+    const { profile } = users;
+    const companys = (profile && profile.company) || [];
+    let defaultValue = '暂无公司';
+    companys.forEach((item) => {
+        if (item.selected) {
+            defaultValue = item.id;
+        }
+    });
+    return (
+        <Row className="e-mg-text-center e-mg-left-link">
+            <Select defaultValue={defaultValue} className="e-mg-left-company" onChange={changeCompany}>
+                {companys.map((item, index) => (<Option value={item.id} key={index}>{item.name}</Option>))}
+            </Select>
+        </Row>
+    );
+};
 CompanySelect.propTypes = {
-    companys: PropTypes.array,
-    onChange: PropTypes.func,
+    users: PropTypes.object,
+    changeCompany: PropTypes.func,
 };
 
 export default CompanySelect;

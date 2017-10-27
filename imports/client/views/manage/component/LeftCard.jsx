@@ -8,7 +8,7 @@ import CompanySelect from './CompanySelect';
 const LeftCard = props => (
     <Col span={6} className="e-mg-left">
         <Card bordered={false}>
-            <CompanySelect onChange={props.changeCompany} companys={props.companys} />
+            <CompanySelect {...props} />
             <Row><Category {...props} /></Row>
         </Card>
     </Col>
