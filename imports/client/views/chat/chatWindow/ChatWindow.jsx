@@ -13,6 +13,7 @@ import feedback from '../../../../util/feedback';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
+import GroupNotice from './GroupNotice';
 import GroupSetting from './GroupSetting';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
@@ -42,6 +43,7 @@ class ChatWindow extends Component {
             image: '',
             videoTracks: null,
             isShowVideo: false,
+            isShowNotice: false,
         };
     }
 
@@ -64,6 +66,11 @@ class ChatWindow extends Component {
                 $lastMessage.scrollIntoView(true);
             }
         }
+    }
+    handleGroupNotice = () => {
+        this.setState({
+            isShowNotice: !this.state.isShowNotice,
+        });
     }
     handleFriendInfo = () => {
         this.setState({
@@ -89,9 +96,7 @@ class ChatWindow extends Component {
                 type,
             },
             (err) => {
-                if (err) {
-                    return console.error(err.reason);
-                }
+                feedback.dealError(err);
                 this.$message.value = '';
             });
     }
@@ -104,7 +109,6 @@ class ChatWindow extends Component {
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
         this.$message.value = `#(${name})`;
-        // must use setTimeout, otherwise the exit animation does not display properly
     }
     convertExpression = txt => ({
         __html: txt.replace(
@@ -150,7 +154,6 @@ class ChatWindow extends Component {
         this.setState({
             isShowVideo: !this.state.isShowVideo,
         });
-        console.log(1111);
     }
     handleImageDoubleClick = (url) => {
         this.setState({
@@ -231,6 +234,8 @@ class ChatWindow extends Component {
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const members = this.props.chatGroup ? this.props.chatGroup.members : [];
         const admin = this.props.chatGroup ? this.props.chatGroup.admin._id : '';
+        const notice = this.props.chatGroup ? this.props.chatGroup.notice : '';
+        const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
         return (
             <div className="ejianlian-chat-window">
                 {
@@ -259,10 +264,10 @@ class ChatWindow extends Component {
                             {groupName}
                             <div className="chat-other-account">
                                 <p>
-                                    <Icon icon="icon-tongzhi2 icon" />
+                                    <Icon icon="icon-tongzhi2 icon" onClick={this.handleGroupNotice} />
                                 </p>
                                 <p>
-                                    <Icon icon="icon-wenjian icon" />
+                                    <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
                                 </p>
                                 <p>
                                     <Icon icon="icon-shezhi icon" onClick={this.showGroupSet} />
@@ -357,6 +362,18 @@ class ChatWindow extends Component {
                         <ImageViewer
                             image={this.state.image}
                             closeImage={this.closeImageViewer}
+                        />
+                        :
+                        null
+                }
+                {
+                    this.state.isShowNotice ?
+                        <GroupNotice
+                            handleGroupNotice={this.handleGroupNotice}
+                            admin={admin}
+                            notice={notice}
+                            groupId={groupId}
+                            noticeTime={noticeTime}
                         />
                         :
                         null

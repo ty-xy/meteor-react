@@ -11,6 +11,7 @@ Meteor.methods({
             members,
             admin: Meteor.userId(),
             notice: '',
+            noticeTime: new Date(),
         };
         Group.schema.validate(newGroup);
         const groupId = Group.insert(newGroup);

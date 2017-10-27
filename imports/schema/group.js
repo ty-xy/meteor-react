@@ -23,6 +23,9 @@ Group.schema = new SimpleSchema({
     notice: {
         type: String,
     },
+    noticeTime: {
+        type: Date,
+    },
 });
 
 export default Group;

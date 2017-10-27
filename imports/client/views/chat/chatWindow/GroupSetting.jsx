@@ -87,10 +87,11 @@ class GroupSetting extends Component {
     render() {
         return (
             <div className="container-wrap group-setting-block">
+                <div className="opacity" onClick={this.props.showGroupSet} />
                 <div className="container-middle container-content">
                     <div className="container-title">
                         群设置
-                        <Icon icon="icon-guanbi icon icon-close-codeBlock icon-close" onClick={this.props.showGroupSet} />
+                        <Icon icon="icon-guanbi icon-close" onClick={this.props.showGroupSet} size={20} />
                     </div>
                     <div className="group-info">
                         <div className="group-base-info">

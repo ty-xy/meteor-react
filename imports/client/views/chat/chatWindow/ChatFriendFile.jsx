@@ -9,10 +9,8 @@ import Icon from '../../../components/Icon';
 class ChatFriendFile extends Component {
     static propTypes = {
         files: PropTypes.array,
-    }
-    static propTypes = {
         handleFriendFile: PropTypes.func,
-    };
+    }
     renderIcon = (type) => {
         switch (type) {
         case 'jpg':
@@ -31,48 +29,54 @@ class ChatFriendFile extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="container-wrap">
+                <div className="opacity" onClick={this.props.handleFriendFile} />
                 <div className="container-wrap-right">
                     <div className="container-title">
                         聊天文件
-                        <Icon icon="icon-guanbi icon icon-close-codeBlock icon-close" onClick={this.props.handleFriendFile} />
+                        <Icon icon="icon-guanbi icon-close" onClick={this.props.handleFriendFile} size={20} />
                     </div>
                     {
-                        this.props.files.map((item, index) =>
-                            (
-                                <div className="ejianlian-chat-message-list" key={index}>
-                                    {
-                                        item.showYearMonth ?
-                                            <div className="file-create-time">
-                                                {format('yyyy年MM月', item.createdAt)}
+                        this.props.files.length > 0 ?
+                            this.props.files.map((item, index) =>
+                                (
+                                    <div className="ejianlian-chat-message-list" key={index}>
+                                        {
+                                            item.showYearMonth ?
+                                                <div className="file-create-time">
+                                                    {format('yyyy年MM月', item.createdAt)}
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                        <div className="chat-user-pannel">
+                                            <div className="user-avatar">
+                                                {
+                                                    this.renderIcon(item.type.toLowerCase())
+                                                }
                                             </div>
-                                            :
-                                            null
-                                    }
-                                    <div className="chat-user-pannel">
-                                        <div className="user-avatar">
-                                            {
-                                                this.renderIcon(item.type.toLowerCase())
-                                            }
-                                        </div>
-                                        <div className="user-message">
-                                            <p>{item.name}</p>
-                                            <p className="last-message">
-                                                <span>来自{item.fileFrom} &nbsp;</span>
-                                                <span>{format('yyyy-MM-dd ', item.createdAt)} &nbsp;</span>
-                                                <span>{item.size}</span>
-                                            </p>
-                                        </div>
-                                        <div className="download-icon">
-                                            <a href={item.url} download>
-                                                <Icon icon="icon-xiazai icon" />
-                                            </a>
+                                            <div className="user-message">
+                                                <p>{item.name}</p>
+                                                <p className="last-message">
+                                                    <span>来自{item.fileFrom} &nbsp;</span>
+                                                    <span>{format('yyyy-MM-dd ', item.createdAt)} &nbsp;</span>
+                                                    <span>{item.size}</span>
+                                                </p>
+                                            </div>
+                                            <div className="download-icon">
+                                                <a href={item.url} download>
+                                                    <Icon icon="icon-xiazai icon" size={18} />
+                                                </a>
 
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>),
-                        )
+                                    </div>),
+                            )
+                            :
+                            <div className="no-content">暂无聊天文件</div>
+
                     }
+
                 </div>
             </div>
         );
