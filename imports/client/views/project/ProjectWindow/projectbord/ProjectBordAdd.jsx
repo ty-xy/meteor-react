@@ -82,7 +82,6 @@ class ProjectBordList extends Component {
 export default withTracker(() => {
     Meteor.subscribe('project');
     const projectId = Project.findOne({})._id;
-    // const projectId1 = Project.find({ name: this.state.minchen })._id;
     console.log(projectId);
     return {
         projectId,
