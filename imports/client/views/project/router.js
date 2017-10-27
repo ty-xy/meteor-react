@@ -10,6 +10,6 @@ export default () => (
     <div>
         <Route exact path="/project" component={ProjectStart} />
         <Route path="/project/task" component={ProjectWindow} />
-        <Route Path="/project/over" component={ProjectOverFile} />
+        <Route path="/project/over" component={ProjectOverFile} />
     </div>
 );
