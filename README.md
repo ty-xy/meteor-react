@@ -201,3 +201,4 @@ Meteor.users.update(
     },
 );
 ```
+[mongodb的操作方法](https://docs.mongodb.com/manual/reference/operator/update/pull/)

@@ -1,26 +1,26 @@
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-const Message = new Mongo.Collection('messages');
-Message.schema = new SimpleSchema({
+const File = new Mongo.Collection('files');
+File.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
     from: {
         type: String,
-        regEx: SimpleSchema.RegEx.Id,
     },
-    to: {
-        type: String,
-        regEx: /.+/,
-    },
-    content: {
+    name: {
         type: String,
     },
     type: {
         type: String,
-        optional: true,
+    },
+    size: {
+        type: String,
+    },
+    url: {
+        type: String,
     },
 });
 
-export default Message;
+export default File;

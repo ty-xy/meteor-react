@@ -33,7 +33,7 @@ class ContactList extends Component {
             <div className="user-message">
                 <p>{user.profile.name}<span className="message-createAt">{lastMessage ? format('hh:mm', lastMessage.createdAt) : format('hh:mm', time)} </span></p>
                 <p className="last-message">
-                    <span>{lastMessage ? lastMessage.content : '可以开始聊天了'}</span>
+                    <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了' }</span>
                     {/* <span className="notice-red-dot">
                         200
                 </span> */}
@@ -50,7 +50,7 @@ class ContactList extends Component {
             <div className="user-message">
                 <p>{group.name}<span className="message-createAt">{lastMessage ? format('hh:mm', lastMessage.createdAt) : format('hh:mm', time)} </span></p>
                 <p className="last-message">
-                    <span>{lastMessage ? lastMessage.content : '可以开始聊天了'}</span>
+                    <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
                     {/* <span className="notice-red-dot">
                     200
             </span> */}
