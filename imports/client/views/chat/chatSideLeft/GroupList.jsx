@@ -13,6 +13,7 @@ import Group from '../../../../schema/group';
 class GroupList extends Component {
     static propTypes = {
         groups: PropTypes.array,
+        changeTo: PropTypes.func,
     };
     constructor(...args) {
         super(...args);
@@ -83,6 +84,7 @@ class GroupList extends Component {
                                         <div
                                             key={index}
                                             className="friend-list-item"
+                                            onClick={() => this.props.changeTo(item._id, item._id)}
                                         >
                                             <p>
                                                 <Avatar name={item.name} avatar={item.avatar ? item.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} />
