@@ -1,35 +1,20 @@
 
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { Input, Select, Upload, message } from 'antd';
+import { Input, Select, Tooltip } from 'antd';
+
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
 import MyIcon from '../../../components/Icon';
 // import AddProject from './Addproject';
 
 const Option = Select.Option;
-
-// function getBase64(img) {
-//     const reader = new FileReader();
-//     reader.addEventListener('load', () => callback(reader.result));
-//     const base64 = reader.readAsDataURL(img);
-//     return bases64;
-// }
-function beforeUpload(file) {
-    const isJPG = file.type === 'image/jpeg';
-    if (!isJPG) {
-        message.error('You can only upload JPG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-        message.error('Image must smaller than 2MB!');
-    }
-    return isJPG && isLt2M;
-}
+const text = <span>点击切换头像</span>;
 @pureRender
 export default class ProjectAdd extends Component {
     static propTypes = {
         click: PropTypes.func,
+        to: PropTypes.string,
     }
     constructor(props) {
         super(props);
@@ -76,9 +61,29 @@ export default class ProjectAdd extends Component {
             },
         );
     }
+    sendFile = () => {
+        this.fileInput.click();
+        console.log(1);
+    }
+    selectFile = () => {
+        const file = this.fileInput.files[0];
+        if (!file) {
+            return;
+        }
 
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            Meteor.call('sendFile', this.result, this.props.to, (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
+                console.log('发送文件成功');
+            });
+        };
+        reader.readAsArrayBuffer(file);
+    }
     render() {
-        const imageUrl = this.state.imageUrl;
+        //  const imageUrl = this.state.imageUrl;
         return (
             <div className="ejianlian-project-add" >
                 <div id="title-f">
@@ -87,24 +92,17 @@ export default class ProjectAdd extends Component {
                 <div className="enjianlian-form">
                     <div className="common-type person-type">
                         <span>项目头像：</span >
-                        {/* <input type="file"  style={{width:'100px',backgroundColor:'red'}} value="1323e4324"/> */}
-                        <Upload
-                            className="avatar-uploader"
-                            name="avatar"
-                            showUploadList={false}
-                            action="#"
-                            beforeUpload={beforeUpload}
-                            onChange={this.handleUp}
-                        >
-                            {
-                                imageUrl ?
-                                    <img src={imageUrl} alt="" className="avatar" /> :
-                                    <p className="icon-person">
-                                        <MyIcon icon="icon-xiangmu icon" />
-                                    </p>
-                            }
-                        </Upload>
-                        <span>点击切换头像</span>
+                        <Tooltip placement="right" title={text}>
+                            <p className="icon-person">
+                                <MyIcon icon="icon-xiangmu icon" onClick={this.sendFile} />
+                                <input
+                                    id="i-file"
+                                    type="file"
+                                    ref={i => this.fileInput = i}
+                                    onChange={this.selectFile}
+                                />
+                            </p>
+                        </Tooltip>
                     </div>
                     <div className="common-type">
                         <label htmlFor="name-first"> 项目名称：</label>

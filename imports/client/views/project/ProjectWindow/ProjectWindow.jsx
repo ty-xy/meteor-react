@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
 import { Row, Col, Tabs } from 'antd';
+import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
 // import ProjectStart from './ProjectStart';
 import Icon from '../../../components/Icon';
-import ProjectTask from './ProjectBord/projectTask';
+import ProjectBordAdd from './ProjectBord/ProjectBordAdd';
+// import ProjectTask from './ProjectBord/projectTask';
 import ProjectLender from './ProjectBord/projectLender';
 import ProjectFile from './ProjectBord/projectFile';
 import ProjectChat from './ProjectBord/projectChat';
 import ProjectAction from './ProjectBord/projectAction';
 import ProjectBordItem from './ProjectBord/projectBordItem';
+import TaskBoard from '../../../../../imports/schema/taskBoard';
 
 const TabPane = Tabs.TabPane;
 @pureRender
-export default class ProjectWindow extends Component {
+class ProjectWindow extends Component {
+    static propTypes = {
+        taskF: PropTypes.arrayOf(PropTypes.object),
+    }
     constructor(...args) {
         super(...args);
         this.state = {
@@ -24,11 +32,13 @@ export default class ProjectWindow extends Component {
             IsShowInfo: true,
         });
     }
+
     render() {
         const divStyle = {
             taskStyle: { marginLeft: '30px' },
             TabStyle: {
                 display: 'flex',
+                marginTop: '10px',
             },
         };
         return (
@@ -43,8 +53,16 @@ export default class ProjectWindow extends Component {
                 <div className="ejianlian-body-tab">
                     <Tabs defaultActiveKey="1" className="tab-task" >
                         <TabPane tab="任务流" key="1" style={divStyle.TabStyle}>
-                            <ProjectBordItem />
-                            <ProjectTask style={divStyle.taskStyle} />
+                            {
+                                this.props.taskF.map((text) => {
+                                    console.log(text._id);
+                                    return (
+                                        <ProjectBordItem value={text.name} tastBoardId={text._id} key={text._id} />
+                                    );
+                                })
+
+                            }
+                            <ProjectBordAdd style={divStyle.taskStyle} />
                         </TabPane>
                         <TabPane tab="日历" key="2">
                             <ProjectLender />
@@ -64,3 +82,14 @@ export default class ProjectWindow extends Component {
         );
     }
 }
+export default withTracker(() => {
+    Meteor.subscribe('taskboard');
+    const taskF = TaskBoard.find({}).fetch();
+    const taskL = taskF.length;
+    // const projectId1 = Project.find({ name: this.state.minchen })._id;
+    console.log(taskF.length);
+    return {
+        taskF,
+        taskL,
+    };
+})(ProjectWindow);

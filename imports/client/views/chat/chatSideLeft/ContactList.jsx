@@ -11,6 +11,7 @@ import Group from '../../../../schema/group';
 import Avatar from '../../../components/Avatar';
 import UserUtil from '../../../../util/user';
 import Icon from '../../../components/Icon';
+import feedback from '../../../../util/feedback';
 
 @pureRender
 class ContactList extends Component {
@@ -18,8 +19,14 @@ class ContactList extends Component {
         changeTo: PropTypes.func.isRequired,
         chatList: PropTypes.array,
     }
-    renderUser = (user, lastMessage, time) => (
+    deleteChat = (userId, type) => {
+        Meteor.call('deleteChat', userId, type, (err) => {
+            feedback.dealError(err);
+        });
+    }
+    renderUser = (user, lastMessage, time, type) => (
         <div className="chat-user-pannel" onClick={() => this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id)} key={user._id}>
+            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type)} />
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
             </div>
@@ -34,8 +41,9 @@ class ContactList extends Component {
             </div>
         </div>
     )
-    renderGroup = (group, lastMessage, time) => (
+    renderGroup = (group, lastMessage, time, type) => (
         <div className="chat-user-pannel" onClick={() => this.props.changeTo(group._id, group._id)} key={group._id}>
+            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type)} />
             <div className="user-avatar">
                 <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
             </div>
@@ -52,56 +60,17 @@ class ContactList extends Component {
     )
     renderChatListItem = (item) => {
         if (item.user) {
-            return this.renderUser(item.user, item.lastMessage, item.time);
+            return this.renderUser(item.user, item.lastMessage, item.time, item.type);
         } else if (item.group) {
-            return this.renderGroup(item.group, item.lastMessage, item.time);
+            return this.renderGroup(item.group, item.lastMessage, item.time, item.type);
         }
-        console.error('不支持的聊天类型', item);
+        // console.error('不支持的聊天类型', item);
         return null;
     }
 
     render() {
         return (
             <div className="ejianlian-chat-message-list">
-                <div className="chat-user-pannel">
-                    <div className="user-avatar work-notice">
-                        <Icon icon="icon-tongzhi1 icon" />
-                    </div>
-                    <div className="user-message">
-                        <p>工作通知<span className="message-createAt">12:00</span></p>
-                        <p className="last-message">这是最后一条消息
-                            <span className="notice-red-dot notice-red-zexo">
-                                0
-                            </span>
-                        </p>
-                    </div>
-                </div>
-                <div className="chat-user-pannel ">
-                    <div className="user-avatar project-notice">
-                        <Icon icon="icon-xiangmu icon" />
-                    </div>
-                    <div className="user-message">
-                        <p>项目通知<span className="message-createAt">12:00</span></p>
-                        <p className="last-message">这是最后一条消息
-                            <span className="notice-red-dot">
-                                2
-                            </span>
-                        </p>
-                    </div>
-                </div>
-                <div className="chat-user-pannel ">
-                    <div className="user-avatar new-friend-notice">
-                        <Icon icon="icon-icon15 icon" />
-                    </div>
-                    <div className="user-message">
-                        <p>新的好友<span className="message-createAt">12:00</span></p>
-                        <p className="last-message">许林伟请求添加好友
-                            <span className="notice-red-dot">
-                                1
-                            </span>
-                        </p>
-                    </div>
-                </div>
                 {
                     this.props.chatList.map((item, i) => this.renderChatListItem(item, i))
                 }

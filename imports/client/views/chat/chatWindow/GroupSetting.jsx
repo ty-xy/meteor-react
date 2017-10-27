@@ -8,7 +8,9 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
 import AddGroup from '../chatSideLeft/addChat/AddGroup';
+import SeleteAdmin from './SeleteAdmin';
 import UserUtil from '../../../../util/user';
+import feedback from '../../../../util/feedback';
 
 @pureRender
 class GroupSetting extends Component {
@@ -18,14 +20,32 @@ class GroupSetting extends Component {
         members: PropTypes.array,
         users: PropTypes.array,
         groupId: PropTypes.string,
+        admin: PropTypes.string,
     };
     constructor(...args) {
         super(...args);
         this.state = {
             isShowAddGroup: false,
+            isShowSeleteAdmin: false,
             restUsers: [],
+            restMembers: [],
         };
     }
+    // 选择新的群主
+    selectAdmin = () => {
+        const { members } = this.props;
+        const restMembers = members.filter(x => x._id !== Meteor.userId());
+        this.setState({
+            isShowSeleteAdmin: true,
+            restMembers,
+        });
+    }
+    closeSeleteAdmin = () => {
+        this.setState({
+            isShowSeleteAdmin: false,
+        });
+    }
+    // 邀请更多好友
     handleAddGroup = () => {
         const { users = [], members } = this.props;
         const restUsers = users.filter(x => !members.find(y => y._id === x._id));
@@ -33,6 +53,36 @@ class GroupSetting extends Component {
             isShowAddGroup: !this.state.isShowAddGroup,
             restUsers,
         });
+    }
+    deleteMember = (memberId, content) => {
+        Meteor.call('deleteMember', this.props.groupId, memberId, (err) => {
+            if (err) {
+                console.error(err.reason);
+            }
+            feedback.dealSuccess(content);
+        });
+    }
+    // 解散群聊
+    deleteGroup = () => {
+        Meteor.call('deleteGroup', this.props.groupId, (err) => {
+            if (err) {
+                console.error(err.reason);
+            }
+            feedback.dealSuccess('解散群聊成功');
+            this.props.showGroupSet();
+        });
+    }
+    // 移除群成员
+    handleDeleteMember = (memberId) => {
+        feedback.dealDelete('移出成员', '您确定移除该成员?', () => this.deleteMember(memberId, '移除成功'));
+    }
+    // 退出群聊
+    exitGroupChat = () => {
+        if (this.props.admin === Meteor.userId()) {
+            feedback.dealWarning('您需要先转让群主，才可退出该群聊');
+        } else {
+            feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.deleteMember(Meteor.userId(), '退出成功'));
+        }
     }
     render() {
         return (
@@ -57,7 +107,11 @@ class GroupSetting extends Component {
                         {
                             this.props.members.map((item, i) =>
                                 (item.profile ?
-                                    <Avatar key={i} name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
+                                    <div className="avatar-wrap" key={i}>
+                                        <Avatar name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
+                                        <Icon icon="icon-cuowu" iconColor="#ef5350" onClick={() => this.handleDeleteMember(item._id)} />
+                                    </div>
+
                                     :
                                     null),
                             )
@@ -73,9 +127,27 @@ class GroupSetting extends Component {
                         <p>群聊置顶</p>
                         <p><Switch defaultChecked={false} /></p>
                     </div>
+                    <div>
+                        {
+                            this.props.admin === Meteor.userId() ?
+                                <div className="group-members">
+                                    <p>群主设置</p>
+                                    <button className="all" onClick={this.selectAdmin}>选择新群主</button>
+                                </div>
+                                :
+                                null
+                        }
+                    </div>
                     <div className="btn-wrap">
-                        <button className="exit-group">退出群聊</button>
-                        <button className="dissolve-group">解散群聊</button>
+                        {
+                            this.props.admin === Meteor.userId() ?
+                                <div>
+                                    <button className="exit-group" onClick={this.exitGroupChat}>退出群聊</button>
+                                    <button className="dissolve-group" onClick={this.deleteGroup}>解散群聊</button>
+                                </div>
+                                :
+                                <button className="exit-group" onClick={this.exitGroupChat}>退出群聊</button>
+                        }
                     </div>
                 </div>
                 <AddGroup
@@ -87,6 +159,16 @@ class GroupSetting extends Component {
                     isEditGroupName={this.props.members.length < 4}
                     members={this.props.members}
                 />
+                {
+                    this.state.isShowSeleteAdmin ?
+                        <SeleteAdmin
+                            users={this.state.restMembers}
+                            groupId={this.props.groupId}
+                            closeSeleteAdmin={this.closeSeleteAdmin}
+                        />
+                        :
+                        null
+                }
             </div>
         );
     }

@@ -12,6 +12,7 @@ Message.schema = new SimpleSchema({
     },
     to: {
         type: String,
+        regEx: /.+/,
     },
     content: {
         type: String,

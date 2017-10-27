@@ -50,16 +50,16 @@ export default class OverProject extends Component {
                     </div>
                     <p className="over-project">创建项目</p>
                 </div>
-                <Link to="/project/over">
-                    <div className="ejianlian-add-project  project-over" onClick={this.props.showProject}>
+                {/* <Link to="/project/over"> */}
+                <div className="ejianlian-add-project  project-over" onClick={this.props.showProject}>
 
-                        <div className="project-notice user-avatar">
-                            <Icon icon="icon-guidangxiangmu  icon" />
-                        </div>
-                        <p className="over-project">已归档的项目</p>
-
+                    <div className="project-notice user-avatar">
+                        <Icon icon="icon-guidangxiangmu  icon" />
                     </div>
-                </Link>
+                    <p className="over-project">已归档的项目</p>
+
+                </div>
+                {/* </Link> */}
                 { /* <Route path="over" component={ProjectStart} /> */}
             </div>
         );

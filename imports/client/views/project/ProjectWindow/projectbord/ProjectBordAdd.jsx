@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
+import PropTypes from 'prop-types';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
 import { Input, Button } from 'antd';
 import MyIcon from '../../../../components/Icon';
 // import ProjectBordItem from './projectBordItem';
+import Project from '../../../../../../imports/schema/project';
 
 @pureRender
 class ProjectBordList extends Component {
+    static propTypes = {
+        projectId: PropTypes.string,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
@@ -16,16 +23,35 @@ class ProjectBordList extends Component {
     handleClick = () => {
         this.setState({
             IsShowAdd: !this.state.IsShowAdd,
-            minchen: '',
         });
         console.log(this.state.IsShowAdd);
+    }
+    handleTitle = () => {
+        this.createTaskBord();
+        this.setState({
+            IsShowAdd: !this.state.IsShowAdd,
+            minchen: '',
+        });
+    }
+    createTaskBord = () => {
+        //  console.log(this.state.projectId);
+        Meteor.call(
+            'createTaskBoard',
+            {
+                name: this.state.minchen,
+                projectId: this.props.projectId,
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
     }
     handleChange = (e) => {
         this.setState({
             minchen: e.target.value,
         });
-        console.log(this.state.minchen);
     }
+
     render() {
         return (
             <div>
@@ -45,7 +71,7 @@ class ProjectBordList extends Component {
                         </div>
                         <div className="project-button">
                             <button onClick={this.handleClick}>取消</button>
-                            <Button type="primary" onClick={this.handleClick}>确认</Button>
+                            <Button type="primary" onClick={this.handleTitle}>确认</Button>
                         </div>
                     </div> : null}
             </div>
@@ -53,4 +79,12 @@ class ProjectBordList extends Component {
     }
 }
 
-export default ProjectBordList;
+export default withTracker(() => {
+    Meteor.subscribe('project');
+    const projectId = Project.findOne({})._id;
+    // const projectId1 = Project.find({ name: this.state.minchen })._id;
+    console.log(projectId);
+    return {
+        projectId,
+    };
+})(ProjectBordList);

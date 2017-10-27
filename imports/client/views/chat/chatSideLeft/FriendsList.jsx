@@ -3,6 +3,7 @@ import pureRender from 'pure-render-decorator';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
+import pinyin from 'pinyin';
 
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
@@ -25,40 +26,31 @@ class FriendsList extends Component {
                     </div>
                 </div>
                 <div className="chat-friend-pannel">
-                    <div className="friend-pannel-type">
-                        A
-                    </div>
                     {
                         this.props.users.map((item, index) => (
-                            item && item.profile ?
-                                <div
-                                    key={index}
-                                    className="friend-pannel-list"
-                                >
-
-                                    <p className={this.props.users.length - 1 !== index ? 'user-info' : 'user-info user-info-last'}>
-                                        <Avatar avatarColor={item.profile.avatarColor} name={item.profile.name} avatar={item.profile.avatar} />
-                                    </p>
-                                    <p className="friend-name last-type-name">{item.profile.name}</p>
+                            item.user && item.user.profile ?
+                                <div key={index}>
+                                    {
+                                        item.showType ?
+                                            <div className="friend-pannel-type">
+                                                {item.pinyin.toUpperCase()}
+                                            </div>
+                                            :
+                                            null
+                                    }
+                                    <div
+                                        className="friend-pannel-list"
+                                    >
+                                        <p className={this.props.users.length - 1 !== index ? 'user-info' : 'user-info user-info-last'}>
+                                            <Avatar avatarColor={item.user.profile.avatarColor} name={item.user.profile.name} avatar={item.user.profile.avatar} />
+                                        </p>
+                                        <p className="friend-name last-type-name">{item.user.profile.name}</p>
+                                    </div>
                                 </div>
                                 :
                                 <div key={index}>暂无好友列表</div>
                         ))
                     }
-                    {/* <div className="friend-pannel-list">
-                        <div className="friend-list-item">
-                            <p>
-                                <img src="http://img.duoziwang.com/2016/10/02/15235311191.jpg" alt="" />
-                            </p>
-                            <p className="friend-name">安大哥</p>
-                        </div>
-                        <div className="friend-list-item">
-                            <p>
-                                <img src="http://img2.imgtn.bdimg.com/it/u=2273251608,3871271086&fm=214&gp=0.jpg" alt="" />
-                            </p>
-                            <p className="friend-name last-type-name">安大哥</p>
-                        </div>
-                    </div> */}
                 </div>
             </div>
         );
@@ -70,7 +62,24 @@ export default withTracker(() => {
     const friendIds = UserUtil.getFriends();
 
     const users = friendIds.map(_id => Meteor.users.findOne({ _id }));
+    const pinyinData = users.map(user => ({
+        user,
+        pinyin: pinyin(user.profile.name, {
+            style: pinyin.STYLE_FIRST_LETTER,
+        },
+        )[0][0], // 可以自行选择不同的生成拼音方案和风格。
+    }));
+    pinyinData.sort((a, b) => a.pinyin.localeCompare(b.pinyin)).map(d => d.han);
+    pinyinData.forEach((d, i, data) => {
+        d.showType = false;
+        if (i) {
+            const prev = data[i - 1];
+            d.showType = d.pinyin !== prev.pinyin;
+        } else {
+            d.showType = true;
+        }
+    });
     return {
-        users,
+        users: pinyinData,
     };
 })(FriendsList);

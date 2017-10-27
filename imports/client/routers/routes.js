@@ -14,20 +14,13 @@ import Login from '../views/login/Login';
 import Register from '../views/login/Register';
 import AdminInfo from '../views/admin-info/AdminInfo';
 import ForgetPassword from '../views/login/forgetPassward/ForgetPassword';
-// import ProjectWindow from '../views/project/ProjectWindow/ProjectWindow';
-// import ProjectStart from '../views/project/ProjectWindow/ProjectStart';
-// import ProjectOverFile from '../views/project/ProjectWindow/ProjectBord/projectOverFile';
 
 const router = (
     <Router>
         <div>
             <Route path="/" component={Index} />
             <Route path="/chat" render={createIndexPage(Chat)} />
-            <Route path="/project" render={createIndexPage(Project)} >
-                {/* <Route path="/window" render={createIndexPage(ProjectWindow)} />
-                <Route path="/task" render={createIndexPage(ProjectStart)} />
-                <Route path="/over" render={createIndexPage(ProjectOverFile)} /> */}
-            </Route>
+            <Route path="/project" render={createIndexPage(Project)} />
             <Route path="/manage" render={createIndexPage(Manage)} />
             <Route path="/baike" render={createIndexPage(Bakei)} />
             <Route path="/adminInfo" render={createIndexPage(AdminInfo)} />

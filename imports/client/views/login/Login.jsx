@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
+import feedback from '../../../util/feedback';
 
 @pureRender
 class Login extends Component {
@@ -27,6 +28,7 @@ class Login extends Component {
                     return console.error(err.reason);
                 }
                 this.props.history.push('/chat');
+                feedback.dealSuccess('注册成功');
             },
         );
     }
