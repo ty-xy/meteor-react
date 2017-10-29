@@ -45,20 +45,28 @@ Meteor.methods({
     deleteNotice({ _id }) {
         notice.remove({ _id });
     },
-    // zhiding
-    setNoticeUp({ _id, _idOld }) {
-        notice.update(
-            { _id },
-            {
-                $set: { up: true },
-            },
-        );
-        notice.update(
-            { _id: _idOld },
-            {
-                $set: { up: false },
-            },
-        );
-        // notice.sort({ up });
+    // 置顶
+    setNoticeUp({ _id, _idOld, val }) {
+        if (_id === _idOld) {
+            notice.update(
+                { _id },
+                {
+                    $set: { up: !val },
+                },
+            );
+        } else {
+            notice.update(
+                { _id },
+                {
+                    $set: { up: !val },
+                },
+            );
+            notice.update(
+                { _id: _idOld },
+                {
+                    $set: { up: false },
+                },
+            );
+        }
     },
 });

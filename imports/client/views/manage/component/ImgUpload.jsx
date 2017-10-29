@@ -123,7 +123,7 @@ class ImgUpload extends (PureComponent || Component) {
             </div>
         );
         const props = {
-            // accept: 'image/*',
+            accept: 'image/*',
             action: 'http://up-z1.qiniu.com',
             listType: 'picture-card',
             onPreview: this.handlePreview,
@@ -142,7 +142,7 @@ class ImgUpload extends (PureComponent || Component) {
                 <Upload
                     {...props}
                 >
-                    {defaultImg.length >= 5 ? null : uploadButton}
+                    {uploadButton}
                 </Upload>
                 <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
                     <img alt="example" style={{ width: '100%' }} src={previewImage} />

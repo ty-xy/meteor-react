@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import InputArea from '../../component/InputArea';
 import InputType from '../../component/InputType';
 import ImgUpload from '../../component/ImgUpload';
+import FileUpload from '../../component/FileUpload';
 import MyRadio from '../../component/Radio';
 import feedback from '../../../../../util/feedback';
 
@@ -88,14 +89,14 @@ class Write extends PureComponent {
     render() {
         const { editData = {} } = this.props.location.state || {};
         const { img, file } = this.state;
-        console.log('editData', this.state);
+        // console.log('editData', this.state);
         return (
             <Form onSubmit={this.formSubmit} style={{ height: '100%', overflow: 'auto' }}>
                 <InputType title="题目：" keyword="title" editData={editData} {...this.props} />
                 <InputType title="作者：" keyword="author" editData={editData} {...this.props} />
                 <InputArea title="正文：" className="margin-bottom-20" editData={editData} keyword="content" {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
-                <ImgUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
+                <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
                 <MyRadio title="设为保密公告" subtitle="接收人只能查看，消息不可转发；公告详情页有接收人真实姓名水印，防止截图发送" keyword="isSecrecy" editData={editData} {...this.props} />
                 <Col span={24} className="margin-top-20">
                     <Button htmlType="submit" className="e-mg-button-primary margin-right-20">保存</Button>

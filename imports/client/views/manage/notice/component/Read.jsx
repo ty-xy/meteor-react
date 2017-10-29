@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Row, Form } from 'antd';
+import { Table, Row } from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
@@ -9,7 +9,7 @@ import notice from '../../../../../schema/notice';
 import feedback from '../../../../../util/feedback';
 
 
-class Write extends PureComponent {
+class Read extends PureComponent {
     static propTypes = {
         notices: PropTypes.array,
     }
@@ -19,13 +19,13 @@ class Write extends PureComponent {
             notices: [],
         };
     }
-    setUp = (e, _id) => {
+    setUp = (e, _id, val) => {
         e.preventDefault();
         const { notices } = this.props;
         const _idOld = notices[0] && notices[0]._id;
         Meteor.call(
             'setNoticeUp',
-            { _id, _idOld },
+            { _id, _idOld, val },
         );
     }
     getColumns = () => (
@@ -50,13 +50,13 @@ class Write extends PureComponent {
             render: (text, record) => (
                 <span>
                     {
-                        record.up ? (<a href="" style={{ color: '#BDBDBD' }} onClick={(e) => { e.preventDefault(); }}>置顶</a>)
-                            : <a href="" onClick={e => this.setUp(e, record._id, record.up)}>置顶</a>
+                        record.up ? (<a href="" style={{ color: '#BDBDBD' }} onClick={e => this.setUp(e, record._id, record.up)}>置顶</a>)
+                            : <a href="" onClick={e => this.setUp(e, record._id)}>置顶</a>
                     }
                     <span className="ant-divider" />
                     <Link to={{ pathname: '/manage/notice', state: { editData: record } }}>编辑</Link>
                     <span className="ant-divider" />
-                    <a href="" className="ant-dropdown-link" onClick={e => this.reCall(e, record._id)}>撤回</a>
+                    <a href="" className="ant-dropdown-link" onClick={e => this.reCall(e, record._id, record.up)}>撤回</a>
                 </span>
             ),
         }]
@@ -99,4 +99,4 @@ export default withTracker(() => {
         users: Meteor.user() || {},
         notices: notice.find({}, { sort: { up: -1 } }).fetch(),
     };
-})(Form.create()(Write));
+})(Read);
