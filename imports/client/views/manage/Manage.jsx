@@ -14,7 +14,7 @@ class Manage extends (PureComponent || Component) {
         this.state = {
             // 按钮组
             btns: [
-                { key: 'checking', name: '考勤', icon: 'icon-kaoqin--', url: '/manage/checking' },
+                { key: 'checking', name: '考勤', icon: 'icon-kaoqin', url: '/manage/checking' },
                 { key: 'logging', name: '日志', icon: 'icon-ribao', url: '/manage/logging' },
                 { key: 'notice', name: '公告', icon: 'icon-gonggao', url: '/manage/notice' },
                 { key: 'audit', name: '审批', icon: 'icon-shenpi-', url: '/manage/audit' },
@@ -50,7 +50,6 @@ class Manage extends (PureComponent || Component) {
         this.addCompany(`${i}`);
     }
     render() {
-        console.log('manage', this.props, { ...this.context });
         return (
             <Row className="e-mg-container" gutter={50}>
                 <LeftCard {...this.props} {...this.context} {...this.state} changeCompany={this.clickCompany} />
