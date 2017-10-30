@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Col, Form } from 'antd';
+import { Button, Col, Form, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import InputArea from '../../component/InputArea';
@@ -22,6 +22,7 @@ class Write extends PureComponent {
             file: [],
             img: [],
             group: [],
+            visible: false,
         };
     }
     componentWillMount() {
@@ -86,10 +87,23 @@ class Write extends PureComponent {
     removeUpload = (imgs, keyword) => {
         this.setState({ [keyword]: imgs });
     }
+    // 预览
+    handleCancel = (bool) => {
+        this.setState({ visible: bool });
+    }
     render() {
         const { editData = {} } = this.props.location.state || {};
         const { img, file } = this.state;
-        // console.log('editData', this.state);
+        const { title, content } = this.props.form.getFieldsValue();
+        const date = new Date();
+        const year = date.getFullYear();
+        let month = '';
+        if (date.getMonth() === 12) {
+            month = 1;
+        } else {
+            month = date.getMonth() + 1;
+        }
+        const day = date.getDate();
         return (
             <Form onSubmit={this.formSubmit} style={{ height: '100%', overflow: 'auto' }}>
                 <InputType title="题目：" keyword="title" editData={editData} {...this.props} />
@@ -100,8 +114,18 @@ class Write extends PureComponent {
                 <MyRadio title="设为保密公告" subtitle="接收人只能查看，消息不可转发；公告详情页有接收人真实姓名水印，防止截图发送" keyword="isSecrecy" editData={editData} {...this.props} />
                 <Col span={24} className="margin-top-20">
                     <Button htmlType="submit" className="e-mg-button-primary margin-right-20">保存</Button>
-                    <Button className="e-mg-button-default">预览</Button>
+                    <Button className="e-mg-button-default" onClick={() => this.handleCancel(true)}>预览</Button>
                 </Col>
+                <Modal
+                    title={title}
+                    visible={this.state.visible}
+                    onCancel={() => this.handleCancel(false)}
+                    footer={null}
+                    className="e-mg-notice-preview"
+                >
+                    <p>{content}</p>
+                    <p style={{ textAlign: 'right' }}>{`${year}年${month}月${day}日`}</p>
+                </Modal>
             </Form>
         );
     }

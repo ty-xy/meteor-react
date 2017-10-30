@@ -35,7 +35,11 @@ class Read extends PureComponent {
             key: 'name',
             render: record => (
                 <div>
-                    <p>{record.title}</p>
+                    <p>
+                        {record.title}
+                        {record.up ? (<span className="e-mg-notice-up">置顶</span>) : null}
+                        {record.isSecrecy ? (<span className="e-mg-notice-up">保密</span>) : null}
+                    </p>
                     <p style={{ color: '#bdbdbd' }}>{format('yyyy-MM-dd ', record.createdAt)}  {record.author}</p>
                 </div>
             ),
