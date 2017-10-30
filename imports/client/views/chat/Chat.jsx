@@ -65,8 +65,8 @@ class Chat extends Component {
                     </div>
                     <div className="ejianlian-chat-user-list">
                         { this.state.selected === 1 ? <ContactList changeTo={this.changeTo} /> : null }
-                        { this.state.selected === 2 ? <FriendsList changeTo={this.changeTo} /> : null }
-                        { this.state.selected === 3 ? <GroupList changeTo={this.changeTo} /> : null }
+                        { this.state.selected === 2 ? <FriendsList changeTo={this.changeTo} handleClick={this.handleClick.bind(this, 1)} /> : null }
+                        { this.state.selected === 3 ? <GroupList changeTo={this.changeTo} handleClick={this.handleClick.bind(this, 1)} /> : null }
                     </div>
                     <AddChat />
                 </div>

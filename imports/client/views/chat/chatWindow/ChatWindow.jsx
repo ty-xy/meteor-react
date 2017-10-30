@@ -10,6 +10,7 @@ import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
 import PopulateUtil from '../../../../util/populate';
 import feedback from '../../../../util/feedback';
+import formatDate from '../../../../util/formatDate';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -19,7 +20,8 @@ import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 import expressions from '../../../../util/expressions';
 import ImageViewer from '../../../features/ImageViewer';
-import Video from '../../../features/Video';
+import VideoMeeting from '../../../features/VideoMeeting';
+import EmptyChat from '../../../components/EmptyChat';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -47,24 +49,15 @@ class ChatWindow extends Component {
         };
     }
 
-    componentDidMount() {
-        this.$message.addEventListener('keydown', this.handleSendMessage);
-        // const WebSocket = require('ws');
-        // const ws = new WebSocket('ws://192.168.1.128:3000/websocket');
-
-        // ws.addEventListener('open', () => {
-        //     console.log('connection open.');
-        //     ws.send('something');
-        // });
-
-        // ws.addEventListener('message', msg => console.log(msg));
-    }
     componentDidUpdate(prevProps) {
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage) {
                 $lastMessage.scrollIntoView(true);
             }
+        }
+        if (this.props.to) {
+            this.$message.addEventListener('keydown', this.handleSendMessage);
         }
     }
     handleGroupNotice = () => {
@@ -88,6 +81,7 @@ class ChatWindow extends Component {
         });
     }
     sendMessage = (content, type) => {
+        console.log(content, type);
         Meteor.call(
             'insertMessage',
             {
@@ -103,8 +97,12 @@ class ChatWindow extends Component {
     handleSendMessage = (e) => {
         if (e.keyCode === 13) {
             e.preventDefault();
-            this.sendMessage(this.$message.value, 'text');
+            this.sendText();
         }
+    }
+    // 发送文字和表情
+    sendText = () => {
+        this.sendMessage(this.$message.value, 'text');
     }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
@@ -127,6 +125,7 @@ class ChatWindow extends Component {
             ),
         ),
     })
+    // 发送文件
     sendFile = () => {
         this.fileInput.click();
     }
@@ -152,6 +151,7 @@ class ChatWindow extends Component {
         };
         reader.readAsDataURL(file);
     }
+    // 发起视频
     sendVideo = () => {
         this.setState({
             isShowVideo: !this.state.isShowVideo,
@@ -238,11 +238,12 @@ class ChatWindow extends Component {
         const admin = this.props.chatGroup ? this.props.chatGroup.admin._id : '';
         const notice = this.props.chatGroup ? this.props.chatGroup.notice : '';
         const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
-        return (
+        return this.props.to ?
             <div className="ejianlian-chat-window">
+
                 {
                     this.state.isShowVideo ?
-                        <Video
+                        <VideoMeeting
                             closeVideo={this.sendVideo}
                         />
                         :
@@ -280,20 +281,28 @@ class ChatWindow extends Component {
                 <div className="chat-message-list" ref={i => this.messageList = i}>
                     {
                         this.props.messages.map((message, i) => (
-                            <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'} key={i}>
-                                <p className="user-avatar">
-                                    <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
-                                </p>
-                                <div className="user-message-wrap">
-                                    {
-                                        message.to === groupId ?
-                                            <p className="user-nickname">{message.from.profile.name}</p>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        this.renderContent(message.type, message.content)
-                                    }
+                            <div key={i}>
+                                {
+                                    message.showYearMonth ?
+                                        <div className="message-time">{formatDate.dealMessageTime(message.createdAt)}</div>
+                                        :
+                                        null
+                                }
+                                <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
+                                    <p className="user-avatar">
+                                        <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
+                                    </p>
+                                    <div className="user-message-wrap">
+                                        {
+                                            message.to === groupId ?
+                                                <p className="user-nickname">{message.from.profile.name}</p>
+                                                :
+                                                null
+                                        }
+                                        {
+                                            this.renderContent(message.type, message.content)
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         ))
@@ -326,7 +335,7 @@ class ChatWindow extends Component {
                     </div>
                     <div className="chat-message-input">
                         <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
-                        <p className="chat-send-message" onClick={this.sendMessage}>发送</p>
+                        <p className="chat-send-message" onClick={this.sendText}>发送</p>
                     </div>
                 </div>
                 <ChatFriendInfo
@@ -381,7 +390,9 @@ class ChatWindow extends Component {
                         null
                 }
             </div>
-        );
+
+            :
+            <EmptyChat />;
     }
 }
 
@@ -402,8 +413,18 @@ export default withTracker(({ to, userId }) => {
             d.showYearMonth = true;
         }
     });
+    const messages = Message.find({ to }).fetch();
+    messages.forEach((d, i, data) => {
+        d.showYearMonth = false;
+        if (i) {
+            const prev = data[i - 1];
+            d.showYearMonth = d.createdAt.getTime() - prev.createdAt.getTime() > 10 * 60 * 1000;
+        } else {
+            d.showYearMonth = true;
+        }
+    });
     return {
-        messages: Message.find({ to }).fetch(),
+        messages,
         to,
         chatUser: Meteor.users.findOne({ _id: userId }),
         chatGroup,
