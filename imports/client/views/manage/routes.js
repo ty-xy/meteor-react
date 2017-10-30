@@ -5,6 +5,7 @@ import {
 import Welcome from './component/Welcome';
 import Log from './logmanage/Log';
 import Notice from './notice/Notice';
+import Audit from './audit/Audit';
 
 
 export default () => (
@@ -13,7 +14,7 @@ export default () => (
         <Route path="/manage/checking" component={() => <h1>checking</h1>} />
         <Route path="/manage/logging" component={Log} />
         <Route path="/manage/notice" component={Notice} />
-        <Route path="/manage/audit" render={() => <h1>audit</h1>} />
+        <Route path="/manage/audit" component={Audit} />
         <Route path="/manage/netdisk" render={() => <h1>net</h1>} />
         <Route path="/manage/forms" render={() => <h1>forms</h1>} />
     </div>

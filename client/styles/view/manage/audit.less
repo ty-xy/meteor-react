@@ -1,0 +1,60 @@
+@import '../util/util';
+
+.e-mg-audit-tab-pre{
+    float: right;
+    a{
+        color: @blueColor;
+    }
+}
+.e-mg-audit-content{
+    .e-mg-audit-tab{
+        border-bottom: 1px solid rgb(220, 220, 220);
+        a{
+            margin-right: 30px;
+            color: @color66;
+            display: inline-block;
+            padding: 0 10px 8px 10px;
+        }
+        .e-mg-audit-tab-active{
+            color: @blueColor;
+            border-bottom: 2px solid @blueColor;
+        }
+    }
+    .e-mg-audit-content-body{
+        // 发起审批卡片
+        .e-mg-audit-send{
+            margin: 20px 0;
+            display: flex;
+            flex-flow: row wrap;
+        }
+        .e-mg-audit-send-card{
+            width: 20%;
+            text-align: center;
+            margin-top: 28px;
+            .e-mg-audit-send-card-link{
+                border-radius: 6px;
+                display: inline-block;
+                width: 188px;
+                padding: 40px 0;
+                border: 1px solid @blueColor;
+            }
+        }
+    }
+}
+.e-mg-audit-form{
+    margin-top: 40px;
+    color: #2A2A2A !important;
+}
+
+// 组件样式
+// goback
+.e-mg-audit-goback{
+    border-bottom: 1px solid rgb(220, 220, 220);
+    padding-bottom: 8px;
+    padding-left: 15px;
+    .e-mg-audit-send-card-link{
+        padding-bottom: 5px;
+        color: @color66;
+        font-size: 20px;
+    }
+}
