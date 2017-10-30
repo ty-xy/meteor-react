@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
+import PropTypes from 'prop-types';
 
 import ContactList from './chatSideLeft/ContactList';
 
@@ -7,6 +10,7 @@ import FriendsList from './chatSideLeft/FriendsList';
 import GroupList from './chatSideLeft/GroupList';
 import AddChat from '../chat/chatSideLeft/addChat/AddChat';
 import ChatWindow from './chatWindow/ChatWindow';
+import UserUtil from '../../../util/user';
 
 // import NewFriend from './chatWindow/NewFriend';
 // import ProjectNotice from './chatWindow/ProjectNotice';
@@ -14,6 +18,9 @@ import ChatWindow from './chatWindow/ChatWindow';
 
 @pureRender
 class Chat extends Component {
+    static propTypes = {
+        userChatList: PropTypes.array,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
@@ -31,6 +38,10 @@ class Chat extends Component {
         this.setState({ selected: index });
     }
     changeTo = (to, userId) => {
+        if (!this.props.userChatList.includes(to)) {
+            Meteor.call('addUserChat', to);
+            console.log(666, '需要添加好友聊天列表');
+        }
         this.setState({ to, userId });
     }
     render() {
@@ -78,4 +89,17 @@ class Chat extends Component {
     }
 }
 
-export default Chat;
+
+export default withTracker(() => {
+    Meteor.subscribe('users');
+    const chatList = UserUtil.getChatList();
+    const userChatList = [];
+    chatList.forEach((x) => {
+        if (x.type === 'user') {
+            userChatList.push(x.userId);
+        }
+    });
+    return {
+        userChatList,
+    };
+})(Chat);

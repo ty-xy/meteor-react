@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Icon from '../components/Icon';
 
 @pureRender
-class Video extends Component {
+class VideoMeeting extends Component {
     static propTypes = {
         closeVideo: PropTypes.func,
     }
@@ -75,6 +75,7 @@ class Video extends Component {
                 // 对方接收到这个offer
                 otherConnection.setRemoteDescription(offer);
                 // 对方产生一个answer
+                // 通过socket传递给指定socketId
                 otherConnection.createAnswer()
                     .then((answer) => {
                         otherConnection.setLocalDescription(answer);
@@ -116,4 +117,4 @@ class Video extends Component {
     }
 }
 
-export default Video;
+export default VideoMeeting;
