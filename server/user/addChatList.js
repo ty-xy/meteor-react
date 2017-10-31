@@ -1,18 +1,35 @@
 import { Meteor } from 'meteor/meteor';
 
 Meteor.methods({
-    addUserChat(friendId) {
-        Meteor.users.update(
-            Meteor.userId(),
-            {
-                $push: {
-                    'profile.chatList': {
-                        type: 'user',
-                        userId: friendId,
-                        time: new Date(),
+    addChatList(chatId, type) {
+        if (type === 'userId') {
+            Meteor.users.update(
+                Meteor.userId(),
+                {
+                    $push: {
+                        'profile.chatList': {
+                            type: 'user',
+                            userId: chatId,
+                            time: new Date(),
+                        },
                     },
                 },
-            },
-        );
+            );
+        } else if (type === 'groupId') {
+            Meteor.users.update(
+                Meteor.userId(),
+                {
+                    $push: {
+                        'profile.chatList': {
+                            type: 'group',
+                            groupId: chatId,
+                            time: new Date(),
+                        },
+                    },
+                },
+            );
+        } else {
+            console.log(type);
+        }
     },
 });

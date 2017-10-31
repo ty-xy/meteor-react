@@ -29,14 +29,13 @@ class ContactList extends Component {
             feedback.dealError(err);
         });
     }
-    renderUser = (user, lastMessage, time, type) => (
+    renderUser = (user, lastMessage, time, type, index) => (
         <div
-            key={user._id}
+            key={index}
             onClick={() => {
                 this.props.handleToggle(user._id);
                 this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id);
             }}
-            ref={i => this.chatTab = i}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type)} />
@@ -54,15 +53,13 @@ class ContactList extends Component {
             </div>
         </div>
     )
-    renderGroup = (group, lastMessage, time, type) => (
+    renderGroup = (group, lastMessage, time, type, i) => (
         <div
             onClick={() => {
-                this.handleToggle(group._id);
                 this.props.changeTo(group._id, group._id);
             }}
-            ref={this.chatTab}
-            key={group._id}
-            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.state.selected && this.state.selected[group._id] })}
+            key={i}
+            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[group._id] })}
         >
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type)} />
             <div className="user-avatar">
@@ -79,11 +76,11 @@ class ContactList extends Component {
             </div>
         </div>
     )
-    renderChatListItem = (item) => {
+    renderChatListItem = (item, i) => {
         if (item.user) {
-            return this.renderUser(item.user, item.lastMessage, item.time, item.type);
+            return this.renderUser(item.user, item.lastMessage, item.time, item.type, i);
         } else if (item.group) {
-            return this.renderGroup(item.group, item.lastMessage, item.time, item.type);
+            return this.renderGroup(item.group, item.lastMessage, item.time, item.type, i);
         }
         // console.error('不支持的聊天类型', item);
         return null;

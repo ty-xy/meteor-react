@@ -19,7 +19,7 @@ import feedback from '../../../util/feedback';
 @pureRender
 class Chat extends Component {
     static propTypes = {
-        userChatList: PropTypes.array,
+        chatList: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
@@ -36,22 +36,23 @@ class Chat extends Component {
         };
     }
     handleClick = (index) => {
-        this.setState({ selected: index });
+        this.setState({
+            selected: index,
+        });
     }
-    changeTo = (to, userId) => {
-        if (!this.props.userChatList.includes(userId)) {
-            Meteor.call('addUserChat', userId, (err) => {
+    changeTo = (to, userId, type) => {
+        if (type && !this.props.chatList.find(item => item[type] === userId)) {
+            Meteor.call('addChatList', userId, type, (err) => {
                 feedback.dealError(err);
-                this.handleToggle(userId);
             });
-            console.log(666, '需要添加好友聊天列表');
         }
+        this.handleToggle(userId);
         this.setState({ to, userId });
     }
     handleToggle = (value) => {
         this.setState({
             selectedChat: {
-                [value]: !this.state.selectedChat[value],
+                [value]: true,
             },
         });
     }
@@ -117,13 +118,13 @@ class Chat extends Component {
 export default withTracker(() => {
     Meteor.subscribe('users');
     const chatList = UserUtil.getChatList();
-    const userChatList = [];
-    chatList.forEach((x) => {
-        if (x.type === 'user') {
-            userChatList.push(x.userId);
-        }
-    });
+    // const userChatList = [];
+    // chatList.forEach((x) => {
+    //     if (x.type === 'user') {
+    //         userChatList.push(x.userId);
+    //     }
+    // });
     return {
-        userChatList,
+        chatList,
     };
 })(Chat);

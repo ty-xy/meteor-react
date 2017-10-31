@@ -86,8 +86,8 @@ class GroupList extends Component {
                                             key={index}
                                             className="friend-list-item"
                                             onClick={() => {
-                                                this.props.changeTo(item._id, item._id);
                                                 this.props.handleClick();
+                                                this.props.changeTo(item._id, item._id, 'groupId');
                                             }}
                                         >
                                             <p>
@@ -113,7 +113,6 @@ export default withTracker(() => {
     const groupIds = UserUtil.getGroups();
 
     const groups = groupIds.map(_id => Group.findOne({ _id }));
-    console.log(111, groups);
     return {
         groups,
     };

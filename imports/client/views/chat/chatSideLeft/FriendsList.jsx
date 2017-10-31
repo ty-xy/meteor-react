@@ -44,7 +44,7 @@ class FriendsList extends Component {
                                     <div
                                         className="friend-pannel-list"
                                         onClick={() => {
-                                            this.props.changeTo(IdUtil.merge(Meteor.userId(), item.user._id), item.user._id);
+                                            this.props.changeTo(IdUtil.merge(Meteor.userId(), item.user._id), item.user._id, 'userId');
                                             this.props.handleClick();
                                         }}
                                     >
