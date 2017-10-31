@@ -13,6 +13,8 @@ import Notice from '../imports/schema/notice';
 import Log from '../imports/schema/log';
 import Project from '../imports/schema/project';
 import TaskBoard from '../imports/schema/taskBoard';
+import Leave from '../imports/schema/leave';
+
 import File from '../imports/schema/file';
 
 publishComposite('message', {
@@ -49,3 +51,4 @@ Meteor.publish('company', () => Company.find({}));
 Meteor.publish('log', () => Log.find({}));
 
 Meteor.publish('notice', () => Notice.find({}));
+Meteor.publish('leave', () => Leave.find({}));

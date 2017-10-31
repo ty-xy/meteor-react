@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-// import { Route, Link } from 'react-router-dom';
 import { Form } from 'antd';
 import PropTypes from 'prop-types';
-// import format from 'date-format';
+import { Meteor } from 'meteor/meteor';
 import Goback from './component/Goback';
 import MyInput from './component/Input';
 import MySelect from './component/Select';
@@ -10,6 +9,9 @@ import MyDatePicker from './component/Date';
 import MyTextArea from './component/InputArea';
 import ImgUpload from '../component/ImgUpload';
 import SubmitBtn from './component/SubmitBtn';
+import GroupSelect from './component/GroupSelect';
+import feedback from '../../../../util//feedback';
+
 
 const formItemLayout = {
     labelCol: {
@@ -32,14 +34,33 @@ class Audit extends Component {
         super(props);
         this.state = {
             img: [],
+            groupRequire: true, // 选择审核对象是否必填
+            requireGroupNotice: false, // 必填项错误信息是否提示
+            approvers: [], // 选择的审核对象
+            copy: [],
         };
+    }
+    // 获取添加的人员
+    getGroup = (keyword, data) => {
+        this.setState({ [keyword]: data, requireGroupNotice: false });
     }
     handleSubmit = (e) => {
         e.preventDefault();
         const { form } = this.props;
-        const { img } = this.state;
+        const { img, approvers, copy, groupRequire } = this.state;
         form.validateFields((err, fieldsValue) => {
-            if (err) return false;
+            if (err) {
+                return false;
+            }
+            if (groupRequire) {
+                if (approvers.length === 0) {
+                    this.setState({ requireGroupNotice: true });
+                    return false;
+                }
+            }
+            fieldsValue.approvers = approvers;
+            fieldsValue.copy = copy;
+            fieldsValue.username = Meteor.user().username;
             const startAt = fieldsValue.startAt;
             const endAt = fieldsValue.endAt;
             const res = {
@@ -49,6 +70,17 @@ class Audit extends Component {
                 img,
             };
             console.log('res', res);
+            Meteor.call(
+                'createLeave',
+                { ...res },
+                (_err) => {
+                    if (_err) {
+                        feedback.dealError(_err);
+                    } else {
+                        feedback.successToastFb('创建成功', () => { this.props.history.push({ pathname: '/manage/audit' }); });
+                    }
+                },
+            );
         });
     }
     // 删除图片
@@ -59,7 +91,6 @@ class Audit extends Component {
     changeUpdate = (name, imgs) => {
         // const img = [];
         // const file = [];
-        console.log('changeUpdate', name, imgs);
         // const { img, file } = this.state;
         if (name === 'img') {
             this.setState({ img: imgs });
@@ -68,15 +99,13 @@ class Audit extends Component {
             this.setState({ file: imgs });
         }
     }
-
     render() {
         // const { location } = this.props;
-        const { img } = this.state;
-        console.log('Goback', this.props);
+        const { img, isApproversAuto, requireGroupNotice, approvers, copy } = this.state;
         return (
-            <div className="e-mg-audit">
+            <div className="e-mg-audit-leave">
                 <Goback {...this.props} title="请假" />
-                <Form onSubmit={this.handleSubmit} className="margin-top-40 e-mg-audit-form">
+                <Form onSubmit={this.handleSubmit} className="margin-top-40 e-mg-audit-form" style={{ maxHeight: '550px' }}>
                     <MySelect
                         {...this.props}
                         label="请假类型"
@@ -140,7 +169,28 @@ class Audit extends Component {
                     >
                         <ImgUpload title="（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                     </FormItem>
-                    <SubmitBtn />
+                    <GroupSelect
+                        keyword="approvers"
+                        label="审批人"
+                        isSelected={isApproversAuto}
+                        isSelectedTrueTitle="审批人已经由管理员预设"
+                        isSelectedFalseTitle="添加审批人"
+                        selectedValue={approvers}
+                        required={requireGroupNotice}
+                        requiredErr="审批人必选"
+                        getGroup={this.getGroup}
+                        modelTitle="选人"
+                    />
+                    <GroupSelect
+                        keyword="copy"
+                        label="抄送人"
+                        isSelectedFalseTitle="添加抄送人"
+                        isSelectedFalseTitleDes="(审批通知后,通知抄送人)"
+                        selectedValue={copy}
+                        getGroup={this.getGroup}
+                        modelTitle="选团队"
+                    />
+                    <SubmitBtn {...this.props} />
                 </Form>
             </div>
         );
@@ -149,6 +199,7 @@ class Audit extends Component {
 
 Audit.propTypes = {
     form: PropTypes.object,
+    history: PropTypes.object,
 };
 
 export default Form.create()(Audit);
