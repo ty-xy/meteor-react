@@ -2,7 +2,7 @@ import format from 'date-format';
 
 const formateDate = {
     dealTime(value) {
-        const disTime = (new Date()).getTime() - value.getTime();
+        const disTime = Date.now() - value.getTime();
         if (disTime < 24 * 60 * 60 * 1000) {
             return format('hh:mm', value);
         } else if (disTime < 24 * 60 * 60 * 1000 * 2) {
@@ -11,7 +11,7 @@ const formateDate = {
         return format('yyyy-MM-dd', value);
     },
     dealMessageTime(value) {
-        const disTime = (new Date()).getTime() - value.getTime();
+        const disTime = Date.now() - value.getTime();
         if (disTime < 24 * 60 * 60 * 1000) {
             return format('hh:mm', value);
         } else if (disTime < 24 * 60 * 60 * 1000 * 2) {

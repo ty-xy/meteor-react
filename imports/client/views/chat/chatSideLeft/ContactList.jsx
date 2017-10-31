@@ -20,22 +20,9 @@ class ContactList extends Component {
     static propTypes = {
         changeTo: PropTypes.func.isRequired,
         chatList: PropTypes.array,
+        handleToggle: PropTypes.func,
+        selectedChat: PropTypes.object,
     }
-    constructor(...args) {
-        super(...args);
-        this.state = {
-            selected: {},
-        };
-    }
-    // 点击按钮,选择或取消选择
-    handleToggle = (value) => {
-        this.setState({
-            selected: {
-                [value]: !this.state.selected[value],
-            },
-        });
-    }
-
     compare = property => (a, b) => b[property] - a[property];
     deleteChat = (userId, type) => {
         Meteor.call('deleteChat', userId, type, (err) => {
@@ -46,13 +33,12 @@ class ContactList extends Component {
         <div
             key={user._id}
             onClick={() => {
-                this.handleToggle(user._id);
+                this.props.handleToggle(user._id);
                 this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id);
             }}
             ref={i => this.chatTab = i}
-            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.state.selected && this.state.selected[user._id] })}
+            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
-            <div>{this.state.selected[user._id]}</div>
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type)} />
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />

@@ -11,7 +11,7 @@ import GroupList from './chatSideLeft/GroupList';
 import AddChat from '../chat/chatSideLeft/addChat/AddChat';
 import ChatWindow from './chatWindow/ChatWindow';
 import UserUtil from '../../../util/user';
-
+import feedback from '../../../util/feedback';
 // import NewFriend from './chatWindow/NewFriend';
 // import ProjectNotice from './chatWindow/ProjectNotice';
 
@@ -32,17 +32,28 @@ class Chat extends Component {
             ],
             to: '',
             userId: '',
+            selectedChat: {},
         };
     }
     handleClick = (index) => {
         this.setState({ selected: index });
     }
     changeTo = (to, userId) => {
-        if (!this.props.userChatList.includes(to)) {
-            Meteor.call('addUserChat', to);
+        if (!this.props.userChatList.includes(userId)) {
+            Meteor.call('addUserChat', userId, (err) => {
+                feedback.dealError(err);
+                this.handleToggle(userId);
+            });
             console.log(666, '需要添加好友聊天列表');
         }
         this.setState({ to, userId });
+    }
+    handleToggle = (value) => {
+        this.setState({
+            selectedChat: {
+                [value]: !this.state.selectedChat[value],
+            },
+        });
     }
     render() {
         return (
@@ -75,9 +86,22 @@ class Chat extends Component {
                         </ul>
                     </div>
                     <div className="ejianlian-chat-user-list">
-                        { this.state.selected === 1 ? <ContactList changeTo={this.changeTo} /> : null }
-                        { this.state.selected === 2 ? <FriendsList changeTo={this.changeTo} handleClick={this.handleClick.bind(this, 1)} /> : null }
-                        { this.state.selected === 3 ? <GroupList changeTo={this.changeTo} handleClick={this.handleClick.bind(this, 1)} /> : null }
+                        { this.state.selected === 1 ?
+                            <ContactList
+                                changeTo={this.changeTo}
+                                handleToggle={this.handleToggle}
+                                selectedChat={this.state.selectedChat}
+                            /> : null }
+                        { this.state.selected === 2 ?
+                            <FriendsList
+                                changeTo={this.changeTo}
+                                handleClick={this.handleClick.bind(this, 1)}
+                            /> : null }
+                        { this.state.selected === 3 ?
+                            <GroupList
+                                changeTo={this.changeTo}
+                                handleClick={this.handleClick.bind(this, 1)}
+                            /> : null }
                     </div>
                     <AddChat />
                 </div>
