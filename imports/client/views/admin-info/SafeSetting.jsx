@@ -3,6 +3,8 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 
+import Icon from '../../components/Icon';
+
 
 class SafeSetting extends Component {
     static propTypes = {
@@ -82,7 +84,7 @@ class SafeSetting extends Component {
                     <div className="container-middle container-content edit-account-block1" >
                         <div className="container-title">
                             修改登录账号
-                            <i className="icon icon-close-addFriend icon-close" onClick={this.handleEditAccount}>&#xe641;</i>
+                            <Icon icon="icon-guanbi icon-close" size={20} onClick={this.handleEditAccount} />
                         </div>
                         <div className="edit-step-tip">
                             <img src="/editAccount1.png" alt="" />
@@ -97,7 +99,7 @@ class SafeSetting extends Component {
                     <div className="container-middle container-content edit-account-block">
                         <div className="container-title">
                             修改登录账号
-                            <i className="icon icon-close-codeBlock icon-close" onClick={this.handleShowEditAccountStep2}>&#xe641;</i>
+                            <Icon icon="icon-guanbi icon-close" size={20} onClick={this.handleShowEditAccountStep2} />
                         </div>
                         <div className="edit-step-tip">
                             <img src="/editAccount2.png" alt="" />

@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+// import { Accounts } from 'meteor/accounts-base';
 
 import qiniu from '../../imports/util/qiniu';
 
@@ -17,4 +18,24 @@ Meteor.methods({
                 },
             )));
     },
+    changeUserName(newUserName) {
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $set: {
+                    username: newUserName,
+                },
+            },
+        );
+    },
+    // changePassword(oldPassword, newPassword) {
+    //     Accounts.changePassword(oldPassword, newPassword, (err) => {
+    //         console.error(err);
+    //     });
+    // },
+    // setPassword(newPassword) {
+    //     Accounts.setPassword(Meteor.userId(), newPassword, (err) => {
+    //         console.error(err);
+    //     });
+    // },
 });
