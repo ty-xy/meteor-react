@@ -50,7 +50,7 @@ class ChatWindow extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length) {
+        if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.length > 0) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage) {
                 $lastMessage.scrollIntoView(true);
@@ -81,7 +81,6 @@ class ChatWindow extends Component {
         });
     }
     sendMessage = (content, type) => {
-        console.log(content, type);
         Meteor.call(
             'insertMessage',
             {

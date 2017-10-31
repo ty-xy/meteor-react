@@ -27,6 +27,7 @@ class ContactList extends Component {
     deleteChat = (userId, type) => {
         Meteor.call('deleteChat', userId, type, (err) => {
             feedback.dealError(err);
+            this.props.changeTo('', '');
         });
     }
     renderUser = (user, lastMessage, time, type, index) => (
