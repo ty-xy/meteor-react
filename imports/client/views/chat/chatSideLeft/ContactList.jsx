@@ -3,7 +3,6 @@ import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
-import format from 'date-format';
 import classnames from 'classnames';
 
 import IdUtil from '../../../../util/id';
@@ -44,7 +43,7 @@ class ContactList extends Component {
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
             </div>
             <div className="user-message">
-                <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.dealTime(lastMessage.createdAt) : format('hh:mm', time)} </span></p>
+                <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
                     <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了' }</span>
                     {/* <span className="notice-red-dot">
@@ -67,7 +66,7 @@ class ContactList extends Component {
                 <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
             </div>
             <div className="user-message">
-                <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.dealTime(lastMessage.createdAt) : format('hh:mm', time)} </span></p>
+                <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
                     <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
                     {/* <span className="notice-red-dot">

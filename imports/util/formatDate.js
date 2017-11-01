@@ -1,20 +1,24 @@
 import format from 'date-format';
 
 const formateDate = {
-    dealTime(value) {
-        const disTime = Date.now() - value.getTime();
-        if (disTime < 24 * 60 * 60 * 1000) {
+    renderDate(value) {
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+        if (value.toLocaleDateString() === today.toLocaleDateString()) {
             return format('hh:mm', value);
-        } else if (disTime < 24 * 60 * 60 * 1000 * 2) {
+        } else if (value.toLocaleDateString() === yesterday.toLocaleDateString()) {
             return `昨天${format('hh:mm', value)}`;
         }
         return format('yyyy-MM-dd', value);
     },
     dealMessageTime(value) {
-        const disTime = Date.now() - value.getTime();
-        if (disTime < 24 * 60 * 60 * 1000) {
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+        if (value.toLocaleDateString() === today.toLocaleDateString()) {
             return format('hh:mm', value);
-        } else if (disTime < 24 * 60 * 60 * 1000 * 2) {
+        } else if (value.toLocaleDateString() === yesterday.toLocaleDateString()) {
             return `昨天${format('hh:mm', value)}`;
         }
         return format('yyyy-MM-dd hh:mm', value);

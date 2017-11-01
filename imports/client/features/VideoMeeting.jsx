@@ -23,14 +23,14 @@ class VideoMeeting extends Component {
                     if (this.hasRTCPeerConnection()) {
                         this.startPeerConnection(localMediaStream);
                     } else {
-                        alert('没有RTCPeerConnection API');
+                        console.log('没有RTCPeerConnection API');
                     }
                 },
                 (err) => {
                     console.log(err);
                 });
         } else {
-            alert('没有userMedia API');
+            console.log('没有userMedia API');
         }
     }
     hasUserMedia = () => {

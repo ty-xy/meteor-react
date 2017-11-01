@@ -328,9 +328,9 @@ class ChatWindow extends Component {
                         <p className="skill-icon">
                             <Icon icon="icon-card icon" />
                         </p>
-                        <p className="skill-icon">
+                        {/* <p className="skill-icon">
                             <Icon icon="icon-dakaishipin icon" size={20} onClick={this.sendVideo} />
-                        </p>
+                        </p> */}
                     </div>
                     <div className="chat-message-input">
                         <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
