@@ -102,6 +102,7 @@ class Audit extends Component {
     render() {
         // const { location } = this.props;
         const { img, isApproversAuto, requireGroupNotice, approvers, copy } = this.state;
+        // console.log('leave', this.props);
         return (
             <div className="e-mg-audit-leave">
                 <Goback {...this.props} title="请假" />

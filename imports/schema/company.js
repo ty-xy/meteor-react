@@ -3,9 +3,6 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 const Company = new Mongo.Collection('company');
 Company.schema = new SimpleSchema({
-    id: {
-        type: String,
-    },
     name: {
         type: String,
     },
@@ -14,6 +11,28 @@ Company.schema = new SimpleSchema({
     },
     avatar: {
         type: String,
+        optional: true,
+    },
+    position: {
+        type: [String],
+        optional: true,
+    },
+    department: {
+        type: [String],
+        optional: true,
+    },
+    members: {
+        type: [Object],
+        optional: true,
+    },
+    'members.$.userId': {
+        type: String,
+    },
+    'members.$.position': {
+        type: [String],
+    },
+    'members.$.department': {
+        type: [String],
     },
 });
 

@@ -5,8 +5,8 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import LeftCard from './component/LeftCard';
 import ManageRoute from './routes';
+import Company from '../../../schema/company';
 
-let i = 22;
 
 class Manage extends (PureComponent || Component) {
     constructor(props) {
@@ -32,9 +32,8 @@ class Manage extends (PureComponent || Component) {
         Meteor.call(
             'createCompany',
             {
-                name: 'test',
+                name: `公司${id}`,
                 createdAt: new Date(),
-                id,
                 avatar: '',
             },
             (err) => {
@@ -44,14 +43,82 @@ class Manage extends (PureComponent || Component) {
                 // this.$message.value = '';
             });
     }
-    clickCompany = (key) => {
-        console.error('e', key);
-        i++;
-        this.addCompany(`${i}`);
+    clickCompany = (id) => {
+        console.log('切换公司', id);
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $set: {
+                    'profile.mainCompany': id,
+                },
+            },
+        );
+    }
+    // 更新部门
+    updateDepartment = (e) => {
+        e.preventDefault();
+        console.log('更新部门');
+        const _id = Meteor.user().profile.mainCompany;
+        const res = {
+            deparment: '财政部',
+            _id,
+        };
+        Meteor.call(
+            'updateDepartment',
+            res,
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            },
+        );
+    }
+    // 更新部门
+    updateMember = (e) => {
+        e.preventDefault();
+        console.log('更新部门');
+        const _id = Meteor.user().profile.mainCompany;
+        const res = {
+            member: '4HApvk4bZLigRvWrq',
+            _id,
+        };
+        Meteor.call(
+            'updateMember',
+            res,
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            },
+        );
+    }
+    // 更新部门人员
+    updateMemberDep = (e) => {
+        e.preventDefault();
+        console.log('更新部门');
+        const _id = Meteor.user().profile.mainCompany;
+        const res = {
+            member: '4HApvk4bZLigRvWrq',
+            department: '财政部',
+            _id,
+        };
+        Meteor.call(
+            'updateMemberDep',
+            res,
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            },
+        );
     }
     render() {
+        // console.log('res', Meteor.userId());
         return (
             <Row className="e-mg-container" gutter={50}>
+                <a href="" onClick={this.updateDepartment}>更新部门</a>
+                <a href="" onClick={this.updateMember}>更新人员</a>
+                <a href="" onClick={this.updateMemberDep}>更新部门人员</a>
                 <LeftCard {...this.props} {...this.context} {...this.state} changeCompany={this.clickCompany} />
                 <Col span={18} className="e-mg-right">
                     <Card bordered={false} style={{ height: '100%' }}>
@@ -71,5 +138,6 @@ export default withTracker(() => {
     Meteor.subscribe('company');
     return {
         users: Meteor.user() || {},
+        allCompanys: Company.find().fetch(),
     };
 })(Manage);

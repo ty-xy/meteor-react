@@ -4,13 +4,10 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Modal, Form, Col, Select, Row, Tag, Checkbox, Button } from 'antd';
 import MyIcon from '../../../../components/Icon';
+import Company from '../../../../../schema/company';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
-const companyData = [
-    { name: '中亿集团', _id: 'sdhj3jhskd_', deps: [{ name: '商务部', _id: 'hd32hjd43j_' }, { name: '技术部', _id: 'hd32hjsd43j_' }] },
-    { name: '摩尔集团', _id: 'sdhj3jhdhskd_', deps: [{ name: '行政部', _id: 'ahd32hjd43j_' }, { name: '产品部', _id: 'hd32s2hjsd43j_' }] },
-];
 
 
 const formItemLayout = {
@@ -23,45 +20,23 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
+const colors = ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'];
 
 class GroupSelect extends (PureComponent || Component) {
     state = {
         visible: false,
-        deps: companyData[0].deps,
-        secondDep: companyData[0].deps[0].name,
-        users: [
-            { _id: 'sdjk2305_dj', username: '1382490', profile: { name: '小米', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk230ds5_dj', username: '1382490', profile: { name: '小绿', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk2sd305_dgs', username: '1382e490', profile: { name: '小灰', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk230bmnb5_dj', username: '13824fs90', profile: { name: '小黑1', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk23035_dj', username: '1382490', profile: { name: '小米2', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk2301ds5_dj', username: '1382490', profile: { name: '小绿3', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk24sd305_dgs', username: '1382e490', profile: { name: '小灰4', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk2230bmnb5_dj', username: '13824fs90', profile: { name: '小黑5', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk23055_dj', username: '1382490', profile: { name: '小米6', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk2306ds5_dj', username: '1382490', profile: { name: '小绿7', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk2sd3805_dgs', username: '1382e490', profile: { name: '小灰8', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-            { _id: 'sdjk230bmnb95_dj', username: '13824fs90', profile: { name: '小黑9', avatar: '//oxldjnom8.bkt.clouddn.com/avatar_bEuDeBDKumrTka7t9_1509151555626.jpeg' } },
-        ],
+        users: [],
+        dep: undefined,
     }
-    handleCompanyChange = (value) => {
-        let secondDep = '';
-        let deps = [];
-        companyData.forEach((item) => {
-            if (value === item._id) {
-                secondDep = item.deps[0].name;
-                deps = item.deps;
-            }
-            return [];
-        });
+    componentWillMount() {
         this.setState({
-            deps,
-            secondDep,
+            users: (this.props.companyInfo && this.props.companyInfo.members) || [],
         });
     }
     onSecondDepChange = (value) => {
+        console.log('onSecondDepChange', value);
         this.setState({
-            secondDep: value,
+            dep: value,
         });
     }
     showModal = (e) => {
@@ -95,7 +70,7 @@ class GroupSelect extends (PureComponent || Component) {
         const users = [];
         let allNum = 0;
         this.state.users.forEach((item) => {
-            if (item._id === id) {
+            if (item.userId === id) {
                 item.selected = !item.selected;
             }
             if (item.selected) {
@@ -109,20 +84,67 @@ class GroupSelect extends (PureComponent || Component) {
             this.setState({ users, checked: true, allNum });
         }
     }
+    // 选中群组
+    handleGroupChange = (e, id) => {
+        e.preventDefault();
+        let allGroupNum = 0;
+        const { users } = this.state;
+        // const { companyInfo } = this.props;
+        const _users = [];
+        // const _dep = [];
+        console.log('e, id', id);
+        users.forEach((item) => {
+            // console.log('item', id, item.department);
+            if (item.department.indexOf(id) >= 0) {
+                item.selected = !item.selected;
+            }
+            if (item.selected) {
+                allGroupNum++;
+            }
+            _users.push(item);
+        });
+        // companyInfo.department.forEach(() => {
+        //     if () {
+
+        //     }
+        //     _dep.push(item);
+        // });
+        if (allGroupNum < this.state.users.length) {
+            this.setState({ users, checked: false, allGroupNum });
+        } else {
+            this.setState({ users, checked: true, allGroupNum });
+        }
+    }
     // 全选
     handleCheckbox = (e) => {
         let allNum = 0;
-        const { users, checked } = this.state;
-        const _users = users.map((item) => {
-            if (e.target.checked === true) {
-                allNum = 1;
-                item.selected = true;
-            } else {
-                allNum = 0;
-                item.selected = false;
-            }
-            return item;
-        });
+        const { users, checked, dep } = this.state;
+        const _users = [];
+        if (!dep) {
+            users.forEach((item) => {
+                if (e.target.checked === true) {
+                    allNum = 1;
+                    item.selected = true;
+                } else {
+                    allNum = 0;
+                    item.selected = false;
+                }
+                _users.push(item);
+            });
+        } else {
+            users.forEach((item) => {
+                if (item.department.indexOf(dep) >= 0) {
+                    if (e.target.checked === true) {
+                        allNum = 1;
+                        item.selected = true;
+                    } else {
+                        allNum = 0;
+                        item.selected = false;
+                    }
+                }
+                _users.push(item);
+            });
+        }
         this.setState({
             checked: !checked,
             users: _users,
@@ -140,14 +162,71 @@ class GroupSelect extends (PureComponent || Component) {
         this.setState({ visible: false });
         return res;
     }
-    // 公司
-    companyOptions = () => (
-        companyData.map(company => <Option key={company._id} value={company._id}>{company.name}</Option>)
-    )
+    // 根据人查昵称
+    getNickname = (_id) => {
+        const { allUsers } = this.props;
+        let name = '';
+        allUsers.forEach((item) => {
+            if (item._id === _id) {
+                name = item.profile.name || item.username;
+            }
+        });
+        return name;
+    }
+    getAvatar = (_id, img) => {
+        const { allUsers } = this.props;
+        let avatar = '';
+        let name = '';
+        allUsers.forEach((item) => {
+            if (item._id === _id) {
+                avatar = item.profile.avatar;
+                name = item.profile.name;
+            }
+        });
+        if (avatar) {
+            return (<img src={avatar} alt="" />);
+        }
+        return <span style={{ background: colors[Math.floor(Math.random() * 4)] }} className={`e-mg-audit-deps-people-per-${img} e-mg-audit-deps-people-per-span`}>{name.slice(-2)}</span>;
+    }
     render() {
-        const { keyword, label, required, isSelected, isSelectedFalseTitle, isSelectedTrueTitle, modelTitle, selectValue = [], isSelectedFalseTitleDes, requiredErr, getGroup } = this.props;
-        console.log('默认的时间', selectValue);
-        const { deps, users, checked, allNum } = this.state;
+        const { keyword, label, required, isSelected, isSelectedFalseTitle, isSelectedTrueTitle, modelTitle, selectValue = [], isSelectedFalseTitleDes, requiredErr, getGroup, isSelecteGroup } = this.props;
+        const { department = [], name } = this.props.companyInfo;
+        const { dep, users, checked, allNum } = this.state;
+        // isSelecteGroup 是否为选择群组
+        console.log('默认的时间', selectValue, department);
+        // 用户列表
+        const searchUser = (data) => {
+            if (dep) {
+                return data.map((item) => {
+                    if (item.department.indexOf(dep) >= 0) {
+                        return (
+                            <a key={item.userId} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleChange(e, item.userId)}>
+                                {this.getAvatar(item.userId)}
+                                {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
+                                <span>{this.getNickname(item.userId)}</span>
+                            </a>
+                        );
+                    }
+                    return null;
+                });
+            }
+            return data.map(item => (
+                <a key={item.userId} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleChange(e, item.userId)}>
+                    {this.getAvatar(item.userId)}
+                    {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
+                    <span>{this.getNickname(item.userId)}</span>
+                </a>
+            ));
+        };
+        const searchDep = data => (
+            data.map(item => (
+                <a key={item} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleGroupChange(e, item)}>
+                    <span style={{ background: colors[Math.floor(Math.random() * 4)] }} className="e-mg-audit-deps-people-per-span">{item.slice(2)}</span>
+                    {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
+                    <span>{item}</span>
+                </a>
+            ))
+        );
         return (
             <div style={{ marginBottom: '20px' }}>
                 <FormItem
@@ -166,9 +245,9 @@ class GroupSelect extends (PureComponent || Component) {
                         users.map((item) => {
                             if (item.selected) {
                                 return (
-                                    <a href="" key={item._id} onClick={e => this.handleChange(e, item._id)} className="e-mg-audit-seleted-img">
-                                        <img src={item.profile.avatar} alt="" />
-                                        <p>{item.profile.name}</p>
+                                    <a href="" key={item.userId} onClick={e => this.handleChange(e, item.userId)} className="e-mg-audit-seleted-img">
+                                        {this.getAvatar(item.userId, 'img')}
+                                        <p>{this.getNickname(item.userId)}</p>
                                     </a>
                                 );
                             }
@@ -177,7 +256,7 @@ class GroupSelect extends (PureComponent || Component) {
                     }
                     <span className="e-mg-audit-seleted-img">
                         <MyIcon icon="icon-tianjia3" size={36} onClick={this.showModal} />
-                        <p style={{ marginTop: '-6px' }}>审批人</p>
+                        <p style={{ marginTop: '-6px' }}>{label}</p>
                         {required ? <span style={{ position: 'absolute',
                             top: '20px',
                             left: '60px',
@@ -193,35 +272,33 @@ class GroupSelect extends (PureComponent || Component) {
                     onCancel={this.handleCancel}
                     footer={null}
                     className="e-mg-audit-xuanze"
-                    width="600px"
+                    width="700px"
                     maskClosable={false}
                 >
                     <Row className="e-mg-audit-xuanze-row">
                         <div className="e-mg-audit-xuanze-left e-mg-audit-xuanze-col">
                             {
-                                users.map(item => (item.selected ? <Tag key={item._id} closable className="margin-bottom-20" onClose={() => this.handleChange(item._id)}>{item.profile.name}</Tag> : null))
+                                users.map(item => (item.selected ? <Tag key={item.userId} closable className="margin-bottom-20" onClose={() => this.handleChange(item.userId)}>{this.getNickname(item.userId)}</Tag> : null))
                             }
                         </div>
                         <div className="e-mg-audit-xuanze-right e-mg-audit-xuanze-col">
-                            <span>公司：</span>
-                            <Select defaultValue={companyData[0]._id} style={{ width: 110 }} onChange={this.handleCompanyChange}>
-                                {this.companyOptions()}
-                            </Select>
-                            <Select allowClear value={this.state.secondDep} style={{ width: 80, marginLeft: '5px' }} onChange={this.onSecondDepChange}>
-                                {
-                                    deps.map(dep => <Option key={dep._id} value={dep._id}>{dep.name}</Option>)
-                                }
-                            </Select>
+                            <div className="margin-left-20" style={{ color: '#15b4f1', fontSize: '14px', marginBottom: '10px' }}>{name}</div>
+                            {
+                                isSelecteGroup ? null : (
+                                    <div style={{ borderBottom: '1px solid #eee', paddingBottom: '10px' }}>
+                                        <span className="margin-left-20">部门：</span>
+                                        <Select allowClear value={dep} style={{ width: '80%', marginLeft: '5px' }} placeholder="选择部门搜索" onChange={this.onSecondDepChange}>
+                                            {
+                                                department.map(item => <Option key={item} value={item}>{item}</Option>)
+                                            }
+                                        </Select>
+                                    </div>
+                                )
+                            }
                             <div className="e-mg-audit-deps-people margin-top-20">
                                 <Checkbox checked={checked} onChange={this.handleCheckbox} style={{ marginLeft: '10px', marginBottom: '10px' }}>全选</Checkbox>
                                 {
-                                    users.map(item => (
-                                        <a key={item._id} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleChange(e, item._id)}>
-                                            <img src={item.profile.avatar} alt="" />
-                                            {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
-                                            <span>{item.profile.name}</span>
-                                        </a>
-                                    ))
+                                    isSelecteGroup ? searchDep(department) : searchUser(users)
                                 }
                             </div>
                         </div>
@@ -246,11 +323,22 @@ GroupSelect.propTypes = {
     isSelected: PropTypes.bool,
     isSelectedFalseTitleDes: PropTypes.string,
     modelTitle: PropTypes.string,
+    isSelecteGroup: PropTypes.bool,
 };
 export default withTracker(() => {
-    Meteor.subscribe('user');
+    Meteor.subscribe('company');
+    Meteor.subscribe('users');
+    const companys = Company.find().fetch();
+    const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
+    let companyInfo = {};
+    companys.forEach((item) => {
+        if (item._id === mainCompany) {
+            companyInfo = item;
+        }
+    });
     return {
-        allUsers: Meteor.users.find().fetch(),
+        companyInfo,
+        allUsers: Meteor.users.find().fetch() || [],
     };
 })(GroupSelect);
 

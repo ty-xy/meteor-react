@@ -59,7 +59,7 @@ class Audit extends Component {
     )
     render() {
         const { location } = this.props;
-        console.log('dudit', this.props);
+        // console.log('dudit', this.props);
         return (
             <div className="e-mg-audit">
                 {this.tabs(location)}
