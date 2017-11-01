@@ -1,6 +1,24 @@
 import React, { Component } from 'react';
+import { Meteor } from 'meteor/meteor';
+import PropTypes from 'prop-types';
+
+import feedback from '../../../../util/feedback';
 
 class ForgetPassword extends Component {
+    static propTypes = {
+        history: PropTypes.object,
+    }
+    setPassword = () => {
+        Meteor.call('setUserPassword', this.password.value, (err) => {
+            if (err) {
+                feedback.dealError(err);
+                return;
+            }
+
+            feedback.dealSuccess('密码设置成功');
+            this.props.history.push('/chat');
+        });
+    }
     render() {
         return (
             <div className="ejianlian-form-wrap ejianlian-forget-password">
@@ -21,7 +39,7 @@ class ForgetPassword extends Component {
                                 <input type="password" placeholder="新密码" ref={i => this.password = i} />
                             </li>
                         </ul>
-                        <div className="forget-btn" onClick={this.register}>完成</div>
+                        <div className="forget-btn" onClick={this.setPassword}>完成</div>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 
 import Icon from '../../components/Icon';
+import feedback from '../../../util/feedback';
 
 
 class SafeSetting extends Component {
@@ -28,6 +29,37 @@ class SafeSetting extends Component {
             isShowEditAccountStep2: !this.state.isShowEditAccountStep2,
         });
     }
+    saveChangeUserName = () => {
+        Meteor.call('changeUserName', this.newUserName.value, (err) => {
+            if (err) {
+                feedback.dealError(err);
+                return;
+            }
+            feedback.dealSuccess('用户名修改成功');
+        });
+        this.setState({
+            isShowEditAccount: false,
+            isShowEditAccountStep2: false,
+        });
+    }
+    saveChangePassword = () => {
+        if (this.$newPassword.value && this.$newRePassword.value && this.$oldPassword.value) {
+            if (this.$newPassword.value !== this.$newRePassword.value) {
+                feedback.dealWarning('两次输入的密码不一致');
+                return;
+            }
+            Meteor.call('changeUserPassword', this.$oldPassword.value, this.$newPassword.value, (err) => {
+                if (err) {
+                    feedback.dealError(err);
+                    return;
+                }
+
+                feedback.dealSuccess('密码修改成功');
+            });
+        } else {
+            feedback.dealWarning('请输入密码');
+        }
+    }
     render() {
         const { username } = this.props.user;
         return (
@@ -49,18 +81,18 @@ class SafeSetting extends Component {
                     </li>
                     <li>
                         <label htmlFor="oldPassword">旧密码</label>
-                        <input type="password" placeholder="请您输入旧密码" />
+                        <input type="password" placeholder="请您输入旧密码" ref={i => this.$oldPassword = i} />
                     </li>
                     <li>
                         <label htmlFor="newPassword">新密码</label>
-                        <input type="password" placeholder="请您输入新密码" />
+                        <input type="password" placeholder="请您输入新密码" ref={i => this.$newPassword = i} />
                     </li>
                     <li>
                         <label htmlFor="newPassword">确认密码</label>
-                        <input type="password" placeholder="请您再次输入新密码" />
+                        <input type="password" placeholder="请您再次输入新密码" ref={i => this.$newRePassword = i} />
                     </li>
                     <li className="save-btn">
-                        <button>保存</button>
+                        <button onClick={this.saveChangePassword}>保存</button>
                     </li>
                 </ul>
                 <ul>
@@ -105,13 +137,13 @@ class SafeSetting extends Component {
                             <img src="/editAccount2.png" alt="" />
                         </div>
                         <div>
-                            <input type="number" placeholder="请输入手机号" className="input-password" />
+                            <input type="number" placeholder="请输入手机号" className="input-password" ref={i => this.$newUserName = i} />
                         </div>
                         <div className="code-container">
                             <input type="number" placeholder="请您输入验证码" className="code" />
                             <p>获取验证码</p>
                         </div>
-                        <div className="next-btn" onClick={this.handleShowEditAccountStep2}>完成</div>
+                        <div className="next-btn" onClick={this.saveChangeUserName}>完成</div>
                     </div>
                 </div>
             </div>

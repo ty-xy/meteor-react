@@ -49,6 +49,7 @@ class ContactList extends Component {
                     {/* <span className="notice-red-dot">
                         200
                 </span> */}
+                    <Icon icon="icon-icon-yxj-no-disturbing" size={8} iconColor="#b2b2b2" />
                 </p>
             </div>
         </div>
@@ -68,10 +69,11 @@ class ContactList extends Component {
             <div className="user-message">
                 <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
-                    <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
+                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
                     {/* <span className="notice-red-dot">
                     200
             </span> */}
+                    <Icon icon="icon-icon-yxj-no-disturbing" size={8} iconColor="#b2b2b2" />
                 </p>
             </div>
         </div>
@@ -105,12 +107,12 @@ export default withTracker(() => {
     chatList.forEach((x) => {
         if (x.type === 'user') {
             x.user = Meteor.users.findOne({ _id: x.userId });
-            const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }).fetch();
-            x.lastMessage = messages.length === 0 ? null : messages[messages.length - 1];
+            const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }, { sort: { createdAt: -1 } }).fetch();
+            x.lastMessage = messages.length === 0 ? null : messages[0];
         } else if (x.type === 'group') {
             x.group = Group.findOne({ _id: x.groupId });
-            const messages = Message.find({ to: x.groupId }).fetch();
-            x.lastMessage = messages.length === 0 ? null : messages[messages.length - 1];
+            const messages = Message.find({ to: x.groupId }, { sort: { createdAt: -1 } }).fetch();
+            x.lastMessage = messages.length === 0 ? null : messages[0];
         }
     });
     return {

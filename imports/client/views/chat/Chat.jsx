@@ -5,13 +5,13 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 
 import ContactList from './chatSideLeft/ContactList';
-
 import FriendsList from './chatSideLeft/FriendsList';
 import GroupList from './chatSideLeft/GroupList';
 import AddChat from '../chat/chatSideLeft/addChat/AddChat';
 import ChatWindow from './chatWindow/ChatWindow';
 import UserUtil from '../../../util/user';
 import feedback from '../../../util/feedback';
+
 // import NewFriend from './chatWindow/NewFriend';
 // import ProjectNotice from './chatWindow/ProjectNotice';
 
@@ -117,6 +117,7 @@ class Chat extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('users');
+    Meteor.subscribe('message');
     const chatList = UserUtil.getChatList();
     // const userChatList = [];
     // chatList.forEach((x) => {
@@ -124,6 +125,20 @@ export default withTracker(() => {
     //         userChatList.push(x.userId);
     //     }
     // });
+    // const cursor = Message.find({}, { sort: { createdAt: -1 } });
+    // watch the cursor for changes
+    // let initializing = true;
+
+    // cursor.observe({
+    //     added(order) {
+    //         if (!initializing) {
+    //             // console.log('order from handle');
+    //             // console.log(order);
+    //         // document.getElementById('xyz').play();
+    //         }
+    //     },
+    // });
+    // initializing = false;
     return {
         chatList,
     };

@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-// import { Accounts } from 'meteor/accounts-base';
+import { Accounts } from 'meteor/accounts-base';
 
 import qiniu from '../../imports/util/qiniu';
 
@@ -28,14 +28,57 @@ Meteor.methods({
             },
         );
     },
-    // changePassword(oldPassword, newPassword) {
-    //     Accounts.changePassword(oldPassword, newPassword, (err) => {
-    //         console.error(err);
-    //     });
-    // },
-    // setPassword(newPassword) {
-    //     Accounts.setPassword(Meteor.userId(), newPassword, (err) => {
-    //         console.error(err);
-    //     });
-    // },
+    changeUserPassword(oldPassword, newPassword) {
+        // console.log(111, Accounts);
+        Accounts.changePassword(oldPassword, newPassword, (err) => {
+            console.error(err);
+        });
+    },
+    setUserPassword(newPassword) {
+        Accounts.setPassword(Meteor.userId(), newPassword, (err) => {
+            console.error(err);
+        });
+    },
+    setSignature(signature) {
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $set: {
+                    signature,
+                },
+            },
+        );
+    },
+    setSex(sex) {
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $set: {
+                    sex,
+                },
+            },
+        );
+    },
+    setAge(age) {
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $set: {
+                    age,
+                },
+            },
+        );
+    },
+    setAddress(province, city, area) {
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $set: {
+                    'address.province': province,
+                    'address.city': city,
+                    'address.area': area,
+                },
+            },
+        );
+    },
 });

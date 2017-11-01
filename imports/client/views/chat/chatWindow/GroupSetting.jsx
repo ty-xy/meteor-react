@@ -31,6 +31,12 @@ class GroupSetting extends Component {
             restMembers: [],
         };
     }
+    setNotDisturb = (checked) => {
+        console.log('设置了消息免打扰', checked);
+    }
+    setGroupFirst = (checked) => {
+        console.log('设置了当前群聊置顶', checked);
+    }
     // 选择新的群主
     selectAdmin = () => {
         const { members } = this.props;
@@ -84,6 +90,7 @@ class GroupSetting extends Component {
             feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.deleteMember(Meteor.userId(), '退出成功'));
         }
     }
+
     render() {
         return (
             <div className="container-wrap group-setting-block">
@@ -110,7 +117,13 @@ class GroupSetting extends Component {
                                 (item.profile ?
                                     <div className="avatar-wrap" key={i}>
                                         <Avatar name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
-                                        <Icon icon="icon-cuowu" iconColor="#ef5350" onClick={() => this.handleDeleteMember(item._id)} />
+                                        {
+                                            this.props.admin === Meteor.userId() ?
+                                                <Icon icon="icon-cuowu" iconColor="#ef5350" onClick={() => this.handleDeleteMember(item._id)} />
+                                                :
+                                                null
+                                        }
+
                                     </div>
 
                                     :
@@ -122,11 +135,11 @@ class GroupSetting extends Component {
                     </div>
                     <div className="group-members">
                         <p>消息免打扰</p>
-                        <p><Switch defaultChecked={false} /></p>
+                        <p><Switch defaultChecked={false} onChange={this.setNotDisturb} /></p>
                     </div>
                     <div className="group-members">
                         <p>群聊置顶</p>
-                        <p><Switch defaultChecked={false} /></p>
+                        <p><Switch defaultChecked={false} onChange={this.setGroupFirst} /></p>
                     </div>
                     <div>
                         {

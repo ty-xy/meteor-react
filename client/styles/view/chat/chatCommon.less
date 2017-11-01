@@ -106,6 +106,10 @@
                 font-size: 16px;
             }
             .last-message {
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
                 margin-top: 15px;
                 font-size: 14px;
                 color: #666;
@@ -119,6 +123,10 @@
                     text-align: center;
                     line-height: 20px;
                     color: #fff;
+                }
+                & > i {
+                    position: absolute;
+                    right: 10px;
                 }
             }
         }

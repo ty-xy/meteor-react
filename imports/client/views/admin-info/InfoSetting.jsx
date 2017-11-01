@@ -71,8 +71,8 @@ class InfoSetting extends Component {
         console.log(1111111, this.signature.value);
     }
     render() {
-        const { profile, username } = this.props.user;
-        const { name } = profile;
+        const { profile = {}, username = '' } = this.props.user;
+        const { name = '' } = profile;
         return (
             <ul className="info-setting">
                 <li>
