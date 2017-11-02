@@ -29,7 +29,7 @@ class ContactList extends Component {
             this.props.changeTo('', '');
         });
     }
-    renderUser = (user, lastMessage, time, type, index) => (
+    renderUser = (user, lastMessage, time, type, index, unreadMessage) => (
         <div
             key={index}
             onClick={() => {
@@ -46,14 +46,21 @@ class ContactList extends Component {
                 <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
                     <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
-                    {/* <span className="notice-red-dot">
-                        200
-                </span> */}
+                    {
+                        unreadMessage !== 0 ?
+                            <span className="notice-red-dot">
+                                {unreadMessage}
+                            </span>
+                            :
+                            null
+
+                    }
+
                 </p>
             </div>
         </div>
     )
-    renderGroup = (group, lastMessage, time, type, i) => (
+    renderGroup = (group, lastMessage, time, type, i, unreadMessage) => (
         <div
             onClick={() => {
                 this.props.changeTo(group._id, group._id);
@@ -61,6 +68,12 @@ class ContactList extends Component {
             key={i}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[group._id] })}
         >
+            {
+                group.stickTop.value ?
+                    <div className="triangle-topleft" />
+                    :
+                    null
+            }
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type)} />
             <div className="user-avatar">
                 <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
@@ -69,9 +82,15 @@ class ContactList extends Component {
                 <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
                     <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
-                    {/* <span className="notice-red-dot">
-                    200
-            </span> */}
+                    {
+                        unreadMessage !== 0 ?
+                            <span className="notice-red-dot">
+                                {unreadMessage}
+                            </span>
+                            :
+                            null
+
+                    }
                     <span>{group.isDisturb}</span>
                     {
                         group.isDisturb ?
@@ -85,9 +104,9 @@ class ContactList extends Component {
     )
     renderChatListItem = (item, i) => {
         if (item.user) {
-            return this.renderUser(item.user, item.lastMessage, item.time, item.type, i);
+            return this.renderUser(item.user, item.lastMessage, item.time, item.type, i, item.unreadMessage);
         } else if (item.group) {
-            return this.renderGroup(item.group, item.lastMessage, item.time, item.type, i);
+            return this.renderGroup(item.group, item.lastMessage, item.time, item.type, i, item.unreadMessage);
         }
         // console.error('不支持的聊天类型', item);
         return null;
@@ -129,11 +148,13 @@ export default withTracker(() => {
             const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }, { sort: { createdAt: -1 } }).fetch();
             x.lastMessage = messages.length === 0 ? null : messages[0];
             x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
+            x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
         } else if (x.type === 'group') {
             x.group = Group.findOne({ _id: x.groupId });
             const messages = Message.find({ to: x.groupId }, { sort: { createdAt: -1 } }).fetch();
             x.lastMessage = messages.length === 0 ? null : messages[0];
             x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
+            x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
         }
     });
     return {

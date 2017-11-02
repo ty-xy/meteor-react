@@ -21,7 +21,9 @@ Message.schema = new SimpleSchema({
         type: String,
         optional: true,
     },
-
+    readedMembers: {
+        type: [String],
+    },
 });
 
 export default Message;

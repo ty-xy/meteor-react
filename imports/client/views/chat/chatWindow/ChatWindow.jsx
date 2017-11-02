@@ -50,6 +50,14 @@ class ChatWindow extends Component {
     }
 
     componentDidUpdate(prevProps) {
+        console.log(1111, this.props.messages);
+        this.props.messages.forEach((i) => {
+            if (!i.readedMembers.includes(Meteor.userId())) {
+                Meteor.call('readMessage', i._id, Meteor.userId(), (err) => {
+                    console.log(err);
+                });
+            }
+        });
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.length > 0) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage) {
@@ -304,6 +312,7 @@ class ChatWindow extends Component {
                                             this.renderContent(message.type, message.content)
                                         }
                                     </div>
+                                    {/* <div>{message.from._id !== Meteor.userId() ? '' : (message.readedMembers.includes(message.to) ? '(已读)' : '(未读)')}</div> */}
                                 </div>
                             </div>
                         ))
