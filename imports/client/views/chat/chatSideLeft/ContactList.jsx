@@ -45,11 +45,10 @@ class ContactList extends Component {
             <div className="user-message">
                 <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
-                    <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了' }</span>
+                    <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
                     {/* <span className="notice-red-dot">
                         200
                 </span> */}
-                    <Icon icon="icon-icon-yxj-no-disturbing" size={8} iconColor="#b2b2b2" />
                 </p>
             </div>
         </div>
@@ -73,7 +72,13 @@ class ContactList extends Component {
                     {/* <span className="notice-red-dot">
                     200
             </span> */}
-                    <Icon icon="icon-icon-yxj-no-disturbing" size={8} iconColor="#b2b2b2" />
+                    <span>{group.isDisturb}</span>
+                    {
+                        group.isDisturb ?
+                            <Icon icon="icon-icon-yxj-no-disturbing" size={8} iconColor="#b2b2b2" />
+                            :
+                            null
+                    }
                 </p>
             </div>
         </div>
@@ -89,11 +94,25 @@ class ContactList extends Component {
     }
     render() {
         const chatList = this.props.chatList;
-        const newChatList = chatList.sort(this.compare('time'));
+        // 设置置顶的聊天列表
+        const stickTopChat = chatList.filter(x => x.group && x.group.stickTop.value);
+        stickTopChat.forEach((x) => {
+            x.stickTime = x.group.stickTop.createdAt;
+        });
+        const newStickTopChat = stickTopChat.sort(this.compare('stickTime'));
+        // 剩下没有设置置顶的聊天列表
+        const defaultTopChat = chatList.filter(x => x.user || (x.group && !x.group.stickTop.value));
+        const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
+
+        const sortedChatList = newStickTopChat.concat(newDefaultTopChat);
+
         return (
             <div className="ejianlian-chat-message-list">
                 {
-                    newChatList.map((item, i) => this.renderChatListItem(item, i))
+                    sortedChatList.length > 0 ?
+                        sortedChatList.map((item, i) => this.renderChatListItem(item, i))
+                        :
+                        <div className="no-content">暂无聊天列表</div>
                 }
             </div>
         );
@@ -109,10 +128,12 @@ export default withTracker(() => {
             x.user = Meteor.users.findOne({ _id: x.userId });
             const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }, { sort: { createdAt: -1 } }).fetch();
             x.lastMessage = messages.length === 0 ? null : messages[0];
+            x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
         } else if (x.type === 'group') {
             x.group = Group.findOne({ _id: x.groupId });
             const messages = Message.find({ to: x.groupId }, { sort: { createdAt: -1 } }).fetch();
             x.lastMessage = messages.length === 0 ? null : messages[0];
+            x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
         }
     });
     return {

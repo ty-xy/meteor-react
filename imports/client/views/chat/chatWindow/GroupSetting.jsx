@@ -21,6 +21,8 @@ class GroupSetting extends Component {
         users: PropTypes.array,
         groupId: PropTypes.string,
         admin: PropTypes.string,
+        isDisturb: PropTypes.bool,
+        stickTop: PropTypes.object,
     };
     constructor(...args) {
         super(...args);
@@ -33,9 +35,15 @@ class GroupSetting extends Component {
     }
     setNotDisturb = (checked) => {
         console.log('设置了消息免打扰', checked);
+        Meteor.call('changeGroupDisturb', this.props.groupId, checked, (err) => {
+            feedback.dealError(err);
+        });
     }
     setGroupFirst = (checked) => {
         console.log('设置了当前群聊置顶', checked);
+        Meteor.call('changeGroupStickTop', this.props.groupId, checked, (err) => {
+            feedback.dealError(err);
+        });
     }
     // 选择新的群主
     selectAdmin = () => {
@@ -135,11 +143,11 @@ class GroupSetting extends Component {
                     </div>
                     <div className="group-members">
                         <p>消息免打扰</p>
-                        <p><Switch defaultChecked={false} onChange={this.setNotDisturb} /></p>
+                        <p><Switch defaultChecked={this.props.isDisturb} onChange={this.setNotDisturb} /></p>
                     </div>
                     <div className="group-members">
                         <p>群聊置顶</p>
-                        <p><Switch defaultChecked={false} onChange={this.setGroupFirst} /></p>
+                        <p><Switch defaultChecked={this.props.stickTop.value} onChange={this.setGroupFirst} /></p>
                     </div>
                     <div>
                         {

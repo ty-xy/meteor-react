@@ -237,6 +237,8 @@ class ChatWindow extends Component {
         const admin = this.props.chatGroup ? this.props.chatGroup.admin._id : '';
         const notice = this.props.chatGroup ? this.props.chatGroup.notice : '';
         const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
+        const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : false;
+        const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop : {};
         return this.props.to ?
             <div className="ejianlian-chat-window">
 
@@ -325,9 +327,9 @@ class ChatWindow extends Component {
                                 />
                             </Tooltip>
                         </p>
-                        <p className="skill-icon">
+                        {/* <p className="skill-icon">
                             <Icon icon="icon-card icon" />
-                        </p>
+                        </p> */}
                         {/* <p className="skill-icon">
                             <Icon icon="icon-dakaishipin icon" size={20} onClick={this.sendVideo} />
                         </p> */}
@@ -363,6 +365,8 @@ class ChatWindow extends Component {
                             members={members}
                             groupId={groupId}
                             admin={admin}
+                            isDisturb={isDisturb}
+                            stickTop={stickTop}
                         />
                         :
                         null

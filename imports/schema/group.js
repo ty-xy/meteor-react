@@ -26,6 +26,18 @@ Group.schema = new SimpleSchema({
     noticeTime: {
         type: Date,
     },
+    isDisturb: {
+        type: Boolean,
+    },
+    stickTop: {
+        type: Object,
+    },
+    'stickTop.value': {
+        type: Boolean,
+    },
+    'stickTop.createdAt': {
+        type: Date,
+    },
 });
 
 export default Group;

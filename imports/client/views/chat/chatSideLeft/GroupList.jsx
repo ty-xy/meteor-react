@@ -43,7 +43,7 @@ class GroupList extends Component {
                             <p className="my-chat-group">
                                 <Icon icon="icon-qunzu icon" />
                             </p>
-                            <p className="friend-name" style={{ borderWidth: this.state.isShowMyGroup ? '0px' : '1px' }}>
+                            <p className="friend-name" style={{ borderWidth: this.state.isShowMyGroup ? '0px' : this.props.groups.length > 0 ? '1px' : '0px' }}>
                                 我的群聊
                                 {
                                     this.state.isShowMyGroup ?
