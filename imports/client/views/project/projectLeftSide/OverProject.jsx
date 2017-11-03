@@ -45,15 +45,17 @@ export default class OverProject extends Component {
                     <p className="over-project">创建项目</p>
                 </div>
                 {/* <Link to="/project/over"> */}
-                <div className="ejianlian-add-project  project-over">
+                <Link to="/project/over">
+                    <div className="ejianlian-add-project  project-over">
 
-                    <div className="project-notice user-avatar">
-                        <Link to="/project/over">
+                        <div className="project-notice user-avatar">
+
                             <Icon icon="icon-guidangxiangmu  icon" />
-                        </Link>
+
+                        </div>
+                        <p className="over-project">已归档的项目</p>
                     </div>
-                    <p className="over-project">已归档的项目</p>
-                </div>
+                </Link>
             </div>
         );
     }

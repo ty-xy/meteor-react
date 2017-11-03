@@ -9,7 +9,7 @@ import ProjectOverFile from './ProjectWindow/ProjectBord/projectOverFile';
 export default () => (
     <div>
         <Route exact path="/project" component={ProjectStart} />
-        <Route path="/project/task" component={ProjectWindow} />
+        <Route path="/project/task/:id" component={ProjectWindow} />
         <Route path="/project/over" component={ProjectOverFile} />
     </div>
 );

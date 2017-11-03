@@ -113,15 +113,19 @@
          .list-message{
              margin-top:5px;
               .list-message-item{
+                //   position: relative;
                   margin-top:10px;
                   min-height:46px;
                   background:#fff;
-                  padding-left:20px;
+                  padding-left:16px;
                   padding-top:12px;
+                  padding-bottom:12px;
                   background: #FFFFFF;
                   box-shadow: 1px 1px 4px 0 rgba(126,131,129,0.20);
                   border-radius: 3px;
-              }
+                  transition: transform 0.2s,
+                  border-radius 0.2s;
+               
          }
          .list-input{
              margin-top:15px;
@@ -151,18 +155,42 @@
                 color: #999999;
                 font-size:18px;
             }
+            .icon-eye {
+                 font-size:12px !important;
+                 width:20px;
+                 height:10px;
+                 margin-left:15px;
+            }
           }
-          .list-add{
-              display:flex;
-              margin-top:12px;
-              &>p{
-                font-family: PingFangSC-Regular;
-                font-size: 16px;
-                color: #999999;
-                letter-spacing: 0.19px;
-                margin-left:8px;
-
-              }
-          }
+        }
+    }
+}
+.is-selected {
+     transform: translateX(20px);
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    z-index: 10000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+     background: #fff;
      }
+     .board-overlay{
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index:10;
+        background-color: rgba(55, 55, 55, 0.6);
+     }
+.list-add{
+    display:flex !important;
+    margin-top:12px;
+    &>p{
+      font-family: PingFangSC-Regular;
+      font-size: 16px;
+      color: #999999;
+      letter-spacing: 0.19px;
+      margin-left:8px;
+
+    }
 }
