@@ -26,6 +26,7 @@ class Register extends Component {
             }
             Meteor.loginWithPassword(this.username.value, this.password.value);
             feedback.dealSuccess('注册成功');
+            this.login();
         });
     }
     login = () => {

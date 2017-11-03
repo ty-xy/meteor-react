@@ -58,6 +58,7 @@ class ChatFriendInfo extends Component {
         const isFriend = profile && profile.friends.includes(this.props.friendId);
         return (
             <div className="container-wrap friend-data-block">
+                <div className="opacity" onClick={this.props.handleFriendInfo} />
                 <div className="container-middle container-content">
                     <div className="friend-data-content">
                         <p className="close-wrap"><i className="icon-guanbi iconfont" onClick={this.props.handleFriendInfo} /></p>

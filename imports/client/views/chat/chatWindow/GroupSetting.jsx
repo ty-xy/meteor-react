@@ -21,6 +21,8 @@ class GroupSetting extends Component {
         users: PropTypes.array,
         groupId: PropTypes.string,
         admin: PropTypes.string,
+        isDisturb: PropTypes.bool,
+        stickTop: PropTypes.object,
     };
     constructor(...args) {
         super(...args);
@@ -30,6 +32,18 @@ class GroupSetting extends Component {
             restUsers: [],
             restMembers: [],
         };
+    }
+    setNotDisturb = (checked) => {
+        console.log('设置了消息免打扰', checked);
+        Meteor.call('changeGroupDisturb', this.props.groupId, checked, (err) => {
+            feedback.dealError(err);
+        });
+    }
+    setGroupFirst = (checked) => {
+        console.log('设置了当前群聊置顶', checked);
+        Meteor.call('changeGroupStickTop', this.props.groupId, checked, (err) => {
+            feedback.dealError(err);
+        });
     }
     // 选择新的群主
     selectAdmin = () => {
@@ -84,13 +98,15 @@ class GroupSetting extends Component {
             feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.deleteMember(Meteor.userId(), '退出成功'));
         }
     }
+
     render() {
         return (
             <div className="container-wrap group-setting-block">
+                <div className="opacity" onClick={this.props.showGroupSet} />
                 <div className="container-middle container-content">
                     <div className="container-title">
                         群设置
-                        <Icon icon="icon-guanbi icon icon-close-codeBlock icon-close" onClick={this.props.showGroupSet} />
+                        <Icon icon="icon-guanbi icon-close" onClick={this.props.showGroupSet} size={20} />
                     </div>
                     <div className="group-info">
                         <div className="group-base-info">
@@ -109,7 +125,13 @@ class GroupSetting extends Component {
                                 (item.profile ?
                                     <div className="avatar-wrap" key={i}>
                                         <Avatar name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
-                                        <Icon icon="icon-cuowu" iconColor="#ef5350" onClick={() => this.handleDeleteMember(item._id)} />
+                                        {
+                                            this.props.admin === Meteor.userId() ?
+                                                <Icon icon="icon-cuowu" iconColor="#ef5350" onClick={() => this.handleDeleteMember(item._id)} />
+                                                :
+                                                null
+                                        }
+
                                     </div>
 
                                     :
@@ -121,11 +143,11 @@ class GroupSetting extends Component {
                     </div>
                     <div className="group-members">
                         <p>消息免打扰</p>
-                        <p><Switch defaultChecked={false} /></p>
+                        <p><Switch defaultChecked={this.props.isDisturb} onChange={this.setNotDisturb} /></p>
                     </div>
                     <div className="group-members">
                         <p>群聊置顶</p>
-                        <p><Switch defaultChecked={false} /></p>
+                        <p><Switch defaultChecked={this.props.stickTop.value} onChange={this.setGroupFirst} /></p>
                     </div>
                     <div>
                         {

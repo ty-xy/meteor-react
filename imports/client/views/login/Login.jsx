@@ -28,7 +28,7 @@ class Login extends Component {
                     return console.error(err.reason);
                 }
                 this.props.history.push('/chat');
-                feedback.dealSuccess('注册成功');
+                feedback.dealSuccess('登录成功');
             },
         );
     }

@@ -4,6 +4,9 @@ import {
 import {
     publishComposite,
 } from 'meteor/reywood:publish-composite';
+import http from 'http';
+import socketIO from 'socket.io';
+
 
 import Message from '../imports/schema/message';
 import Group from '../imports/schema/group';
@@ -19,6 +22,29 @@ import CheckBill from '../imports/schema/checkBill';
 import CommonAudit from '../imports/schema/commonAudit';
 
 import File from '../imports/schema/file';
+
+Meteor.startup(() => {
+    // Server
+    const server = http.createServer();
+    const io = socketIO(server);
+
+    // New client
+    io.on('connection', (socket) => {
+        socket.emit('news', { hello: 'world' });
+        console.log('new socket client');
+    });
+    io.on('message', (socket) => {
+        console.log(111, socket.data);
+    });
+
+    // Start server
+    try {
+        server.listen(3002);
+    } catch (e) {
+        console.error('启动socket.io服务失败', e);
+    }
+});
+
 
 publishComposite('message', {
     find() {
