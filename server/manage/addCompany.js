@@ -3,11 +3,11 @@ import { Meteor } from 'meteor/meteor';
 import Company from '../../imports/schema/company';
 
 Meteor.methods({
-    createCompany({ name }) {
+    createCompany({ name, admin }) {
         const newCompany = {
             createdAt: new Date(),
             name,
-            avatar: '',
+            admin,
         };
         Company.schema.validate(newCompany);
         Company.insert(newCompany);

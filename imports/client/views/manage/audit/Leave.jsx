@@ -26,7 +26,7 @@ const formItemLayout = {
 const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他'];
 const FormItem = Form.Item;
 
-class Audit extends Component {
+class Leave extends Component {
     static propTypes = {
         location: PropTypes.object,
     }
@@ -106,7 +106,7 @@ class Audit extends Component {
         return (
             <div className="e-mg-audit-leave">
                 <Goback {...this.props} title="请假" />
-                <Form onSubmit={this.handleSubmit} className="margin-top-40 e-mg-audit-form" style={{ maxHeight: '550px' }}>
+                <Form onSubmit={this.handleSubmit} className="margin-top-40 e-mg-audit-form">
                     <MySelect
                         {...this.props}
                         label="请假类型"
@@ -198,9 +198,9 @@ class Audit extends Component {
     }
 }
 
-Audit.propTypes = {
+Leave.propTypes = {
     form: PropTypes.object,
     history: PropTypes.object,
 };
 
-export default Form.create()(Audit);
+export default Form.create()(Leave);

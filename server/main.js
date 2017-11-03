@@ -14,6 +14,7 @@ import Log from '../imports/schema/log';
 import Project from '../imports/schema/project';
 import TaskBoard from '../imports/schema/taskBoard';
 import Leave from '../imports/schema/leave';
+import Business from '../imports/schema/business';
 
 import File from '../imports/schema/file';
 
@@ -52,3 +53,4 @@ Meteor.publish('log', () => Log.find({}));
 
 Meteor.publish('notice', () => Notice.find({}));
 Meteor.publish('leave', () => Leave.find({}));
+Meteor.publish('business', () => Business.find({}));

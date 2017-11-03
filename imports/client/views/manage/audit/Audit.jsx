@@ -3,6 +3,7 @@ import { Route, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Category from './AuditCategory';
 import Leave from './Leave';
+import Business from './Business';
 
 const urls = ['/manage/audit/doing', '/manage/audit/done', '/manage/audit/self', '/manage/audit/copy', '/manage/audit'];
 
@@ -44,6 +45,7 @@ class Audit extends Component {
                     <Route strict path="/manage/audit/self" component={() => (<div>我发起的</div>)} />
                     <Route strict path="/manage/audit/copy" component={() => (<div>抄送我的</div>)} />
                     <Route strict path="/manage/audit/leave" component={Leave} />
+                    <Route strict path="/manage/audit/business" component={Business} />
                 </div>
             </div>
         );

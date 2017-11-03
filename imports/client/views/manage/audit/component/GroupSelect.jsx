@@ -156,7 +156,7 @@ class GroupSelect extends (PureComponent || Component) {
         const res = [];
         this.state.users.forEach((item) => {
             if (item.selected) {
-                res.push(item._id);
+                res.push(item.userId);
             }
         });
         this.setState({ visible: false });
@@ -193,7 +193,7 @@ class GroupSelect extends (PureComponent || Component) {
         const { department = [], name } = this.props.companyInfo;
         const { dep, users, checked, allNum } = this.state;
         // isSelecteGroup 是否为选择群组
-        console.log('默认的时间', selectValue, department);
+        console.log('默认的时间', this.props.companyInfo, selectValue);
         // 用户列表
         const searchUser = (data) => {
             if (dep) {
@@ -338,7 +338,8 @@ export default withTracker(() => {
     });
     return {
         companyInfo,
-        allUsers: Meteor.users.find().fetch() || [],
+        allUsers: [],
+        companys,
     };
 })(GroupSelect);
 

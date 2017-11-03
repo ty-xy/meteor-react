@@ -118,8 +118,8 @@ class ImgUpload extends (PureComponent || Component) {
             url: `http://oxldjnom8.bkt.clouddn.com/${item}`,
         }));
         const uploadButton = (
-            <div>
-                <MyIcon icon="icon-tupian-copy" size={32} />
+            <div style={{ marginTop: '-4px' }}>
+                <MyIcon icon="icon-tupian-copy" size={28} />
             </div>
         );
         const props = {

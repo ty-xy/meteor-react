@@ -27,7 +27,7 @@ const MyInput = ({ keyword, label, type, required, defaultValue, placeholder, ty
             }],
         })(
             type === 'number' ? (<InputNumber max={max} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }} />)
-                : (<Input allowClear placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }} />),
+                : (<Input placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }} />),
         )}
     </FormItem>
 );
