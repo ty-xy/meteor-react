@@ -1,7 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 
+// import UserUtil from '../../imports/util/user';
+
 Meteor.methods({
     deleteChat(chatId, type) {
+        // const chatList = UserUtil.getChatList();
+        // if (!chatList.find(j => j[type] === chatId)) {
+        //     return;
+        // }
+        // console.log(555, '删除当前的chatId', chatId, type);
         if (type === 'user') {
             Meteor.users.update(
                 { _id: Meteor.userId() },

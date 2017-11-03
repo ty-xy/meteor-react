@@ -15,6 +15,7 @@ class FriendsList extends Component {
     static propTypes = {
         users: PropTypes.array,
         changeTo: PropTypes.func,
+        handleClick: PropTypes.func,
     };
     render() {
         return (
@@ -42,7 +43,10 @@ class FriendsList extends Component {
                                     }
                                     <div
                                         className="friend-pannel-list"
-                                        onClick={() => this.props.changeTo(IdUtil.merge(Meteor.userId(), item.user._id), item.user._id)}
+                                        onClick={() => {
+                                            this.props.changeTo(IdUtil.merge(Meteor.userId(), item.user._id), item.user._id, 'userId');
+                                            this.props.handleClick();
+                                        }}
                                     >
                                         <p className={this.props.users.length - 1 !== index ? 'user-info' : 'user-info user-info-last'}>
                                             <Avatar avatarColor={item.user.profile.avatarColor} name={item.user.profile.name} avatar={item.user.profile.avatar} />

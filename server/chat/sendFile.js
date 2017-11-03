@@ -4,9 +4,11 @@ import {
 
 import Files from '../../imports/schema/file';
 import qiniu from '../../imports/util/qiniu';
+import assert from '../../imports/util/assert';
 
 Meteor.methods({
     insertFile(name, type, size, fileBase64) {
+        assert(size < 100 * 1024 * 1024, 400, '只能发送小于100M的文件');
         let unit = 'B';
         if (size > 1024) {
             size /= 1024;

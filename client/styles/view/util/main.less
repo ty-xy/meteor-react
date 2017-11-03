@@ -57,8 +57,34 @@ html, body, #app, .app, .app > div{
     border-radius: 3px;
 }
 .icon-close {
-    float: right;
-    margin-right: 20px;
+    position: absolute;
+    right: 20px;
+}
+.opacity {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+.no-content {
+    text-align: center;
+    font-size: 16px;
+    color: #333333;
+    line-height: 100px;
+    flex: 1;
+}
+.triangle-topleft {
+    width: 0;
+    height: 0;
+    border-top: 24px solid @mainColor;
+    border-right: 24px solid transparent;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.notice-sound {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
 }
 button, i {
     cursor:pointer;

@@ -1,6 +1,7 @@
 // 聊天信息/公告信息列表
 .ejianlian-chat-message-list {
     overflow: scroll;
+    width: 100%;
     .file-create-time {
         height: 40px;
         line-height: 40px;
@@ -14,12 +15,16 @@
             opacity: 1;
         }
     }
+    .chat-user-pannel-avtive {
+        background-color: #D4ECFC !important;
+    }
     & > .chat-user-pannel {
         height: 90px;
         border-bottom: 1px solid #ddd;
         display: flex;
         padding: 0px 10px;
         background-color: #fff;
+        position: relative;
         & > .icon-chuyidong {
             margin: 0 -10px;
             margin-top: 30px;
@@ -43,7 +48,7 @@
                 border: 1px solid #ddd;
                 border-radius: 50%;
             }
-            .icon-word {
+            .icon {
                 color: #5C6BC0;
                 font-size: 40px;
             }
@@ -103,6 +108,10 @@
                 font-size: 16px;
             }
             .last-message {
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
                 margin-top: 15px;
                 font-size: 14px;
                 color: #666;
@@ -113,9 +122,21 @@
                     background-color: #EF5350;
                     border-radius: 20px;
                     float: right;
+                    margin-right: 20px;
                     text-align: center;
                     line-height: 20px;
                     color: #fff;
+                }
+                .notice-red-dot-no {
+                    width:10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background-color: #EF5350;
+                    margin-top: 4px;
+                }
+                & > i {
+                    position: absolute;
+                    right: 10px;
                 }
             }
         }

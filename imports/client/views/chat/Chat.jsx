@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
+import PropTypes from 'prop-types';
 
 import ContactList from './chatSideLeft/ContactList';
-
 import FriendsList from './chatSideLeft/FriendsList';
 import GroupList from './chatSideLeft/GroupList';
 import AddChat from '../chat/chatSideLeft/addChat/AddChat';
 import ChatWindow from './chatWindow/ChatWindow';
+import UserUtil from '../../../util/user';
+import feedback from '../../../util/feedback';
 
 // import NewFriend from './chatWindow/NewFriend';
 // import ProjectNotice from './chatWindow/ProjectNotice';
@@ -14,6 +18,9 @@ import ChatWindow from './chatWindow/ChatWindow';
 
 @pureRender
 class Chat extends Component {
+    static propTypes = {
+        chatList: PropTypes.array,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
@@ -25,13 +32,29 @@ class Chat extends Component {
             ],
             to: '',
             userId: '',
+            selectedChat: {},
         };
     }
     handleClick = (index) => {
-        this.setState({ selected: index });
+        this.setState({
+            selected: index,
+        });
     }
-    changeTo = (to, userId) => {
+    changeTo = (to, userId, type) => {
+        if (type && !this.props.chatList.find(item => item[type] === userId)) {
+            Meteor.call('addChatList', userId, type, (err) => {
+                feedback.dealError(err);
+            });
+        }
+        this.handleToggle(userId);
         this.setState({ to, userId });
+    }
+    handleToggle = (value) => {
+        this.setState({
+            selectedChat: {
+                [value]: true,
+            },
+        });
     }
     render() {
         return (
@@ -64,9 +87,22 @@ class Chat extends Component {
                         </ul>
                     </div>
                     <div className="ejianlian-chat-user-list">
-                        { this.state.selected === 1 ? <ContactList changeTo={this.changeTo} /> : null }
-                        { this.state.selected === 2 ? <FriendsList changeTo={this.changeTo} /> : null }
-                        { this.state.selected === 3 ? <GroupList changeTo={this.changeTo} /> : null }
+                        { this.state.selected === 1 ?
+                            <ContactList
+                                changeTo={this.changeTo}
+                                handleToggle={this.handleToggle}
+                                selectedChat={this.state.selectedChat}
+                            /> : null }
+                        { this.state.selected === 2 ?
+                            <FriendsList
+                                changeTo={this.changeTo}
+                                handleClick={this.handleClick.bind(this, 1)}
+                            /> : null }
+                        { this.state.selected === 3 ?
+                            <GroupList
+                                changeTo={this.changeTo}
+                                handleClick={this.handleClick.bind(this, 1)}
+                            /> : null }
                     </div>
                     <AddChat />
                 </div>
@@ -78,4 +114,12 @@ class Chat extends Component {
     }
 }
 
-export default Chat;
+
+export default withTracker(() => {
+    Meteor.subscribe('users');
+    Meteor.subscribe('message');
+    const chatList = UserUtil.getChatList();
+    return {
+        chatList,
+    };
+})(Chat);
