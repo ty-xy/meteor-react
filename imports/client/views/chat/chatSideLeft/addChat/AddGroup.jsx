@@ -18,8 +18,8 @@ class AddGroup extends Component {
         users: PropTypes.array,
         type: PropTypes.string,
         groupId: PropTypes.string,
-        isEditGroupName: PropTypes.bool,
-        members: PropTypes.array,
+        // isEditGroupName: PropTypes.bool,
+        // members: PropTypes.array,
     };
     constructor(...args) {
         super(...args);
@@ -60,7 +60,7 @@ class AddGroup extends Component {
         Meteor.call(
             'createGroup',
             {
-                name: this.getFourUsers(selectedUsers),
+                name: `由${Meteor.user().profile.name}发起的群聊`,
                 members: selectedUsers.map(user => user._id),
             },
             (err) => {
@@ -75,22 +75,22 @@ class AddGroup extends Component {
     }
     addGroupMembers = () => {
         const selectedUsers = [...this.getSelectedUsers()];
-        if (this.props.isEditGroupName) {
-            const newMembers = this.props.members.concat(this.getSelectedUsers());
-            Meteor.call(
-                'changeGroupName',
-                {
-                    groupId: this.props.groupId,
-                    name: this.getFourUsers(newMembers),
-                },
-                (err) => {
-                    feedback.dealError(err);
-                    this.setState({
-                        selected: {},
-                    });
-                },
-            );
-        }
+        // if (this.props.isEditGroupName) {
+        //     const newMembers = this.props.members.concat(this.getSelectedUsers());
+        //     Meteor.call(
+        //         'changeGroupName',
+        //         {
+        //             groupId: this.props.groupId,
+        //             name: this.getFourUsers(newMembers),
+        //         },
+        //         (err) => {
+        //             feedback.dealError(err);
+        //             this.setState({
+        //                 selected: {},
+        //             });
+        //         },
+        //     );
+        // }
         Meteor.call(
             'addGroupMembers',
             {

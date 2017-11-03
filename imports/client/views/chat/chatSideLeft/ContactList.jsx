@@ -103,7 +103,7 @@ class ContactList extends Component {
             <NoticeSound isPlay={this.renderSound(unreadMessage)} />
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
             <div className="user-avatar">
-                <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
+                <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} name="群聊" />
             </div>
             <div className="user-message">
                 <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>

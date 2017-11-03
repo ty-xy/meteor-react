@@ -23,6 +23,7 @@ class GroupSetting extends Component {
         admin: PropTypes.string,
         isDisturb: PropTypes.bool,
         stickTop: PropTypes.object,
+        avatar: PropTypes.string,
     };
     constructor(...args) {
         super(...args);
@@ -31,6 +32,7 @@ class GroupSetting extends Component {
             isShowSeleteAdmin: false,
             restUsers: [],
             restMembers: [],
+            isChangeName: false,
         };
     }
     setNotDisturb = (checked) => {
@@ -98,7 +100,36 @@ class GroupSetting extends Component {
             feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.deleteMember(Meteor.userId(), '退出成功'));
         }
     }
+    editGroupName = () => {
+        this.setState({
+            isChangeName: !this.state.isChangeName,
+        });
+    }
+    saveChangeName = () => {
+        Meteor.call('changeGroupName', this.props.groupId, this.newGroupName.value, (err) => {
+            console.log(err);
+        });
+    }
+    chooseNewGroupAvatar = (e) => {
+        const image = e.target.files[0];
+        if (!image) {
+            return;
+        }
 
+        const reader = new FileReader();
+
+        const groupId = this.props.groupId;
+
+        reader.onloadend = function () {
+            Meteor.call('changeGroupAvatar', this.result, groupId, (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
+                console.log('修改头像成功');
+            });
+        };
+        reader.readAsDataURL(image);
+    }
     render() {
         return (
             <div className="container-wrap group-setting-block">
@@ -110,10 +141,22 @@ class GroupSetting extends Component {
                     </div>
                     <div className="group-info">
                         <div className="group-base-info">
-                            <Avatar avatar="http://oxldjnom8.bkt.clouddn.com/team.jpeg" name="群聊" />
-                            <p>{this.props.groupName}</p>
+                            <div className="group-avatar-wrap">
+                                <Avatar avatar={this.props.avatar ? this.props.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} name="群聊" />
+                                <div className="choose-new-avatar">
+                                    <Icon icon="icon-jiahao" iconColor="#fff" size={20} />
+                                    <input type="file" onChange={this.chooseNewGroupAvatar} />
+                                </div>
+                            </div>
+                            {
+                                this.state.isChangeName ?
+                                    <input type="text" defaultValue={this.props.groupName} onBlur={this.saveChangeName} ref={i => this.newGroupName = i} /> :
+                                    <p>
+                                        {this.props.groupName}
+                                    </p>
+                            }
                         </div>
-                        <button>编辑</button>
+                        <button onClick={this.editGroupName}>编辑</button>
                     </div>
                     <div className="group-members">
                         <p>群成员{this.props.members.length}人</p>
@@ -125,6 +168,7 @@ class GroupSetting extends Component {
                                 (item.profile ?
                                     <div className="avatar-wrap" key={i}>
                                         <Avatar name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
+
                                         {
                                             this.props.admin === Meteor.userId() ?
                                                 <Icon icon="icon-cuowu" iconColor="#ef5350" onClick={() => this.handleDeleteMember(item._id)} />

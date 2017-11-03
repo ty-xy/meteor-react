@@ -7,7 +7,7 @@ Meteor.methods({
         const newGroup = {
             createdAt: new Date(),
             name,
-            avatar: '',
+            avatar: 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png',
             members,
             admin: Meteor.userId(),
             notice: '',

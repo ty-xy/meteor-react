@@ -246,6 +246,7 @@ class ChatWindow extends Component {
         const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
         const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : false;
         const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop : {};
+        const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         return this.props.to ?
             <div className="ejianlian-chat-window">
 
@@ -375,6 +376,7 @@ class ChatWindow extends Component {
                             admin={admin}
                             isDisturb={isDisturb}
                             stickTop={stickTop}
+                            avatar={groupAvatar}
                         />
                         :
                         null
