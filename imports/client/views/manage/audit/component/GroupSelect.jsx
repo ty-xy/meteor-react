@@ -26,18 +26,48 @@ class GroupSelect extends (PureComponent || Component) {
     state = {
         visible: false,
         users: [],
-        dep: undefined,
+        deps: [],
     }
     componentWillMount() {
+        const { dep = [] } = this.props.companyInfo;
+        let users = [];
+        dep.forEach((item) => {
+            users = users.concat(item.member);
+        });
         this.setState({
-            users: (this.props.companyInfo && this.props.companyInfo.members) || [],
+            users: users || [],
+            deps: dep,
         });
     }
     onSecondDepChange = (value) => {
-        console.log('onSecondDepChange', value);
-        this.setState({
-            dep: value,
-        });
+        const { users } = this.state;
+        let depnum = 0;
+        let depnumd = 0;
+        if (value === undefined) {
+            users.forEach((item) => {
+                depnum++;
+                if (item.selected) {
+                    depnumd++;
+                }
+            });
+            this.setState({
+                depVal: value,
+                checked: depnumd === depnum,
+            });
+        } else {
+            users.forEach((item) => {
+                if (item.upLevel === value) {
+                    depnum++;
+                    if (item.selected) {
+                        depnumd++;
+                    }
+                }
+            });
+            this.setState({
+                depVal: value,
+                checked: depnum === depnumd,
+            });
+        }
     }
     showModal = (e) => {
         e.preventDefault();
@@ -85,43 +115,49 @@ class GroupSelect extends (PureComponent || Component) {
         }
     }
     // 选中群组
-    handleGroupChange = (e, id) => {
+    handleGroupChange = (e, name) => {
         e.preventDefault();
-        let allGroupNum = 0;
-        const { users } = this.state;
-        // const { companyInfo } = this.props;
+        let allNum = 0;
+        const { users, deps } = this.state;
         const _users = [];
-        // const _dep = [];
-        console.log('e, id', id);
+        const _dep = [];
         users.forEach((item) => {
-            // console.log('item', id, item.department);
-            if (item.department.indexOf(id) >= 0) {
+            if (item.upLevel === name) {
                 item.selected = !item.selected;
             }
             if (item.selected) {
-                allGroupNum++;
+                allNum++;
             }
             _users.push(item);
         });
-        // companyInfo.department.forEach(() => {
-        //     if () {
-
-        //     }
-        //     _dep.push(item);
-        // });
-        if (allGroupNum < this.state.users.length) {
-            this.setState({ users, checked: false, allGroupNum });
+        deps.forEach((item) => {
+            if (item.name === name) {
+                item.selected = !item.selected;
+            }
+            _dep.push(item);
+        });
+        if (allNum < users.length) {
+            this.setState({ users: _users, checked: false, allNum, deps: _dep });
         } else {
-            this.setState({ users, checked: true, allGroupNum });
+            this.setState({ users: _users, checked: true, allNum, deps: _dep });
         }
     }
     // 全选
     handleCheckbox = (e) => {
         let allNum = 0;
-        const { users, checked, dep } = this.state;
+        const { users, checked, depVal, deps } = this.state;
         const _users = [];
-        if (!dep) {
+        const _dep = deps;
+        if (!depVal) {
             users.forEach((item) => {
+                if (e.target.checked === true) {
+                    item.selected = true;
+                } else {
+                    item.selected = false;
+                }
+                _users.push(item);
+            });
+            _dep.forEach((item) => {
                 if (e.target.checked === true) {
                     allNum = 1;
                     item.selected = true;
@@ -129,16 +165,15 @@ class GroupSelect extends (PureComponent || Component) {
                     allNum = 0;
                     item.selected = false;
                 }
-                _users.push(item);
             });
         } else {
             users.forEach((item) => {
-                if (item.department.indexOf(dep) >= 0) {
+                if (item.upLevel === depVal) {
                     if (e.target.checked === true) {
-                        allNum = 1;
+                        allNum++;
                         item.selected = true;
                     } else {
-                        allNum = 0;
+                        allNum--;
                         item.selected = false;
                     }
                 }
@@ -149,6 +184,7 @@ class GroupSelect extends (PureComponent || Component) {
             checked: !checked,
             users: _users,
             allNum,
+            deps: _dep,
         });
     }
     // 选中的人
@@ -162,48 +198,27 @@ class GroupSelect extends (PureComponent || Component) {
         this.setState({ visible: false });
         return res;
     }
-    // 根据人查昵称
-    getNickname = (_id) => {
-        const { allUsers } = this.props;
-        let name = '';
-        allUsers.forEach((item) => {
-            if (item._id === _id) {
-                name = item.profile.name || item.username;
-            }
-        });
-        return name;
-    }
-    getAvatar = (_id, img) => {
-        const { allUsers } = this.props;
-        let avatar = '';
-        let name = '';
-        allUsers.forEach((item) => {
-            if (item._id === _id) {
-                avatar = item.profile.avatar;
-                name = item.profile.name;
-            }
-        });
+    getAvatar = (avatar, name) => {
         if (avatar) {
             return (<img src={avatar} alt="" />);
         }
-        return <span style={{ background: colors[Math.floor(Math.random() * 4)] }} className={`e-mg-audit-deps-people-per-${img} e-mg-audit-deps-people-per-span`}>{name.slice(-2)}</span>;
+        return <span style={{ background: colors[Math.floor(Math.random() * 4)], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{name.slice(-2)}</span>;
     }
     render() {
-        const { keyword, label, required, isSelected, isSelectedFalseTitle, isSelectedTrueTitle, modelTitle, selectValue = [], isSelectedFalseTitleDes, requiredErr, getGroup, isSelecteGroup } = this.props;
-        const { department = [], name } = this.props.companyInfo;
-        const { dep, users, checked, allNum } = this.state;
+        const { keyword, label, required, selectedValue = [], isSelectedFalseTitle, isSelectedTrueTitle, modelTitle, isSelectedFalseTitleDes, requiredErr, getGroup, isSelecteGroup } = this.props;
+        const { name } = this.props.companyInfo;
+        const { depVal, users, deps, checked, allNum } = this.state;
         // isSelecteGroup 是否为选择群组
-        console.log('默认的时间', this.props.companyInfo, selectValue);
         // 用户列表
         const searchUser = (data) => {
-            if (dep) {
+            if (depVal) {
                 return data.map((item) => {
-                    if (item.department.indexOf(dep) >= 0) {
+                    if (item.upLevel === depVal) {
                         return (
                             <a key={item.userId} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleChange(e, item.userId)}>
-                                {this.getAvatar(item.userId)}
+                                {this.getAvatar(item.avatar, item.name)}
                                 {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
-                                <span>{this.getNickname(item.userId)}</span>
+                                <span>{item.name}</span>
                             </a>
                         );
                     }
@@ -212,18 +227,18 @@ class GroupSelect extends (PureComponent || Component) {
             }
             return data.map(item => (
                 <a key={item.userId} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleChange(e, item.userId)}>
-                    {this.getAvatar(item.userId)}
+                    {this.getAvatar(item.avatar, item.name)}
                     {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
-                    <span>{this.getNickname(item.userId)}</span>
+                    <span>{item.name}</span>
                 </a>
             ));
         };
-        const searchDep = data => (
-            data.map(item => (
-                <a key={item} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleGroupChange(e, item)}>
-                    <span style={{ background: colors[Math.floor(Math.random() * 4)] }} className="e-mg-audit-deps-people-per-span">{item.slice(2)}</span>
+        const searchDep = () => (
+            deps.map(item => (
+                <a key={item.name} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleGroupChange(e, item.name)}>
+                    <span style={{ background: colors[Math.floor(Math.random() * 4)] }} className="e-mg-audit-deps-people-per-span">{item.name}</span>
                     {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
-                    <span>{item}</span>
+                    <span>{item.name}</span>
                 </a>
             ))
         );
@@ -236,7 +251,7 @@ class GroupSelect extends (PureComponent || Component) {
                 >
 
                     {
-                        isSelected ? <p style={{ color: 'rgb(180, 180, 180)' }}>{isSelectedTrueTitle}</p> : <a href="" className="e-mg-audit-leave-a" onClick={this.showModal}>{isSelectedFalseTitle} <span style={{ color: '#ccc' }}>{isSelectedFalseTitleDes}</span></a>
+                        selectedValue.length ? <p style={{ color: 'rgb(180, 180, 180)' }}>{isSelectedTrueTitle}</p> : <a href="" className="e-mg-audit-leave-a" onClick={this.showModal}>{isSelectedFalseTitle} <span style={{ color: '#ccc' }}>{isSelectedFalseTitleDes}</span></a>
                     }
 
                 </FormItem>
@@ -246,8 +261,8 @@ class GroupSelect extends (PureComponent || Component) {
                             if (item.selected) {
                                 return (
                                     <a href="" key={item.userId} onClick={e => this.handleChange(e, item.userId)} className="e-mg-audit-seleted-img">
-                                        {this.getAvatar(item.userId, 'img')}
-                                        <p>{this.getNickname(item.userId)}</p>
+                                        {this.getAvatar(item.avatar, item.name)}
+                                        <p>{item.name}</p>
                                     </a>
                                 );
                             }
@@ -278,7 +293,7 @@ class GroupSelect extends (PureComponent || Component) {
                     <Row className="e-mg-audit-xuanze-row">
                         <div className="e-mg-audit-xuanze-left e-mg-audit-xuanze-col">
                             {
-                                users.map(item => (item.selected ? <Tag key={item.userId} closable className="margin-bottom-20" onClose={() => this.handleChange(item.userId)}>{this.getNickname(item.userId)}</Tag> : null))
+                                users.map(item => (item.selected ? <Tag key={item.userId} closable className="margin-bottom-20" onClose={() => this.handleChange(item.userId)}>{item.name}</Tag> : null))
                             }
                         </div>
                         <div className="e-mg-audit-xuanze-right e-mg-audit-xuanze-col">
@@ -287,18 +302,18 @@ class GroupSelect extends (PureComponent || Component) {
                                 isSelecteGroup ? null : (
                                     <div style={{ borderBottom: '1px solid #eee', paddingBottom: '10px' }}>
                                         <span className="margin-left-20">部门：</span>
-                                        <Select allowClear value={dep} style={{ width: '80%', marginLeft: '5px' }} placeholder="选择部门搜索" onChange={this.onSecondDepChange}>
+                                        <Select allowClear style={{ width: '80%', marginLeft: '5px' }} placeholder="选择部门搜索" onChange={this.onSecondDepChange}>
                                             {
-                                                department.map(item => <Option key={item} value={item}>{item}</Option>)
+                                                deps.map(item => <Option key={item.name} value={item.name}>{item.name}</Option>)
                                             }
                                         </Select>
                                     </div>
                                 )
                             }
                             <div className="e-mg-audit-deps-people margin-top-20">
-                                <Checkbox checked={checked} onChange={this.handleCheckbox} style={{ marginLeft: '10px', marginBottom: '10px' }}>全选</Checkbox>
+                                <Checkbox checked={checked} onChange={e => this.handleCheckbox(e, isSelecteGroup)} style={{ marginLeft: '10px', marginBottom: '10px' }}>全选</Checkbox>
                                 {
-                                    isSelecteGroup ? searchDep(department) : searchUser(users)
+                                    isSelecteGroup ? searchDep(depVal) : searchUser(users)
                                 }
                             </div>
                         </div>
@@ -320,7 +335,7 @@ GroupSelect.propTypes = {
     placeholder: PropTypes.string,
     selectValue: PropTypes.string,
     width: PropTypes.string,
-    isSelected: PropTypes.bool,
+    selectedValue: PropTypes.array,
     isSelectedFalseTitleDes: PropTypes.string,
     modelTitle: PropTypes.string,
     isSelecteGroup: PropTypes.bool,
@@ -338,7 +353,6 @@ export default withTracker(() => {
     });
     return {
         companyInfo,
-        allUsers: [],
         companys,
     };
 })(GroupSelect);

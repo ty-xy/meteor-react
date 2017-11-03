@@ -6,8 +6,8 @@ import MyIcon from '../../../components/Icon';
 const categorys = [
     { name: '请假', icon: 'icon-qingjia', url: '/manage/audit/leave' },
     { name: '出差', icon: 'icon-chucha1', url: '/manage/audit/business' },
-    { name: '报销', icon: 'icon-baoxiao1', url: '/manage/audit/qinjia' },
-    { name: '通用审批', icon: 'icon-tongyongshenpi1', url: '/manage/audit/qinjia' },
+    { name: '报销', icon: 'icon-baoxiao1', url: '/manage/audit/bill' },
+    { name: '通用审批', icon: 'icon-tongyongshenpi1', url: '/manage/audit/common' },
     { name: '部门协作', icon: 'icon-xiezuo1', url: '/manage/audit/qinjia' },
     { name: '采购申请', icon: 'icon-caigou1', url: '/manage/audit/qinjia' },
     { name: '工作请示', icon: 'icon-qingshi', url: '/manage/audit/qinjia' },

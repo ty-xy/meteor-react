@@ -15,6 +15,8 @@ import Project from '../imports/schema/project';
 import TaskBoard from '../imports/schema/taskBoard';
 import Leave from '../imports/schema/leave';
 import Business from '../imports/schema/business';
+import CheckBill from '../imports/schema/checkBill';
+import CommonAudit from '../imports/schema/commonAudit';
 
 import File from '../imports/schema/file';
 
@@ -52,5 +54,8 @@ Meteor.publish('company', () => Company.find({}));
 Meteor.publish('log', () => Log.find({}));
 
 Meteor.publish('notice', () => Notice.find({}));
+
 Meteor.publish('leave', () => Leave.find({}));
 Meteor.publish('business', () => Business.find({}));
+Meteor.publish('checkbill', () => CheckBill.find({}));
+Meteor.publish('commonaudit', () => CommonAudit.find({}));

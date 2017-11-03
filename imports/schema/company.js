@@ -78,6 +78,12 @@ Company.schema = new SimpleSchema({
     'dep.$.comment.$.pos': {
         type: [String],
     },
+    'dep.$.comment.$.upLevel': {
+        type: String,
+    },
+    'dep.$.comment.$.avatar': {
+        type: String,
+    },
 });
 
 export default Company;

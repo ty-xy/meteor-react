@@ -8,6 +8,7 @@ import ImgUpload from '../../component/ImgUpload';
 import FileUpload from '../../component/FileUpload';
 import MyRadio from '../../component/Radio';
 import feedback from '../../../../../util/feedback';
+// import GroupSelect from '../../audit/component/GroupSelect';
 
 
 class Write extends PureComponent {
@@ -106,6 +107,21 @@ class Write extends PureComponent {
         const day = date.getDate();
         return (
             <Form onSubmit={this.formSubmit} style={{ height: '100%', overflow: 'auto' }}>
+                {/* <Col span={24} style={{ marginTop: '30px', marginBottom: '-20px' }}>
+                    <GroupSelect
+                        keyword="approvers"
+                        label="审批人"
+                        isSelected={false}
+                        isSelectedTrueTitle="审批人已经由管理员预设"
+                        isSelectedFalseTitle="添加审批人"
+                        selectedValue={[]}
+                        required
+                        requiredErr="审批人必选"
+                        getGroup={this.getGroup}
+                        modelTitle="选部门"
+                        isSelecteGroup
+                    />
+                </Col> */}
                 <InputType title="题目：" keyword="title" editData={editData} {...this.props} />
                 <InputType title="作者：" keyword="author" editData={editData} {...this.props} />
                 <InputArea title="正文：" className="margin-bottom-20" editData={editData} keyword="content" {...this.props} />

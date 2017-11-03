@@ -19,7 +19,7 @@ const focus = (e) => {
     e.target.style.height = `${e.target.scrollHeight}px`;
 };
 
-const MyInput = ({ keyword, label, required, defaultValue, placeholder, requiredErr, width = '100%', form }) => (
+const MyInput = ({ keyword, label, required, defaultValue, placeholder, requiredErr, width, form }) => (
     <FormItem
         {...formItemLayout}
         label={label}
@@ -30,7 +30,7 @@ const MyInput = ({ keyword, label, required, defaultValue, placeholder, required
                 required, message: requiredErr,
             }],
         })(
-            <TextArea onFocus={focus} placeholder={placeholder} style={{ width, minHeight: '80px' }} />,
+            <TextArea onFocus={focus} placeholder={placeholder} style={{ width: (width ? `${width}px` : '100%'), minHeight: '80px' }} />,
         )}
     </FormItem>
 );
