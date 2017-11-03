@@ -5,13 +5,13 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { Input, Button } from 'antd';
 import MyIcon from '../../../../components/Icon';
-// import ProjectBordItem from './projectBordItem';
 import Project from '../../../../../../imports/schema/project';
 
 @pureRender
 class ProjectBordList extends Component {
     static propTypes = {
-        projectId: PropTypes.string,
+        // projectId: PropTypes.arrayOf(PropTypes.object),
+        pId: PropTypes.string,
     }
     constructor(...args) {
         super(...args);
@@ -25,6 +25,7 @@ class ProjectBordList extends Component {
             IsShowAdd: !this.state.IsShowAdd,
         });
         console.log(this.state.IsShowAdd);
+        console.log(this.props.pId);
     }
     handleTitle = () => {
         this.createTaskBord();
@@ -34,12 +35,11 @@ class ProjectBordList extends Component {
         });
     }
     createTaskBord = () => {
-        //  console.log(this.state.projectId);
         Meteor.call(
             'createTaskBoard',
             {
                 name: this.state.minchen,
-                projectId: this.props.projectId,
+                projectId: this.props.pId,
             },
             (err) => {
                 console.log(err);
@@ -81,7 +81,7 @@ class ProjectBordList extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('project');
-    const projectId = Project.findOne({})._id;
+    const projectId = Project.findOne({});
     console.log(projectId);
     return {
         projectId,

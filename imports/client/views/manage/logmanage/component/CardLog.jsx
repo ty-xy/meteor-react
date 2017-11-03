@@ -30,7 +30,7 @@ const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _i
                 edit ? (<Col span={12} className="right">
                     <a href="" onClick={e => delLog(e, _id)}>删除</a>
                     <a href="" onClick={e => editLog('#write', e, _id)} className="margin-left-10">修改</a></Col>)
-                    : (<Col span={12} className="right"><Link to={{ pathname: '/manage/logging/de', state: { edit, delLog, editLog, finish, plan, type, nickname, help, _id } }}>查看详情</Link></Col>)
+                    : (<Col span={12} className="right"><Link to={{ pathname: '/manage/logging/detail', state: { edit, delLog, editLog, finish, plan, type, nickname, help, _id } }}>查看详情</Link></Col>)
             }
         </div>
     </Col>

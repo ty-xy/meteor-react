@@ -8,7 +8,11 @@ Meteor.methods({
         const newTask = {
             name,
             taskBoardId,
+            describe: '',
             createTime: new Date(),
+            beginTime: '',
+            endTime: '',
+            label: '#7ED321',
         };
         Task.schema.validate(newTask);
         Task.insert(newTask);
@@ -16,4 +20,4 @@ Meteor.methods({
 });
 
 
-Meteor.publish('task', () => Task.find({ }));
+Meteor.publish('task', () => Task.find({}));

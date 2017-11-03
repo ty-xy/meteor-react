@@ -1,11 +1,13 @@
+@import '../util/util';
 .e-mg-container{
     padding: 40px 30px 30px 30px;
     margin: 0 !important;
     height: 100% !important;
 }
 .e-mg-right{
-    height: 96%;
+    height: 100%;
     padding-right: 0 !important;
+    padding-bottom: 60px;
     overflow: hidden;
     > .ant-card{
         height: 100%;
@@ -19,4 +21,12 @@
 // 公共样式
 .e-mg-text-center{
     text-align: center !important;
+}
+.e-mg-button-primary{
+    background: @blueColor !important;
+    color: #fff !important;
+}
+.e-mg-button-default{
+    color: @blueColor !important;
+    border: 1px solid @blueColor !important;
 }

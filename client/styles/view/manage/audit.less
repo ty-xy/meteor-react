@@ -1,0 +1,193 @@
+@import '../util/util';
+
+.e-mg-audit-tab-pre{
+    float: right;
+    a{
+        color: @blueColor;
+    }
+}
+.e-mg-audit{
+    height: 100%;
+}
+.e-mg-audit-content{
+    height: 100%;
+    .e-mg-audit-tab{
+        border-bottom: 1px solid rgb(220, 220, 220);
+        a{
+            margin-right: 30px;
+            color: @color66;
+            display: inline-block;
+            padding: 0 10px 8px 10px;
+        }
+        .e-mg-audit-tab-active{
+            color: @blueColor;
+            border-bottom: 2px solid @blueColor;
+        }
+    }
+    .e-mg-audit-content-body{
+        height: 100%;
+        // 发起审批卡片
+        .e-mg-audit-send{
+            margin: 20px 0;
+            display: flex;
+            flex-flow: row wrap;
+        }
+        .e-mg-audit-send-card{
+            width: 20%;
+            text-align: center;
+            margin-top: 4%;
+            .e-mg-audit-send-card-link{
+                border-radius: 6px;
+                display: inline-block;
+                width: 188px;
+                padding: 20px 0;
+                border: 1px solid @blueColor;
+            }
+        }
+    }
+}
+// 请假
+.e-mg-audit-leave{
+    height: 100%;
+    overflow: hidden;
+    .e-mg-audit-form{
+        margin-top: 40px;
+        color: #2A2A2A !important;
+        overflow: auto;
+        padding-bottom: 60px;
+        height: 96%;
+    }
+    .e-mg-audit-leave-a{
+        color: @blueColor;
+    }
+}
+
+
+// 组件样式
+// goback
+.e-mg-audit-goback{
+    border-bottom: 1px solid rgb(220, 220, 220);
+    padding-bottom: 8px;
+    padding-left: 15px;
+    .e-mg-audit-send-card-link{
+        padding-bottom: 5px;
+        color: @color66;
+        font-size: 20px;
+    }
+}
+
+// groupSelect
+.e-mg-audit-groupSelect{
+    margin-top: -20px;
+    margin-bottom: 0px !important;
+}
+.e-mg-audit-seleted-img{
+    display: inline-block;
+    margin-right: 20px;
+    text-align: center;
+    img{
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 1px solid #eee;
+        // margin-bottom: 6px;
+    }
+    p{
+        color: #666;
+    }
+    .e-mg-audit-deps-people-per-img{
+        display: inline-block;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        margin-left: 0px;
+        text-align: center;
+        line-height: 45px;
+        margin-bottom: 4px;
+    }
+}
+.e-mg-audit-xuanze{
+    .ant-modal-header{
+        background: #fff;
+    }
+    .ant-modal-content{
+        background: #eee;
+    }
+    .e-mg-audit-xuanze-col{
+        background: #fff;
+        float: left;
+        padding: 15px;
+        height: 500px;
+    }
+    .e-mg-audit-xuanze-left{
+        float: left;
+        width: 54%;
+        border-radius: 6px 0 0 6px;
+    }
+    .e-mg-audit-xuanze-right{
+        padding: 15px 10px;
+        width: 45%;
+        margin-left: 1%;
+        border-radius: 0 6px 6px 0;
+        .e-mg-audit-deps-people{
+            height: 400px;
+            overflow: auto;
+        }
+        .e-mg-audit-deps-people-per{
+            display: inline-block;
+            width: 100%;
+            padding: 10px;
+            position: relative;
+            img{
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                vertical-align: middle;
+                margin-top: -4px;
+            }
+            span{
+                margin-left: 10px;
+                color: #666;
+                vertical-align: middle;
+            }
+            .e-mg-audit-deps-people-per-span{
+                display: inline-block;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                margin-left: 0px;
+                text-align: center;
+                line-height: 35px;
+                font-size: 12px;
+                color: #fff;
+            }
+            &:hover{
+                background: #eee;
+            }
+            &:active, &:hover, &:visited, &:focus{
+                text-decoration: none;
+            }
+            .e-mg-audit-deps-people-icon{
+                display: inline-block;
+                height: 37px;
+                width: 37px;
+                border-radius: 50%;
+                position: absolute;
+                top: 7px;
+                left: 9px;
+                text-align: center;
+                background: rgba(100,100,100, 0.8);
+                color: #fff;
+                font-size: 24px;
+            }
+        }
+    }
+    .e-mg-audit-xuanze-footer{
+        background: #fff;
+        padding: 15px;
+        button{
+            width: 150px;
+            border: none;
+        }
+    }
+}

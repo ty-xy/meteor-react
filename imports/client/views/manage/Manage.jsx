@@ -5,8 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import LeftCard from './component/LeftCard';
 import ManageRoute from './routes';
-
-let i = 22;
+import Company from '../../../schema/company';
 
 class Manage extends (PureComponent || Component) {
     constructor(props) {
@@ -14,7 +13,7 @@ class Manage extends (PureComponent || Component) {
         this.state = {
             // 按钮组
             btns: [
-                { key: 'checking', name: '考勤', icon: 'icon-kaoqin--', url: '/manage/checking' },
+                { key: 'checking', name: '考勤', icon: 'icon-kaoqin', url: '/manage/checking' },
                 { key: 'logging', name: '日志', icon: 'icon-ribao', url: '/manage/logging' },
                 { key: 'notice', name: '公告', icon: 'icon-gonggao', url: '/manage/notice' },
                 { key: 'audit', name: '审批', icon: 'icon-shenpi-', url: '/manage/audit' },
@@ -28,14 +27,14 @@ class Manage extends (PureComponent || Component) {
         //     this.addCompany();
         // }
     }
-    addCompany = (id) => {
+    addCompany = (e, id) => {
+        e.preventDefault();
         Meteor.call(
             'createCompany',
             {
-                name: 'test',
+                name: `公司${id}`,
                 createdAt: new Date(),
-                id,
-                avatar: '',
+                admin: 'bEuDeBDKumrTka7t9',
             },
             (err) => {
                 if (err) {
@@ -44,13 +43,77 @@ class Manage extends (PureComponent || Component) {
                 // this.$message.value = '';
             });
     }
-    clickCompany = (key) => {
-        console.error('e', key);
-        i++;
-        this.addCompany(`${i}`);
+    clickCompany = (id) => {
+        console.log('切换公司', id);
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $set: {
+                    'profile.mainCompany': id,
+                },
+            },
+        );
+    }
+    // 更新部门
+    updateDepartment = (e) => {
+        e.preventDefault();
+        console.log('更新部门');
+        const _id = Meteor.user().profile.mainCompany;
+        const res = {
+            deparment: '财政部',
+            _id,
+        };
+        Meteor.call(
+            'updateDepartment',
+            res,
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            },
+        );
+    }
+    // 更新部门
+    updateMember = (e) => {
+        e.preventDefault();
+        console.log('更新部门');
+        const _id = Meteor.user().profile.mainCompany;
+        const res = {
+            member: '4HApvk4bZLigRvWrq',
+            _id,
+        };
+        Meteor.call(
+            'updateMember',
+            res,
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            },
+        );
+    }
+    // 更新部门人员
+    updateMemberDep = (e) => {
+        e.preventDefault();
+        console.log('更新部门');
+        const _id = Meteor.user().profile.mainCompany;
+        const res = {
+            member: '4HApvk4bZLigRvWrq',
+            department: '财政部',
+            _id,
+        };
+        Meteor.call(
+            'updateMemberDep',
+            res,
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            },
+        );
     }
     render() {
-        console.log('manage', this.props, { ...this.context });
+        // console.log('allCompanys', this.props);
         return (
             <Row className="e-mg-container" gutter={50}>
                 <LeftCard {...this.props} {...this.context} {...this.state} changeCompany={this.clickCompany} />
@@ -72,5 +135,6 @@ export default withTracker(() => {
     Meteor.subscribe('company');
     return {
         users: Meteor.user() || {},
+        allCompanys: Company.find().fetch(),
     };
 })(Manage);

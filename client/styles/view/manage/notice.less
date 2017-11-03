@@ -1,0 +1,49 @@
+@import '../util/util';
+
+.e-mg-notice{
+    height: 100%;
+    padding-bottom: 30px;
+    .e-mg-notice-tab{
+        border-bottom: 1px solid #eee;
+        font-size: 18px;
+        a{
+            color: #666;
+            display: inline-block;
+            padding: 10px 15px;
+            &:active{
+                text-decoration: none;
+            }
+            &:visited{
+                text-decoration: none;
+            }
+            &:focus{
+                text-decoration: none;
+            }
+        }
+        .e-mg-notice-tab-a-active{
+            border-bottom: 3px solid @blueColor;
+            color: @blueColor;
+        }
+    }
+    .e-mg-notice-up{
+        background: #15B4F1;
+        border-radius: 2px;
+        padding: 2px 5px;
+        margin-left: 10px;
+        color: #fff;
+    }
+}
+// notice preview
+.e-mg-notice-preview {
+    .ant-modal-close{
+        color: #fff;
+    }
+    .ant-modal-header{
+        background: #15B4F1;
+        color: #fff;
+        .ant-modal-title{
+            color:#fff;
+            text-align: center;
+        }
+    }
+}

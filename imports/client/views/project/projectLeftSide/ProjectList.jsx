@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
-// import { Spin } from 'antd';
 import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
-// import PropTypes from 'prop-types';
-// import AddProject from './Addproject';
 import DefaultProject from './DefaultProject';
 
 import Project from '../../../../../imports/schema/project';
@@ -34,7 +31,7 @@ class ProjectList extends Component {
                         this.props.projects.map((value) => {
                             console.log(1);
                             return (
-                                <Link to="/project/task">
+                                <Link to={`/project/task/${value._id}`} key={value._id}>
                                     <li className="list-item" key={value._id}>
                                         <div className="list-img">
                                             <img src="http://img.duoziwang.com/2016/10/02/15235311191.jpg" alt="" />

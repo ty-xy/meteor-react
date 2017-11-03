@@ -12,9 +12,16 @@ import Message from '../imports/schema/message';
 import Group from '../imports/schema/group';
 import fields from '../imports/util/fields';
 import Company from '../imports/schema/company';
+import Notice from '../imports/schema/notice';
 import Log from '../imports/schema/log';
 import Project from '../imports/schema/project';
 import TaskBoard from '../imports/schema/taskBoard';
+import Leave from '../imports/schema/leave';
+import Business from '../imports/schema/business';
+import CheckBill from '../imports/schema/checkBill';
+import CommonAudit from '../imports/schema/commonAudit';
+
+import TaskList from '../imports/schema/taskList';
 import File from '../imports/schema/file';
 
 Meteor.startup(() => {
@@ -68,8 +75,15 @@ Meteor.publish('file', () => File.find({}));
 
 Meteor.publish('project', () => Project.find({}));
 Meteor.publish('taskboard', () => TaskBoard.find({}));
+Meteor.publish('tasklist', () => TaskList.find({}));
 
 Meteor.publish('company', () => Company.find({}));
 
 Meteor.publish('log', () => Log.find({}));
 
+Meteor.publish('notice', () => Notice.find({}));
+
+Meteor.publish('leave', () => Leave.find({}));
+Meteor.publish('business', () => Business.find({}));
+Meteor.publish('checkbill', () => CheckBill.find({}));
+Meteor.publish('commonaudit', () => CommonAudit.find({}));

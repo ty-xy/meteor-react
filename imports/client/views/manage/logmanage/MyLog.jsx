@@ -4,20 +4,15 @@ import PropTypes from 'prop-types';
 import CardLog from './component/CardLog';
 import filter from './component/Filter';
 
-const MyLog = ({ editJump, delLog, searchMyLog, myLogs }) => {
-    // 查询条件
-    const conditions = {
-        // type: '',
-        // time: '',
-    };
+const MyLog = ({ editJump, delLog, searchMyLog, myLogs, type }) => {
     // 查询我的日志
-    const handleChange = (val, type) => {
-        if (!val) {
-            delete conditions[type];
-        } else {
-            conditions[type] = val;
-        }
-        searchMyLog(conditions);
+    const handleChange = (val, _type) => {
+        // if (!val) {
+        //     delete conditions[type];
+        // } else {
+        //     conditions[_type] = val;
+        // }
+        searchMyLog(val, _type);
     };
     const types = [
         { name: 'day', value: '日报' },
@@ -29,7 +24,7 @@ const MyLog = ({ editJump, delLog, searchMyLog, myLogs }) => {
     return (
         <Row className="e-mg-log-filter" gutter={25} type="flex" justify="start">
             <Col span={24} className="margin-bottom-20">
-                <span className="margin-right-20">{mySelect({ handleChange, data: types, title: '按模板筛选', keyword: 'type' })}</span>
+                <span className="margin-right-20">{mySelect({ handleChange, data: types, title: '按模板筛选', keyword: 'type', type })}</span>
                 <span className="margin-right-20">{myDate({ handleChange, title: '按时间筛选', keyword: 'time' })}</span>
             </Col>
             {myLogs.map(item => (<CardLog edit editLog={editJump} delLog={delLog} key={item._id} {...item} />))}
@@ -45,5 +40,6 @@ MyLog.propTypes = {
     delLog: PropTypes.func,
     searchMyLog: PropTypes.func,
     myLogs: PropTypes.array,
+    type: PropTypes.string,
 };
 export default MyLog;
