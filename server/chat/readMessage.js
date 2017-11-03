@@ -3,6 +3,7 @@ import Messages from '../../imports/schema/message';
 
 Meteor.methods({
     readMessage(messageId, userId) {
+        // console.log('已读消息Id', messageId);
         Messages.update(
             { _id: messageId },
             {

@@ -13,7 +13,9 @@ import UserUtil from '../../../../util/user';
 import Icon from '../../../components/Icon';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
+import NoticeSound from '../../../components/NoticeSound';
 
+let lastLength = 0;
 @pureRender
 class ContactList extends Component {
     static propTypes = {
@@ -21,13 +23,36 @@ class ContactList extends Component {
         chatList: PropTypes.array,
         handleToggle: PropTypes.func,
         selectedChat: PropTypes.object,
+        allUnRead: PropTypes.array,
     }
+    // constructor(...args) {
+    //     super(...args);
+    //     this.state = {
+    //         isPlay: false,
+    //     };
+    // }
     compare = property => (a, b) => b[property] - a[property];
-    deleteChat = (userId, type) => {
+    deleteChat = (userId, type, unreadMessage) => {
         Meteor.call('deleteChat', userId, type, (err) => {
             feedback.dealError(err);
             this.props.changeTo('', '');
         });
+        if (unreadMessage > 0) {
+            this.props.allUnRead.forEach((x) => {
+                Meteor.call('readMessage', x._id, Meteor.userId(), (err) => {
+                    console.log(err);
+                });
+            });
+        }
+    }
+
+    renderSound = (unreadMessage) => {
+        // console.log(unreadMessage, lastLength);
+        if (unreadMessage > lastLength) {
+            lastLength = unreadMessage;
+            return true;
+        }
+        return false;
     }
     renderUser = (user, lastMessage, time, type, index, unreadMessage) => (
         <div
@@ -38,7 +63,8 @@ class ContactList extends Component {
             }}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
-            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type)} />
+            <NoticeSound isPlay={this.renderSound(unreadMessage)} />
+            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} />
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
             </div>
@@ -74,7 +100,8 @@ class ContactList extends Component {
                     :
                     null
             }
-            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type)} />
+            <NoticeSound isPlay={this.renderSound(unreadMessage)} />
+            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
             <div className="user-avatar">
                 <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} name="群聊" />
             </div>
@@ -84,8 +111,8 @@ class ContactList extends Component {
                     <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
                     {
                         unreadMessage !== 0 ?
-                            <span className="notice-red-dot">
-                                {unreadMessage}
+                            <span className={group.isDisturb ? 'notice-red-dot-no notice-red-dot' : 'notice-red-dot'}>
+                                {group.isDisturb ? '' : unreadMessage}
                             </span>
                             :
                             null
@@ -195,6 +222,7 @@ export default withTracker(() => {
     });
     return {
         chatList,
+        allUnRead,
     };
 })(ContactList);
 
