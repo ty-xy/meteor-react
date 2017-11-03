@@ -1,42 +1,43 @@
 import React, { Component } from 'react';
-// import { Router, Route, Link, Switch } from 'react-router';
-import {
-    Link,
-} from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Row } from 'antd';
+import Write from './component/Write';
+import Read from './component/Read';
+
 
 class App extends Component {
     static propTypes = {
-        children: PropTypes.object,
+        location: PropTypes.object,
     }
     constructor(props) {
         super(props);
         this.state = {};
     }
-    jump = (e) => {
-        e.preventDefault();
-        this.context.history.push('/manage/notice/about');
-    }
+    // Tab不切换
+    tabs = ({ pathname }) => (
+        <Row className="e-mg-notice-tab">
+            <Link to="/manage/notice" className={pathname === '/manage/notice' ? 'e-mg-notice-tab-a-active' : ''}>发布公告</Link>
+            <Link to="/manage/notice/list" className={pathname === '/manage/notice/list' ? 'e-mg-notice-tab-a-active' : ''}>已发布公告</Link>
+        </Row>
+    )
+    // 路由
+    Routes = () => (
+        <div style={{ height: '100%' }}>
+            <Route exact path="/manage/notice" component={Write} />
+            <Route path="/manage/notice/list" component={Read} />
+        </div>
+    )
     render() {
-        console.log(this.props);
+        const { location } = this.props;
         return (
-            <div>
-                <h1>App</h1>
-                <ul>
-                    <li><Link to="/manage/notice">Home</Link></li>
-                    <li><a href="" onClick={this.jump}>About</a></li>
-                    <li><Link to="/manage/notice/inbox">Inbox</Link></li>
-                </ul>
-                {this.props.children}
-
+            <div className="e-mg-notice">
+                {this.tabs(location)}
+                {this.Routes()}
             </div>
         );
     }
 }
-App.contextTypes = {
-    history: PropTypes.object,
-    location: PropTypes.object,
-};
 
 
 export default App;

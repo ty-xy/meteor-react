@@ -34,7 +34,12 @@
 
 // imgUplaod
 .e-mg-imgupload{
-    .ant-upload-list-item{
+    .ant-upload-list-item-done{
+        width: 88px !important;
+        height: 88px !important;
+        padding: 0px !important;
+    }
+    .ant-upload-list-item-uploading{
         width: 88px !important;
         height: 88px !important;
         padding: 0px !important;
@@ -43,7 +48,28 @@
         width: 88px !important;
         height: 88px !important;
         .ant-upload{
-            padding: 10px 0 !important;
+            // padding: 10px 0 !important;
         }
     }
+}
+.e-mg-fileUpload{
+    .ant-upload-list-item-done{
+        width: auto !important;
+        height: auto !important;
+        padding: 0px !important;
+    }
+}
+
+// radio
+.e-mg-radio{
+    height: 22px !important;
+    min-width: 40px !important;
+    &:after{
+        width: 16px !important;
+        height: 16px !important;
+    }
+}
+.e-mg-radio.ant-switch-checked:after {
+    left: 100%;
+    margin-left: -18px;
 }

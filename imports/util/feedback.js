@@ -41,6 +41,10 @@ const feedback = {
     successToast(conetnt) {
         message.success(conetnt);
     },
+    // 成功后执行回调
+    successToastFb(conetnt, fb) {
+        message.success(conetnt, 1, fb);
+    },
 };
 
 export default feedback;

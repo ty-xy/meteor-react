@@ -12,6 +12,7 @@ import Detail from './Detail';
 
 const TabPane = Tabs.TabPane;
 const searLogs = {};
+const searMyLogs = {};
 
 class Logging extends (PureComponent || Component) {
     constructor(props) {
@@ -124,27 +125,35 @@ class Logging extends (PureComponent || Component) {
         });
     }
     // 搜索我的日志
-    searchMyLog = (data) => {
-        const myLogs = Log.find(data).fetch();
+    searchMyLog = (val, type) => {
+        searMyLogs.username = Meteor.user().username;
+        console.log(val, type, searMyLogs);
+        if (!val) {
+            delete searMyLogs[type];
+        } else {
+            searMyLogs[type] = val;
+        }
+        const myLogs = Log.find(searMyLogs).fetch();
         this.setState({
             myLogs,
+            [type]: val,
         });
     }
     // 搜索所有日志
-    searchLog = (val, type) => {
-        if (!val) {
+    searchLog = (vals, type) => {
+        if (!vals) {
             delete searLogs[type];
         } else {
-            searLogs[type] = val;
+            searLogs[type] = vals;
         }
-        console.log('searLogs', searLogs);
         const logs = Log.find(searLogs).fetch();
         this.setState({
             logs,
+            [type]: vals,
         });
     }
     render() {
-        // console.log('this.props', this.props, this.state);
+        console.log('this.props', this.state);
         const Content = () => (
             <Tabs className="e-mg-tab-scroll" activeKey={this.state.defaultActiveKey} onChange={this.tabChange}>
                 <TabPane tab="写日报" key="#write">
@@ -165,7 +174,7 @@ class Logging extends (PureComponent || Component) {
                     path="/manage/logging"
                     component={Content}
                 />
-                <Route path="/manage/logging/de" component={Detail} />
+                <Route path="/manage/logging/detail" component={Detail} />
             </Row>
         );
     }

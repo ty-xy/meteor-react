@@ -24,6 +24,7 @@ Meteor.methods({
                 groups: [],
                 chatList: [],
                 company: [],
+                mainCompany: '',
             },
         });
     },
