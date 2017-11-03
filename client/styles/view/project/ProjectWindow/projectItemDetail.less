@@ -3,6 +3,12 @@
   width:420px;
   height:732px;
   overflow:auto;
+  // position:absolute;
+  // z-index:1000;
+  // // background-color: rgba(55, 55, 55, 0.6);
+  // left:100px;
+  // top:-36px;
+  // background:#ddd;
   //padding:0 20px ;
      .detail-common{
         padding:0 20px;
@@ -21,7 +27,6 @@
              }
              .circle-icon-l{
                 font-size:30px;
-                background:#7ED321;
                 //opacity:0;
                 width:30px;
                 height:30px;
@@ -102,4 +107,43 @@
   height:22px;
   margin-left:36px;
   margin-top:2px;
+}
+
+.change-modal{
+   width:208px;
+   height:68px;
+   .icon{
+    transform: rotate(45deg);
+    border-radius: 100px;
+    color:#BDBDBD;
+    font-size:14px;
+  }
+   .tag-title{
+    background: #F4F4F4;
+    box-shadow: 0 1px 0 0 #DDDDDD;
+    border-radius: 3px 3px 0 0;
+    height:24px;
+    width:208px;
+    padding-left:8px;
+    font-family: PingFangSC-Regular;
+    font-size: 8px;
+    color: #666666;
+    letter-spacing: 0.14px;
+   }
+   .tag-show{
+    display:flex;
+    height:44px;
+    align-items: center;
+    padding-left:8px;
+    
+    .label-circle{
+      height:24px;
+      width:24px;
+      border:1px solid #fff;
+      border-radius: 50%;
+      box-sizing: border-box;
+      margin-right:9px;
+    }
+    
+  }
 }

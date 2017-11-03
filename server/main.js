@@ -21,6 +21,7 @@ import Business from '../imports/schema/business';
 import CheckBill from '../imports/schema/checkBill';
 import CommonAudit from '../imports/schema/commonAudit';
 
+import TaskList from '../imports/schema/taskList';
 import File from '../imports/schema/file';
 
 Meteor.startup(() => {
@@ -74,6 +75,7 @@ Meteor.publish('file', () => File.find({}));
 
 Meteor.publish('project', () => Project.find({}));
 Meteor.publish('taskboard', () => TaskBoard.find({}));
+Meteor.publish('tasklist', () => TaskList.find({}));
 
 Meteor.publish('company', () => Company.find({}));
 

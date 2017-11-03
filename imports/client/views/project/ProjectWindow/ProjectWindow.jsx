@@ -14,12 +14,14 @@ import ProjectChat from './ProjectBord/projectChat';
 import ProjectAction from './ProjectBord/projectAction';
 import ProjectBordItem from './ProjectBord/projectBordItem';
 import TaskBoard from '../../../../../imports/schema/taskBoard';
+import Project from '../../../../../imports/schema/project';
 
 const TabPane = Tabs.TabPane;
 @pureRender
 class ProjectWindow extends Component {
     static propTypes = {
         taskF: PropTypes.arrayOf(PropTypes.object),
+        project: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
@@ -45,7 +47,7 @@ class ProjectWindow extends Component {
             <div className="ejianlian-project-window-show">
                 <div className="window-title">
                     <Row>
-                        <Col span={22}><p>金碧堂酒店改造项目（翠微路)</p></Col>
+                        <Col span={22}><p>{this.props.project.name}</p></Col>
                         <Col span={1}> <Icon icon="icon-qunzu" className="icon-one" /></Col>
                         <Col span={1}> <Icon icon="icon-shezhi" className="icon-two" /></Col>
                     </Row>
@@ -62,7 +64,7 @@ class ProjectWindow extends Component {
                                 })
 
                             }
-                            <ProjectBordAdd style={divStyle.taskStyle} />
+                            <ProjectBordAdd style={divStyle.taskStyle} pId={this.props.project._id} />
                         </TabPane>
                         <TabPane tab="日历" key="2">
                             <ProjectLender />
@@ -82,14 +84,19 @@ class ProjectWindow extends Component {
         );
     }
 }
-export default withTracker(() => {
+export default withTracker((projectd) => {
     Meteor.subscribe('taskboard');
-    const taskF = TaskBoard.find({}).fetch();
+    Meteor.subscribe('project');
+    const taskF = TaskBoard.find({ projectId: projectd.match.params.id }).fetch();
     const taskL = taskF.length;
+    const projectL = Project.find({ _id: projectd.match.params.id }).fetch();
     // const projectId1 = Project.find({ name: this.state.minchen })._id;
-    console.log(taskF.length);
+    const project = projectL[0];
+    console.log(taskF, project);
+    console.log(projectd.match.params.id);
     return {
         taskF,
         taskL,
+        project,
     };
 })(ProjectWindow);

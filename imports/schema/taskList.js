@@ -12,16 +12,19 @@ TaskList.schema = new SimpleSchema({
         type: String,
     },
     // 任务id
+    taskId: {
+        type: String,
+        regEx: SimpleSchema.RegEx.Id,
+    },
     // 父清单id
     fatherId: {
         type: String,
-        regEx: SimpleSchema.RegEx.Id,
     },
     // 创建人id
-    content: {
-        type: String,
-        regEx: SimpleSchema.RegEx.Id,
-    },
+    // content: {
+    //     type: String,
+    //     regEx: SimpleSchema.RegEx.Id,
+    // },
     // 创建时间
     createTime: {
         type: Date,
