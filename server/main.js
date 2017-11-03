@@ -15,6 +15,7 @@ import Company from '../imports/schema/company';
 import Log from '../imports/schema/log';
 import Project from '../imports/schema/project';
 import TaskBoard from '../imports/schema/taskBoard';
+import TaskList from '../imports/schema/taskList';
 import File from '../imports/schema/file';
 
 Meteor.startup(() => {
@@ -68,8 +69,8 @@ Meteor.publish('file', () => File.find({}));
 
 Meteor.publish('project', () => Project.find({}));
 Meteor.publish('taskboard', () => TaskBoard.find({}));
+Meteor.publish('tasklist', () => TaskList.find({}));
 
 Meteor.publish('company', () => Company.find({}));
 
 Meteor.publish('log', () => Log.find({}));
-

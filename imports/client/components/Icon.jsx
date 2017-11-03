@@ -8,7 +8,7 @@ export default function Icon({ icon, size, iconColor, onClick }) {
 }
 Icon.propTypes = {
     icon: PropTypes.string.isRequired,
-    size: PropTypes.number,
+    size: PropTypes.string,
     iconColor: PropTypes.string,
     onClick: PropTypes.func,
 };

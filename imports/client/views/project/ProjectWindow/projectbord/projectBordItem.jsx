@@ -1,13 +1,15 @@
 
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Modal } from 'antd';
+import { Row, Col, Input, Button, Menu, Dropdown } from 'antd';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import pureRender from 'pure-render-decorator';
 import Icon from '../../../../components/Icon';
-import ProjectItemDetail from './projectItemDetail';
+import MiniCard from './miniCard';
+// import ProjectItemDetail from './projectItemDetail';
 import Task from '../../../../../../imports/schema/task';
+// import Active from '../../../../../../imports/schema/active';
 
 const { TextArea } = Input;
 @pureRender
@@ -24,14 +26,20 @@ class ProjectBordItem extends Component {
             cardName: '',
             cardInput: '',
             visible: false,
-            tastBoardId: this.props.tastBoardId,
+            concern: false,
         };
     }
-    showModal = () => {
+    handleConcern = () => {
+        this.setState({
+            concern: !this.state.concern,
+        });
+    }
+    showModal = (e) => {
         this.setState({
             visible: true,
         });
-        console.log(1);
+        console.log(e.target._id);
+        console.log(this.i.key);
     }
     hideModal = () => {
         this.setState({
@@ -76,39 +84,46 @@ class ProjectBordItem extends Component {
             console.log(11);
             if (value.taskBoardId === this.props.tastBoardId) {
                 return (
-                    <div className="list-message" key={value._id}>
-                        <div className="list-message-item" onClick={this.showModal} >
-                            {value.name}
-                            <Modal
-                                visible={this.state.visible}
-                                footer={null}
-                                onCancel={this.hideModal}
-                                onOk={this.hideModal}
-                                width={450}
-                            >
-                                <ProjectItemDetail />
-                            </Modal>
-                        </div>
-                    </div>);
+                    <MiniCard value={value.name} key={value._id} idIndex={value._id} />
+                );
             }
             return null;
         });
     }
     //  }
     render() {
-        console.log('fgh', this.state, this.props.tasks);
+        const menu = (
+            <Menu>
+                <Menu.Item key="0">
+                    {this.state.concern ?
+                        <a onClick={this.handleConcern}>取消关注</a> :
+                        <a onClick={this.handleConcern}>关注</a>
+                    }
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item key="1">
+                    <a href="http://www.taobao.com/">归档该卡片</a>
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item key="3">删除</Menu.Item>
+            </Menu>
+        );
         return (
             <div className="ejianlian-project-item-list">
                 <div className="list-title">
                     <Row>
-                        <Col span={19}>
+                        <Col span={19} style={{ display: 'flex' }}>
                             <p>{this.props.value}</p>
+                            {this.state.concern ?
+                                <Icon icon="icon-guanzhu icon icon-eye" /> : null}
                         </Col>
                         <Col span={3} style={{ textAlign: 'center' }}>
                             <Icon icon="icon-jiahao icon" />
                         </Col>
                         <Col span={2} style={{ textAlign: 'center' }}>
-                            <Icon icon="icon-gengduo1 icon" />
+                            <Dropdown overlay={menu} trigger={['click']}>
+                                <Icon icon="icon-gengduo1 icon" />
+                            </Dropdown>
                         </Col>
                     </Row>
                 </div>
@@ -141,8 +156,10 @@ class ProjectBordItem extends Component {
     }
 }
 export default withTracker(() => {
+    //  Meteor.subscribe('active');
     Meteor.subscribe('task');
     const tasks = Task.find({}).fetch();
+    console.log(tasks);
     return {
         tasks,
         // taskId,

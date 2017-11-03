@@ -16,7 +16,7 @@ class Index extends Component {
                 this.props.history.push('/login');
             } else if (user && this.isLogin === false) {
                 this.isLogin = true;
-                this.props.history.push('/chat');
+                this.props.history.push('/project');
             }
         });
     }

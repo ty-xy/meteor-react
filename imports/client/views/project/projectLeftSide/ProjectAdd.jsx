@@ -14,15 +14,16 @@ const text = <span>点击切换头像</span>;
 export default class ProjectAdd extends Component {
     static propTypes = {
         click: PropTypes.func,
-        to: PropTypes.string,
+        // to: PropTypes.string,
     }
     constructor(props) {
         super(props);
-        //  this.handleChange = this.handleChange.bind(this);
         this.state = {
             temperature: '',
             intro: '',
             affiliation: '',
+            icon: ['icon-dingweichengshi', 'icon-scenery', 'icon-shandong', 'icon-jingdian-simiao'],
+            color: ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'],
         };
     }
 
@@ -34,6 +35,7 @@ export default class ProjectAdd extends Component {
     //     }
     // console.log(imageUrl)
     // }
+
     handleChange(name, e) {
         const newState = {};
         newState[name] = e.target.value;
@@ -63,27 +65,32 @@ export default class ProjectAdd extends Component {
     }
     sendFile = () => {
         this.fileInput.click();
-        console.log(1);
     }
-    selectFile = () => {
-        const file = this.fileInput.files[0];
-        if (!file) {
-            return;
-        }
+    // selectFile = () => {
+    //     const file = this.fileInput.files[0];
+    //     if (!file) {
+    //         return;
+    //     }
+    //     const reader = new FileReader();
+    //     const name = file.name;
+    //     const fileType = file.type;
+    //     const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
+    //     const size = file.size;
+    //     const sendMessage = this.sendMessage;
 
-        const reader = new FileReader();
-        reader.onloadend = function () {
-            Meteor.call('sendFile', this.result, this.props.to, (err) => {
-                if (err) {
-                    return console.error(err.reason);
-                }
-                console.log('发送文件成功');
-            });
-        };
-        reader.readAsArrayBuffer(file);
-    }
+    //     reader.onloadend = function () {
+    //         Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
+    //             feedback.dealError(err);
+    //             sendMessage(res, 'file');
+    //         });
+    //     };
+    //     reader.readAsDataURL(file);
+    // }
     render() {
-        //  const imageUrl = this.state.imageUrl;
+        const j = Math.floor(Math.random() * 4);
+        const divStyle = {
+            background: this.state.color[j],
+        };
         return (
             <div className="ejianlian-project-add" >
                 <div id="title-f">
@@ -93,8 +100,8 @@ export default class ProjectAdd extends Component {
                     <div className="common-type person-type">
                         <span>项目头像：</span >
                         <Tooltip placement="right" title={text}>
-                            <p className="icon-person">
-                                <MyIcon icon="icon-xiangmu icon" onClick={this.sendFile} />
+                            <p className="icon-person" style={divStyle}>
+                                <MyIcon icon={this.state.icon[j]} size="30px" iconColor="#fff" onClick={this.sendFile} />
                                 <input
                                     id="i-file"
                                     type="file"

@@ -1,39 +1,135 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Calendar, Menu, Dropdown, Checkbox } from 'antd';
+import { Row, Col, Input, Calendar, Menu, Dropdown, Checkbox, Modal, Tooltip, Tag } from 'antd';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+import PropTypes from 'prop-types';
+// import format from 'date-format';
+import format from 'date-format';
 import pureRender from 'pure-render-decorator';
 import AvatarSelf from '../../../../components/AvatarSelf';
 import Icon from '../../../../components/Icon';
 import ProjectInput from './projectInput';
+import Task from '../../../../../../imports/schema/task';
+import TaskList from '../../../../../../imports/schema/taskList';
+import Active from '../../../../../../imports/schema/active';
+import feedback from '../../../../../util/feedback';
+// import ProjectTag from './ProjectTag';
 
 const { TextArea } = Input;
-function onPanelChange(value, mode) {
-    console.log(value, mode);
-}
-
+// const confirm = Modal.confirm;
 @pureRender
 class ProjectItemDetail extends Component {
+    static propTypes = {
+        item: PropTypes.string, // 传送项目
+        Id: PropTypes.object, //
+        decription: PropTypes.string, // 描述的值
+        activities: PropTypes.arrayOf(PropTypes.object),
+        begintime: PropTypes.string,
+        endtime: PropTypes.string,
+        tasklists: PropTypes.arrayOf(PropTypes.object),
+        taskchild: PropTypes.arrayOf(PropTypes.object),
+        label: PropTypes.string,
+    }
     constructor(...props) {
         super(...props);
         this.state = {
             shown: false,
             shownT: false,
             shownR: true,
-            shownLender: false,
+            // shownCreadite: tru, // 显示编辑的
+            tValue: '',
+            time: '', // 开始的时间
+            endtime: '', // 结束的时间
+            commentMark: '', //  评论的内容
+            visible: false, // 模态框可见
+            visiblel: false,
+            mask: false, // 不要模态款
+            checkValue: '', // 检查值
+            changeMark: '',
+            listValue: '',
+            visib: false, // 子菜单的值
+
         };
     }
-    handleLender = () => {
+    // 处理日历
+    onPanellChange = (value) => {
+        console.log(111);
         this.setState({
-            shownLender: !this.state.shownLender,
+            time: value.format('L'),
+        });
+        Meteor.call(
+            'changeTime', this.props.Id.Id, this.state.time,
+            (err) => {
+                console.log(err);
+            },
+        );
+    }
+    onPanelChange = (value) => {
+        console.log(111);
+        this.setState({
+            endtime: value.format('L'),
+        });
+        Meteor.call(
+            'changeEndTime', this.props.Id.Id, this.state.endtime,
+            (err) => {
+                console.log(err);
+            },
+        );
+    }
+    showModal = () => {
+        this.setState({
+            visible: true,
         });
     }
+    showOk = () => {
+        this.setState({
+            visiblel: true,
+        });
+    }
+    showOver = () => {
+        this.setState({
+            visib: true,
+        });
+    }
+    hideModal = () => {
+        this.setState({
+            visible: false,
+        });
+    }
+    hideOver = () => {
+        this.setState({
+            visib: false,
+        });
+    }
+    handleOk = (e) => {
+        console.log(e);
+        this.setState({
+            visiblel: false,
+        });
+    }
+    handleCancel = (e) => {
+        console.log(e);
+        this.setState({
+            visiblel: false,
+        });
+    }
+    // 创建任务表单
     handleChangeS = () => {
+        this.createTask();
         this.setState({
             shown: !this.state.shown,
         });
+        console.log(this.props.Id);
     }
-    handleChangeT = () => {
+    // 评论框变化获得值
+    handleChangeTT = (e) => {
         this.setState({
-            shownT: !this.state.shownT,
+            commentMark: e.target.value,
+        });
+    }
+    handleChangeMark = (e) => {
+        this.setState({
+            changeMark: e.target.value,
         });
     }
     handleChangeR = () => {
@@ -41,12 +137,170 @@ class ProjectItemDetail extends Component {
             shownR: !this.state.shownR,
         });
     }
+    // checkbox的状态值
     handleChange = (e) => {
         console.log(`checked = ${e.target.checked}`);
     }
+    // 获得变化的值
+    handleChangeT = (e) => {
+        this.setState({
+            tValue: e.target.value,
+        });
+        console.log(this.state.tValue);
+    }
+    // 设置清单的值
+    handleCheck = (e) => {
+        this.setState({
+            checkValue: e.target.value,
+        });
+        console.log(this.state.checkValue);
+    }
+    // 调用创建活动的方法
+    handleMark = () => {
+        this.createActive();
+        this.setState({
+            commentMark: '',
+        });
+    }
+    // 创建清单表
+    createTaskList = () => {
+        Meteor.call(
+            'createTaskList', {
+                name: this.state.checkValue,
+                taskId: this.props.Id.Id,
+                fatherId: '',
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 调用创建清单的方法
+    handleChangeCheck = () => {
+        this.createTaskList();
+        this.setState({
+            checkValue: '',
+        });
+        this.setState({
+            shownR: !this.state.shownR,
+        });
+    }
+    // 创建任务的方法
+    createTask = () => {
+        console.log(this.props.Id);
+        Meteor.call(
+            'changeTask', this.props.Id.Id, this.state.tValue,
+            (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 调用移除评论的活动 目前没有成功 ／／ 成功修改
+    handleRemove = (id) => {
+        // this.deleteActive(id);
+        feedback.dealDelete('提示', '确定要删除该评论么?', () => this.deleteActive(id));
+    }
+    // 创建移除评论活动的方法
+    deleteActive = (id) => {
+        Meteor.call(
+            'deleteActive', id, (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 创建评论活动
+    createActive = () => {
+        console.log(this.state.commentMark);
+        Meteor.call(
+            'createActive',
+            {
+                content: this.state.commentMark,
+                taskId: this.props.Id.Id,
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 显示编辑框
+    showCreadite = (id) => {
+        this.setState({
+            [`shownCreadite${id}`]: true,
+        });
+    }
+    // 编辑active 
+    handleCreadite = (id) => {
+        // console.log(this.props.id)
+        this.setState({
+            [`shownCreadite${id}`]: false,
+        });
+        this.changActive(id);
+    }
+    // 改变活动
+    changActive = (id) => {
+        Meteor.call(
+            'changeActive', id, this.state.changeMark, (err) => {
+                console.log(err);
+            },
+        );
+    }
+    handleClose = () => {
+        this.setState({
+            shown: !this.state.shown,
+        });
+    }
+    // 显示清单子菜单
+    handldetaskList = (id) => {
+        this.setState({
+            [`shownT${id}`]: true,
+        });
+        console.log(this.list);
+    }
+    // 子菜单的编辑变化
+    handldeChangetaskList = (e) => {
+        this.setState({
+            listValue: e.target.value,
+        });
+        console.log(this.state.listValue);
+    }
+    // 创建的子清单列表并调用
+    handleSendTaskList = (id) => {
+        this.setState({
+            [`shownT${id}`]: false,
+            listValue: '',
+        });
+        Meteor.call(
+            'createTaskList', {
+                name: this.state.listValue,
+                taskId: this.props.Id.Id,
+                fatherId: id,
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 删除清单
+    handleRemoveList = (id) => {
+        Meteor.call(
+            'removeTaskList', id, (err) => {
+                console.log(err);
+            },
+        );
+    }
+    handleColor = (event) => {
+        const number = event.currentTarget.getAttribute('data-color');
+        Meteor.call(
+            'changeLabel', this.props.Id.Id, number, (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 开始渲染
     render() {
+        console.log(this.state.time, 1111);
         const menu = (
-            <Menu>
+            <Menu >
                 <Menu.Item key="0">
                     卡片操作
                 </Menu.Item>
@@ -58,7 +312,8 @@ class ProjectItemDetail extends Component {
                 <Menu.Item key="2">编辑成员</Menu.Item>
                 <Menu.Item key="3">编辑标签</Menu.Item>
                 <Menu.Item key="4">编辑附件</Menu.Item>
-                <Menu.Item key="5" onClick={this.handleLender}>修改起始日期
+                <Menu.Item key="5" >
+                    <a onClick={this.showModal}>修改起始日期</a>
                 </Menu.Item>
                 <Menu.Item key="6">修改截止日期</Menu.Item>
                 <Menu.Divider />
@@ -71,11 +326,12 @@ class ProjectItemDetail extends Component {
             </Menu>
         );
         return (
+
             <div className="ejian-lian-project-detail">
                 <div className="detail-title detail-common">
                     <Row>
                         <Col span={20}>
-                            <h1>项目评估</h1>
+                            <h1>{this.props.item}</h1>
                         </Col>
                         <Col span={4}>
                             <Dropdown overlay={menu} trigger={['click']}>
@@ -83,10 +339,32 @@ class ProjectItemDetail extends Component {
                             </Dropdown>
                         </Col>
                     </Row>
+                    <Modal
+                        visible={this.state.visible}
+                        z-index={1050}
+                        className="Modal-mask"
+                        mask={this.state.mask}
+                        onCancel={this.hideModal}
+                        onOk={this.hideModal}
+                        width={200}
+                    >
+                        <Calendar fullscreen={false} onChange={this.onPanellChange} />
+                    </Modal>
+                    <Modal
+                        visible={this.state.visib}
+                        z-index={1050}
+                        className="Modal-mask"
+                        mask={this.state.mask}
+                        onCancel={this.hideOver}
+                        onOk={this.hideOver}
+                        width={200}
+                    >
+                        <Calendar fullscreen={false} onChange={this.onPanelChange} />
+                    </Modal>
                 </div>
                 <div className="modal-detail-content detail-common">
                     <Row className="detail-list-common">
-                        <Col span={6}>
+                        <Col span={5}>
                             <p>成员</p>
                             <div style={{ display: 'flex' }}>
                                 <div className="person-size">
@@ -95,23 +373,53 @@ class ProjectItemDetail extends Component {
                                 <Icon icon="icon-tianjia circle-icon" />
                             </div>
                         </Col>
-                        <Col span={6}>
+                        <Col span={5}>
                             <p>标签</p>
                             <div style={{ display: 'flex' }}>
-                                <p className="circle-icon-l" />
-                                <Icon icon="icon-tianjia circle-icon" />
+                                <Tooltip title="点击切换" placement="top">
+                                    <p className="circle-icon-l" onClick={this.showOk} style={{ background: this.props.label || '#7ED321' }} />
+                                </Tooltip>
+                                <Modal
+                                    visible={this.state.visiblel}
+                                    onOk={this.handleOk}
+                                    width={156}
+                                    footer={null}
+                                    onCancel={this.handleOk}
+                                    bodyStyle={{ padding: 0 }}
+                                    style={{ top: 330 }}
+                                    closable={false}
+                                >
+                                    <div className="change-modal">
+                                        <Row>
+                                            <Col span={20}>
+                                                <div className="tag-title">标签</div>
+                                            </Col>
+                                            <Col span={4}>
+                                                <Icon icon="icon-guanbi1 icon" onClick={this.handleOk} />
+                                            </Col>
+                                        </Row>
+                                        <div className="tag-show" >
+                                            <Tag color="#7ED321" className="label-circle" data-color={'#7ED321'} onClick={this.handleColor} />
+                                            <Tag color="#F5D949" className="label-circle" data-color={'#F5D949'} onClick={this.handleColor} />
+                                            <Tag color="#F2A240" className="label-circle" data-color={'#F2A240'} onClick={this.handleColor} />
+                                            <Tag color="#D9534E" className="label-circle" data-color={'#D9534E'} onClick={this.handleColor} />
+                                            <Tag color="#9941D3" className="label-circle" data-color={'#9941D3'} onClick={this.handleColor} />
+                                            <Tag color="#3378B9" className="label-circle" data-color={'#3378B9'} onClick={this.handleColor} />
+                                        </div>
+                                    </div>
+                                </Modal>
                             </div>
                         </Col>
-                        <Col span={6}>
-                            <p>开始</p>
-                            <div>
-                                今天中午12点30分
+                        <Col span={7} style={{ textAlign: 'center' }} onClick={this.showModal}>
+                            <p >开始</p>
+                            <div >
+                                {this.props.begintime}
                             </div>
                         </Col>
-                        <Col span={6}>
-                            <p>结束</p>
+                        <Col span={7} onClick={this.showOver}>
+                            <p >结束</p>
                             <div>
-                                2017年10月25日
+                                {this.props.endtime}
                             </div>
                         </Col>
                     </Row>
@@ -121,34 +429,80 @@ class ProjectItemDetail extends Component {
                         </p>
                         {
                             this.state.shown ?
-                                <ProjectInput input="添加" onClick={this.handleChangeS} /> :
-                                <input type="button" value="编辑" className="input-decription" onClick={this.handleChangeS} />
+                                <ProjectInput
+                                    input="添加"
+                                    onClick={this.handleChangeS}
+                                    value={this.state.tValue}
+                                    onChange={this.handleChangeT}
+                                    onConcel={this.handleClose}
+                                />
+                                :
+                                <input
+                                    type="button"
+                                    value={this.props.decription || '编辑'}
+                                    className="input-decription"
+                                    onClick={this.handleChangeS}
+                                />
                         }
                     </div>
                     <div className="detail-list-common">
                         <p>清单</p>
-                        <div>
-                            <Checkbox onChange={this.handleChange}>西红门板材报价</Checkbox>
-                            <div style={{ paddingLeft: '20px' }}>
-                                <p>
-                                    <Checkbox onChange={this.handleChange}>一楼管材汇总</Checkbox>
-                                </p>
-                                <Checkbox onChange={this.handleChange}>二楼管材汇总</Checkbox>
-
-                                {this.state.shownT ?
-                                    <ProjectInput input="添加" onClick={this.handleChangeT} /> :
-                                    <p>
-                                        <Icon icon="icon-tianjia1" onClick={this.handleChangeT} />
-                                        扩充清单
-                                    </p>
-                                }
-                            </div>
-                        </div>
+                        {/* <ProjectTag /> */}
+                        {this.props.tasklists.map((tasklist, index) => {
+                            console.log(this.props.taskchild[index].fatherId);
+                            return (
+                                <div key={tasklist._id} >
+                                    <Row>
+                                        <Col span={19}>
+                                            <Checkbox onChange={this.handleChange} defaultChecked disabled>{tasklist.name}</Checkbox>
+                                        </Col>
+                                        <Col span={2}>
+                                            <span>0</span>
+                                            <span>/</span>
+                                            <span>0</span>
+                                        </Col>
+                                        <Col span={3} onClick={() => this.handleRemoveList(tasklist._id)}>
+                                            删除
+                                        </Col>
+                                    </Row>
+                                    {this.props.taskchild.map((listChild) => {
+                                        if (listChild.fatherId === tasklist._id) {
+                                            return (
+                                                <div style={{ marginLeft: '20px' }} key={listChild._id} >
+                                                    <Checkbox onChange={this.handleChange}>{listChild.name}</Checkbox>
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    })}
+                                    <div style={{ marginLeft: '20px' }}>
+                                        {this.state[`shownT${tasklist._id}`] ?
+                                            <ProjectInput
+                                                input="添加"
+                                                value={this.state.listValue}
+                                                onChange={this.handldeChangetaskList}
+                                                onClick={() => this.handleSendTaskList(tasklist._id)}
+                                            /> :
+                                            <p>
+                                                <Icon icon="icon-tianjia1" onClick={() => this.handldetaskList(tasklist._id)} />
+                                                扩充清单
+                                            </p>
+                                        }
+                                    </div>
+                                </div>
+                            );
+                        })
+                        }
                         {this.state.shownR ?
                             <p className="ready-task">
                                 <Icon icon="icon-tianjia1" onClick={this.handleChangeR} />
                                 添加待办事项
-                            </p> : <ProjectInput input="添加" onClick={this.handleChangeR} />
+                            </p> : <ProjectInput
+                                input="添加"
+                                value={this.state.checkValue}
+                                onChange={this.handleCheck}
+                                onClick={this.handleChangeCheck}
+                            />
                         }
                     </div>
                     <div className="detail-list-common detail-comment">
@@ -158,29 +512,67 @@ class ProjectItemDetail extends Component {
                                 <div className="person-size">
                                     <AvatarSelf />
                                 </div>
-                                <TextArea type="text" />
+                                <TextArea type="text" value={this.state.commentMark} onChange={this.handleChangeTT} />
                             </div>
-                            <button className="comment-button">评论</button>
+                            <button className="comment-button" onClick={this.handleMark}>评论</button>
                         </div>
-                        <div style={{ display: 'flex' }} className="comment-talk">
-                            <div className="person-size">
-                                <AvatarSelf />
-                            </div>
-                            <div>
-                                <p>二楼材料已经汇总</p>
-                                <span>10分钟以前</span>
-                                <span>--</span>
-                                <a>编辑</a>
-                                <span>--</span>
-                                <a>删除</a>
-                            </div>
-                        </div>
+                        {this.props.activities.map((MarkValue) => {
+                            console.log();
+                            return (
+                                <div style={{ display: 'flex' }} className="comment-talk" key={MarkValue._id} >
+                                    <div className="person-size">
+                                        <AvatarSelf />
+                                    </div>
+                                    {!this.state[`shownCreadite${MarkValue._id}`] ?
+                                        <div >
+                                            <p>{MarkValue.content}</p>
+                                            <span>{format('yyyy-MM-dd', MarkValue.createTime)}</span>
+                                            <span>--</span>
+                                            <a onClick={() => this.showCreadite(MarkValue._id)}>编辑</a>
+                                            <span>--</span>
+                                            <span onClick={() => this.handleRemove(MarkValue._id)} >
+                                                删除
+                                            </span>
+                                        </div>
+                                        :
+                                        <div>
+                                            <TextArea type="text" value={this.state.changeMark} onChange={this.handleChangeMark} />
+                                            <button onClick={() => this.handleCreadite(MarkValue._id)}>编辑</button>
+                                        </div>}
+                                </div>
+                            );
+                        })
+                        }
                     </div>
                 </div>
-                {this.state.shownLender ? <Calendar fullscreen={false} onPanelChange={onPanelChange} /> : null}
-            </div>
+            </div >
+
         );
     }
 }
-export default ProjectItemDetail;
+export default withTracker((Id) => {
+    Meteor.subscribe('task');
+    Meteor.subscribe('tasklist');
+    Meteor.subscribe('active');
+    const activities = Active.find({ taskId: Id.Id }, { sort: { createTime: -1 } }).fetch();
+    const tasks = Task.find({ _id: Id.Id }).fetch();
+    const tasklists = TaskList.find({ $and: [{ taskId: Id.Id }, { fatherId: '' }] }).fetch();
+    const taskchild = TaskList.find({ $and: [{ taskId: Id.Id }, { fatherId: { $ne: '' } }] }).fetch();
+    // const id = activities.map(i => i._id);
+    const decription = tasks[0].describe;
+    const begintime = tasks[0].beginTime;
+    const endtime = tasks[0].endTime;
+    const label = tasks[0].label;
+    console.log(taskchild);
+    return {
+        Id,
+        decription,
+        activities,
+        begintime,
+        tasklists,
+        taskchild,
+        endtime,
+        label,
+    };
+})(ProjectItemDetail);
 

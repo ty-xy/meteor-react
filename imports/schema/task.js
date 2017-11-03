@@ -26,21 +26,21 @@ Task.schema = new SimpleSchema({
         type: Date,
     },
     // // 标签
-    // label: {
-    //     type: String,
-    // },
+    label: {
+        type: String,
+    },
     // // 开始时间
-    // beginTime: {
-    //     type: Date,
-    // },
-    // // 结束时间
-    // endTime: {
-    //     type: Date,
-    // },
-    // // 描述
-    // describe: {
-    //     type: String,
-    // },
+    beginTime: {
+        type: String,
+    },
+    // 结束时间
+    endTime: {
+        type: String,
+    },
+    // 描述
+    describe: {
+        type: String,
+    },
 });
 
 export default Task;
