@@ -104,6 +104,11 @@ class ContactList extends Component {
     )
     renderChatListItem = (item, i) => {
         if (item.user) {
+            if (item.unreadMessage > 0 && !this.props.chatList.find(j => j.user && j.user._id === item.user._id)) {
+                Meteor.call('addChatList', item.user._id, 'userId', (err) => {
+                    console.log(err);
+                });
+            }
             return this.renderUser(item.user, item.lastMessage, item.time, item.type, i, item.unreadMessage);
         } else if (item.group) {
             return this.renderGroup(item.group, item.lastMessage, item.time, item.type, i, item.unreadMessage);
@@ -142,6 +147,37 @@ export default withTracker(() => {
     Meteor.subscribe('users');
     Meteor.subscribe('group');
     const chatList = UserUtil.getChatList();
+    // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
+    const allMessage = Message.find({}).fetch();
+    const allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
+    if (allUnRead.length > 0) {
+        allUnRead.forEach((k) => {
+            if (k.to.length <= 17) {
+                // if (!chatList.find(j => j.group && j.group._id === k.to)) {
+                Meteor.call('addChatList', k.to, 'groupId', (err) => {
+                    console.log(err);
+                });
+                // }
+                // 群聊天
+            } else if (k.to.length >= 34) {
+                const userId = k.to.slice(0, k.to.length / 2);
+                if (userId !== Meteor.userId()) {
+                    // 用户聊天
+                    Meteor.call('addChatList', userId, 'userId', (err) => {
+                        console.log(err);
+                    });
+                } else {
+                    Meteor.call('addChatList', k.from._id, 'userId', (err) => {
+                        console.log(err);
+                    });
+                }
+            } else {
+                console.log('to字段Id的长度', k.to.length);
+            }
+        });
+    }
+
+    // 已存在聊天列表中显示未读消息
     chatList.forEach((x) => {
         if (x.type === 'user') {
             x.user = Meteor.users.findOne({ _id: x.userId });

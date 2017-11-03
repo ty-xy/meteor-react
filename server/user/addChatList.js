@@ -1,7 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 
+import UserUtil from '../../imports/util/user';
+
 Meteor.methods({
     addChatList(chatId, type) {
+        const chatList = UserUtil.getChatList();
+        console.log(chatId);
+        if (chatList.find(j => j[type] === chatId)) {
+            return;
+        }
         if (type === 'userId') {
             Meteor.users.update(
                 Meteor.userId(),

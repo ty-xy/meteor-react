@@ -119,26 +119,6 @@ export default withTracker(() => {
     Meteor.subscribe('users');
     Meteor.subscribe('message');
     const chatList = UserUtil.getChatList();
-    // const userChatList = [];
-    // chatList.forEach((x) => {
-    //     if (x.type === 'user') {
-    //         userChatList.push(x.userId);
-    //     }
-    // });
-    // const cursor = Message.find({}, { sort: { createdAt: -1 } });
-    // watch the cursor for changes
-    // let initializing = true;
-
-    // cursor.observe({
-    //     added(order) {
-    //         if (!initializing) {
-    //             // console.log('order from handle');
-    //             // console.log(order);
-    //         // document.getElementById('xyz').play();
-    //         }
-    //     },
-    // });
-    // initializing = false;
     return {
         chatList,
     };
