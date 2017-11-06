@@ -13,6 +13,7 @@
             height: 70px;
             padding: 10px 20px;
             display: flex;
+            position: relative;
             .friend-info {
                 margin: 0px 20px;
                 width: 300px;
@@ -31,20 +32,28 @@
                 display: flex;
                 margin-top: 5px;
                 justify-content: flex-end;
-                button {
-                    width:76px;
-                    height: 40px;
-                    line-height: 40px;
-                    .btn;
-                }
                 & > button:nth-of-type(2) {
                     background-color: @redColor;
                     margin-left: 20px;
                 }
-                .confirmed {
-                    background-color: @colorCC;
-                    float: right;
-                }
+            }
+            button {
+                width:76px;
+                height: 40px;
+                line-height: 40px;
+                .btn;
+            }
+            .confirmed {
+                background-color: @colorCC;
+                position: absolute;
+                right: 20px;
+                top: 15px;
+            }
+            .friend-refuse {
+                position: absolute;
+                right: 20px;
+                top: 25px;
+                color: #999;
             }
         }
     }

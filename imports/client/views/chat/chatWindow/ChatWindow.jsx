@@ -249,7 +249,6 @@ class ChatWindow extends Component {
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         return this.props.to ?
             <div className="ejianlian-chat-window">
-
                 {
                     this.state.isShowVideo ?
                         <VideoMeeting

@@ -16,11 +16,12 @@ class FriendsList extends Component {
         users: PropTypes.array,
         changeTo: PropTypes.func,
         handleClick: PropTypes.func,
+        handleNewFriend: PropTypes.func,
     };
     render() {
         return (
             <div className="ejianlian-chat-friend-list">
-                <div className="chat-friend-pannel">
+                <div className="chat-friend-pannel" onClick={this.props.handleNewFriend}>
                     <div className="new-friend-pannel">
                         <p className="new-friend">
                             <Icon icon="icon-icon15" />

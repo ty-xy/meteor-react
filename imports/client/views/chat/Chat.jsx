@@ -12,7 +12,7 @@ import ChatWindow from './chatWindow/ChatWindow';
 import UserUtil from '../../../util/user';
 import feedback from '../../../util/feedback';
 
-// import NewFriend from './chatWindow/NewFriend';
+import NewFriend from './chatWindow/NewFriend';
 // import ProjectNotice from './chatWindow/ProjectNotice';
 
 
@@ -33,21 +33,27 @@ class Chat extends Component {
             to: '',
             userId: '',
             selectedChat: {},
+            chatType: 'message',
         };
+    }
+    handleNewFriend = () => {
+        this.setState({
+            chatType: 'newFriend',
+        });
     }
     handleClick = (index) => {
         this.setState({
             selected: index,
         });
     }
-    changeTo = (to, userId, type) => {
+    changeTo = (to, userId, type, chatType) => {
         if (type && !this.props.chatList.find(item => item[type] === userId)) {
             Meteor.call('addChatList', userId, type, (err) => {
                 feedback.dealError(err);
             });
         }
         this.handleToggle(userId);
-        this.setState({ to, userId });
+        this.setState({ to, userId, chatType });
     }
     handleToggle = (value) => {
         this.setState({
@@ -92,11 +98,13 @@ class Chat extends Component {
                                 changeTo={this.changeTo}
                                 handleToggle={this.handleToggle}
                                 selectedChat={this.state.selectedChat}
+                                handleNewFriend={this.handleNewFriend}
                             /> : null }
                         { this.state.selected === 2 ?
                             <FriendsList
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
+                                handleNewFriend={this.handleNewFriend}
                             /> : null }
                         { this.state.selected === 3 ?
                             <GroupList
@@ -106,8 +114,14 @@ class Chat extends Component {
                     </div>
                     <AddChat />
                 </div>
-                <ChatWindow to={this.state.to} userId={this.state.userId} />
-                {/* <NewFriend /> */}
+                {
+                    this.state.chatType === 'newFriend' ?
+                        <NewFriend />
+                        :
+                        <ChatWindow to={this.state.to} userId={this.state.userId} />
+                }
+
+
                 {/* <ProjectNotice /> */}
             </div>
         );

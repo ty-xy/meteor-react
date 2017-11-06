@@ -33,7 +33,7 @@ class ChatFriendInfo extends Component {
         this.setState({
             isAddFriend: !this.state.isAddFriend,
         });
-        Meteor.call('addFriend', this.props.friendId, (err) => {
+        Meteor.call('verifyFriend', this.props.friendId, this.$verifyMessage.value, (err) => {
             if (err) {
                 console.error(err.reason);
             }
@@ -114,7 +114,7 @@ class ChatFriendInfo extends Component {
                             <p onClick={this.handleAddFriend}>返回</p>
                         </div>
                         <div className="send-confirm">
-                            <input type="text" defaultValue={`我是${name}`} />
+                            <input type="text" defaultValue={`我是${name}`} ref={i => this.$verifyMessage = i} />
                             <button onClick={this.handleRequest}>发送</button>
                         </div>
                     </div>

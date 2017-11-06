@@ -8,12 +8,14 @@ import classnames from 'classnames';
 import IdUtil from '../../../../util/id';
 import Message from '../../../../schema/message';
 import Group from '../../../../schema/group';
+import Notice from '../../../../schema/notice';
 import Avatar from '../../../components/Avatar';
 import UserUtil from '../../../../util/user';
 import Icon from '../../../components/Icon';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
 import NoticeSound from '../../../components/NoticeSound';
+import PopulateUtil from '../../../../util/populate';
 
 let lastLength = 0;
 @pureRender
@@ -24,6 +26,8 @@ class ContactList extends Component {
         handleToggle: PropTypes.func,
         selectedChat: PropTypes.object,
         allUnRead: PropTypes.array,
+        handleNewFriend: PropTypes.func,
+        // newFriendNotice: PropTypes.array,
     }
     // constructor(...args) {
     //     super(...args);
@@ -54,6 +58,28 @@ class ContactList extends Component {
         }
         return false;
     }
+    renderNewFriend = (notice, index, friendFrom) => (
+        <div
+            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[notice._id] })}
+            key={index}
+            onClick={() => {
+                this.props.handleToggle(notice._id);
+                this.props.handleNewFriend();
+            }}
+        >
+            <div className="user-avatar new-friend-notice">
+                <Icon icon="icon-icon15 icon" />
+            </div>
+            <div className="user-message">
+                <p>新的好友<span className="message-createAt">{formatDate.renderDate(notice.createdAt)}</span></p>
+                <p className="last-message">{friendFrom.profile && friendFrom.profile.name}请求添加好友
+                    <span className="notice-red-dot">
+                        1
+                    </span>
+                </p>
+            </div>
+        </div>
+    )
     renderUser = (user, lastMessage, time, type, index, unreadMessage) => (
         <div
             key={index}
@@ -139,6 +165,8 @@ class ContactList extends Component {
             return this.renderUser(item.user, item.lastMessage, item.time, item.type, i, item.unreadMessage);
         } else if (item.group) {
             return this.renderGroup(item.group, item.lastMessage, item.time, item.type, i, item.unreadMessage);
+        } else if (item.notice) {
+            return this.renderNewFriend(item.notice, i, item.friendFrom);
         }
         // console.error('不支持的聊天类型', item);
         return null;
@@ -152,10 +180,10 @@ class ContactList extends Component {
         });
         const newStickTopChat = stickTopChat.sort(this.compare('stickTime'));
         // 剩下没有设置置顶的聊天列表
-        const defaultTopChat = chatList.filter(x => x.user || (x.group && !x.group.stickTop.value));
+        const defaultTopChat = chatList.filter(x => x.user || x.notice || (x.group && !x.group.stickTop.value));
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
 
-        const sortedChatList = newStickTopChat.concat(newDefaultTopChat);
+        const sortedChatList = [...newStickTopChat, ...newDefaultTopChat];
 
         return (
             <div className="ejianlian-chat-message-list">
@@ -173,6 +201,7 @@ class ContactList extends Component {
 export default withTracker(() => {
     Meteor.subscribe('users');
     Meteor.subscribe('group');
+    Meteor.subscribe('notice');
     const chatList = UserUtil.getChatList();
     // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
     const allMessage = Message.find({}).fetch();
@@ -218,11 +247,17 @@ export default withTracker(() => {
             x.lastMessage = messages.length === 0 ? null : messages[0];
             x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
             x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
+        } else if (x.type === 'notice') {
+            x.notice = Notice.findOne({ _id: x.noticeId });
+            x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
+            x.sortTime = x.time;
         }
     });
+    const newFriendNotice = chatList.filter(k => k.type === 'notice');
     return {
         chatList,
         allUnRead,
+        newFriendNotice,
     };
 })(ContactList);
 
