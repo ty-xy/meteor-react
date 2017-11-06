@@ -25,7 +25,7 @@ const CardAudit = ({ handlerAudit, name, avatar, type, reason, num, date, status
         </div>
         <div className="e-mg-log-card-footer">
             <Col span={12}>{date}</Col>
-            <Col span={12} className="right">{status === '待审核' ? (<a onClick={e => handlerAudit(e, _id)} href=""><span style={{ color: '#FFA200' }}>{status}</span></a>) : null}</Col>
+            <Col span={12} className="right">{status === '待审核' ? (<a onClick={e => handlerAudit(e, { name, avatar, type, reason, num, date, status, _id })} href=""><span style={{ color: '#FFA200' }}>{status}</span></a>) : null}</Col>
         </div>
     </Col>
 );

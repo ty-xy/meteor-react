@@ -192,3 +192,55 @@
         }
     }
 }
+
+// my model 自定义model
+.e-mg-model{
+    width: 600px;
+    // border: 1px solid #eee;
+    height: 100%;
+    display: block;
+    opacity: 0;
+    position: fixed;
+    right: -600px;
+    top: 0;
+    background: #eee;
+    box-shadow: -1px 0 10px #eee;
+}
+.e-mg-model-show{
+    right: 0;
+    opacity: 1;
+    // transform: 2s right ease;
+}
+.e-mg-model-header{
+    padding: 15px 0;
+    background: @blueColor;
+}
+.e-mg-model-header-title{
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+}
+.e-mg-model-header-close{
+    float: right;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 3px;
+    padding-right: 10px;
+}
+.e-mg-model-body{
+    background: #fff;
+    position: absolute;
+    top: 60px;
+    bottom: 45px;
+    left: 0;
+    right: 0;
+}
+.e-mg-model-footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+}
