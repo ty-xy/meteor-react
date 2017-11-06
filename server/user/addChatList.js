@@ -9,6 +9,7 @@ Meteor.methods({
             return;
         }
         if (type === 'userId') {
+            // console.log(7777);
             Meteor.users.update(
                 Meteor.userId(),
                 {

@@ -35,6 +35,14 @@ class ContactList extends Component {
     //         isPlay: false,
     //     };
     // }
+
+    componentWillUpdate(nextProps) {
+        if (nextProps.allUnRead && this.props.allUnRead < nextProps.allUnRead) {
+            this.sound.play();
+            console.log(3333, lastLength++);
+            // ui.playSound(false);
+        }
+    }
     compare = property => (a, b) => b[property] - a[property];
     deleteChat = (userId, type, unreadMessage) => {
         Meteor.call('deleteChat', userId, type, (err) => {
@@ -43,6 +51,7 @@ class ContactList extends Component {
         });
         if (unreadMessage > 0) {
             this.props.allUnRead.forEach((x) => {
+                console.log(9999);
                 Meteor.call('readMessage', x._id, Meteor.userId(), (err) => {
                     console.log(err);
                 });
@@ -193,6 +202,14 @@ class ContactList extends Component {
 
         return (
             <div className="ejianlian-chat-message-list">
+                <audio
+                    ref={sound => this.sound = sound}
+                    className="notice-sound"
+                >
+                    <source src="/sounds/message_sound.mp3" type="audio/mp3" />
+                    <source src="/sounds/message_sound.ogg'" type="audio/ogg" />
+                    <source src="/sounds/message_sound.wav" type="audio/wav" />
+                </audio>
                 {
                     sortedChatList.length > 0 ?
                         sortedChatList.map((item, i) => this.renderChatListItem(item, i))
@@ -212,6 +229,9 @@ export default withTracker(() => {
     // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
     const allMessage = Message.find({}).fetch();
     const allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
+    // 点击删除的时候,将所有未读消息变为已读,但是allUnReload此时不会立刻更新数据,
+    // 所以有未读消息时点击删除事此时这个消息列表已经删除,但是此时未读消息条数不会立刻更新,判断有未读消息,不存在该聊天窗口,则创建新的聊天窗口,过了一会数据更新了,未读消息为0
+    // console.log(2222, allUnRead.length);
     if (allUnRead.length > 0) {
         allUnRead.forEach((k) => {
             if (k.to.length <= 17) {

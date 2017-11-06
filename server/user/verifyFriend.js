@@ -15,19 +15,7 @@ Meteor.methods({
             dealResult: 0,
         };
         Notice.schema.validate(newNotice);
-        const noticeId = Notice.insert(newNotice);
-        Meteor.users.update(
-            { _id: friendId },
-            {
-                $push: {
-                    'profile.chatList': {
-                        type: 'notice',
-                        noticeId,
-                        time: new Date(),
-                    },
-                },
-            },
-        );
+        Notice.insert(newNotice);
     },
     dealFriendNotice(noticeId, index) {
         Notice.update(
