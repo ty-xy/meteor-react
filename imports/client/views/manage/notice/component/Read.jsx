@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import format from 'date-format';
-import notice from '../../../../../schema/notice';
+import notification from '../../../../../schema/notification';
 import feedback from '../../../../../util/feedback';
 
 
@@ -98,9 +98,9 @@ class Read extends PureComponent {
 }
 
 export default withTracker(() => {
-    Meteor.subscribe('notice');
+    Meteor.subscribe('notification');
     return {
         users: Meteor.user() || {},
-        notices: notice.find({}, { sort: { up: -1 } }).fetch(),
+        notices: notification.find({}, { sort: { up: -1 } }).fetch(),
     };
 })(Read);

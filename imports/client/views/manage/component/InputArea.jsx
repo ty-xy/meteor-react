@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 const { TextArea } = Input;
 
-const InputArea = ({ form, title, keyword, editData, className = '', marginBottom = 0 }) => {
+const InputArea = ({ form, title, keyword, editData, className = '', marginBottom = 0, required, requiredErr }) => {
     const focus = (e) => {
         e.preventDefault();
         e.target.style.height = `${e.target.scrollHeight}px`;
@@ -14,6 +14,9 @@ const InputArea = ({ form, title, keyword, editData, className = '', marginBotto
             {title && <p className="e-mg-input-label">{title}</p>}
             {form.getFieldDecorator(keyword, {
                 initialValue: editData && editData[keyword],
+                rules: [{
+                    required, message: requiredErr,
+                }],
             })(
                 <TextArea
                     onKeyUp={focus}
@@ -33,5 +36,7 @@ InputArea.propTypes = {
     editData: PropTypes.object,
     marginBottom: PropTypes.string,
     className: PropTypes.string,
+    required: PropTypes.bool,
+    requiredErr: PropTypes.string,
 };
 export default InputArea;

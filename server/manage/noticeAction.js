@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-import notice from '../../imports/schema/notice';
+import notice from '../../imports/schema/notification';
 
 Meteor.methods({
     createNotice({ username, title, content, group, author, file, img, up, isSecrecy }) {

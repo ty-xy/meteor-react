@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select, Form } from 'antd';
+import { DatePicker, Form } from 'antd';
+import format from 'date-format';
 
+const RangePicker = DatePicker.RangePicker;
 const FormItem = Form.Item;
-const Option = Select.Option;
+
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -14,35 +16,31 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
-const MySelect = ({ keyword, label, required, defaultValue, onChange, placeholder, requiredErr, form, width, data = [] }) => (
+const formatDate = 'YYYY-MM-DD';
+const MyDate = ({ keyword, label, required, defaultValue, placeholder, requiredErr, form, width, onChange }) => (
     <FormItem
         {...formItemLayout}
         label={label}
     >
         {form.getFieldDecorator(keyword, {
-            initialValue: defaultValue,
+            initialValue: (defaultValue && format(defaultValue)) || null,
             rules: [{
                 required, message: requiredErr,
             }],
         })(
-            <Select allowClear onChange={onChange} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }}>
-                {
-                    data.map(item => (<Option key={item} value={item}>{item}</Option>))
-                }
-            </Select>,
+            <RangePicker allowClear format={formatDate} onChange={onChange} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }} />,
         )}
     </FormItem>
 );
-MySelect.propTypes = {
+MyDate.propTypes = {
     form: PropTypes.object,
     keyword: PropTypes.string,
     requiredErr: PropTypes.string,
     required: PropTypes.bool,
     label: PropTypes.string,
-    placeholder: PropTypes.string,
+    placeholder: PropTypes.array,
     defaultValue: PropTypes.string,
     width: PropTypes.string,
-    data: PropTypes.array,
     onChange: PropTypes.func,
 };
-export default MySelect;
+export default MyDate;

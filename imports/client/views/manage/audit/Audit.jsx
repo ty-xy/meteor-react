@@ -6,8 +6,9 @@ import Leave from './Leave';
 import Business from './Business';
 import ChackBill from './CheckBill';
 import CommonAudit from './CommonAudit';
+import Approvaling from './Approvaling';
 
-const urls = ['/manage/audit/doing', '/manage/audit/done', '/manage/audit/self', '/manage/audit/copy', '/manage/audit'];
+const urls = ['/manage/audit/approvaling', '/manage/audit/done', '/manage/audit/self', '/manage/audit/copy', '/manage/audit'];
 
 class Audit extends Component {
     static propTypes = {
@@ -33,7 +34,7 @@ class Audit extends Component {
                     isShow >= 0 ? (
                         <div className="e-mg-audit-tab">
                             <Link to="/manage/audit" className={pathname === '/manage/audit' ? 'e-mg-audit-tab-active' : ''}>发起审批</Link>
-                            <Link to="/manage/audit/doing" className={pathname === '/manage/audit/doing' ? 'e-mg-audit-tab-active' : ''}>待审批的</Link>
+                            <Link to="/manage/audit/approvaling" className={pathname === '/manage/audit/approvaling' ? 'e-mg-audit-tab-active' : ''}>待审批的</Link>
                             <Link to="/manage/audit/done" className={pathname === '/manage/audit/done' ? 'e-mg-audit-tab-active' : ''}>已经审批的</Link>
                             <Link to="/manage/audit/self" className={pathname === '/manage/audit/self' ? 'e-mg-audit-tab-active' : ''}>我发起的</Link>
                             <Link to="/manage/audit/copy" className={pathname === '/manage/audit/copy' ? 'e-mg-audit-tab-active' : ''}>抄送我的</Link>
@@ -42,7 +43,7 @@ class Audit extends Component {
                 }
                 <div className="e-mg-audit-content-body">
                     <Route exact strict path="/manage/audit" component={Category} />
-                    <Route strict path="/manage/audit/doing" component={() => (<div>待审批的</div>)} />
+                    <Route strict path="/manage/audit/approvaling" component={Approvaling} />
                     <Route strict path="/manage/audit/done" component={() => (<div>已经审批的</div>)} />
                     <Route strict path="/manage/audit/self" component={() => (<div>我发起的</div>)} />
                     <Route strict path="/manage/audit/copy" component={() => (<div>抄送我的</div>)} />
