@@ -4,7 +4,6 @@ import Notice from '../../imports/schema/notice';
 
 Meteor.methods({
     verifyFriend(friendId, noticeContent) {
-        console.log(noticeContent);
         assert(friendId !== Meteor.userId(), 400, '不能添加自己为好友');
         assert(Meteor.user().profile.friends.indexOf(friendId) === -1, 400, '该好友已存在');
         const newNotice = {

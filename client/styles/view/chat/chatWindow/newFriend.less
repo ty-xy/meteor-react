@@ -8,12 +8,25 @@
         border-left: 1px solid @border;
         border-right: 1px solid @border;
         margin: 0 auto;
+        .new-friend-pannel:hover {
+            background-color: #e3f2fd;
+            & > .icon-chuyidong {
+                opacity: 1;
+            }
+        }
         .new-friend-pannel {
             border-bottom: 1px solid @border;
             height: 70px;
             padding: 10px 20px;
             display: flex;
             position: relative;
+            & > .icon-chuyidong {
+                margin: 0 -20px;
+                margin-top: 8px;
+                margin-right: 4px;
+                display: block;
+                opacity: 0;
+            }
             .friend-info {
                 margin: 0px 20px;
                 width: 300px;
@@ -24,6 +37,7 @@
                     text-overflow: ellipsis;
                     white-space: nowrap;
                 }
+                
                 span {
                     color: @mainColor;
                 }

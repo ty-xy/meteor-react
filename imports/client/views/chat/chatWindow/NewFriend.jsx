@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import format from 'date-format';
 
+import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
 import Notice from '../../../../schema/notice';
 import PopulateUtil from '../../../../util/populate';
@@ -34,8 +35,14 @@ class NewFriend extends Component {
             });
         }
     }
+    deleteNotice = (noticeId) => {
+        Meteor.call('deleteFriendNotice', noticeId, (err) => {
+            console.log(err);
+        });
+    }
     renderRefuseFriend = (item, index) => (
         <div className="new-friend-pannel" key={index}>
+            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteNotice(item._id)} />
             <Avatar name={item.noticeTo.profile.name} avatarColor={item.noticeTo.profile.avatarColor} />
             <div className="friend-info">
                 <p>{item.noticeTo.profile.name} &nbsp; {format('yyyy-MM-dd', item.createdAt)}</p>
@@ -49,6 +56,7 @@ class NewFriend extends Component {
     )
     renderFriendNotice = (item, index) => (
         <div className="new-friend-pannel" key={index}>
+            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteNotice(item._id)} />
             <Avatar name={item.noticeFrom.profile.name} avatarColor={item.noticeFrom.profile.avatarColor} />
             <div className="friend-info">
                 <p>{item.noticeFrom.profile.name} &nbsp; {format('yyyy-MM-dd', item.createdAt)}</p>

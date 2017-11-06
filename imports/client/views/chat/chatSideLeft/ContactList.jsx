@@ -27,7 +27,7 @@ class ContactList extends Component {
         selectedChat: PropTypes.object,
         allUnRead: PropTypes.array,
         handleNewFriend: PropTypes.func,
-        // newFriendNotice: PropTypes.array,
+        newFriendNotice: PropTypes.array,
     }
     // constructor(...args) {
     //     super(...args);
@@ -67,6 +67,7 @@ class ContactList extends Component {
                 this.props.handleNewFriend();
             }}
         >
+            {/* <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} /> */}
             <div className="user-avatar new-friend-notice">
                 <Icon icon="icon-icon15 icon" />
             </div>
@@ -74,7 +75,7 @@ class ContactList extends Component {
                 <p>新的好友<span className="message-createAt">{formatDate.renderDate(notice.createdAt)}</span></p>
                 <p className="last-message">{friendFrom.profile && friendFrom.profile.name}请求添加好友
                     <span className="notice-red-dot">
-                        1
+                        {this.props.newFriendNotice.length}
                     </span>
                 </p>
             </div>
@@ -180,7 +181,12 @@ class ContactList extends Component {
         });
         const newStickTopChat = stickTopChat.sort(this.compare('stickTime'));
         // 剩下没有设置置顶的聊天列表
-        const defaultTopChat = chatList.filter(x => x.user || x.notice || (x.group && !x.group.stickTop.value));
+        const defaultTopChat = chatList.filter(x => x.user || (x.group && !x.group.stickTop.value));
+        // 找出最新的好友通知
+        if (this.props.newFriendNotice.length > 0) {
+            const lastNewFriendNotice = this.props.newFriendNotice.sort(this.compare('sortTime'))[0];
+            defaultTopChat.push(lastNewFriendNotice);
+        }
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
 
         const sortedChatList = [...newStickTopChat, ...newDefaultTopChat];
@@ -247,13 +253,16 @@ export default withTracker(() => {
             x.lastMessage = messages.length === 0 ? null : messages[0];
             x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
             x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
-        } else if (x.type === 'notice') {
-            x.notice = Notice.findOne({ _id: x.noticeId });
-            x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
-            x.sortTime = x.time;
         }
     });
-    const newFriendNotice = chatList.filter(k => k.type === 'notice');
+    // 找出别人向你发起的未处理的好友认证
+    const newFriendNotice = Notice.find({ type: 0, to: Meteor.userId(), dealNotice: 0 }).fetch();
+    // 
+    newFriendNotice.forEach((x) => {
+        x.notice = Notice.findOne({ _id: x.noticeId });
+        x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
+        x.sortTime = x.time;
+    });
     return {
         chatList,
         allUnRead,
