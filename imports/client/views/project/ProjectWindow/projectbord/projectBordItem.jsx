@@ -29,6 +29,9 @@ class ProjectBordItem extends Component {
             concern: false,
         };
     }
+    componentWillReceiveProps(nextProps) {
+        console.log('nextProps', nextProps);
+    }
     handleConcern = () => {
         this.setState({
             concern: !this.state.concern,

@@ -6,9 +6,9 @@ const Project = new Mongo.Collection('project');
 
 Project.schema = new SimpleSchema({
     // 头像地址
-    // headPortrait: {
-    //     type: String,
-    // },
+    headPortrait: {
+        type: String,
+    },
     // 项目名称
     name: {
         type: String,

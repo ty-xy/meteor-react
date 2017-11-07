@@ -448,50 +448,47 @@ class ProjectItemDetail extends Component {
                     <div className="detail-list-common">
                         <p>清单</p>
                         {/* <ProjectTag /> */}
-                        {this.props.tasklists.map((tasklist, index) => {
-                            console.log(this.props.taskchild[index].fatherId);
-                            return (
-                                <div key={tasklist._id} >
-                                    <Row>
-                                        <Col span={19}>
-                                            <Checkbox onChange={this.handleChange} defaultChecked disabled>{tasklist.name}</Checkbox>
-                                        </Col>
-                                        <Col span={2}>
-                                            <span>0</span>
-                                            <span>/</span>
-                                            <span>0</span>
-                                        </Col>
-                                        <Col span={3} onClick={() => this.handleRemoveList(tasklist._id)}>
+                        {this.props.tasklists.map((tasklist, index) => (
+                            <div key={tasklist._id} >
+                                <Row>
+                                    <Col span={19}>
+                                        <Checkbox onChange={this.handleChange} defaultChecked disabled>{tasklist.name}</Checkbox>
+                                    </Col>
+                                    <Col span={2}>
+                                        <span>0</span>
+                                        <span>/</span>
+                                        <span>0</span>
+                                    </Col>
+                                    <Col span={3} onClick={() => this.handleRemoveList(tasklist._id)}>
                                             删除
-                                        </Col>
-                                    </Row>
-                                    {this.props.taskchild.map((listChild) => {
-                                        if (listChild.fatherId === tasklist._id) {
-                                            return (
-                                                <div style={{ marginLeft: '20px' }} key={listChild._id} >
-                                                    <Checkbox onChange={this.handleChange}>{listChild.name}</Checkbox>
-                                                </div>
-                                            );
-                                        }
-                                        return null;
-                                    })}
-                                    <div style={{ marginLeft: '20px' }}>
-                                        {this.state[`shownT${tasklist._id}`] ?
-                                            <ProjectInput
-                                                input="添加"
-                                                value={this.state.listValue}
-                                                onChange={this.handldeChangetaskList}
-                                                onClick={() => this.handleSendTaskList(tasklist._id)}
-                                            /> :
-                                            <p>
-                                                <Icon icon="icon-tianjia1" onClick={() => this.handldetaskList(tasklist._id)} />
+                                    </Col>
+                                </Row>
+                                {this.props.taskchild.map((listChild) => {
+                                    if (listChild.fatherId === tasklist._id) {
+                                        return (
+                                            <div style={{ marginLeft: '20px' }} key={listChild._id} >
+                                                <Checkbox onChange={this.handleChange}>{listChild.name}</Checkbox>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                })}
+                                <div style={{ marginLeft: '20px' }}>
+                                    {this.state[`shownT${tasklist._id}`] ?
+                                        <ProjectInput
+                                            input="添加"
+                                            value={this.state.listValue}
+                                            onChange={this.handldeChangetaskList}
+                                            onClick={() => this.handleSendTaskList(tasklist._id)}
+                                        /> :
+                                        <p>
+                                            <Icon icon="icon-tianjia1" onClick={() => this.handldetaskList(tasklist._id)} />
                                                 扩充清单
-                                            </p>
-                                        }
-                                    </div>
+                                        </p>
+                                    }
                                 </div>
-                            );
-                        })
+                            </div>
+                        ))
                         }
                         {this.state.shownR ?
                             <p className="ready-task">

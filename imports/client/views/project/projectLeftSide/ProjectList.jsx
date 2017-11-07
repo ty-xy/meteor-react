@@ -5,6 +5,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import DefaultProject from './DefaultProject';
+import MyIcon from '../../../components/Icon';
 
 import Project from '../../../../../imports/schema/project';
 
@@ -18,23 +19,45 @@ class ProjectList extends Component {
         super(...props);
         this.state = {
             visible: true,
+            showDefault: true,
         };
+    }
+    handleClick = () => {
+        this.setState({
+            showDefault: false,
+        });
     }
     render() {
         return (
             <div className="ejianlian-project-list" onClick={this.props.showProject}>
-                <Link to="/project/task">
-                    <DefaultProject />
-                </Link>
+                {this.state.showDefault ?
+                    <Link to="/project/task">
+                        <DefaultProject click={this.handleClick} />
+                    </Link> : null}
                 <ul >
                     {
                         this.props.projects.map((value) => {
-                            console.log(1);
+                            // console.log(value.headPortrait.indexOf('icon'));
+                            // const str = value.headPortrait;
+                            if (value.headPortrait.indexOf('icon') === -1) {
+                                return (
+                                    <Link to={`/project/task/${value._id}`} key={value._id}>
+                                        <li className="list-item" key={value._id}>
+                                            <div className="list-img">
+                                                {<img src={`http://oxldjnom8.bkt.clouddn.com//${value.headPortrait}`} alt="" />}
+                                            </div>
+                                            <div className="list-right">
+                                                <p>{value.name}</p>
+                                            </div>
+                                        </li>
+                                    </Link>
+                                );
+                            }
                             return (
                                 <Link to={`/project/task/${value._id}`} key={value._id}>
                                     <li className="list-item" key={value._id}>
-                                        <div className="list-img">
-                                            <img src="http://img.duoziwang.com/2016/10/02/15235311191.jpg" alt="" />
+                                        <div className="list-img-icon">
+                                            {<MyIcon icon={`${value.headPortrait} icon`} size="30px" iconColor="#ddd" />}
                                         </div>
                                         <div className="list-right">
                                             <p>{value.name}</p>
@@ -43,6 +66,9 @@ class ProjectList extends Component {
                                 </Link>
                             );
                         })
+                        // }
+                        // 
+
                     }
                 </ul>
             </div >

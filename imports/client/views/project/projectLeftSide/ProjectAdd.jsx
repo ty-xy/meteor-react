@@ -6,10 +6,12 @@ import { Input, Select, Tooltip } from 'antd';
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
 import MyIcon from '../../../components/Icon';
+import ImgUpload from '../../manage/component/ImgUpload';
 // import AddProject from './Addproject';
 
 const Option = Select.Option;
 const text = <span>点击切换头像</span>;
+const j = Math.floor(Math.random() * 4);
 @pureRender
 export default class ProjectAdd extends Component {
     static propTypes = {
@@ -24,23 +26,17 @@ export default class ProjectAdd extends Component {
             affiliation: '',
             icon: ['icon-dingweichengshi', 'icon-scenery', 'icon-shandong', 'icon-jingdian-simiao'],
             color: ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'],
+            showImage: true,
+            img: '',
         };
     }
-
-    // handleUp = (info) => {
-    //     if (info.file.status === 'done') {
-    //         // Get this url from response in real world.
-    //         const image = getBase64(info.file.originFileObj);
-    //         // console.log(image)
-    //     }
-    // console.log(imageUrl)
-    // }
 
     handleChange(name, e) {
         const newState = {};
         newState[name] = e.target.value;
         this.setState(newState);
         console.log(newState);
+        console.log(this.state.icon[j]);
     }
     handleChangeT = (value) => {
         this.setState({ affiliation: `${value}` });
@@ -48,6 +44,11 @@ export default class ProjectAdd extends Component {
     }
     handleMessage = () => {
         this.createProject();
+    }
+    changeUpdateTitle = () => {
+        this.setState({
+            showImage: false,
+        });
     }
     createProject = () => {
         console.log(this.state.affiliation);
@@ -57,37 +58,31 @@ export default class ProjectAdd extends Component {
                 name: this.state.temperature,
                 intro: this.state.intro,
                 affiliation: this.state.affiliation,
+                headPortrait: this.state.showImage ? this.state.icon[j] : this.state.img[0],
             },
             (err) => {
                 console.log(err);
             },
         );
     }
-    sendFile = () => {
-        this.fileInput.click();
+    // 图片id返回
+    changeUpdate = (name, imgs) => {
+        // const img = [];
+        // const file = [];
+        console.log('changeUpdate', name, imgs);
+        // const { img, file } = this.state;
+        if (name === 'img') {
+            this.setState({ img: imgs });
+        }
+        if (name === 'file') {
+            this.setState({ file: imgs });
+        }
     }
-    // selectFile = () => {
-    //     const file = this.fileInput.files[0];
-    //     if (!file) {
-    //         return;
-    //     }
-    //     const reader = new FileReader();
-    //     const name = file.name;
-    //     const fileType = file.type;
-    //     const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
-    //     const size = file.size;
-    //     const sendMessage = this.sendMessage;
-
-    //     reader.onloadend = function () {
-    //         Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
-    //             feedback.dealError(err);
-    //             sendMessage(res, 'file');
-    //         });
-    //     };
-    //     reader.readAsDataURL(file);
-    // }
+    // 删除图片
+    removeUpload = (imgs, keyword) => {
+        this.setState({ [keyword]: imgs });
+    }
     render() {
-        const j = Math.floor(Math.random() * 4);
         const divStyle = {
             background: this.state.color[j],
         };
@@ -100,15 +95,11 @@ export default class ProjectAdd extends Component {
                     <div className="common-type person-type">
                         <span>项目头像：</span >
                         <Tooltip placement="right" title={text}>
-                            <p className="icon-person" style={divStyle}>
-                                <MyIcon icon={this.state.icon[j]} size="30px" iconColor="#fff" onClick={this.sendFile} />
-                                <input
-                                    id="i-file"
-                                    type="file"
-                                    ref={i => this.fileInput = i}
-                                    onChange={this.selectFile}
-                                />
-                            </p>
+                            {this.state.showImage ?
+                                <p className="icon-person" style={divStyle} onClick={this.changeUpdateTitle}>
+                                    <MyIcon icon={this.state.icon[j]} size="30px" iconColor="#fff" />
+                                </p> :
+                                <ImgUpload keyword="img" className="img-title" fileList={[]} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload}{...this.props} />}
                         </Tooltip>
                     </div>
                     <div className="common-type">
