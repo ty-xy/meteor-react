@@ -128,7 +128,7 @@ class AddGroup extends Component {
                         <Icon icon="icon-guanbi icon icon-close-addGroup icon-close" onClick={this.props.handleAddGroup} />
                     </div>
                     <Select defaultValue="e建联好友" onChange={this.handleChange} className="select-group-item">
-                        <Option value="jack">e建联好友</Option>
+                        <Option value="jack" >e建联好友</Option>
                     </Select>
                     <ul className="select-group-list">
                         {

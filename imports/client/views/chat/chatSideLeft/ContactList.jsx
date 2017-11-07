@@ -237,7 +237,7 @@ export default withTracker(() => {
             if (k.to.length <= 17) {
                 // if (!chatList.find(j => j.group && j.group._id === k.to)) {
                 Meteor.call('addChatList', k.to, 'groupId', (err) => {
-                    console.log(err);
+                    feedback.dealError(err);
                 });
                 // }
                 // 群聊天
@@ -246,11 +246,11 @@ export default withTracker(() => {
                 if (userId !== Meteor.userId()) {
                     // 用户聊天
                     Meteor.call('addChatList', userId, 'userId', (err) => {
-                        console.log(err);
+                        feedback.dealError(err);
                     });
                 } else {
                     Meteor.call('addChatList', k.from._id, 'userId', (err) => {
-                        console.log(err);
+                        feedback.dealError(err);
                     });
                 }
             } else {

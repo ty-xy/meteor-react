@@ -39,41 +39,15 @@ Meteor.methods({
             console.error(err);
         });
     },
-    setSignature(signature) {
+    changeUserBaseInfo(name, signature = '', sex = '', age = '', province = '', city = '', area = '') {
         Meteor.users.update(
             Meteor.userId(),
             {
                 $set: {
-                    signature,
-                },
-            },
-        );
-    },
-    setSex(sex) {
-        Meteor.users.update(
-            Meteor.userId(),
-            {
-                $set: {
-                    sex,
-                },
-            },
-        );
-    },
-    setAge(age) {
-        Meteor.users.update(
-            Meteor.userId(),
-            {
-                $set: {
-                    age,
-                },
-            },
-        );
-    },
-    setAddress(province, city, area) {
-        Meteor.users.update(
-            Meteor.userId(),
-            {
-                $set: {
+                    'profile.name': name,
+                    'profile.signature': signature,
+                    'profile.sex': sex,
+                    'profile.age': age,
                     'address.province': province,
                     'address.city': city,
                     'address.area': area,
