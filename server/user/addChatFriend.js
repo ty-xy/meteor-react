@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import assert from '../../imports/util/assert';
 
 Meteor.methods({
+    // 添加好友
     addFriend(friendId) {
         assert(friendId !== Meteor.userId(), 400, '不能添加自己为好友');
         assert(Meteor.user().profile.friends.indexOf(friendId) === -1, 400, '该好友已存在');
@@ -24,6 +25,36 @@ Meteor.methods({
             {
                 $push: {
                     'profile.friends': Meteor.userId(),
+                    'profile.chatList': {
+                        type: 'user',
+                        userId: Meteor.userId(),
+                        time: new Date(),
+                    },
+                },
+            },
+        );
+    },
+    // 同在一个群里可以发起临时会话
+    addTemporaryChat(friendId) {
+        assert(friendId !== Meteor.userId(), 400, '不能添加自己为好友');
+        assert(Meteor.user().profile.friends.indexOf(friendId) === -1, 400, '该好友已存在');
+
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $push: {
+                    'profile.chatList': {
+                        type: 'user',
+                        userId: friendId,
+                        time: new Date(),
+                    },
+                },
+            },
+        );
+        Meteor.users.update(
+            friendId,
+            {
+                $push: {
                     'profile.chatList': {
                         type: 'user',
                         userId: Meteor.userId(),

@@ -46,6 +46,8 @@ class ChatWindow extends Component {
             videoTracks: null,
             isShowVideo: false,
             isShowNotice: false,
+            temporaryChat: false,
+            chatFriendId: '',
         };
     }
 
@@ -72,9 +74,15 @@ class ChatWindow extends Component {
             isShowNotice: !this.state.isShowNotice,
         });
     }
+    handleFriendId = (chatFriendId) => {
+        this.setState({
+            chatFriendId,
+            isShowFriendInfo: true,
+        });
+    }
     handleFriendInfo = () => {
         this.setState({
-            isShowFriendInfo: !this.state.isShowFriendInfo,
+            isShowFriendInfo: false,
         });
     }
     handleFriendFile = () => {
@@ -169,6 +177,20 @@ class ChatWindow extends Component {
             image: url,
         });
     }
+    handleChatUser = (fromId, toId, groupId) => {
+        if (fromId === Meteor.userId()) {
+            return;
+        }
+        if (toId === groupId) {
+            // 是一个群里的成员,允许创建临时会话
+            console.log('是一个群里的成员,允许创建临时会话');
+            this.setState({
+                temporaryChat: true,
+            });
+            console.log(this.state.temporaryChat);
+            this.handleFriendId(fromId);
+        }
+    }
     closeImageViewer = () => {
         this.setState({
             showImgViewer: false,
@@ -236,8 +258,8 @@ class ChatWindow extends Component {
         }
     }
     render() {
-        const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
-        const { name = '', avatarColor = '', avatar = '', company = [], isHideInfo = false, verifyFriend = '0' } = profile;
+        const { profile = {}, _id = '' } = this.props.chatUser || {};
+        const { name = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const members = this.props.chatGroup ? this.props.chatGroup.members : [];
@@ -266,7 +288,10 @@ class ChatWindow extends Component {
                                     <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
                                 </p>
                                 <p>
-                                    <Icon icon="icon-gerenziliao icon" onClick={this.handleFriendInfo} />
+                                    <Icon
+                                        icon="icon-gerenziliao icon"
+                                        onClick={() => this.handleFriendId(_id)}
+                                    />
                                 </p>
                             </div>
                         </div>
@@ -297,7 +322,7 @@ class ChatWindow extends Component {
                                         null
                                 }
                                 <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
-                                    <p className="user-avatar">
+                                    <p className="user-avatar" onClick={() => this.handleChatUser(message.from._id, message.to, groupId)}>
                                         <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
                                     </p>
                                     <div className="user-message-wrap">
@@ -347,19 +372,17 @@ class ChatWindow extends Component {
                         <p className="chat-send-message" onClick={this.sendText}>发送</p>
                     </div>
                 </div>
-                <ChatFriendInfo
-                    style={{ display: this.state.isShowFriendInfo ? 'block' : 'none' }}
-                    handleFriendInfo={this.handleFriendInfo}
-                    name={name}
-                    avatarColor={avatarColor}
-                    username={username}
-                    avatar={avatar}
-                    friendId={_id}
-                    company={company}
-                    isHideInfo={isHideInfo}
-                    verifyFriend={verifyFriend}
+                {
+                    this.state.isShowFriendInfo ?
+                        <ChatFriendInfo
+                            handleFriendInfo={this.handleFriendInfo}
+                            friendId={this.state.chatFriendId}
+                            temporaryChat={this.state.temporaryChat}
+                        />
+                        :
+                        null
 
-                />
+                }
                 {
                     this.state.isShowFriendFile ?
                         <ChatFriendFile

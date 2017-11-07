@@ -19,10 +19,6 @@ class AddFriend extends Component {
         super(...args);
         this.state = {
             isShowFriendInfo: false,
-            name: '哈哈',
-            avatarColor: '#f58f47',
-            username: '15733258134',
-            friendId: '',
         };
     }
     searchFriend = () => {
@@ -32,13 +28,7 @@ class AddFriend extends Component {
                 this.setState({
                     isShowAddFriend: false,
                     isShowFriendInfo: true,
-                    name: result.profile.name || '',
-                    avatarColor: result.profile.avatarColor || '',
-                    username: result.username || '',
                     friendId: result._id || '',
-                    company: result.profile.company || [],
-                    isHideInfo: result.profile.isHideInfo || false,
-                    verifyFriend: result.profile.verifyFriend || '0',
                 });
             }
         });
@@ -112,13 +102,7 @@ class AddFriend extends Component {
                     this.state.isShowFriendInfo ?
                         <ChatFriendInfo
                             handleFriendInfo={this.handleCloseResult}
-                            name={this.state.name}
-                            avatarColor={this.state.avatarColor}
-                            username={this.state.username}
                             friendId={this.state.friendId}
-                            company={this.state.company}
-                            isHideInfo={this.state.isHideInfo}
-                            verifyFriend={this.state.verifyFriend}
                         />
                         :
                         null
