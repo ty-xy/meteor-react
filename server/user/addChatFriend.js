@@ -6,7 +6,7 @@ Meteor.methods({
     addFriend(friendId) {
         assert(friendId !== Meteor.userId(), 400, '不能添加自己为好友');
         assert(Meteor.user().profile.friends.indexOf(friendId) === -1, 400, '该好友已存在');
-
+        // 如果添加好友之前已存在临死会话,此时再次 push profile.chatList,就会重复创建聊天窗口,如何避免?
         Meteor.users.update(
             Meteor.userId(),
             {
