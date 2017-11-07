@@ -126,11 +126,11 @@ class InfoSetting extends Component {
                         <div>
                             <li>
                                 <label htmlFor="company">企业</label>
-                                <input type="text" id="company" />
+                                <input type="text" id="company" disabled="true " style={{ border: 0 }} />
                             </li>
                             <li>
                                 <label htmlFor="career">职业</label>
-                                <input type="职业" id="career" />
+                                <input type="职业" id="career" disabled="true " style={{ border: 0 }} />
                             </li>
                         </div>
                         :

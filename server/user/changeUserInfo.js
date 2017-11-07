@@ -55,4 +55,24 @@ Meteor.methods({
             },
         );
     },
+    changeVerifyFriend(verifyFriend) {
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $set: {
+                    'profile.verifyFriend': verifyFriend,
+                },
+            },
+        );
+    },
+    changeHideInfo(isHideInfo) {
+        Meteor.users.update(
+            Meteor.userId(),
+            {
+                $set: {
+                    'profile.isHideInfo': isHideInfo,
+                },
+            },
+        );
+    },
 });
