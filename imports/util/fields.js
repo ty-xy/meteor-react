@@ -4,5 +4,8 @@ export default {
         'profile.name': 1,
         'profile.avatar': 1,
         'profile.avatarColor': 1,
+        'profile.isHideInfo': 1,
+        'profile.verifyFriend': 1,
+        'profile.company': 1,
     },
 };

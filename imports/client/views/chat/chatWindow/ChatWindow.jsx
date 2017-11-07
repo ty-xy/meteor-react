@@ -237,7 +237,7 @@ class ChatWindow extends Component {
     }
     render() {
         const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
-        const { name = '', avatarColor = '', avatar = '' } = profile;
+        const { name = '', avatarColor = '', avatar = '', company = [], isHideInfo = false } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const members = this.props.chatGroup ? this.props.chatGroup.members : [];
@@ -355,6 +355,9 @@ class ChatWindow extends Component {
                     username={username}
                     avatar={avatar}
                     friendId={_id}
+                    company={company}
+                    isHideInfo={isHideInfo}
+
                 />
                 {
                     this.state.isShowFriendFile ?

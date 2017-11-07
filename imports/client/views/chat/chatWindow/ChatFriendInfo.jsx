@@ -17,6 +17,8 @@ class ChatFriendInfo extends Component {
         user: PropTypes.object,
         friendId: PropTypes.string,
         avatar: PropTypes.string,
+        company: PropTypes.array,
+        isHideInfo: PropTypes.bool,
     };
     constructor(...args) {
         super(...args);
@@ -53,9 +55,9 @@ class ChatFriendInfo extends Component {
         feedback.dealDelete('提示', '确定要删除该好友么?', this.deleteFriend);
     }
     render() {
-        const { profile } = this.props.user || {};
-        const { name } = profile || '';
-        const isFriend = profile && profile.friends.includes(this.props.friendId);
+        const { profile = {} } = this.props.user;
+        const { name = '' } = profile;
+        const isFriend = profile && profile.friends && profile.friends.includes(this.props.friendId);
         return (
             <div className="container-wrap friend-data-block">
                 <div className="opacity" onClick={this.props.handleFriendInfo} />
@@ -91,23 +93,27 @@ class ChatFriendInfo extends Component {
                             <p>昵称</p>
                             <p>{this.props.name}</p>
                         </li>
-                        {/* <li>
-                            <p>公司</p>
-                            <p>{this.props.username}</p>
-                        </li>
-                        <li>
-                            <p>备注</p>
-                            <p>
-                                <span>笨蛋</span>&nbsp;
-                                <span><i className="iconfont icon-bianji1" /></span></p>
-                        </li> */}
+                        {
+                            this.props.isHideInfo ?
+                                null
+                                :
+                                this.props.company && this.props.company.length === 0 ?
+                                    (<div className="user-company-info">
+                                        <li>
+                                            <p>公司</p>
+                                            <p>哈哈</p>
+                                        </li>
+                                        {/* <li>
+                                            <p>备注</p>
+                                            <p>
+                                                <span>笨蛋</span>&nbsp;
+                                                <span><i className="iconfont icon-bianji1" /></span></p>
+                                        </li> */}
+                                    </div>)
+                                    :
+                                    null
+                        }
                     </ul>
-                    {/* <div className="friend-btn-wrap" style={{ display: this.state.isAddFriend ? 'none' : 'block' }}>
-                        <button className="friend-btn">
-                            <i className="iconfont icon-xiaoxi1" />&nbsp;
-                            发送消息
-                        </button>
-                    </div> */}
                     <div className="friend-add-send" style={{ display: this.state.isAddFriend ? 'block' : 'none' }}>
                         <div className="send-info">
                             <p>请输入请求好友说明:</p>
