@@ -36,6 +36,9 @@ class AddFriend extends Component {
                     avatarColor: result.profile.avatarColor || '',
                     username: result.username || '',
                     friendId: result._id || '',
+                    company: result.profile.company || [],
+                    isHideInfo: result.profile.isHideInfo || false,
+                    verifyFriend: result.profile.verifyFriend || '0',
                 });
             }
         });
@@ -113,6 +116,9 @@ class AddFriend extends Component {
                             avatarColor={this.state.avatarColor}
                             username={this.state.username}
                             friendId={this.state.friendId}
+                            company={this.state.company}
+                            isHideInfo={this.state.isHideInfo}
+                            verifyFriend={this.state.verifyFriend}
                         />
                         :
                         null

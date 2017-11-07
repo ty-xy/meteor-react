@@ -19,6 +19,7 @@ class ChatFriendInfo extends Component {
         avatar: PropTypes.string,
         company: PropTypes.array,
         isHideInfo: PropTypes.bool,
+        verifyFriend: PropTypes.string,
     };
     constructor(...args) {
         super(...args);
@@ -35,12 +36,25 @@ class ChatFriendInfo extends Component {
         this.setState({
             isAddFriend: !this.state.isAddFriend,
         });
-        Meteor.call('verifyFriend', this.props.friendId, this.$verifyMessage.value, (err) => {
-            if (err) {
-                console.error(err.reason);
-            }
-            this.props.handleFriendInfo();
-        });
+        if (this.props.verifyFriend === '0') {
+            Meteor.call('verifyFriend', this.props.friendId, this.$verifyMessage.value, (err) => {
+                if (err) {
+                    console.error(err.reason);
+                }
+                feedback.dealSuccess('请求已发送,等待好友验证');
+                this.props.handleFriendInfo();
+            });
+        } else if (this.props.verifyFriend === '1') {
+            Meteor.call('addFriend', this.props.friendId, (err) => {
+                if (err) {
+                    console.error(err.reason);
+                }
+                feedback.dealSuccess('添加好友成功');
+                this.props.handleFriendInfo();
+            });
+        } else {
+            feedback.dealWarning('该用户设置了不允许任何人添加他为好友');
+        }
     }
     deleteFriend = () => {
         Meteor.call('deleteFriend', this.props.friendId, (err) => {

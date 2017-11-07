@@ -7,5 +7,6 @@ export default {
         'profile.isHideInfo': 1,
         'profile.verifyFriend': 1,
         'profile.company': 1,
+        'profile.mainCompany': 1,
     },
 };
