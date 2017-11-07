@@ -6,7 +6,10 @@ leave.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
-    username: {
+    status: {
+        type: 'String',
+    },
+    userId: {
         type: String,
     },
     approvers: {
@@ -33,6 +36,19 @@ leave.schema = new SimpleSchema({
         type: String,
     },
     type: {
+        type: String,
+    },
+    comments: {
+        type: [Object],
+        optional: true,
+    },
+    'comments.$.name': {
+        type: String,
+    },
+    'comments.$.centent': {
+        type: String,
+    },
+    'comments.$.createAt': {
         type: String,
     },
 });

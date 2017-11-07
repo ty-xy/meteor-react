@@ -60,7 +60,7 @@ class Leave extends Component {
             }
             fieldsValue.approvers = approvers;
             fieldsValue.copy = copy;
-            fieldsValue.username = Meteor.user().username;
+            fieldsValue.userId = Meteor.user()._id;
             const startAt = fieldsValue.startAt;
             const endAt = fieldsValue.endAt;
             const res = {
@@ -68,6 +68,7 @@ class Leave extends Component {
                 endAt: startAt.format('YYYY-MM-DD'),
                 startAt: endAt.format('YYYY-MM-DD'),
                 img,
+                status: '待审核',
             };
             console.log('res', res);
             Meteor.call(

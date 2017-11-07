@@ -8,36 +8,44 @@ class MyModel extends PureComponent {
         this.state = { show: false };
     }
     render() {
-        const { title = 'title头部', footer, handleCancel, show } = this.props;
-        const classname = show ? 'e-mg-model e-mg-model-show' : 'e-mg-model';
-        console.log('MyModel', this.props);
+        const { title = '请审批', footer, handleCancel, show, animation = '', mask, handleCommentbtn } = this.props;
+        const classname = show ? `e-mg-model-${animation} e-mg-model-show-${animation}` : `e-mg-model-${animation}`;
+        // console.log('MyModel', this.props);
         return (
-            <div className={classname}>
-                <div className="e-mg-model-header">
-                    <div className="e-mg-model-header-title">
-                        {title}
-                        <span className="e-mg-model-header-close" onClick={handleCancel}>关闭</span>
-                    </div>
-                </div>
-                <div className="e-mg-model-body">{this.props.children}</div>
-                {
-                    !footer ? <div className="e-mg-model-footer">
-                        <div className="text-center">
-                            <Button type="primary">确定</Button>
-                            <Button className="margin-left-20" onClick={handleCancel}>取消</Button>
+            <div className={`e-mg-model-mask-${mask}`}>
+                <div className="e-mg-model-mask" />
+                <div className={classname}>
+                    <div className="e-mg-model-header">
+                        <div className="e-mg-model-header-title">
+                            {title}
+                            <span className="e-mg-model-header-close" onClick={handleCancel}>关闭</span>
                         </div>
-                    </div> : null
-                }
+                    </div>
+                    <div className="e-mg-model-body">{this.props.children}</div>
+                    {
+                        !footer ?
+                            <div className="e-mg-model-footer">
+                                <div className="text-center">
+                                    <Button type="primary" onClick={handleCommentbtn}>确定</Button>
+                                    <Button className="margin-left-20" onClick={handleCancel}>取消</Button>
+                                </div>
+                            </div>
+                            : <div>{footer}</div>
+                    }
+                </div>
             </div>
         );
     }
 }
 MyModel.propTypes = {
-    children: PropTypes.element.isRequired,
-    title: PropTypes.element.isRequired,
+    children: PropTypes.object.isRequired,
+    title: PropTypes.string,
     footer: PropTypes.element,
     handleCancel: PropTypes.func,
     show: PropTypes.bool,
+    mask: PropTypes.bool,
+    animation: PropTypes.string,
+    handleCommentbtn: PropTypes.func,
 };
 
 export default MyModel;

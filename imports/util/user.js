@@ -35,6 +35,32 @@ const UserUtil = {
     getChatList() {
         return UserUtil.getProfile().chatList || [];
     },
+    getCompany() {
+        return UserUtil.getProfile().mainCompany || '';
+    },
+};
+
+export const userIdToInfo = {
+    userInfo: {},
+    getProfile(users = [], id) {
+        let res = {};
+        users.forEach((item) => {
+            if (item._id === id) {
+                res = {
+                    ...item,
+                    ...item.profile,
+                };
+                return userIdToInfo.userInfo;
+            }
+        });
+        return res;
+    },
+    getName(users, id) {
+        return userIdToInfo.getProfile(users, id).name || '';
+    },
+    getAvatar(users, id) {
+        return userIdToInfo.getProfile(users, id).avatar || '';
+    },
 };
 
 export default UserUtil;
