@@ -449,7 +449,7 @@ class ProjectItemDetail extends Component {
                         <p>清单</p>
                         {/* <ProjectTag /> */}
                         {this.props.tasklists.map((tasklist, index) => (
-                            <div key={tasklist._id} >
+                            <div key={tasklist._id} index={index}>
                                 <Row>
                                     <Col span={19}>
                                         <Checkbox onChange={this.handleChange} defaultChecked disabled>{tasklist.name}</Checkbox>
