@@ -34,6 +34,8 @@ class ChatWindow extends Component {
         chatUser: PropTypes.object,
         chatGroup: PropTypes.object,
         files: PropTypes.array,
+        changeTo: PropTypes.func,
+        handleToggle: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -48,6 +50,7 @@ class ChatWindow extends Component {
             isShowNotice: false,
             temporaryChat: false,
             chatFriendId: '',
+            isNewFriend: false,
         };
     }
 
@@ -68,6 +71,11 @@ class ChatWindow extends Component {
         if (this.props.to) {
             this.$message.addEventListener('keydown', this.handleSendMessage);
         }
+    }
+    showFriendShip = () => {
+        this.setState({
+            isNewFriend: true,
+        });
     }
     handleGroupNotice = () => {
         this.setState({
@@ -377,6 +385,8 @@ class ChatWindow extends Component {
                             handleFriendInfo={this.handleFriendInfo}
                             friendId={this.state.chatFriendId}
                             temporaryChat={this.state.temporaryChat}
+                            changeTo={this.props.changeTo}
+                            handleToggle={this.props.handleToggle}
                         />
                         :
                         null

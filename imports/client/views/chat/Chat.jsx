@@ -118,7 +118,7 @@ class Chat extends Component {
                     this.state.chatType === 'newFriend' ?
                         <NewFriend />
                         :
-                        <ChatWindow to={this.state.to} userId={this.state.userId} />
+                        <ChatWindow to={this.state.to} userId={this.state.userId} changeTo={this.changeTo} handleToggle={this.handleToggle} />
                 }
 
 

@@ -58,9 +58,8 @@ Meteor.methods({
     },
     // 同在一个群里可以发起临时会话
     addTemporaryChat(friendId) {
-        assert(friendId !== Meteor.userId(), 400, '不能添加自己为好友');
-        assert(Meteor.user().profile.friends.indexOf(friendId) === -1, 400, '该好友已存在');
-
+        const temporaryChat = Meteor.user().profile.chatList.find(item => item.userId && item.userId === friendId);
+        assert(!temporaryChat, 400, '已存在聊天窗口');
         Meteor.users.update(
             Meteor.userId(),
             {

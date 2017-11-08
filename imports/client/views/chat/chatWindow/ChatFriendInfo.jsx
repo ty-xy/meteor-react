@@ -6,6 +6,7 @@ import pureRender from 'pure-render-decorator';
 
 import Avatar from '../../../components/Avatar';
 import feedback from '../../../../util/feedback';
+import IdUtil from '../../../../util/id';
 
 @pureRender
 class ChatFriendInfo extends Component {
@@ -15,6 +16,8 @@ class ChatFriendInfo extends Component {
         friendId: PropTypes.string,
         chatUser: PropTypes.object,
         temporaryChat: PropTypes.bool,
+        changeTo: PropTypes.func,
+        handleToggle: PropTypes.func,
     };
     constructor(...args) {
         super(...args);
@@ -66,6 +69,14 @@ class ChatFriendInfo extends Component {
         feedback.dealDelete('提示', '确定要删除该好友么?', this.deleteFriend);
     }
     handleTemporaryChat = () => {
+        const haveChat = Meteor.user().profile.chatList.find(item => item.userId && item.userId === this.props.friendId);
+        if (haveChat) {
+            // 已经存在聊天窗口,需要直接跳到对应的聊天窗口
+            this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.friendId);
+            this.props.handleToggle(IdUtil.merge(Meteor.userId(), this.props.friendId));
+            this.props.handleFriendInfo();
+            return;
+        }
         Meteor.call('addTemporaryChat', this.props.friendId, (err) => {
             if (err) {
                 console.error(err.reason);
@@ -137,7 +148,7 @@ class ChatFriendInfo extends Component {
                         }
                     </ul>
                     {
-                        temporaryChat && !isFriend ?
+                        temporaryChat ?
                             <div className="friend-btn-wrap" style={{ display: this.state.isAddFriend ? 'none' : 'block' }}>
                                 <button className="friend-btn" onClick={this.handleTemporaryChat}>
                                     <i className="iconfont icon-xiaoxi1" />&nbsp;
