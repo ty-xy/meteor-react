@@ -194,6 +194,7 @@ class ContactList extends Component {
         // 找出最新的好友通知
         if (this.props.newFriendNotice.length > 0) {
             const lastNewFriendNotice = this.props.newFriendNotice.sort(this.compare('sortTime'))[0];
+            console.log('最新一条加好友消息', lastNewFriendNotice);
             defaultTopChat.push(lastNewFriendNotice);
         }
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
@@ -226,14 +227,21 @@ export default withTracker(() => {
     Meteor.subscribe('group');
     Meteor.subscribe('notice');
     const chatList = UserUtil.getChatList();
+
+    const selfGroup = UserUtil.getGroups();
+    const selfFriend = UserUtil.getFriends();
+    const friendMessage = selfFriend.map(i => IdUtil.merge(Meteor.userId(), i));
+    const chatMessageId = [...selfGroup, ...friendMessage];
+    // 应该过滤出所有与我有关的消息
+    const allMessage = Message.find({ to: { $in: chatMessageId } }).fetch();
+    // console.log('所有的消息', allMessage);
     // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
     let allUnRead = [];
     setTimeout(() => {
-        const allMessage = Message.find({}).fetch();
         allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
         // 点击删除的时候,将所有未读消息变为已读,但是allUnReload此时不会立刻更新数据,
         // 所以有未读消息时点击删除事此时这个消息列表已经删除,但是此时未读消息条数不会立刻更新,判断有未读消息,不存在该聊天窗口,则创建新的聊天窗口,过了一会数据更新了,未读消息为0
-        console.log(2222, allUnRead.length);
+        // console.log('有和你有关的未读消息', allUnRead, allUnRead.length);
         if (allUnRead.length > 0) {
             allUnRead.forEach((k) => {
                 if (k.to.length <= 17) {
@@ -280,13 +288,14 @@ export default withTracker(() => {
         }
     });
     // 找出别人向你发起的未处理的好友认证
-    const newFriendNotice = Notice.find({ type: 0, to: Meteor.userId(), dealNotice: 0 }).fetch();
+    const newFriendNotice = Notice.find({ type: 0, to: Meteor.userId(), dealResult: 0 }).fetch();
     // 
     newFriendNotice.forEach((x) => {
-        x.notice = Notice.findOne({ _id: x.noticeId });
+        x.notice = Notice.findOne({ _id: x._id });
         x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
         x.sortTime = x.time;
     });
+    // console.log('别人向你发的好友认证', newFriendNotice);
     return {
         chatList,
         allUnRead,

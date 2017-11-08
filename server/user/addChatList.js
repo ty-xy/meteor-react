@@ -8,6 +8,9 @@ Meteor.methods({
         if (chatList.find(j => j[type] === chatId)) {
             return;
         }
+        if (chatId === Meteor.userId()) {
+            return;
+        }
         if (type === 'userId') {
             // console.log(7777);
             Meteor.users.update(

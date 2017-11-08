@@ -47,6 +47,7 @@ class Chat extends Component {
         });
     }
     changeTo = (to, userId, type, chatType) => {
+        // 有未读消息(有用户所在的群以及发给用户的消息)且不在聊天列表时,创建新的聊天窗口
         if (type && !this.props.chatList.find(item => item[type] === userId)) {
             Meteor.call('addChatList', userId, type, (err) => {
                 feedback.dealError(err);
