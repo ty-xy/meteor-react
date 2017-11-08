@@ -13,7 +13,14 @@ leave.schema = new SimpleSchema({
         type: String,
     },
     approvers: {
-        type: [String],
+        type: [Object],
+    },
+    'approvers.$.userId': {
+        type: String,
+    },
+    // isAudit: [审核中， 已审核， 已拒绝]
+    'approvers.$.isAudit': {
+        type: String,
     },
     copy: {
         type: [String],
@@ -42,13 +49,17 @@ leave.schema = new SimpleSchema({
         type: [Object],
         optional: true,
     },
-    'comments.$.name': {
+    'comments.$.content': {
         type: String,
     },
-    'comments.$.centent': {
+    'comments.$.createdAt': {
+        type: Date,
+    },
+    'comments.$.userId': {
         type: String,
     },
-    'comments.$.createAt': {
+    // isAudit: [审核中， 已审核， 已拒绝]
+    'comments.$.isAudit': {
         type: String,
     },
 });

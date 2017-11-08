@@ -49,7 +49,7 @@ export const userIdToInfo = {
                     ...item,
                     ...item.profile,
                 };
-                return userIdToInfo.userInfo;
+                // return userIdToInfo.userInfo;
             }
         });
         return res;
@@ -63,27 +63,14 @@ export const userIdToInfo = {
     getMaincompany(users, userId) {
         return userIdToInfo.getProfile(users, userId).mainCompany || '';
     },
-    getDep(companys, userId) {
-        let companyInfo = {};
-        companys.forEach((item) => {
-            if (item._id === UserUtil.getCompany()) {
-                companyInfo = item;
-                return false;
-            }
-        });
-        const { dep = [] } = companyInfo;
-        let users = [];
-        dep.forEach((item) => {
-            users = users.concat(item.member);
-        });
-        let depTo = '';
+    getDep(users, userId) {
+        let res = '暂无部门';
         users.forEach((item) => {
             if (item.userId === userId) {
-                depTo = item.upLevel;
-                return false;
+                res = item.dep;
             }
         });
-        console.log('getDep', users, depTo);
+        return res;
     },
 };
 

@@ -17,7 +17,7 @@ import feedback from '../../../../util//feedback';
 import MyModel from './component/MyModel';
 import Leave from '../../../../../imports/schema/leave';
 import Company from '../../../../../imports/schema/company';
-import { userIdToInfo } from '../../../../util/user';
+import UserUtil, { userIdToInfo } from '../../../../util/user';
 
 const { TextArea } = Input;
 const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他'];
@@ -45,9 +45,19 @@ class Approvaling extends Component {
     }
     // 合并所有的审批类型
     concatAll = ({ leaves }) => {
+        const localUserId = Meteor.user() && Meteor.user()._id;
         let cards = [];
         cards = cards.concat(leaves);
-        this.setState({ cards });
+        const res = [];
+        cards.forEach((item) => {
+            item.comments.forEach((j) => {
+                if (j.userId === localUserId && j.isAudit === '待审核') {
+                    res.push(item);
+                }
+            });
+        });
+        console.error('concatAll', cards, localUserId, res);
+        this.setState({ cards: res });
     }
     // 搜索函数
     filterChange = (date, dateString) => {
@@ -97,11 +107,11 @@ class Approvaling extends Component {
         const { modelData, auditComment, auditIdea } = this.state;
         const _this = this;
         const res = {
-            comment: auditComment,
+            content: auditComment,
             userId: Meteor.user()._id,
             _id: modelData._id,
             type: modelData.type,
-            status: auditIdea,
+            isAudit: auditIdea,
         };
         console.log('res', res);
         Meteor.call(
@@ -113,9 +123,9 @@ class Approvaling extends Component {
                 } else {
                     feedback.successToast(`${auditIdea}成功`);
                     _this.setState({ commentModel: false, auditComment: '', showAuditCard: false });
-                    setTimeout(() => {
-                        _this.handlerAudit(null, modelData._id);
-                    }, 1000);
+                    // setTimeout(() => {
+                    //     _this.handlerAudit(null, modelData._id);
+                    // }, 1000);
                 }
             },
         );
@@ -135,8 +145,8 @@ class Approvaling extends Component {
             } return <div />;
         };
         const allCards = cards;
-        const { users } = this.props;
-        // console.log('approval', this.props, this.state, userIdToInfo.getDep(companys, modelData.userId));
+        const { allUsers, users } = this.props;
+        console.log('approval', this.props, this.state);
 
         return (
             <div>
@@ -155,23 +165,24 @@ class Approvaling extends Component {
                     handleCancel={this.handleCancel}
                     show={showAuditCard}
                     footer={footer()}
-                    title={`${userIdToInfo.getName(users, modelData.userId)}的${modelData.type}审批`}
+                    title={`${userIdToInfo.getName(allUsers, modelData.userId)}的${modelData.type}审批`}
                     mask={showAuditCard}
                 >
                     <div>
                         <div className="border-bottom-eee e-mg-model-body-avatar clearfix">
                             <Col className="text-right" span={3}>
-                                <Avatar src={userIdToInfo.getAvatar(users, modelData.userId) || 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} />
+                                <Avatar src={userIdToInfo.getAvatar(allUsers, modelData.userId) || 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} />
                             </Col>
                             <Col span={18} className="margin-left-10" style={{ marginTop: '7px' }}>
-                                <p>{userIdToInfo.getName(users, modelData.userId)}</p>
+                                <p>{userIdToInfo.getName(allUsers, modelData.userId)}</p>
                                 <p className="" style={{ color: 'rgb(255, 162, 0)' }}>{modelData.status}</p>
                             </Col>
                         </div>
                         <div className="e-mg-model-body-content">
-                            <p><span className="e-mg-body-content-span">所属部门：</span>{
-                                (modelData.approvers || []).map(item => (<span key={item} className="margin-right-20">{userIdToInfo.getName(users, item)}</span>))
-                            }</p>
+                            <p>
+                                <span className="e-mg-body-content-span">所属部门：</span>
+                                <span className="margin-right-20">{userIdToInfo.getDep(users, modelData.userId)}</span>
+                            </p>
                             <p><span className="e-mg-body-content-span">请假类型：</span>{modelData.type}</p>
                             <p><span className="e-mg-body-content-span">请假天数：</span>{modelData.daynum}</p>
                             <p><span className="e-mg-body-content-span">开始时间：</span>{modelData.startAt}</p>
@@ -193,15 +204,15 @@ class Approvaling extends Component {
                         </div>
                         <div className="e-mg-model-body-comment clearfix">
                             <div className="clearfix">
-                                <Col className="" span={10}><Avatar src={userIdToInfo.getAvatar(users, modelData.userId) || 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} /><span>  {userIdToInfo.getName(users, modelData.userId)} 发起的申请</span></Col>
+                                <Col className="" span={10}><Avatar src={userIdToInfo.getAvatar(allUsers, modelData.userId) || 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} /><span>  {userIdToInfo.getName(allUsers, modelData.userId)} 发起的申请</span></Col>
                                 <Col className="text-right" span={14}>{format('yyyy-MM-dd hh:dd:ss', modelData.createAt)}</Col>
                             </div>
                             {
                                 (modelData.comments || []).map((item, index) => (
                                     <div className="clearfix" key={index}>
-                                        <Col className="" span={10}><Avatar src={userIdToInfo.getAvatar(users, item.userId) || 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} /><span>  {userIdToInfo.getName(users, item.userId)} {modelData.status}</span></Col>
+                                        <Col className="" span={10}><Avatar src={userIdToInfo.getAvatar(allUsers, item.userId) || 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} /><span>  {userIdToInfo.getName(allUsers, item.userId)} {item.isAudit || '进行了评论'}</span></Col>
                                         <Col className="text-right" span={14}>{format('yyyy-MM-dd hh:mm:ss', item.careateAt)}</Col>
-                                        <p style={{ lineHeight: 1.4, marginLeft: '50px', marginBottom: '10px' }}>{item.comment}</p>
+                                        <p style={{ lineHeight: 1.4, marginLeft: '50px', marginBottom: '10px' }}>{item.content}</p>
                                     </div>
                                 ))
                             }
@@ -234,6 +245,7 @@ Approvaling.propTypes = {
     form: PropTypes.object,
     history: PropTypes.object,
     leaves: PropTypes.array,
+    allUsers: PropTypes.array,
     users: PropTypes.array,
 };
 
@@ -241,9 +253,18 @@ export default withTracker(() => {
     Meteor.subscribe('leave');
     Meteor.subscribe('company');
     Meteor.subscribe('users');
+    const companys = Company.find().fetch();
+    let users = [];
+    const mainCompany = UserUtil.getCompany();
+    companys.forEach((item) => {
+        if (item._id === mainCompany) {
+            users = item.members;
+        }
+    });
     return {
-        users: Meteor.users.find().fetch() || [],
+        allUsers: Meteor.users.find().fetch() || [],
         leaves: Leave.find().fetch(),
-        companys: Company.find().fetch(),
+        companys,
+        users,
     };
 })(Form.create()(Approvaling));
