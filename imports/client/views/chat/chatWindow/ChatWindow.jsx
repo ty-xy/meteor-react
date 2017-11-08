@@ -53,7 +53,6 @@ class ChatWindow extends Component {
             isNewFriend: false,
         };
     }
-
     componentDidUpdate(prevProps) {
         this.props.messages.forEach((i) => {
             if (!i.readedMembers.includes(Meteor.userId())) {
@@ -62,7 +61,7 @@ class ChatWindow extends Component {
                 });
             }
         });
-        if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.length > 0) {
+        if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.children.length > 0) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage) {
                 $lastMessage.scrollIntoView(true);
@@ -221,6 +220,9 @@ class ChatWindow extends Component {
     )
     renderFile = (content) => {
         const result = PopulateUtil.file(content);
+        if (!result) {
+            return;
+        }
         if (/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(result.type)) {
             return this.renderImage(result.url);
         }
@@ -320,8 +322,10 @@ class ChatWindow extends Component {
                 }
                 <div className="chat-message-list" ref={i => this.messageList = i}>
                     {
-                        this.props.messages.map((message, i) => (
-                            <div key={i}>
+                        this.props.messages.map((message, index) => (
+                            <div
+                                key={index}
+                            >
                                 {
                                     message.showYearMonth ?
                                         <div className="message-time">{formatDate.dealMessageTime(message.createdAt)}</div>
@@ -451,16 +455,19 @@ export default withTracker(({ to, userId }) => {
     const chatGroup = Group.findOne({ _id: to });
     PopulateUtil.group(chatGroup);
     const files = Message.find({ to, type: 'file' }).fetch().map(msg => PopulateUtil.file(msg.content));
-    files.forEach((d, i, data) => {
-        d.showYearMonth = false;
-        d.fileFrom = PopulateUtil.user(d.from).profile.name;
-        if (i) {
-            const prev = data[i - 1];
-            d.showYearMonth = format('yyyy-MM', d.createdAt) !== format('yyyy-MM', prev.createdAt);
-        } else {
-            d.showYearMonth = true;
-        }
-    });
+    if (files[0]) {
+        files.forEach((d, i, data) => {
+            d.showYearMonth = false;
+            d.fileFrom = PopulateUtil.user(d.from).profile.name;
+            if (i) {
+                const prev = data[i - 1];
+                d.showYearMonth = format('yyyy-MM', d.createdAt) !== format('yyyy-MM', prev.createdAt);
+            } else {
+                d.showYearMonth = true;
+            }
+        });
+    }
+
     const messages = Message.find({ to }).fetch();
     messages.forEach((d, i, data) => {
         d.showYearMonth = false;
