@@ -65,7 +65,7 @@ export const userIdToInfo = {
     },
     getDep(users, userId) {
         let res = '暂无部门';
-        users.forEach((item) => {
+        (users || []).forEach((item) => {
             if (item.userId === userId) {
                 res = item.dep;
             }

@@ -11,6 +11,7 @@ import ImgUpload from '../component/ImgUpload';
 import SubmitBtn from './component/SubmitBtn';
 import GroupSelect from './component/GroupSelect';
 import feedback from '../../../../util//feedback';
+import UserUtil from '../../../../util/user';
 
 
 const formItemLayout = {
@@ -69,6 +70,7 @@ class Leave extends Component {
                 startAt: endAt.format('YYYY-MM-DD'),
                 img,
                 status: '待审核',
+                company: UserUtil.getCompany(),
             };
             console.log('res', res);
             Meteor.call(

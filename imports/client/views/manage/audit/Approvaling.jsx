@@ -50,11 +50,13 @@ class Approvaling extends Component {
         cards = cards.concat(leaves);
         const res = [];
         cards.forEach((item) => {
-            item.comments.forEach((j) => {
-                if (j.userId === localUserId && j.isAudit === '待审核') {
-                    res.push(item);
-                }
-            });
+            if (item.company === UserUtil.getCompany()) {
+                item.comments.forEach((j) => {
+                    if (j.userId === localUserId && j.isAudit === '待审核') {
+                        res.push(item);
+                    }
+                });
+            }
         });
         console.error('concatAll', cards, localUserId, res);
         this.setState({ cards: res });

@@ -6,7 +6,7 @@ import checkBill from '../../imports/schema/checkBill';
 import commonAudit from '../../imports/schema/commonAudit';
 
 Meteor.methods({
-    createLeave({ approvers, copy, daynum, endAt, startAt, img, reason, type, status, comments, userId }) {
+    createLeave({ approvers, copy, daynum, endAt, startAt, img, reason, type, status, comments, userId, company }) {
         approvers = approvers.map(item => ({ userId: item, isAudit: '待审核' }));
         // 第一个审批人信息通知。
         comments = [
@@ -29,6 +29,7 @@ Meteor.methods({
             type,
             status,
             comments,
+            company,
         };
         leave.schema.validate(newLeave);
         leave.insert(newLeave);
@@ -52,6 +53,7 @@ Meteor.methods({
             if (types.indexOf(type) > -1) {
                 const getLeave = leave.findOne({ _id });
                 const comments = getLeave.comments || [];
+                let status = '待审核';
                 let approvers = [];
                 switch (isAudit) {
                 case '评论':
@@ -65,11 +67,18 @@ Meteor.methods({
                     break;
                 case '拒绝':
                     comments.forEach((item) => {
-                        if (item.userId === userId && isAudit === '拒绝') {
+                        if (item.userId === userId && item.isAudit === '待审核') {
                             item.isAudit = isAudit;
                             item.content = content;
                             item.createdAt = new Date();
                         }
+                    });
+                    status = '拒绝';
+                    getLeave.approvers.forEach((item) => {
+                        if (item.userId === userId) {
+                            item.isAudit = '拒绝';
+                        }
+                        approvers.push(item);
                     });
                     break;
                 case '转发':
@@ -103,34 +112,17 @@ Meteor.methods({
                     }
                     if (allApp === 0) {
                         console.log('审核通过了');
+                        status = '拒绝';
                     }
                     break;
                 default:
                     break;
                 }
                 console.log('comments:', userId, isAudit, comments, approvers);
-                // let i = 0;
-                // (getLeave.approvers || []).forEach((item) => {
-                //     if (item.userId === userId) {
-                //         item.isAudit = isAudit;
-                //     }
-                //     if (isAudit === '同意') {
-                //         if (item.isAudit === '待审核') {
-                //             i++;
-                //             comments.push({
-                //                 content: '',
-                //                 createdAt: new Date(),
-                //                 ...item,
-                //             });
-                //         }
-                //     }
-                //     approvers.push(item);
-                // });
-
-
                 const res = {
                     approvers,
                     comments,
+                    status,
                 };
                 // console.log('res', res, i, getLeave.approvers.length);
                 leave.update(

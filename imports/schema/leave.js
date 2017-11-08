@@ -9,6 +9,9 @@ leave.schema = new SimpleSchema({
     status: {
         type: 'String',
     },
+    company: {
+        type: String,
+    },
     userId: {
         type: String,
     },
