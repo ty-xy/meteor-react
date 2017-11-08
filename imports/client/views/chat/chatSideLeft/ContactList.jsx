@@ -194,7 +194,6 @@ class ContactList extends Component {
         // 找出最新的好友通知
         if (this.props.newFriendNotice.length > 0) {
             const lastNewFriendNotice = this.props.newFriendNotice.sort(this.compare('sortTime'))[0];
-            console.log('最新一条加好友消息', lastNewFriendNotice);
             defaultTopChat.push(lastNewFriendNotice);
         }
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
@@ -293,7 +292,7 @@ export default withTracker(() => {
     newFriendNotice.forEach((x) => {
         x.notice = Notice.findOne({ _id: x._id });
         x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
-        x.sortTime = x.time;
+        x.sortTime = x.createdAt;
     });
     // console.log('别人向你发的好友认证', newFriendNotice);
     return {
