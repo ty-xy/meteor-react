@@ -25,7 +25,6 @@ class GroupSelect extends (PureComponent || Component) {
     componentWillMount() {
         const { companyInfo } = this.props;
         const { members = [], deps = [] } = companyInfo;
-        console.log('componentWillMount', companyInfo);
         this.setState({
             users: members,
             deps,
@@ -115,91 +114,98 @@ class GroupSelect extends (PureComponent || Component) {
     handleGroupChange = (e, name) => {
         e.preventDefault();
         let allNum = 0;
-        const { users, deps } = this.state;
-        const _users = [];
+        const { deps } = this.state;
         const _dep = [];
-        let _depSele = {};
+        const leftUsers = this.state.leftUsers;
         deps.forEach((item) => {
             if (item.name === name) {
                 item.selected = !item.selected;
-                _depSele = item;
-            }
-            _dep.push(item);
-        });
-        users.forEach((item) => {
-            if (item.dep === name) {
-                if (_depSele.selected) {
-                    item.selected = true;
+                const isNot = leftUsers.indexOf(name);
+                if (isNot > -1) {
+                    leftUsers.splice(isNot, 1);
                 } else {
-                    item.selected = false;
+                    leftUsers.push(name);
                 }
             }
             if (item.selected) {
                 allNum++;
             }
-            _users.push(item);
+            _dep.push(item);
         });
-        if (allNum < users.length) {
-            this.setState({ users: _users, checked: false, allNum, deps: _dep });
+        if (allNum < deps.length) {
+            this.setState({ checked: false, allNum, leftUsers });
         } else {
-            this.setState({ users: _users, checked: true, allNum, deps: _dep });
+            this.setState({ checked: true, allNum, leftUsers });
         }
     }
     // 全选
     handleCheckbox = (e) => {
         let allNum = 0;
         const { users, checked, depVal, deps } = this.state;
+        const { isSelecteGroup } = this.props;
         const _users = [];
         let leftUsers = this.state.leftUsers;
-        const _dep = deps;
-        if (!depVal) {
-            users.forEach((item) => {
+        const _dep = [];
+        if (isSelecteGroup) {
+            deps.forEach((item) => {
                 if (e.target.checked === true) {
+                    allNum++;
                     item.selected = true;
-                    leftUsers.push(item.userId);
+                    leftUsers.push(item.name);
                 } else {
+                    allNum--;
                     item.selected = false;
                     leftUsers = [];
                 }
-                _users.push(item);
+                _dep.push(item);
             });
-            _dep.forEach((item) => {
-                if (e.target.checked === true) {
-                    allNum = 1;
-                    item.selected = true;
-                } else {
-                    allNum = 0;
-                    item.selected = false;
-                }
+            this.setState({
+                checked: !checked,
+                deps: _dep,
+                allNum,
+                leftUsers,
             });
         } else {
-            users.forEach((item) => {
-                if (item.dep === depVal) {
+            if (!depVal) {
+                users.forEach((item) => {
                     if (e.target.checked === true) {
-                        allNum++;
                         item.selected = true;
-                        const isNot = leftUsers.indexOf(item.userId);
-                        if (isNot > -1) {
-                            leftUsers.splice(isNot, 1);
-                        } else {
-                            leftUsers.push(item.userId);
-                        }
+                        leftUsers.push(item.userId);
+                        allNum++;
                     } else {
-                        allNum--;
                         item.selected = false;
                         leftUsers = [];
                     }
-                }
-                _users.push(item);
+                    _users.push(item);
+                });
+            } else {
+                users.forEach((item) => {
+                    if (item.dep === depVal) {
+                        if (e.target.checked === true) {
+                            allNum++;
+                            item.selected = true;
+                            const isNot = leftUsers.indexOf(item.userId);
+                            if (isNot > -1) {
+                                leftUsers.splice(isNot, 1);
+                            } else {
+                                leftUsers.push(item.userId);
+                            }
+                        } else {
+                            allNum--;
+                            item.selected = false;
+                            leftUsers = [];
+                        }
+                    }
+                    _users.push(item);
+                });
+            }
+            this.setState({
+                checked: !checked,
+                users: _users,
+                allNum,
+                leftUsers,
             });
         }
-        this.setState({
-            checked: !checked,
-            users: _users,
-            allNum,
-            deps: _dep,
-            leftUsers,
-        });
     }
     // 选中的人
     getTimeSelected = () => {
@@ -223,6 +229,21 @@ class GroupSelect extends (PureComponent || Component) {
             return (<img src={avatar} alt="" />);
         }
         return <span style={{ background: colors[Math.floor(Math.random() * 4)], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{name}</span>;
+    }
+    // 获取群组avatar
+    getDepAvatar = (name) => {
+        const { deps } = this.state;
+        let avatar = '';
+        deps.forEach((item) => {
+            if (item.name === name) {
+                if (item.avatar) {
+                    avatar = (<img src={item.avatar} alt="" />);
+                } else {
+                    avatar = <span style={{ background: colors[Math.floor(Math.random() * 4)], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{name}</span>;
+                }
+            }
+        });
+        return avatar;
     }
     render() {
         // console.log('group', this.state, this.props);
@@ -257,7 +278,7 @@ class GroupSelect extends (PureComponent || Component) {
         const searchDep = () => (
             deps.map(item => (
                 <a key={item.name} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleGroupChange(e, item.name)}>
-                    <span style={{ background: colors[Math.floor(Math.random() * 4)] }} className="e-mg-audit-deps-people-per-span">{item.name}</span>
+                    {this.getDepAvatar(item.name)}
                     {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
                     <span>{item.name}</span>
                 </a>
@@ -294,7 +315,7 @@ class GroupSelect extends (PureComponent || Component) {
                             if (item.selected) {
                                 return (
                                     <a href="" key={item.name} onClick={e => this.handleGroupChange(e, item.name)} className="e-mg-audit-seleted-img">
-                                        {this.getAvatar(item.avatar, item.name)}
+                                        {this.getDepAvatar(item.name)}
                                         <p>{item.name}</p>
                                     </a>
                                 );
@@ -332,7 +353,9 @@ class GroupSelect extends (PureComponent || Component) {
                     <Row className="e-mg-audit-xuanze-row">
                         <div className="e-mg-audit-xuanze-left e-mg-audit-xuanze-col">
                             {
-                                leftUsers.map(item => (<Tag key={item} closable className="margin-bottom-20" onClose={() => this.handleChange(item)}>{userIdToInfo.getName(allUsers, item)}</Tag>))
+                                isSelecteGroup ? leftUsers.map(item => (<Tag key={item} closable className="margin-bottom-20" onClose={() => this.handleGroupChange(item)}>{item}</Tag>))
+                                    :
+                                    leftUsers.map(item => (<Tag key={item} closable className="margin-bottom-20" onClose={() => this.handleChange(item)}>{userIdToInfo.getName(allUsers, item)}</Tag>))
                             }
                         </div>
                         <div className="e-mg-audit-xuanze-right e-mg-audit-xuanze-col">
