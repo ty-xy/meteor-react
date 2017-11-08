@@ -7,7 +7,6 @@ const Option = Select.Option;
 const CompanySelect = ({ users, changeCompany }) => {
     const { profile } = users;
     const companys = (profile && profile.company) || [];
-    // console.log('allCompanys', allCompanys, companys);
     const mainCompany = (users.profile && users.profile.mainCompany) || '暂无公司';
     return (
         <Row className="e-mg-text-center e-mg-left-link">

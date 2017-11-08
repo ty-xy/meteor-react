@@ -41,7 +41,6 @@ const UserUtil = {
 };
 
 export const userIdToInfo = {
-    userInfo: {},
     getProfile(users = [], userId) {
         let res = {};
         users.forEach((item) => {

@@ -25,47 +25,51 @@ Company.schema = new SimpleSchema({
         type: String,
         optional: true,
     },
-    dep: {
+    deps: {
         type: [Object],
         optional: true,
     },
-    'dep.$.name': {
+    'deps.$.name': {
         type: String,
     },
-    'dep.$.admin': {
-        type: String,
-        optional: true,
-    },
-    'dep.$.avatar': {
+    'deps.$.admin': {
         type: String,
         optional: true,
     },
-    comments: {
+    'deps.$.avatar': {
+        type: String,
+        optional: true,
+    },
+    'deps.$.comment': {
+        type: String,
+        optional: true,
+    },
+    members: {
         type: [Object],
         optional: true,
     },
-    'comments.$.userId': {
+    'members.$.userId': {
         type: String,
     },
-    'comments.$.code': {
+    'members.$.code': {
         type: String,
     },
-    'comments.$.entryTime': {
-        type: String,
-        optional: true,
-    },
-    'comments.$.location': {
+    'members.$.entryTime': {
         type: String,
         optional: true,
     },
-    'comments.$.comment': {
+    'members.$.location': {
         type: String,
         optional: true,
     },
-    'comments.$.pos': {
+    'members.$.comment': {
+        type: String,
+        optional: true,
+    },
+    'members.$.pos': {
         type: String,
     },
-    'comments.$.dep': {
+    'members.$.dep': {
         type: String,
     },
 });
