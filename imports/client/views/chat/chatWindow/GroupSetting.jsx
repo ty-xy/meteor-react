@@ -143,10 +143,15 @@ class GroupSetting extends Component {
                         <div className="group-base-info">
                             <div className="group-avatar-wrap">
                                 <Avatar avatar={this.props.avatar ? this.props.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} name="群聊" />
-                                <div className="choose-new-avatar">
-                                    <Icon icon="icon-jiahao" iconColor="#fff" size={20} />
-                                    <input type="file" onChange={this.chooseNewGroupAvatar} />
-                                </div>
+                                {
+                                    this.props.admin === Meteor.userId() ?
+                                        <div className="choose-new-avatar">
+                                            <Icon icon="icon-jiahao" iconColor="#fff" size={20} />
+                                            <input type="file" onChange={this.chooseNewGroupAvatar} />
+                                        </div>
+                                        :
+                                        null
+                                }
                             </div>
                             {
                                 this.state.isChangeName ?
@@ -156,7 +161,13 @@ class GroupSetting extends Component {
                                     </p>
                             }
                         </div>
-                        <button onClick={this.editGroupName}>编辑</button>
+                        {
+                            this.props.admin === Meteor.userId() ?
+                                <button onClick={this.editGroupName}>编辑</button>
+                                :
+                                null
+                        }
+
                     </div>
                     <div className="group-members">
                         <p>群成员{this.props.members.length}人</p>
