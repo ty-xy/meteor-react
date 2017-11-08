@@ -135,8 +135,9 @@ class Approvaling extends Component {
             } return <div />;
         };
         const allCards = cards;
-        console.log('approval', this.props, this.state);
         const { users } = this.props;
+        // console.log('approval', this.props, this.state, userIdToInfo.getDep(companys, modelData.userId));
+
         return (
             <div>
                 <Form className="margin-top-20 border-bottom-eee clearfix">
@@ -168,7 +169,7 @@ class Approvaling extends Component {
                             </Col>
                         </div>
                         <div className="e-mg-model-body-content">
-                            <p><span className="e-mg-body-content-span">申请部门(或审批对象)：</span>{
+                            <p><span className="e-mg-body-content-span">所属部门：</span>{
                                 (modelData.approvers || []).map(item => (<span key={item} className="margin-right-20">{userIdToInfo.getName(users, item)}</span>))
                             }</p>
                             <p><span className="e-mg-body-content-span">请假类型：</span>{modelData.type}</p>
@@ -200,7 +201,7 @@ class Approvaling extends Component {
                                     <div className="clearfix" key={index}>
                                         <Col className="" span={10}><Avatar src={userIdToInfo.getAvatar(users, item.userId) || 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'} /><span>  {userIdToInfo.getName(users, item.userId)} {modelData.status}</span></Col>
                                         <Col className="text-right" span={14}>{format('yyyy-MM-dd hh:mm:ss', item.careateAt)}</Col>
-                                        <p style={{ lineHeight: 0, marginLeft: '50px', marginBottom: '10px' }}>{item.comment}</p>
+                                        <p style={{ lineHeight: 1.4, marginLeft: '50px', marginBottom: '10px' }}>{item.comment}</p>
                                     </div>
                                 ))
                             }

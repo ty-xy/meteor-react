@@ -42,10 +42,10 @@ const UserUtil = {
 
 export const userIdToInfo = {
     userInfo: {},
-    getProfile(users = [], id) {
+    getProfile(users = [], userId) {
         let res = {};
         users.forEach((item) => {
-            if (item._id === id) {
+            if (item._id === userId) {
                 res = {
                     ...item,
                     ...item.profile,
@@ -55,11 +55,36 @@ export const userIdToInfo = {
         });
         return res;
     },
-    getName(users, id) {
-        return userIdToInfo.getProfile(users, id).name || '';
+    getName(users, userId) {
+        return userIdToInfo.getProfile(users, userId).name || '';
     },
-    getAvatar(users, id) {
-        return userIdToInfo.getProfile(users, id).avatar || '';
+    getAvatar(users, userId) {
+        return userIdToInfo.getProfile(users, userId).avatar || '';
+    },
+    getMaincompany(users, userId) {
+        return userIdToInfo.getProfile(users, userId).mainCompany || '';
+    },
+    getDep(companys, userId) {
+        let companyInfo = {};
+        companys.forEach((item) => {
+            if (item._id === UserUtil.getCompany()) {
+                companyInfo = item;
+                return false;
+            }
+        });
+        const { dep = [] } = companyInfo;
+        let users = [];
+        dep.forEach((item) => {
+            users = users.concat(item.member);
+        });
+        let depTo = '';
+        users.forEach((item) => {
+            if (item.userId === userId) {
+                depTo = item.upLevel;
+                return false;
+            }
+        });
+        console.log('getDep', users, depTo);
     },
 };
 

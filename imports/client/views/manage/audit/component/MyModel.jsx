@@ -13,7 +13,7 @@ class MyModel extends PureComponent {
         // console.log('MyModel', this.props);
         return (
             <div className={`e-mg-model-mask-${mask}`}>
-                <div className="e-mg-model-mask" />
+                <div className="e-mg-model-mask" onClick={handleCancel} />
                 <div className={classname}>
                     <div className="e-mg-model-header">
                         <div className="e-mg-model-header-title">

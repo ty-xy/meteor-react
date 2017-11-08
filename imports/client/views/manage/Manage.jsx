@@ -7,6 +7,8 @@ import LeftCard from './component/LeftCard';
 import ManageRoute from './routes';
 import Company from '../../../schema/company';
 
+let i = 0;
+
 class Manage extends (PureComponent || Component) {
     constructor(props) {
         super(props);
@@ -27,14 +29,14 @@ class Manage extends (PureComponent || Component) {
         //     this.addCompany();
         // }
     }
-    addCompany = (e, id) => {
+    addCompany = (e) => {
         e.preventDefault();
+        i++;
         Meteor.call(
             'createCompany',
             {
-                name: `公司${id}`,
+                name: `公司${i}`,
                 createdAt: new Date(),
-                admin: 'bEuDeBDKumrTka7t9',
             },
             (err) => {
                 if (err) {
@@ -116,6 +118,7 @@ class Manage extends (PureComponent || Component) {
         // console.log('allCompanys', this.props);
         return (
             <Row className="e-mg-container" gutter={50}>
+                <a href="" onClick={this.addCompany}>add company</a>
                 <LeftCard {...this.props} {...this.context} {...this.state} changeCompany={this.clickCompany} />
                 <Col span={18} className="e-mg-right">
                     <Card bordered={false} style={{ height: '100%' }}>
