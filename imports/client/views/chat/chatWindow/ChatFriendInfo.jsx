@@ -61,6 +61,7 @@ class ChatFriendInfo extends Component {
             if (err) {
                 console.error(err.reason);
             }
+            this.props.changeTo('', '');
             feedback.dealSuccess('删除好友成功');
             this.props.handleFriendInfo();
         });
