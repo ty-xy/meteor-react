@@ -187,7 +187,6 @@ class ChatWindow extends Component {
             this.setState({
                 temporaryChat: true,
             });
-            console.log(this.state.temporaryChat);
             this.handleFriendId(fromId);
         }
     }
