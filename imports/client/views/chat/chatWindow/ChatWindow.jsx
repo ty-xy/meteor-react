@@ -64,11 +64,20 @@ class ChatWindow extends Component {
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.children.length > 0) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage) {
+                // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
                 $lastMessage.scrollIntoView(true);
             }
         }
         if (this.props.to) {
             this.$message.addEventListener('keydown', this.handleSendMessage);
+        }
+    }
+    // 图片初始高度是0, 图片加载完成后, 把消息撑了起来, 这时候scrollIntoView已经执行完了,所以会出现看到聊天窗口的时候最后一条消息被挡上了,需要滚动一下才能看到
+    // 表情, 写死高度.  图片消息, 等图片onLoad的时候, 再执行一次最后一条消息的 scrollIntoView
+    imageLoad = () => {
+        const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
+        if ($lastMessage) {
+            $lastMessage.scrollIntoView(true);
         }
     }
     showFriendShip = () => {
@@ -127,7 +136,7 @@ class ChatWindow extends Component {
     }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
-        this.$message.value = `#(${name})`;
+        this.$message.value += `#(${name})`;
     }
     convertExpression = txt => ({
         __html: txt.replace(
