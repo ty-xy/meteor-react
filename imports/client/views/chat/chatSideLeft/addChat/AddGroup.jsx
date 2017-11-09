@@ -18,6 +18,8 @@ class AddGroup extends Component {
         users: PropTypes.array,
         type: PropTypes.string,
         groupId: PropTypes.string,
+        changeTo: PropTypes.func,
+        handleToggle: PropTypes.func,
         // isEditGroupName: PropTypes.bool,
         // members: PropTypes.array,
     };
@@ -63,13 +65,18 @@ class AddGroup extends Component {
                 name: `由${Meteor.user().profile.name}发起的群聊`,
                 members: selectedUsers.map(user => user._id),
             },
-            (err) => {
+            (err, result) => {
+                if (result) {
+                    this.props.changeTo(result, result);
+                    this.props.handleToggle(result);
+                    feedback.dealSuccess('成功创建群聊');
+                    this.props.handleAddGroup();
+                    this.setState({
+                        selected: {},
+                    });
+                }
+
                 feedback.dealError(err);
-                feedback.dealSuccess('成功创建群聊');
-                this.props.handleAddGroup();
-                this.setState({
-                    selected: {},
-                });
             },
         );
     }

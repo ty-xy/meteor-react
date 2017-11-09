@@ -20,7 +20,6 @@ Meteor.methods({
         };
         Group.schema.validate(newGroup);
         const groupId = Group.insert(newGroup);
-        console.log('新建群的成员', members);
         members.map((user =>
             Meteor.users.update(
                 { _id: user },
@@ -36,5 +35,6 @@ Meteor.methods({
                 },
             )
         ));
+        return groupId;
     },
 });

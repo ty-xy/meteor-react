@@ -111,7 +111,10 @@ class Chat extends Component {
                                 handleClick={this.handleClick.bind(this, 1)}
                             /> : null}
                     </div>
-                    <AddChat />
+                    <AddChat
+                        changeTo={this.changeTo}
+                        handleToggle={this.handleToggle}
+                    />
                 </div>
                 {
                     this.state.chatType === 'newFriend' ?

@@ -12,6 +12,8 @@ import UserUtil from '../../../../../util/user';
 class AddChat extends Component {
     static propTypes = {
         users: PropTypes.array,
+        changeTo: PropTypes.func,
+        handleToggle: PropTypes.func,
     };
     constructor(...args) {
         super(...args);
@@ -65,6 +67,8 @@ class AddChat extends Component {
                     isShowAddGroup={this.state.isShowAddGroup}
                     users={this.props.users}
                     type="createGroup"
+                    changeTo={this.props.changeTo}
+                    handleToggle={this.props.handleToggle}
                 />
             </div>
         );
