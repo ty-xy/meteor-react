@@ -38,6 +38,7 @@ class AddFriend extends Component {
             isShowFriendInfo: false,
         });
         this.props.handleAddFriend();
+        this.username.value = '';
     }
     render() {
         return (

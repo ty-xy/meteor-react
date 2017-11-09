@@ -22,6 +22,7 @@ import expressions from '../../../../util/expressions';
 import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 import EmptyChat from '../../../components/EmptyChat';
+import eventUtil from '../../../../util/eventUtil';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -69,7 +70,7 @@ class ChatWindow extends Component {
             }
         }
         if (this.props.to) {
-            this.$message.addEventListener('keydown', this.handleSendMessage);
+            eventUtil.addEvent(this.$message, 'keydown', this.handleSendMessage);
         }
     }
     // 图片初始高度是0, 图片加载完成后, 把消息撑了起来, 这时候scrollIntoView已经执行完了,所以会出现看到聊天窗口的时候最后一条消息被挡上了,需要滚动一下才能看到
