@@ -7,6 +7,10 @@ import Business from './Business';
 import ChackBill from './CheckBill';
 import CommonAudit from './CommonAudit';
 import Approvaling from './Approvaling';
+import Done from './Done';
+import MyAudit from './MyAudit';
+import CopyMe from './CopyMe';
+
 
 const urls = ['/manage/audit/approvaling', '/manage/audit/done', '/manage/audit/self', '/manage/audit/copy', '/manage/audit'];
 
@@ -44,9 +48,9 @@ class Audit extends Component {
                 <div className="e-mg-audit-content-body">
                     <Route exact strict path="/manage/audit" component={Category} />
                     <Route strict path="/manage/audit/approvaling" component={Approvaling} />
-                    <Route strict path="/manage/audit/done" component={() => (<div>已经审批的</div>)} />
-                    <Route strict path="/manage/audit/self" component={() => (<div>我发起的</div>)} />
-                    <Route strict path="/manage/audit/copy" component={() => (<div>抄送我的</div>)} />
+                    <Route strict path="/manage/audit/done" component={Done} />
+                    <Route strict path="/manage/audit/self" component={MyAudit} />
+                    <Route strict path="/manage/audit/copy" component={CopyMe} />
                     <Route strict path="/manage/audit/leave" component={Leave} />
                     <Route strict path="/manage/audit/business" component={Business} />
                     <Route strict path="/manage/audit/bill" component={ChackBill} />

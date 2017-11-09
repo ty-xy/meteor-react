@@ -112,7 +112,7 @@ Meteor.methods({
                     }
                     if (allApp === 0) {
                         console.log('审核通过了');
-                        status = '拒绝';
+                        status = '同意';
                     }
                     break;
                 default:

@@ -18,9 +18,9 @@ import MyModel from './component/MyModel';
 import Leave from '../../../../../imports/schema/leave';
 import Company from '../../../../../imports/schema/company';
 import UserUtil, { userIdToInfo } from '../../../../util/user';
+import types from './types';
 
 const { TextArea } = Input;
-const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他'];
 let searchFilter = false;
 const filterCodition = {
     type: '',
@@ -28,7 +28,7 @@ const filterCodition = {
     datepicker: '',
 };
 
-class Approvaling extends Component {
+class CopyMe extends Component {
     static propTypes = {
         location: PropTypes.object,
     }
@@ -60,10 +60,11 @@ class Approvaling extends Component {
         let cards = [];
         cards = cards.concat(leaves);
         const res = [];
+        console.log('concatAll', cards);
         cards.forEach((item) => {
-            if (item.company === UserUtil.getCompany()) {
-                item.comments.forEach((j) => {
-                    if (j.userId === localUserId && j.isAudit === '待审核') {
+            if (item.company === UserUtil.getCompany() && (item.status === '同意')) {
+                item.copy.forEach((j) => {
+                    if (j === localUserId) {
                         res.push(item);
                     }
                 });
@@ -193,7 +194,12 @@ class Approvaling extends Component {
                         <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '评论')}>评论</a></Col>
                     </div>
                 );
-            } return <div />;
+            }
+            return (
+                <div className="e-mg-model-footer clearfix" key={23}>
+                    <Col span={24} className="text-center" style={{ color: '#15B4F1' }}>已{modelData.status}</Col>
+                </div>
+            );
         };
         const allCards = cards;
         const { allUsers, users } = this.props;
@@ -209,7 +215,7 @@ class Approvaling extends Component {
                 <Row className="e-mg-log-filter margin-top-20" gutter={25} type="flex" justify="start">
                     {allCards.map(item => (<Card handlerAudit={this.handlerAudit} key={item._id} {...item} {...this.props} />))}
                     {
-                        allCards.length === 0 && <Col className="e-mg-text-center" span={23}>暂无审批。</Col>
+                        allCards.length === 0 && <Col className="e-mg-text-center" span={23}>暂无抄送我的。</Col>
                     }
                 </Row>
                 <MyModel
@@ -292,7 +298,7 @@ class Approvaling extends Component {
     }
 }
 
-Approvaling.propTypes = {
+CopyMe.propTypes = {
     form: PropTypes.object,
     history: PropTypes.object,
     leaves: PropTypes.array,
@@ -318,4 +324,4 @@ export default withTracker(() => {
         companys,
         users,
     };
-})(Form.create()(Approvaling));
+})(Form.create()(CopyMe));

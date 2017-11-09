@@ -23,8 +23,14 @@ const CardAudit = ({ handlerAudit, type, reason, daynum, createdAt, status, user
             <Col span={12}>{format('MM月dd日', createdAt)}</Col>
             <Col span={12} className="right">
                 <a onClick={e => handlerAudit(e, _id)} href="">
-                    {status === '待审核' ? (<span style={{ color: '#FFA200' }}>审核</span>)
-                        : <span style={{ color: '#ef5350' }}>已{status}</span>}</a>
+                    {
+                        status === '待审核' ? (<span style={{ color: '#FFA200' }}>审核</span>)
+                            : status === '拒绝' ? (<span style={{ color: '#ef5350' }}>已{status}</span>)
+                                : status === '同意' ? (<span style={{ color: '#15B4F1' }}>已{status}</span>)
+                                    : null
+
+                    }
+                </a>
             </Col>
         </div>
     </Col>

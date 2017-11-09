@@ -28,7 +28,7 @@ const filterCodition = {
     datepicker: '',
 };
 
-class Approvaling extends Component {
+class Done extends Component {
     static propTypes = {
         location: PropTypes.object,
     }
@@ -63,7 +63,7 @@ class Approvaling extends Component {
         cards.forEach((item) => {
             if (item.company === UserUtil.getCompany()) {
                 item.comments.forEach((j) => {
-                    if (j.userId === localUserId && j.isAudit === '待审核') {
+                    if (j.userId === localUserId && (j.isAudit === '同意' || j.isAudit === '拒绝')) {
                         res.push(item);
                     }
                 });
@@ -185,15 +185,28 @@ class Approvaling extends Component {
         const { showAuditCard, cards, modelData, commentModel, auditIdea, auditComment } = this.state;
         const footer = () => {
             if (modelData.status === '待审核') {
+                const length = (modelData.comments || []).length - 1;
+                if (length >= 0 && modelData.comments[length].isAudit === '待审核' && modelData.comments[length].userId === Meteor.user()._id) {
+                    return (
+                        <div className="e-mg-model-footer clearfix" key={23}>
+                            <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '同意')}>同意</a><span className="pull-right">|</span></Col>
+                            <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '拒绝')}>拒绝</a><span className="pull-right">|</span></Col>
+                            <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '转交')}>转交</a><span className="pull-right">|</span></Col>
+                            <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '评论')}>评论</a></Col>
+                        </div>
+                    );
+                }
                 return (
                     <div className="e-mg-model-footer clearfix" key={23}>
-                        <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '同意')}>同意</a><span className="pull-right">|</span></Col>
-                        <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '拒绝')}>拒绝</a><span className="pull-right">|</span></Col>
-                        <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '转交')}>转交</a><span className="pull-right">|</span></Col>
-                        <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '评论')}>评论</a></Col>
+                        <Col span={24} className="text-center" style={{ color: '#15B4F1' }}>{modelData.status}</Col>
                     </div>
                 );
-            } return <div />;
+            }
+            return (
+                <div className="e-mg-model-footer clearfix" key={23}>
+                    <Col span={24} className="text-center" style={{ color: '#15B4F1' }}>已{modelData.status}</Col>
+                </div>
+            );
         };
         const allCards = cards;
         const { allUsers, users } = this.props;
@@ -292,7 +305,7 @@ class Approvaling extends Component {
     }
 }
 
-Approvaling.propTypes = {
+Done.propTypes = {
     form: PropTypes.object,
     history: PropTypes.object,
     leaves: PropTypes.array,
@@ -318,4 +331,4 @@ export default withTracker(() => {
         companys,
         users,
     };
-})(Form.create()(Approvaling));
+})(Form.create()(Done));
