@@ -13,6 +13,7 @@ import UserUtil from '../../../util/user';
 import feedback from '../../../util/feedback';
 
 import NewFriend from './chatWindow/NewFriend';
+import SearchChat from '../../features/SearchChat';
 // import ProjectNotice from './chatWindow/ProjectNotice';
 
 
@@ -70,10 +71,7 @@ class Chat extends Component {
                     {/* 导航部分 */}
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
-                            <div className="chat-search-wrap">
-                                <i className="iconfont icon-search-message icon-sousuo" />
-                                <input type="text" className="search-message" placeholder="搜索" />
-                            </div>
+                            <SearchChat />
                         </div>
                         <ul className="chat-type">
                             {
@@ -94,24 +92,24 @@ class Chat extends Component {
                         </ul>
                     </div>
                     <div className="ejianlian-chat-user-list">
-                        { this.state.selected === 1 ?
+                        {this.state.selected === 1 ?
                             <ContactList
                                 changeTo={this.changeTo}
                                 handleToggle={this.handleToggle}
                                 selectedChat={this.state.selectedChat}
                                 handleNewFriend={this.handleNewFriend}
-                            /> : null }
-                        { this.state.selected === 2 ?
+                            /> : null}
+                        {this.state.selected === 2 ?
                             <FriendsList
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
                                 handleNewFriend={this.handleNewFriend}
-                            /> : null }
-                        { this.state.selected === 3 ?
+                            /> : null}
+                        {this.state.selected === 3 ?
                             <GroupList
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
-                            /> : null }
+                            /> : null}
                     </div>
                     <AddChat />
                 </div>
