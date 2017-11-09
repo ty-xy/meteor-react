@@ -425,6 +425,7 @@ class ChatWindow extends Component {
                             isDisturb={isDisturb}
                             stickTop={stickTop}
                             avatar={groupAvatar}
+                            changeTo={this.props.changeTo}
                         />
                         :
                         null

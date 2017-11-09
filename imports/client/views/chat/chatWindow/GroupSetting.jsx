@@ -24,6 +24,7 @@ class GroupSetting extends Component {
         isDisturb: PropTypes.bool,
         stickTop: PropTypes.object,
         avatar: PropTypes.string,
+        changeTo: PropTypes.func,
     };
     constructor(...args) {
         super(...args);
@@ -92,12 +93,18 @@ class GroupSetting extends Component {
     handleDeleteMember = (memberId) => {
         feedback.dealDelete('移出成员', '您确定移除该成员?', () => this.deleteMember(memberId, '移除成功'));
     }
+    // 确认退出群聊后,群设置弹窗消失,聊天窗口消失
+    confirmExit = () => {
+        this.deleteMember(Meteor.userId(), '退出成功');
+        this.props.changeTo('', '');
+        this.props.showGroupSet();
+    }
     // 退出群聊
     exitGroupChat = () => {
         if (this.props.admin === Meteor.userId()) {
             feedback.dealWarning('您需要先转让群主，才可退出该群聊');
         } else {
-            feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.deleteMember(Meteor.userId(), '退出成功'));
+            feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.confirmExit());
         }
     }
     editGroupName = () => {
