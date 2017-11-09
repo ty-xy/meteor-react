@@ -11,6 +11,7 @@ Meteor.methods({
             affiliation,
             headPortrait,
             createTime: new Date(),
+            pigeonhole: 1,
         };
         Project.schema.validate(newGroup);
         Project.insert(newGroup);

@@ -157,7 +157,7 @@ export default class ProjectAdd extends Component {
                         <MyIcon icon="icon-tianjia icon-add" />
                     </div>
                     <div className="ejianlian-add-projectf" onClick={this.props.click}>
-                        <div className="add-button" onClick={this.handleMessage}>
+                        <div className="add-button add-button-create" onClick={this.handleMessage}>
                             {/* <input type="button" value="创建项目" >' */}
                             创建
                         </div>

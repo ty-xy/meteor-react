@@ -36,9 +36,9 @@ Project.schema = new SimpleSchema({
         type: Date,
     },
     // // 是否归档 1：未归档，2：已归档
-    // pigeonhole: {
-    //     type: String,
-    // },
+    pigeonhole: {
+        type: Number,
+    },
 
 
 });

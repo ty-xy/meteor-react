@@ -37,9 +37,7 @@ class ProjectList extends Component {
                 <ul >
                     {
                         this.props.projects.map((value) => {
-                            // console.log(value.headPortrait.indexOf('icon'));
-                            // const str = value.headPortrait;
-                            if (value.headPortrait.indexOf('icon') === -1) {
+                            if (value.headPortrait.indexOf('icon') === -1 && value.pigeonhole === 1) {
                                 return (
                                     <Link to={`/project/task/${value._id}`} key={value._id}>
                                         <li className="list-item" key={value._id}>
@@ -52,19 +50,21 @@ class ProjectList extends Component {
                                         </li>
                                     </Link>
                                 );
+                            } else if (value.headPortrait.indexOf('icon') === 0 && value.pigeonhole === 1) {
+                                return (
+                                    <Link to={`/project/task/${value._id}`} key={value._id}>
+                                        <li className="list-item" key={value._id}>
+                                            <div className="list-img-icon">
+                                                {<MyIcon icon={`${value.headPortrait} icon`} size="30px" iconColor="#ddd" />}
+                                            </div>
+                                            <div className="list-right">
+                                                <p>{value.name}</p>
+                                            </div>
+                                        </li>
+                                    </Link>
+                                );
                             }
-                            return (
-                                <Link to={`/project/task/${value._id}`} key={value._id}>
-                                    <li className="list-item" key={value._id}>
-                                        <div className="list-img-icon">
-                                            {<MyIcon icon={`${value.headPortrait} icon`} size="30px" iconColor="#ddd" />}
-                                        </div>
-                                        <div className="list-right">
-                                            <p>{value.name}</p>
-                                        </div>
-                                    </li>
-                                </Link>
-                            );
+                            return null;
                         })
                         // }
                         // 
@@ -78,7 +78,7 @@ class ProjectList extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('project');
-    const projects = Project.find({}).fetch();
+    const projects = Project.find({}, { sort: { createTime: -1 } }).fetch();
     console.log(projects[0]);
     return {
         projects,

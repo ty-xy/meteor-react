@@ -29,6 +29,7 @@ class ProjectItemDetail extends Component {
         tasklists: PropTypes.arrayOf(PropTypes.object),
         taskchild: PropTypes.arrayOf(PropTypes.object),
         label: PropTypes.string,
+        iddd: PropTypes.array,
     }
     constructor(...props) {
         super(...props);
@@ -38,6 +39,7 @@ class ProjectItemDetail extends Component {
             shownR: true,
             // shownCreadite: tru, // 显示编辑的
             tValue: '',
+            titleValue: '',
             time: '', // 开始的时间
             endtime: '', // 结束的时间
             commentMark: '', //  评论的内容
@@ -48,10 +50,14 @@ class ProjectItemDetail extends Component {
             changeMark: '',
             listValue: '',
             visib: false, // 子菜单的值
+            number: 0,
+            titleShow: true,
 
         };
     }
-    // 处理日历
+    componentDidMount() {
+        console.log('componentWillMount', this.props.tasklists);
+    }
     onPanellChange = (value) => {
         console.log(111);
         this.setState({
@@ -75,6 +81,45 @@ class ProjectItemDetail extends Component {
                 console.log(err);
             },
         );
+    }
+    // 处理日历
+    onChange = (field, value) => {
+        this.setState({
+            [field]: value,
+        });
+    }
+
+    onStartChange = (value) => {
+        this.onChange('startValue', value);
+    }
+
+    onEndChange = (value) => {
+        this.onChange('endValue', value);
+    }
+    disabledStartDate = (startValue) => {
+        const endValue = this.state.endValue;
+        if (!startValue || !endValue) {
+            return false;
+        }
+        return startValue.valueOf() > endValue.valueOf();
+    }
+
+    disabledEndDate = (endValue) => {
+        const startValue = this.state.startValue;
+        if (!endValue || !startValue) {
+            return false;
+        }
+        return endValue.valueOf() <= startValue.valueOf();
+    }
+
+    handleStartOpenChange = (open) => {
+        if (!open) {
+            this.setState({ endOpen: true });
+        }
+    }
+
+    handleEndOpenChange = (open) => {
+        this.setState({ endOpen: open });
     }
     showModal = () => {
         this.setState({
@@ -195,6 +240,29 @@ class ProjectItemDetail extends Component {
             },
         );
     }
+    // 更改头部的值
+    handleTitle = () => {
+        this.setState({
+            titleShow: !this.state.titleShow,
+        });
+    }
+    handleChangeTitle = (e) => {
+        this.setState({
+            titleValue: e.target.value,
+        });
+    }
+    handleChangeTitleQ = () => {
+        Meteor.call(
+            'changeName', this.props.Id.Id, this.state.titleValue,
+            (err) => {
+                console.log(err);
+            },
+        );
+        this.setState({
+            titleShow: !this.state.titleShow,
+            titleValue: '',
+        });
+    }
     // 调用移除评论的活动 目前没有成功 ／／ 成功修改
     handleRemove = (id) => {
         // this.deleteActive(id);
@@ -296,9 +364,23 @@ class ProjectItemDetail extends Component {
             },
         );
     }
+    renderTasks = (id) => {
+        console.log();
+        return this.props.taskchild.map((listChild) => {
+            if (listChild.fatherId === id) {
+                return (
+                    <div style={{ marginLeft: '20px' }} key={listChild._id} >
+                        <Checkbox onChange={this.handleChange}>{listChild.name}</Checkbox>
+                    </div>
+                );
+            }
+            return null;
+        });
+    }
     // 开始渲染
     render() {
         console.log(this.state.time, 1111);
+        // const { startValue, endValue, endOpen } = this.state;
         const menu = (
             <Menu >
                 <Menu.Item key="0">
@@ -326,12 +408,19 @@ class ProjectItemDetail extends Component {
             </Menu>
         );
         return (
-
             <div className="ejian-lian-project-detail">
                 <div className="detail-title detail-common">
                     <Row>
                         <Col span={20}>
-                            <h1>{this.props.item}</h1>
+                            {this.state.titleShow ?
+                                <h1 onClick={this.handleTitle}>{this.props.item}</h1> :
+                                <ProjectInput
+                                    input="更改"
+                                    onClick={this.handleChangeTitleQ}
+                                    value={this.state.titleValue}
+                                    onChange={this.handleChangeTitle}
+                                    onConcel={this.handleTitle}
+                                />}
                         </Col>
                         <Col span={4}>
                             <Dropdown overlay={menu} trigger={['click']}>
@@ -388,6 +477,7 @@ class ProjectItemDetail extends Component {
                                     bodyStyle={{ padding: 0 }}
                                     style={{ top: 330 }}
                                     closable={false}
+                                    mask={this.state.mask}
                                 >
                                     <div className="change-modal">
                                         <Row>
@@ -412,15 +502,23 @@ class ProjectItemDetail extends Component {
                         </Col>
                         <Col span={7} style={{ textAlign: 'center' }} onClick={this.showModal}>
                             <p >开始</p>
-                            <div >
-                                {this.props.begintime}
-                            </div>
+                            {this.props.begintime ?
+                                <div className="start-time">
+                                    {this.props.begintime}
+                                </div>
+                                :
+                                <div className="none-time">设置开始时间</div>
+                            }
                         </Col>
                         <Col span={7} onClick={this.showOver}>
                             <p >结束</p>
-                            <div>
-                                {this.props.endtime}
-                            </div>
+                            {this.props.endtime ?
+                                <div className="start-time" >
+                                    {this.props.endtime}
+                                </div>
+                                :
+                                <div className="none-time">设置结束时间</div>}
+
                         </Col>
                     </Row>
                     <div className="detail-list-common detail-list-decription">
@@ -449,7 +547,7 @@ class ProjectItemDetail extends Component {
                         <p>清单</p>
                         {/* <ProjectTag /> */}
                         {this.props.tasklists.map((tasklist, index) => (
-                            <div key={tasklist._id} index={index}>
+                            <div key={tasklist._id} >
                                 <Row>
                                     <Col span={19}>
                                         <Checkbox onChange={this.handleChange} defaultChecked disabled>{tasklist.name}</Checkbox>
@@ -457,22 +555,13 @@ class ProjectItemDetail extends Component {
                                     <Col span={2}>
                                         <span>0</span>
                                         <span>/</span>
-                                        <span>0</span>
+                                        <span>{this.props.iddd[index]}</span>
                                     </Col>
                                     <Col span={3} onClick={() => this.handleRemoveList(tasklist._id)}>
-                                            删除
+                                        删除
                                     </Col>
                                 </Row>
-                                {this.props.taskchild.map((listChild) => {
-                                    if (listChild.fatherId === tasklist._id) {
-                                        return (
-                                            <div style={{ marginLeft: '20px' }} key={listChild._id} >
-                                                <Checkbox onChange={this.handleChange}>{listChild.name}</Checkbox>
-                                            </div>
-                                        );
-                                    }
-                                    return null;
-                                })}
+                                {this.renderTasks(tasklist._id, index)}
                                 <div style={{ marginLeft: '20px' }}>
                                     {this.state[`shownT${tasklist._id}`] ?
                                         <ProjectInput
@@ -483,7 +572,7 @@ class ProjectItemDetail extends Component {
                                         /> :
                                         <p>
                                             <Icon icon="icon-tianjia1" onClick={() => this.handldetaskList(tasklist._id)} />
-                                                扩充清单
+                                            扩充清单
                                         </p>
                                     }
                                 </div>
@@ -501,6 +590,13 @@ class ProjectItemDetail extends Component {
                                 onClick={this.handleChangeCheck}
                             />
                         }
+                    </div>
+                    <div>
+                        <p>附件</p>
+                        <div style={{ display: 'flex' }}>
+                            <p className="add-fujian">插畫</p>
+                            <p className="add-fujian">添加附件</p>
+                        </div>
                     </div>
                     <div className="detail-list-common detail-comment">
                         <p className="comment-title">活动</p>
@@ -555,12 +651,20 @@ export default withTracker((Id) => {
     const tasks = Task.find({ _id: Id.Id }).fetch();
     const tasklists = TaskList.find({ $and: [{ taskId: Id.Id }, { fatherId: '' }] }).fetch();
     const taskchild = TaskList.find({ $and: [{ taskId: Id.Id }, { fatherId: { $ne: '' } }] }).fetch();
+    const idd = tasklists.map((id) => {
+        // const list = {};
+        const length = TaskList.find({ $and: [{ taskId: Id.Id }, { fatherId: id._id }] }).fetch();
+        // list.fatherId = length;
+        // console.log(list);
+        return length;
+    });
+    const iddd = idd.map(element => (element.length));
     // const id = activities.map(i => i._id);
     const decription = tasks[0].describe;
     const begintime = tasks[0].beginTime;
     const endtime = tasks[0].endTime;
     const label = tasks[0].label;
-    console.log(taskchild);
+    console.log(idd, iddd);
     return {
         Id,
         decription,
@@ -570,6 +674,7 @@ export default withTracker((Id) => {
         taskchild,
         endtime,
         label,
+        iddd,
     };
 })(ProjectItemDetail);
 
