@@ -52,6 +52,7 @@ class ChatWindow extends Component {
             temporaryChat: false,
             chatFriendId: '',
             isNewFriend: false,
+            isNewNotice: false,
         };
     }
     componentDidUpdate(prevProps) {
@@ -72,6 +73,11 @@ class ChatWindow extends Component {
         if (this.props.to) {
             eventUtil.addEvent(this.$message, 'keydown', this.handleSendMessage);
         }
+        if (prevProps.chatGroup && this.props.chatGroup && prevProps.chatGroup.notice !== this.props.chatGroup.notice) {
+            this.setState({
+                isNewNotice: true,
+            });
+        }
     }
     // 图片初始高度是0, 图片加载完成后, 把消息撑了起来, 这时候scrollIntoView已经执行完了,所以会出现看到聊天窗口的时候最后一条消息被挡上了,需要滚动一下才能看到
     // 表情, 写死高度.  图片消息, 等图片onLoad的时候, 再执行一次最后一条消息的 scrollIntoView
@@ -90,6 +96,7 @@ class ChatWindow extends Component {
         this.setState({
             isShowNotice: !this.state.isShowNotice,
         });
+        this.readNotice();
     }
     handleFriendId = (chatFriendId) => {
         this.setState({
@@ -138,6 +145,12 @@ class ChatWindow extends Component {
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
         this.$message.value += `#(${name})`;
+    }
+    // 显示为已读公告
+    readNotice = () => {
+        this.setState({
+            isNewNotice: false,
+        });
     }
     convertExpression = txt => ({
         __html: txt.replace(
@@ -280,6 +293,7 @@ class ChatWindow extends Component {
         }
     }
     render() {
+        console.log(2222, this.state.isNewNotice);
         const { profile = {}, _id = '' } = this.props.chatUser || {};
         const { name = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
@@ -322,6 +336,13 @@ class ChatWindow extends Component {
                             {groupName}
                             <div className="chat-other-account">
                                 <p>
+                                    {
+                                        this.state.isNewNotice ?
+                                            <span className="notive-red-not" />
+                                            :
+                                            null
+                                    }
+
                                     <Icon icon="icon-tongzhi2 icon" onClick={this.handleGroupNotice} />
                                 </p>
                                 <p>
@@ -452,6 +473,7 @@ class ChatWindow extends Component {
                             notice={notice}
                             groupId={groupId}
                             noticeTime={noticeTime}
+                            showNewNotice={this.showNewNotice}
                         />
                         :
                         null
