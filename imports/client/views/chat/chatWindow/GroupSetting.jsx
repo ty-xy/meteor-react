@@ -25,6 +25,8 @@ class GroupSetting extends Component {
         stickTop: PropTypes.object,
         avatar: PropTypes.string,
         changeTo: PropTypes.func,
+        handleFriendIdInfo: PropTypes.func,
+
     };
     constructor(...args) {
         super(...args);
@@ -185,7 +187,9 @@ class GroupSetting extends Component {
                             this.props.members.map((item, i) =>
                                 (item.profile ?
                                     <div className="avatar-wrap" key={i}>
-                                        <Avatar name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
+                                        <div onClick={this.props.handleFriendIdInfo.bind(this, item._id)}>
+                                            <Avatar name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
+                                        </div>
 
                                         {
                                             this.props.admin === Meteor.userId() ?

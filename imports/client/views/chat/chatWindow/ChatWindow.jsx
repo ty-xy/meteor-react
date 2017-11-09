@@ -201,11 +201,14 @@ class ChatWindow extends Component {
         if (toId === groupId) {
             // 是一个群里的成员,允许创建临时会话
             console.log('是一个群里的成员,允许创建临时会话');
-            this.setState({
-                temporaryChat: true,
-            });
-            this.handleFriendId(fromId);
         }
+    }
+    // 个人资料显示临时会话的按钮
+    handleFriendIdInfo = (friendId) => {
+        this.setState({
+            temporaryChat: true,
+        });
+        this.handleFriendId(friendId);
     }
     closeImageViewer = () => {
         this.setState({
@@ -427,6 +430,7 @@ class ChatWindow extends Component {
                             stickTop={stickTop}
                             avatar={groupAvatar}
                             changeTo={this.props.changeTo}
+                            handleFriendIdInfo={this.handleFriendIdInfo}
                         />
                         :
                         null
