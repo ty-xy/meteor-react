@@ -5,12 +5,12 @@ import format from 'date-format';
 import { userIdToInfo } from '../../../../../util/user';
 
 
-const CardAudit = ({ handlerAudit, name, type, reason, daynum, createdAt, status, userId, _id, users }) => (
+const CardAudit = ({ handlerAudit, type, reason, daynum, createdAt, status, userId, _id, allUsers }) => (
     <Col className="e-mg-log-card" style={{ width: '260px', marginRight: '30px' }}>
         <div className="e-mg-log-card-header">
             <Col span={16}>
-                <img src={userIdToInfo.getAvatar(users, userId) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" alt="" />
-                <span className="e-mg-log-card-header-left">{name}</span>
+                <img src={userIdToInfo.getAvatar(allUsers, userId) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" alt="" />
+                <span className="e-mg-log-card-header-left">{userIdToInfo.getName(allUsers, userId)}</span>
             </Col>
             <Col span={8} className="e-mg-log-card-header-right">{type}</Col>
         </div>
@@ -33,14 +33,13 @@ const CardAudit = ({ handlerAudit, name, type, reason, daynum, createdAt, status
 CardAudit.propTypes = {
     handlerAudit: PropTypes.func,
     _id: PropTypes.string,
-    name: PropTypes.string,
     userId: PropTypes.string,
     reason: PropTypes.string,
     type: PropTypes.string,
     daynum: PropTypes.number,
     createdAt: PropTypes.object,
     status: PropTypes.string,
-    users: PropTypes.array,
+    allUsers: PropTypes.array,
 };
 
 export default CardAudit;

@@ -21,6 +21,12 @@ import UserUtil, { userIdToInfo } from '../../../../util/user';
 
 const { TextArea } = Input;
 const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他'];
+let searchFilter = false;
+const filterCodition = {
+    type: '',
+    keyword: '',
+    datepicker: '',
+};
 
 class Approvaling extends Component {
     static propTypes = {
@@ -38,10 +44,15 @@ class Approvaling extends Component {
         };
     }
     componentWillMount() {
-        this.concatAll(this.props);
+        this.setState({ cards: this.concatAll(this.props) });
     }
     componentWillReceiveProps(nextProps) {
-        this.concatAll(nextProps);
+        if (!searchFilter) {
+            this.setState({ cards: this.concatAll(nextProps) });
+        }
+    }
+    componentWillUnmount() {
+        searchFilter = false;
     }
     // 合并所有的审批类型
     concatAll = ({ leaves }) => {
@@ -58,27 +69,65 @@ class Approvaling extends Component {
                 });
             }
         });
-        console.error('concatAll', cards, localUserId, res);
-        this.setState({ cards: res });
+        return res;
     }
     // 搜索函数
     filterChange = (date, dateString) => {
-        const res = this.props.form.getFieldsValue();
-        console.log('date', date, dateString);
-        if (dateString && date.length) {
-            dateString[0] = date[0].unix();
-            dateString[1] = date[1].unix();
-            res.datepicker = dateString;
-        } else {
-            res.datepicker = undefined;
+        searchFilter = true;
+        if (dateString && date.length > 0) {
+            dateString[0] = date[0];
+            dateString[1] = date[1];
+            filterCodition.datepicker = dateString;
         }
+        if (dateString && date.length === 0) {
+            filterCodition.datepicker = '';
+        }
+
         if (Object.prototype.toString.call(date) === '[object Object]') {
-            res.keyword = date.target.value;
+            filterCodition.keyword = date.target.value;
         }
         if (typeof date === 'string' || (typeof date === 'undefined')) {
-            res.type = date;
+            filterCodition.type = date;
         }
-        console.log('res', res, format('yyyy-MM-dd', new Date()));
+        this.filterCardList(filterCodition);
+    }
+    // 时间整天毫米获取
+    daySecond = (date) => {
+        const _formatdate = format('yyyy-MM-dd', date);
+        const _date = new Date(Date.parse(_formatdate.replace(/-/g, '/')));
+        return _date.getTime() / 1000;
+    }
+    // 搜索过滤函数
+    filterCardList = (res) => {
+        const { type, keyword, datepicker } = res;
+        const cards = this.concatAll(this.props);
+        let newCards = cards;
+        if (type || (datepicker && datepicker.length) || keyword) {
+            if (type) {
+                newCards = newCards.filter(item => (item.type === type));
+            }
+            if ((datepicker && datepicker.length)) {
+                newCards = newCards.filter((item) => {
+                    if ((this.daySecond(item.createdAt) <= this.daySecond(datepicker[1]._d)) && (this.daySecond(item.createdAt) >= this.daySecond(datepicker[0]._d))) {
+                        return item;
+                    }
+                    return false;
+                });
+            }
+            if (keyword) {
+                const reg = new RegExp(keyword, 'g');
+                newCards = newCards.filter((item) => {
+                    if (reg.test(item.reason) || reg.test(userIdToInfo.getName(this.props.allUsers, item.userId))) {
+                        return item;
+                    }
+                    return false;
+                });
+            }
+
+            this.setState({ cards: newCards });
+        } else {
+            this.setState({ cards });
+        }
     }
     // 审核选中的card
     handlerAudit = (e, id) => {
@@ -187,8 +236,8 @@ class Approvaling extends Component {
                             </p>
                             <p><span className="e-mg-body-content-span">请假类型：</span>{modelData.type}</p>
                             <p><span className="e-mg-body-content-span">请假天数：</span>{modelData.daynum}</p>
-                            <p><span className="e-mg-body-content-span">开始时间：</span>{modelData.startAt}</p>
-                            <p><span className="e-mg-body-content-span">结束时间：</span>{modelData.endAt}</p>
+                            <p><span className="e-mg-body-content-span">开始时间：</span>{format('yyyy-MM-dd', modelData.startAt)}</p>
+                            <p><span className="e-mg-body-content-span">结束时间：</span>{format('yyyy-MM-dd', modelData.endAt)}</p>
                             <p><span className="e-mg-body-content-span">请假事由：</span></p>
                             <p>{modelData.reason}</p>
                             <p><span className="e-mg-body-content-span">图片：</span></p>

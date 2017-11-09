@@ -66,8 +66,8 @@ class Leave extends Component {
             const endAt = fieldsValue.endAt;
             const res = {
                 ...fieldsValue,
-                endAt: startAt.format('YYYY-MM-DD'),
-                startAt: endAt.format('YYYY-MM-DD'),
+                startAt: startAt._d,
+                endAt: endAt._d,
                 img,
                 status: '待审核',
                 company: UserUtil.getCompany(),

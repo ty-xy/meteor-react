@@ -33,10 +33,10 @@ leave.schema = new SimpleSchema({
         type: Number,
     },
     endAt: {
-        type: String,
+        type: Date,
     },
     startAt: {
-        type: String,
+        type: Date,
     },
     img: {
         type: [String],
