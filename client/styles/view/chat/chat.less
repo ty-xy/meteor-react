@@ -111,34 +111,18 @@
     width: 400px;
     margin: 0 auto;
     height: 40px;
-    line-height: 40px;
-    border-radius: 20px;
-    background-color: #FAFAFA;
-    border: 1px solid #ddd;
     position: relative;
-    top: 20px;
+    top: 30px;
     font-size: 16px;
-        & > .chat-search-wrap {
-            width: 200px;
-            margin-left: 160px;
-            & > input {
-                height: 100%;
-            }
-        }
-        & > .chat-search-focus {
-            width: 90%;
-            margin: 0 auto;
-            & > input {
-                height: 90%;
-            }
-        }
+    .certain-category-search-wrapper {
+        width: 100%;
+    } 
     }
 
     & > .chat-type {
         display: flex;
         justify-content: space-around;
-        // margin-top: 40px;
-        margin-top: 60px;
+        margin-top: 50px;
         color: #BBC1D7;
         padding: 0;
         .chat-to-message {
@@ -146,6 +130,7 @@
         }
         & > li {
             text-align: center;
+            cursor: pointer;
             .type-icon {
                 // height: 50px;
                 width: 50px;
@@ -197,6 +182,7 @@
                 border-bottom: 1px solid #ddd;
                 display: flex;
                 padding: 10px 20px;
+                cursor: pointer;
                 .avatar {
                     width: 40px;
                     height: 40px;
@@ -231,6 +217,7 @@
             font-size: 16px;
             .friend-list-item {
                 display: flex;
+                cursor: pointer;
                 height: 70px;
                 .avatar {
                     width: 40px;

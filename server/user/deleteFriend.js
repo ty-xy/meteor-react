@@ -7,6 +7,9 @@ Meteor.methods({
             {
                 $pull: {
                     'profile.friends': friendId,
+                    'profile.chatList': {
+                        userId: friendId,
+                    },
                 },
 
             },
@@ -16,6 +19,9 @@ Meteor.methods({
             {
                 $pull: {
                     'profile.friends': Meteor.userId(),
+                    'profile.chatList': {
+                        userId: Meteor.userId(),
+                    },
                 },
 
             },

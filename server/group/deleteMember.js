@@ -16,6 +16,9 @@ Meteor.methods({
             {
                 $pull: {
                     'profile.groups': groupId,
+                    'profile.chatList': {
+                        groupId,
+                    },
                 },
 
             },

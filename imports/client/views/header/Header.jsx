@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import AvatarSelf from '../../components/AvatarSelf';
 
 import Notice from './Notice';
+import eventUtil from '../../../util/eventUtil';
 
 
 @pureRender
@@ -29,6 +30,7 @@ class Header extends Component {
         this.setState({
             isShowAccount: !this.state.isShowAccount,
         });
+        eventUtil.addEvent(document, 'click', this.closeMenu);
     }
     clickTab = (path) => {
         this.context.history.push(path);
@@ -36,7 +38,13 @@ class Header extends Component {
     handleLogin = () => {
         this.context.history.push('/login');
     }
-
+    closeMenu = (e) => {
+        this.setState({
+            isShowAccount: false,
+        });
+        eventUtil.stopProPagation(e);
+        eventUtil.removeEvent(document, 'click', this.closeMenu);
+    }
     render() {
         return (
             <div className="ejianlianHeader">

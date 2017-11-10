@@ -34,6 +34,7 @@ class SeleteAdmin extends Component {
             if (err) {
                 console.error(err.reason);
             }
+            this.props.closeSeleteAdmin();
             feedback.dealSuccess('设置成功');
         });
     }
