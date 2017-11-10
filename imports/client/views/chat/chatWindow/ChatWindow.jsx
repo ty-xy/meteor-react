@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Popover, Tooltip } from 'antd';
+import { Popover, Tooltip, Progress } from 'antd';
 import format from 'date-format';
 
 import Message from '../../../../../imports/schema/message';
@@ -53,6 +53,7 @@ class ChatWindow extends Component {
             chatFriendId: '',
             isNewFriend: false,
             isNewNotice: false,
+            percent: 0,
         };
     }
     componentDidUpdate(prevProps) {
@@ -244,7 +245,9 @@ class ChatWindow extends Component {
             }
         </div>
     )
+
     renderFile = (content) => {
+        // console.log(99999, content);
         const result = PopulateUtil.file(content);
         if (!result) {
             return;
@@ -252,7 +255,17 @@ class ChatWindow extends Component {
         if (/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(result.type)) {
             return this.renderImage(result.url);
         }
-
+        const base64regex = /data:/;
+        if (base64regex.test(result.url)) {
+            setInterval(() => {
+                let percent = this.state.percent + 10;
+                if (percent > 99) {
+                    percent = 99;
+                    clearInterval(this.timer);
+                }
+                this.setState({ percent });
+            }, 200);
+        }
         return (
             <div className="file">
                 <div className="file-icon">
@@ -265,20 +278,45 @@ class ChatWindow extends Component {
                 <a href={result.url} download>
                     下载
                 </a>
+                {
+                    base64regex.test(result.url) ?
+                        <Progress percent={this.state.percent} className="file-progress" />
+                        :
+                        null
+                }
             </div>
         );
     }
-    renderImage = url => (
-        <div className="user-img">
-            <img
-                src={url}
-                ref={i => this.img = i}
-                onLoad={this.imageLoad}
-                onDoubleClick={() => this.handleImageDoubleClick(url)}
-                onError={() => this.img.src = 'http://oxldjnom8.bkt.clouddn.com/404Img.jpeg'}
-            />
-        </div>
-    )
+    renderImage = (url) => {
+        const base64regex = /data:/;
+        console.log(url.slice(0, 20));
+        if (base64regex.test(url)) {
+            setInterval(() => {
+                let percent = this.state.percent + 10;
+                if (percent > 99 || !base64regex.test(url)) {
+                    percent = 99;
+                    clearInterval(this.timer);
+                }
+                this.setState({ percent });
+            }, 200);
+        }
+        return (
+            <div className="user-img">
+                <img
+                    src={url}
+                    ref={i => this.img = i}
+                    onLoad={this.imageLoad}
+                    onDoubleClick={() => this.handleImageDoubleClick(url)}
+                    onError={() => this.img.src = 'http://oxldjnom8.bkt.clouddn.com/404Img.jpeg'}
+                />
+                {
+                    base64regex.test(url) ?
+                        <Progress percent={this.state.percent} className="file-progress" />
+                        :
+                        null
+                }
+            </div>);
+    }
     renderText = content => (
         <div className="user-message" dangerouslySetInnerHTML={this.convertExpression(content)} />
     )
@@ -293,7 +331,6 @@ class ChatWindow extends Component {
         }
     }
     render() {
-        console.log(2222, this.state.isNewNotice);
         const { profile = {}, _id = '' } = this.props.chatUser || {};
         const { name = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
