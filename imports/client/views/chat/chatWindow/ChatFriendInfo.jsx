@@ -101,14 +101,15 @@ class ChatFriendInfo extends Component {
                         <p className="close-wrap"><i className="icon-guanbi iconfont" onClick={this.props.handleFriendInfo} /></p>
 
                         <ul className="friend-info">
-                            <li>
+                            <li className="friend-base-info">
                                 <Avatar name={name} avatarColor={avatarColor} avatar={avatar} />
-                            </li>
-                            <li>
                                 <p className="friend-name-info">
-                                    <span>{name}</span>
+                                    {name}
                                 </p>
                             </li>
+                            {/* <li>
+                                
+                            </li> */}
                             {
                                 this.props.friendId !== Meteor.userId() ?
 

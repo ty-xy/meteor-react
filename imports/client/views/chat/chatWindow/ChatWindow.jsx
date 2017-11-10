@@ -214,7 +214,11 @@ class ChatWindow extends Component {
         }
         if (toId === groupId) {
             // 是一个群里的成员,允许创建临时会话
-            console.log('是一个群里的成员,允许创建临时会话');
+            // console.log('是一个群里的成员,允许创建临时会话');
+            this.setState({
+                temporaryChat: true,
+            });
+            this.handleFriendId(fromId);
         }
     }
     // 个人资料显示临时会话的按钮
