@@ -10,6 +10,7 @@ import FileUpload from '../component/FileUpload';
 import SubmitBtn from './component/SubmitBtn';
 import GroupSelect from './component/GroupSelect';
 import feedback from '../../../../util//feedback';
+import UserUtil from '../../../../util/user';
 
 
 const formItemLayout = {
@@ -79,7 +80,10 @@ class CheckBill extends Component {
                 });
             }
             const res = {
-                username: Meteor.user().username,
+                userId: Meteor.user()._id,
+                status: '待审核',
+                type: '报销',
+                company: UserUtil.getCompany(),
                 copy,
                 approvers,
                 img,

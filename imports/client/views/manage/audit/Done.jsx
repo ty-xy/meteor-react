@@ -16,11 +16,14 @@ import feedback from '../../../../util//feedback';
 // import ShowAuditCard from './component/ShowAuditCard';
 import MyModel from './component/MyModel';
 import Leave from '../../../../../imports/schema/leave';
+import CommonAudit from '../../../../../imports/schema/commonAudit';
+import Checkbill from '../../../../../imports/schema/checkBill';
+import Business from '../../../../../imports/schema/business';
 import Company from '../../../../../imports/schema/company';
 import UserUtil, { userIdToInfo } from '../../../../util/user';
 
 const { TextArea } = Input;
-const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他'];
+const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
 let searchFilter = false;
 const filterCodition = {
     type: '',
@@ -55,10 +58,10 @@ class Done extends Component {
         searchFilter = false;
     }
     // 合并所有的审批类型
-    concatAll = ({ leaves }) => {
+    concatAll = ({ leaves, business, commonAudit, checkbill }) => {
         const localUserId = Meteor.user() && Meteor.user()._id;
         let cards = [];
-        cards = cards.concat(leaves);
+        cards = cards.concat(leaves, business, commonAudit, checkbill);
         const res = [];
         cards.forEach((item) => {
             if (item.company === UserUtil.getCompany()) {
@@ -215,9 +218,9 @@ class Done extends Component {
         return (
             <div>
                 <Form className="margin-top-20 border-bottom-eee clearfix">
-                    <Col span={6}><Select keyword="type" label="审批类型" onChange={this.filterChange} placeholder="请选择审批类型" width="150" {...this.props} data={types} /></Col>
-                    <Col span={6}><MyInput keyword="keyword" label="关键词" onChange={this.filterChange} placeholder="请输入关键词" width="150" {...this.props} /></Col>
-                    <Col span={6}><DatePicker keyword="datepicker" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
+                    <Col span={7}><Select keyword="type" label="审批类型" onChange={this.filterChange} placeholder="请选择审批类型" width="150" {...this.props} data={types} /></Col>
+                    <Col span={7}><MyInput keyword="keyword" label="关键词" onChange={this.filterChange} placeholder="请输入关键词" width="150" {...this.props} /></Col>
+                    <Col span={7}><DatePicker keyword="datepicker" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
                 </Form>
                 <Row className="e-mg-log-filter margin-top-20" gutter={25} type="flex" justify="start">
                     {allCards.map(item => (<Card handlerAudit={this.handlerAudit} key={item._id} {...item} {...this.props} />))}
@@ -315,6 +318,9 @@ Done.propTypes = {
 
 export default withTracker(() => {
     Meteor.subscribe('leave');
+    Meteor.subscribe('business');
+    Meteor.subscribe('checkbill');
+    Meteor.subscribe('commonaudit');
     Meteor.subscribe('company');
     Meteor.subscribe('users');
     const companys = Company.find().fetch();
@@ -328,6 +334,9 @@ export default withTracker(() => {
     return {
         allUsers: Meteor.users.find().fetch() || [],
         leaves: Leave.find().fetch(),
+        checkbill: Checkbill.find().fetch(),
+        business: Business.find().fetch(),
+        commonAudit: CommonAudit.find().fetch(),
         companys,
         users,
     };

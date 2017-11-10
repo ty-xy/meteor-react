@@ -10,6 +10,7 @@ import Approvaling from './Approvaling';
 import Done from './Done';
 import MyAudit from './MyAudit';
 import CopyMe from './CopyMe';
+import PreAudit from './PreAudit';
 
 
 const urls = ['/manage/audit/approvaling', '/manage/audit/done', '/manage/audit/self', '/manage/audit/copy', '/manage/audit'];
@@ -55,22 +56,19 @@ class Audit extends Component {
                     <Route strict path="/manage/audit/business" component={Business} />
                     <Route strict path="/manage/audit/bill" component={ChackBill} />
                     <Route strict path="/manage/audit/common" component={CommonAudit} />
+                    <Route path="/manage/audit/preinstall" component={PreAudit} />
+                    <Route path="/manage/audit/qinjia" component={() => (<h2>程序猿正在拼命开发。。。</h2>)} />
                 </div>
             </div>
         );
     }
     Routes = () => (
         <div style={{ height: '100%' }}>
-            <Route
-                path="/manage/audit"
-                component={({ match }) => this.audit(match)}
-            />
-            <Route path="/manage/audit/preinstall" component={() => (<div>preinstall</div>)} />
+            {this.audit()}
         </div>
     )
     render() {
         const { location } = this.props;
-        // console.log('dudit', this.props);
         return (
             <div className="e-mg-audit">
                 {this.tabs(location)}

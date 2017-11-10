@@ -10,6 +10,7 @@ import FileUpload from '../component/FileUpload';
 import SubmitBtn from './component/SubmitBtn';
 import GroupSelect from './component/GroupSelect';
 import feedback from '../../../../util//feedback';
+import UserUtil from '../../../../util/user';
 
 
 const formItemLayout = {
@@ -60,11 +61,14 @@ class CommonAudit extends Component {
             }
             const res = {
                 ...fieldsValue,
-                username: Meteor.user().username,
                 copy,
                 approvers,
                 img,
                 file,
+                userId: Meteor.user()._id,
+                status: '待审核',
+                type: '通用审批',
+                company: UserUtil.getCompany(),
             };
             console.log('res', res);
             Meteor.call(
