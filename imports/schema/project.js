@@ -40,7 +40,6 @@ Project.schema = new SimpleSchema({
         type: Number,
     },
 
-
 });
 
 

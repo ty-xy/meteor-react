@@ -21,7 +21,7 @@ const TabPane = Tabs.TabPane;
 class ProjectWindow extends Component {
     static propTypes = {
         taskF: PropTypes.arrayOf(PropTypes.object),
-        // project: PropTypes.object,
+        project: PropTypes.object,
         projectL: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(...args) {
@@ -31,10 +31,13 @@ class ProjectWindow extends Component {
             id: '',
         };
     }
-    componentWillReceiveProps(projectd) {
-        console.log('nextProps', projectd.match.params.id);
+    componentWillMount() {
+        console.log('dededede');
+    }
+    componentWillReceiveProps(Projectd) {
+        console.log('nextProps', Projectd.match.params.id);
         this.setState({
-            id: projectd.match.params.id,
+            id: Projectd.match.params.id,
         });
     }
     showModal = () => {
@@ -91,7 +94,7 @@ class ProjectWindow extends Component {
                                 })
 
                             }
-                            <ProjectBordAdd style={divStyle.taskStyle} pId={this.state.id} />
+                            <ProjectBordAdd style={divStyle.taskStyle} pId={this.props.project._id} />
                         </TabPane>
                         <TabPane tab="日历" key="2">
                             <ProjectLender />
@@ -119,7 +122,7 @@ export default withTracker((projectd) => {
     const projectL = Project.find({ _id: projectd.match.params.id }).fetch();
     // const projectId1 = Project.find({ name: this.state.minchen })._id;
     const project = projectL[0];
-    console.log(project, projectL);
+    console.log(project, projectL, projectd);
     // console.log(projectd.match.params.id);
     return {
         taskF,

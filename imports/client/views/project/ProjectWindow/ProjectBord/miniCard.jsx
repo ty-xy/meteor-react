@@ -22,6 +22,7 @@ class MiniCard extends Component {
         label: PropTypes.string,
         index: PropTypes.string,
         ind: PropTypes.number,
+        textId: PropTypes.string,
     }
     constructor(...args) {
         super(...args);
@@ -64,6 +65,7 @@ class MiniCard extends Component {
                 data-id={this.props.idIndex}
                 data-index={this.props.index}
                 data-ind={this.props.ind}
+                data-textid={this.props.textId}
             >
                 <div
                     className={`list-message-item ${this.state.visible ? 'is-selected' : ''}`}

@@ -57,10 +57,11 @@
     "react-dragula": "^1.1.17",
     "react-modal-dialog": "^4.0.7",
     "react-router-dom": "^4.2.2",
+    "react-sortable-hoc": "^0.6.8",
     "socket.io": "^2.0.4",
     "socket.io-client": "^2.0.4",
     "utf-8-validate": "^3.0.3",
-    "react-sortable-hoc": "^0.6.8",
+    "uuid": "^3.1.0",
     "xss": "^0.3.4"
   },
   "devDependencies": {

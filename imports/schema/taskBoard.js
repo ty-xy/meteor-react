@@ -24,6 +24,9 @@ TaskBoard.schema = new SimpleSchema({
     createTime: {
         type: Date,
     },
+    sortArray: {
+        type: [String],
+    },
 });
 
 export default TaskBoard;

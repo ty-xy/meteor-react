@@ -1,12 +1,13 @@
 import { Meteor } from 'meteor/meteor';
-import Task from '../../imports/schema/task';
+import TaskBoard from '../../imports/schema/taskBoard';
 
 Meteor.methods({
-    changeTaskId(taskBoardId) {
-        Task.update(
+    changeTaskId(taskBoardId, sortArray) {
+        TaskBoard.update(
+            { _id: taskBoardId },
             {
                 $set: {
-                    taskBoardId,
+                    sortArray,
                 },
             },
         );
