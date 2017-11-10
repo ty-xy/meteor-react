@@ -109,14 +109,21 @@ class ChatFriendInfo extends Component {
                                     <span>{name}</span>
                                 </p>
                             </li>
-                            <li >
-                                {
-                                    isFriend ?
-                                        <button className="friend-btn" onClick={this.handleDeleteFriend}>删除好友</button>
-                                        :
-                                        <button className="friend-btn" onClick={this.handleAddFriend}>添加好友</button>
-                                }
-                            </li>
+                            {
+                                this.props.friendId !== Meteor.userId() ?
+
+                                    <li >
+                                        {
+                                            isFriend ?
+                                                <button className="friend-btn" onClick={this.handleDeleteFriend}>删除好友</button>
+                                                :
+                                                <button className="friend-btn" onClick={this.handleAddFriend}>添加好友</button>
+                                        }
+                                    </li>
+                                    :
+                                    null
+                            }
+
                         </ul>
                     </div>
                     <ul className="friend-details">

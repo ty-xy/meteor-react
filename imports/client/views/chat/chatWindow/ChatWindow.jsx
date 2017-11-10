@@ -219,9 +219,16 @@ class ChatWindow extends Component {
     }
     // 个人资料显示临时会话的按钮
     handleFriendIdInfo = (friendId) => {
-        this.setState({
-            temporaryChat: true,
-        });
+        if (friendId === Meteor.userId()) {
+            this.setState({
+                temporaryChat: false,
+            });
+        } else {
+            this.setState({
+                temporaryChat: true,
+            });
+        }
+
         this.handleFriendId(friendId);
     }
     closeImageViewer = () => {
