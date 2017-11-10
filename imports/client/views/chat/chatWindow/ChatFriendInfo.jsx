@@ -67,6 +67,7 @@ class ChatFriendInfo extends Component {
         });
     }
     handleDeleteFriend = () => {
+        this.props.handleFriendInfo();
         feedback.dealDelete('提示', '确定要删除该好友么?', this.deleteFriend);
     }
     handleTemporaryChat = () => {

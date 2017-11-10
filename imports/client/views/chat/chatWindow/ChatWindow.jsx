@@ -289,7 +289,6 @@ class ChatWindow extends Component {
     }
     renderImage = (url) => {
         const base64regex = /data:/;
-        console.log(url.slice(0, 20));
         if (base64regex.test(url)) {
             setInterval(() => {
                 let percent = this.state.percent + 10;
@@ -311,7 +310,7 @@ class ChatWindow extends Component {
                 />
                 {
                     base64regex.test(url) ?
-                        <Progress percent={this.state.percent} className="file-progress" />
+                        <Progress percent={this.state.percent} className="img-progress" />
                         :
                         null
                 }
@@ -528,7 +527,7 @@ export default withTracker(({ to, userId }) => {
     Meteor.subscribe('file');
     const chatGroup = Group.findOne({ _id: to });
     PopulateUtil.group(chatGroup);
-    const files = Message.find({ to, type: 'file' }).fetch().map(msg => PopulateUtil.file(msg.content));
+    const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
     if (files[0]) {
         files.forEach((d, i, data) => {
             d.showYearMonth = false;
