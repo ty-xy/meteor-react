@@ -247,7 +247,7 @@ class GroupSelect extends (PureComponent || Component) {
     }
     render() {
         // console.log('group', this.state, this.props);
-        const { allUsers, keyword, label, required, selectedValue = [], isSelectedFalseTitle, isSelectedTrueTitle, modelTitle, isSelectedFalseTitleDes, requiredErr, getGroup, isSelecteGroup, offset, formItemLayout } = this.props;
+        const { allUsers, keyword, label, required, selectedValue = [], isSelectedFalseTitle, isSelectedTrueTitle, modelTitle, isSelectedFalseTitleDes, requiredErr, getGroup, isSelecteGroup, offset, formItemLayout, iconTitle } = this.props;
         const { name } = this.props.companyInfo;
         const { depVal, users, deps, checked, allNum, leftUsers, componentSelectedUser } = this.state;
         // isSelecteGroup 是否为选择群组
@@ -331,7 +331,7 @@ class GroupSelect extends (PureComponent || Component) {
                     }
                     <span className="e-mg-audit-seleted-img">
                         <MyIcon icon="icon-tianjia3" size="36px" onClick={this.showModal} />
-                        <p style={{ marginTop: '-6px' }}>{label}</p>
+                        <p style={{ marginTop: '-6px' }}>{iconTitle || label}</p>
                         {required ? <span style={{ position: 'absolute',
                             top: '20px',
                             left: '60px',

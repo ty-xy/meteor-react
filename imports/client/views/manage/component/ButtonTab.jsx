@@ -8,11 +8,11 @@ const ButtonTab = ({ handleLogChange, logType, disabledType, expand, template, m
         <Radio.Group value={logType} onChange={handleLogChange}>
             {
                 disabledType ? template.map((item) => {
-                    if (item.name === logType) {
-                        return (<Radio.Button key={item.name} value={item.name}>{item.value}</Radio.Button>);
+                    if (item === logType) {
+                        return (<Radio.Button key={item} value={item}>{item}</Radio.Button>);
                     }
                     return null;
-                }) : template.map(item => (<Radio.Button key={item.name} value={item.name}>{item.value}</Radio.Button>))
+                }) : template.map(item => (<Radio.Button key={item} value={item}>{item}</Radio.Button>))
             }
         </Radio.Group>
         {

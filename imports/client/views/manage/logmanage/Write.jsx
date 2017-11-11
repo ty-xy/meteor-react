@@ -10,15 +10,10 @@ class Tab1 extends (React.PureComponent || React.Component) {
     constructor(props) {
         super(props);
         this.state = {
-            logType: 'day',
+            logType: '日报',
             expand: false,
             disabledType: false,
-            templates: [
-                { name: 'day', value: '日报' },
-                { name: 'week', value: '周报' },
-                // { name: 'month', value: '月报' },
-                // { name: 'business', value: '营业日报' },
-            ],
+            templates: ['日报', '周报', '月报', '营业日报'],
             template: [],
             editData: {},
         };
@@ -44,10 +39,10 @@ class Tab1 extends (React.PureComponent || React.Component) {
         });
     }
     showLogtype = () => ({
-        day: <Day {...this.props} {...this.state} />,
-        week: <Week {...this.props} {...this.state} />,
-        month: <Week {...this.props} {...this.state} />,
-        business: <Week {...this.props} {...this.state} />,
+        日报: <Day {...this.props} {...this.state} />,
+        周报: <Week {...this.props} {...this.state} />,
+        月报: <Week {...this.props} {...this.state} />,
+        营业日报: <Week {...this.props} {...this.state} />,
     })
     // more
     moreChange = () => {
@@ -57,6 +52,7 @@ class Tab1 extends (React.PureComponent || React.Component) {
     }
     render() {
         const { logType } = this.state;
+        console.log('PureComponent', this.props, this.state);
         return (
             <div style={{ height: '100%' }}>
                 <ButtonTab handleLogChange={this.handleLogChange} moreChange={this.moreChange} {...this.state} {...this.props} />

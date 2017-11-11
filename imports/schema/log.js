@@ -6,7 +6,7 @@ log.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
-    username: {
+    userId: {
         type: String,
     },
     nickname: {

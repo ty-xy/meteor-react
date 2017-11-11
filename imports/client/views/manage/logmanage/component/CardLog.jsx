@@ -3,13 +3,6 @@ import { Col } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const types = {
-    day: '日报',
-    week: '周报',
-    month: '月报',
-    business: '营业日报',
-};
-
 const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _id }) => (
     <Col className="e-mg-log-card">
         <div className="e-mg-log-card-header">
@@ -17,7 +10,7 @@ const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _i
                 <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" alt="" />
                 <span className="e-mg-log-card-header-left">{nickname}</span>
             </Col>
-            <Col span={8} className="e-mg-log-card-header-right">{types[type]}</Col>
+            <Col span={8} className="e-mg-log-card-header-right">{type}</Col>
         </div>
         <div className="e-mg-log-card-body">
             <p><span>已完成工作：</span>{finish}</p>
