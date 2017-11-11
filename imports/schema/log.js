@@ -12,6 +12,9 @@ log.schema = new SimpleSchema({
     nickname: {
         type: String,
     },
+    company: {
+        type: String,
+    },
     type: {
         type: String,
     },
@@ -23,18 +26,23 @@ log.schema = new SimpleSchema({
     },
     help: {
         type: String,
+        optional: true,
     },
     file: {
         type: [String],
+        optional: true,
     },
     img: {
         type: [String],
+        optional: true,
     },
     peo: {
         type: [String],
+        optional: true,
     },
     group: {
         type: [String],
+        optional: true,
     },
 });
 

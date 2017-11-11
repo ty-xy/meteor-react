@@ -25,6 +25,14 @@ class GroupSelect extends (PureComponent || Component) {
     componentWillMount() {
         const { companyInfo } = this.props;
         const { members = [], deps = [] } = companyInfo;
+        // console.log('selectedValue', this.props.selectedValue, companyInfo);
+        // deps.forEach((item) => {
+        //     (selectedValue || []).forEach((j) => {
+        //         if (item.name === j) {
+        //             item.selected = true;
+        //         }
+        //     });
+        // });
         this.setState({
             users: members,
             deps,
@@ -292,7 +300,6 @@ class GroupSelect extends (PureComponent || Component) {
                         label={label}
                         className="e-mg-audit-groupSelect"
                     >
-
                         {
                             selectedValue.length ? <p style={{ color: 'rgb(180, 180, 180)' }}>{isSelectedTrueTitle}</p> : <a href="" className="e-mg-audit-leave-a" onClick={this.showModal}>{isSelectedFalseTitle} <span style={{ color: '#ccc' }}>{isSelectedFalseTitleDes}</span></a>
                         }

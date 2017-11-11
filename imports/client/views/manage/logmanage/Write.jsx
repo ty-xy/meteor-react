@@ -1,5 +1,4 @@
 import React from 'react';
-import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 import Day from './component/Day';
 import Week from './component/Week';
@@ -30,13 +29,15 @@ class Tab1 extends (React.PureComponent || React.Component) {
     // 日报， 周报切换
     handleLogChange = (e) => {
         const _this = this;
-        Modal.confirm({
-            title: '温馨提示',
-            content: '您尚未保存，确定要离开？',
-            okText: '确认',
-            cancelText: '取消',
-            onOk: () => { _this.setState({ logType: e.target.value, editData: {} }); },
-        });
+        console.log('handleLogChange', this.props, this.state);
+        // Modal.confirm({
+        //     title: '温馨提示',
+        //     content: '您尚未保存，确定要离开？',
+        //     okText: '确认',
+        //     cancelText: '取消',
+        //     onOk: () => { _this.setState({ logType: e.target.value, editData: {} }); },
+        // });
+        _this.setState({ logType: e.target.value, editData: {} });
     }
     showLogtype = () => ({
         日报: <Day {...this.props} {...this.state} />,

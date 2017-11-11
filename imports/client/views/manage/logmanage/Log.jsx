@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import Log from '../../../../../imports/schema/log';
+import feedback from '../../../../util//feedback';
 import Write from './Write';
 import MyLog from './MyLog';
 import Look from './Look';
@@ -59,40 +60,31 @@ class Logging extends (PureComponent || Component) {
         const { users } = this.props;
         fields.userId = users._id;
         fields.nickname = users.profile.name;
+        fields.company = users.profile.mainCompany;
         const { editInfo } = this.state;
-        let _Promise = '';
         if (editInfo._id) {
             fields._id = editInfo._id;
             Meteor.call(
                 'updateLog',
                 { ...fields },
-                (err) => {
-                    if (err) {
-                        console.log(err);
-                        _Promise = Promise.reject(false);
+                (_err) => {
+                    if (_err) {
+                        feedback.dealError(_err);
                     } else {
-                        _Promise = Promise.resolve(true);
+                        feedback.successToastFb('创建成功', () => { _this.setState({ defaultActiveKey: '#send', editInfo: {} }); });
                     }
-                    _this.setState({ defaultActiveKey: '#send', editInfo: {} });
-                    console.log('_Promise', _Promise);
-                    return _Promise;
                 },
             );
         } else {
             Meteor.call(
                 'createLog',
                 { ...fields },
-                (err) => {
-                    if (err) {
-                        console.log(err);
-                        _Promise = Promise.reject(false);
+                (_err) => {
+                    if (_err) {
+                        feedback.dealError(_err);
                     } else {
-                        _Promise = Promise.resolve(true);
+                        feedback.successToastFb('更新成功', () => { _this.setState({ defaultActiveKey: '#send', editInfo: {} }); });
                     }
-                    console.log('_Promise', _Promise);
-                    _this.setState({ defaultActiveKey: '#send', editInfo: {} });
-                    _Promise.then(() => {});
-                    return _Promise;
                 },
             );
         }

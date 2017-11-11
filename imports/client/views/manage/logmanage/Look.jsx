@@ -30,13 +30,12 @@ class Look extends PureComponent {
     componentWillMount() {
         const { AllLogs } = this.props;
         const userId = Meteor.user() && Meteor.user()._id;
-        const logs = Log.find({ peo: userId }).fetch();
+        const logs = Log.find({ company: UserUtil.getCompany(), peo: userId }).fetch();
         (AllLogs || []).forEach((item) => {
             AllLogs.forEach((j) => {
                 if (item.group.indexOf(j.dep) > -1) {
                     logs.forEach((i) => {
                         if (i.userId !== userId) {
-                            console.log('===object===', userId, i.userId);
                             logs.push(item);
                         }
                     });

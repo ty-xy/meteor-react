@@ -55,6 +55,7 @@ class Write extends PureComponent {
             fields.img = img;
             fields.file = file;
             fields.group = group;
+            fields.company = Meteor.user().profile.mainCompany;
             if (groupRequire) {
                 if (approvers.length === 0) {
                     this.setState({ requireGroupNotice: true });

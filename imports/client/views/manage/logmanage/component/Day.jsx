@@ -22,13 +22,21 @@ class Day extends (React.PureComponent || React.Component) {
             group: [],
         };
     }
-    // componentWillReceiveProps() {
-    //     console.log('componentWillReceiveProps');
-    //     const { editData = {} } = this.props.editInfo;
-    //     if (editData._id) {
-    //         this.setState({ img: editData.img, file: editData.file });
-    //     }
-    // }
+    componentWillMount() {
+        // const { editInfo } = this.props;
+        // const { peo = [], group = [] } = editInfo;
+        // const res = {
+        //     peo: [],
+        //     group: [],
+        // };
+        // if (peo.length) {
+        //     res.peo = res;
+        // }
+        // if (group.length) {
+        //     res.group = group;
+        // }
+        // this.setState({ ...res });
+    }
     formSubmit = (e) => {
         e.preventDefault();
         const { form, tab1Submit, logType } = this.props;
@@ -81,8 +89,7 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { editInfo } = this.props;
-        const { img = [], file = [] } = editInfo;
-        console.log('props', this.props);
+        const { img = [], file = [], peo, group } = editInfo;
         const { requirepeoNotice, requiregroupNotice } = this.state;
         return (
             <Form onSubmit={this.formSubmit} style={{ height: '100%' }}>
@@ -95,8 +102,8 @@ class Day extends (React.PureComponent || React.Component) {
                     keyword="peo"
                     label="发送至人员"
                     isSelected={false}
-                    isSelectedFalseTitleDes="(点击头像可删除)"
-                    selectedValue={[]}
+                    isSelectedTrueTitle="(点击头像可删除)"
+                    selectedValue={peo}
                     required={requirepeoNotice}
                     requiredErr="发送对象必选"
                     getGroup={this.getGroup}
@@ -110,7 +117,7 @@ class Day extends (React.PureComponent || React.Component) {
                     label="发送至部门"
                     isSelected={false}
                     isSelectedTrueTitle="(点击头像可删除)"
-                    selectedValue={[{}]}
+                    selectedValue={group}
                     required={requiregroupNotice}
                     requiredErr="请选择发送部门"
                     getGroup={this.getGroup}

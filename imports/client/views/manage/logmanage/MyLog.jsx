@@ -8,6 +8,7 @@ import Log from '../../../../../imports/schema/log';
 import CardLog from './component/CardLog';
 import Select from '../audit/component/Select';
 import DatePicker from '../audit/component/DatePicker';
+import UserUtil from '../../../../util/user';
 
 const types = ['日报', '周报', '月报'];
 
@@ -26,7 +27,7 @@ class MyLog extends PureComponent {
     componentWillMount() {
         const { AllLogs } = this.props;
         const userId = Meteor.user() && Meteor.user()._id;
-        const logs = AllLogs.filter(item => (item.userId === userId));
+        const logs = AllLogs.filter(item => (item.userId === userId && item.company === UserUtil.getCompany()));
         this.setState({ logs });
     }
     // 搜索函数
@@ -80,7 +81,7 @@ class MyLog extends PureComponent {
                         <Col span={7}><DatePicker keyword="time" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
                     </Form>
                 </Col>
-                {logs.map(item => (<CardLog edit editLog={editJump} delLog={delLog} key={item._id} {...item} />))}
+                {logs.map(item => (<CardLog edit editLog={editJump} delLog={delLog} key={item._id} {...item} {...this.props} />))}
                 {
                     logs.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
                 }
@@ -105,37 +106,7 @@ export default withTracker(() => {
     return {
         users: Meteor.user() || {},
         AllLogs: Log.find().fetch(),
+        allUsers: Meteor.users.find().fetch(),
     };
 })(Form.create()(MyLog));
 
-
-// const MyLog = ({ editJump, delLog, searchMyLog, myLogs, type }) => {
-//     const types = [
-//         { name: 'day', value: '日报' },
-//         { name: 'week', value: '周报' },
-//         { name: 'month', value: '月报' },
-//         { name: 'business', value: '营业日报' },
-//     ];
-//     const { myDate, mySelect } = filter;
-//     return (
-//         <Row className="e-mg-log-filter" gutter={25} type="flex" justify="start">
-//             <Col span={24} className="margin-bottom-20">
-//                 <span className="margin-right-20">{mySelect({ handleChange, data: types, title: '按模板筛选', keyword: 'type', type })}</span>
-//                 <span className="margin-right-20">{myDate({ handleChange, title: '按时间筛选', keyword: 'time' })}</span>
-//             </Col>
-//             {myLogs.map(item => (<CardLog edit editLog={editJump} delLog={delLog} key={item._id} {...item} />))}
-//             {
-//                 myLogs.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
-//             }
-//         </Row>
-//     );
-// };
-
-// MyLog.propTypes = {
-//     editJump: PropTypes.func,
-//     delLog: PropTypes.func,
-//     searchMyLog: PropTypes.func,
-//     myLogs: PropTypes.array,
-//     type: PropTypes.string,
-// };
-// export default MyLog;

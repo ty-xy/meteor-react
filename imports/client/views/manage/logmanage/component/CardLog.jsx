@@ -2,12 +2,14 @@ import React from 'react';
 import { Col } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import format from 'date-format';
+import { userIdToInfo } from '../../../../../util/user';
 
-const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _id }) => (
+const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _id, createdAt = new Date(), allUsers }) => (
     <Col className="e-mg-log-card">
         <div className="e-mg-log-card-header">
             <Col span={16}>
-                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" alt="" />
+                <img src={userIdToInfo.getAvatar(allUsers, _id) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" alt="" />
                 <span className="e-mg-log-card-header-left">{nickname}</span>
             </Col>
             <Col span={8} className="e-mg-log-card-header-right">{type}</Col>
@@ -18,7 +20,7 @@ const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _i
             <p><span>需协调工作：</span>{help}</p>
         </div>
         <div className="e-mg-log-card-footer">
-            <Col span={12}>07月26日</Col>
+            <Col span={12}>{format('yyyy-MM-dd', createdAt)}</Col>
             {
                 edit ? (<Col span={12} className="right">
                     <a href="" onClick={e => delLog(e, _id)}>删除</a>
@@ -39,6 +41,8 @@ CardLog.propTypes = {
     help: PropTypes.string,
     type: PropTypes.string,
     nickname: PropTypes.string,
+    createdAt: PropTypes.object,
+    allUsers: PropTypes.array,
 };
 
 export default CardLog;

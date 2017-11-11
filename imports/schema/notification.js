@@ -9,6 +9,9 @@ notification.schema = new SimpleSchema({
     username: {
         type: String,
     },
+    company: {
+        type: String,
+    },
     title: {
         type: String,
     },
@@ -24,15 +27,15 @@ notification.schema = new SimpleSchema({
     },
     file: {
         type: [String],
-        // optional: true,
+        optional: true,
     },
     img: {
         type: [String],
-        // optional: true,
+        optional: true,
     },
     group: {
         type: [String],
-        // optional: true,
+        optional: true,
     },
     up: {
         type: Boolean,

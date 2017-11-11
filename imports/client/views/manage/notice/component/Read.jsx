@@ -82,7 +82,6 @@ class Read extends PureComponent {
         });
     }
     render() {
-        console.log('read', this.props);
         const { notices } = this.props;
         return (
             <Row className="margin-top-20">
@@ -101,6 +100,6 @@ export default withTracker(() => {
     Meteor.subscribe('notification');
     return {
         users: Meteor.user() || {},
-        notices: notification.find({}, { sort: { up: -1 } }).fetch(),
+        notices: notification.find({ company: Meteor.user().profile.mainCompany }, { sort: { up: -1 } }).fetch(),
     };
 })(Read);
