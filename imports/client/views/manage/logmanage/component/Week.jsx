@@ -50,6 +50,23 @@ class Week extends (React.PureComponent || React.Component) {
             tab1Submit(fields);
         });
     }
+    // 图片id返回
+    changeUpdate = (name, imgs) => {
+        // const img = [];
+        // const file = [];
+        console.log('changeUpdate', name, imgs);
+        // const { img, file } = this.state;
+        if (name === 'img') {
+            this.setState({ img: imgs });
+        }
+        if (name === 'file') {
+            this.setState({ file: imgs });
+        }
+    }
+    // 删除图片
+    removeUpload = (imgs, keyword) => {
+        this.setState({ [keyword]: imgs });
+    }
     // 获取添加的人员
     getGroup = (keyword, data) => {
         this.setState({ [keyword]: data, [`require${keyword}Notice`]: false });

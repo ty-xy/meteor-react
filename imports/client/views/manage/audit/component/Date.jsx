@@ -37,7 +37,7 @@ MyDate.propTypes = {
     requiredErr: PropTypes.string,
     required: PropTypes.bool,
     label: PropTypes.string,
-    placeholder: PropTypes.array,
+    placeholder: PropTypes.string,
     defaultValue: PropTypes.string,
     width: PropTypes.string,
 };

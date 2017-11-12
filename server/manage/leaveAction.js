@@ -40,21 +40,22 @@ Meteor.methods({
         const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他'];
         let allApp = 0;
         let getLeave = {};
-        switch (type) {
-        case (types.indexOf(type) > -1):
+        if (types.indexOf(type) > -1) {
             getLeave = leave.findOne({ _id });
-            break;
-        case '出差':
-            getLeave = business.findOne({ _id });
-            break;
-        case '报销':
-            getLeave = checkBill.findOne({ _id });
-            break;
-        case '通用审批':
-            getLeave = commonaudit.findOne({ _id });
-            break;
-        default:
-            break;
+        } else {
+            switch (type) {
+            case '出差':
+                getLeave = business.findOne({ _id });
+                break;
+            case '报销':
+                getLeave = checkBill.findOne({ _id });
+                break;
+            case '通用审批':
+                getLeave = commonaudit.findOne({ _id });
+                break;
+            default:
+                break;
+            }
         }
 
         const comments = getLeave.comments || [];
@@ -124,7 +125,7 @@ Meteor.methods({
             break;
         }
 
-        console.log('comments:', userId, isAudit, comments, approvers);
+        // console.log('comments:', userId, isAudit, comments, approvers);
 
         const res = {
             approvers,
@@ -132,45 +133,49 @@ Meteor.methods({
             status,
         };
         // console.log('res', res, i, getLeave.approvers.length);
-        switch (type) {
-        case (types.indexOf(type) > -1):
+        if (types.indexOf(type) > -1) {
             leave.update(
                 { _id },
                 {
                     $set: res,
                 },
             );
-            break;
-        case '出差':
-            business.update(
-                { _id },
-                {
-                    $set: res,
-                },
-            );
-            break;
-        case '报销':
-            checkBill.update(
-                { _id },
-                {
-                    $set: res,
-                },
-            );
-            break;
-        case '通用审批':
-            commonaudit.update(
-                { _id },
-                {
-                    $set: res,
-                },
-            );
-            break;
-        default:
-            break;
+        } else {
+            switch (type) {
+            case '出差':
+                business.update(
+                    { _id },
+                    {
+                        $set: res,
+                    },
+                );
+                break;
+            case '报销':
+                checkBill.update(
+                    { _id },
+                    {
+                        $set: res,
+                    },
+                );
+                break;
+            case '通用审批':
+                commonaudit.update(
+                    { _id },
+                    {
+                        $set: res,
+                    },
+                );
+                break;
+            default:
+                break;
+            }
         }
     },
     // 删除
     deleteLeave({ _id }) {
         leave.remove({ _id });
+    },
+    getCommaudit() {
+        return commonaudit.find().fetch();
     },
 });

@@ -34,6 +34,12 @@ class Write extends PureComponent {
         if (editData._id) {
             this.setState({ img: editData.img, file: editData.file });
         }
+        console.log(Meteor.call(
+            'getCommaudit',
+            (err, d) => {
+                console.log('err', err, d);
+            },
+        ));
     }
     // 获取添加的人员
     getGroup = (keyword, data) => {
