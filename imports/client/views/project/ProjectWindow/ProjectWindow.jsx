@@ -21,7 +21,7 @@ const TabPane = Tabs.TabPane;
 class ProjectWindow extends Component {
     static propTypes = {
         taskF: PropTypes.arrayOf(PropTypes.object),
-        project: PropTypes.object,
+        // project: PropTypes.object,
         projectL: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(...args) {
@@ -94,7 +94,7 @@ class ProjectWindow extends Component {
                                 })
 
                             }
-                            <ProjectBordAdd style={divStyle.taskStyle} pId={this.props.project._id} />
+                            <ProjectBordAdd style={divStyle.taskStyle} pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="日历" key="2">
                             <ProjectLender />

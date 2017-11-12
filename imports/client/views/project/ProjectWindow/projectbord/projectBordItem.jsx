@@ -22,12 +22,12 @@ class ProjectBordItem extends Component {
         tastBoardId: PropTypes.string,
         taskg: PropTypes.arrayOf(PropTypes.object),
         tasks: PropTypes.arrayOf(PropTypes.object),
-        o: PropTypes.string,
+        // o: PropTypes.string,
         fd: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(...props) {
         super(...props);
-        this.containers = [];
+        this.Containers = [];
         this.state = {
             IsShowList: false,
             cardName: '',
@@ -43,6 +43,7 @@ class ProjectBordItem extends Component {
         // const tasks = Task.find({}).fetch();
         // console.log('nextProps', tasks);
     }
+
     componentWillReceiveProps(nextProps) {
         const tasks = Task.find({}).fetch();
         console.log('nextProps', nextProps);
@@ -110,99 +111,55 @@ class ProjectBordItem extends Component {
             },
         );
     }
-
+    //   dragulaDecorator = (componentBackingInstance) => {
+    //       if (
+    //           componentBackingInstance
+    //       ) {
+    //           this.options = {};
+    //           this.dragContainers.push(componentBackingInstance);
+    //       }
+    //   };
     dragulaDecorator = (componentBackingInstance) => {
         let list = [];
+        let prev = [];
+        let next = '';
+        let nextId = '';
+        let current = [];
         if (componentBackingInstance) {
             const options = {
                 isContainer(el) {
                     return el.classList.contains('container');
                 },
+                // direction: 'horizontal',
             };
-            Dragula([componentBackingInstance], options).on('drag', (el) => {
-                // currentBoardId = el.getAttribute('data-index')
-                list = this.props.o;
-                console.log(list);
-                console.log(el);
-                console.log('--====drag=====');
-            })
-                .on('drop', (el) => {
-                    console.error('--====drop=====', el.previousSibling.innerText);
-                    list = this.props.o;
-                    // 获得下一个对像的位置 有问题
-                    const next = list.indexOf(el.previousSibling.getAttribute('data-textid'));
-                    // 拖拽元素当前父元素的 taskBoardId;
-                    const taskboard = el.parentNode.getAttribute('data-bid');
-                    // 拖拽元素原来板的 taskBoardId
-                    const prevTask = el.getAttribute('data-index');
-                    // console.log('--====drop=====', this.props.fd[0][prevTask]);
-                    console.log(this.props.fd[0]);
-                    // 获得 原来板的 数组
-                    let prev = this.props.fd[0][el.getAttribute('data-index')];
-                    // 获得原来原来板 index的位置
-                    const PrevIndex = prev.indexOf(el.getAttribute('data-textid'));
-                    console.log(prev);
-                    console.log(PrevIndex);
-                    // 当前板的 数组
-                    let current = this.props.fd[0][taskboard];
-                    console.log(current);
-                    console.log(prev);
-                    // 原来板的数组删除拖拽元素
-                    prev.splice(PrevIndex, 1);
-                    prev = Array.from(new Set(prev));
-                    console.log(prev);
-                    // 现在板插入当前元素
-                    current.splice(next + 1, 0, el.getAttribute('data-textid'));
-                    current = Array.from(new Set(current));
-                    console.log(current);
-                    // 更新数据库
-                    Meteor.call(
-                        'changeTaskId', taskboard, current, (err) => {
-                            console.log(err);
-                        },
-                    );
-                    Meteor.call(
-                        'changeTaskId', prevTask, prev, (err) => {
-                            console.log(err);
-                        },
-                    );
-                    // previousSibling = el.previousSibling;
-                    // console.log('--====dragend=====', nextId, previousSibling, current, nexts);
-                    // this.state.task.forEach((item) => {
-                    //     console.log('item', item, currentBoardId);
-                    //     if (item.taskBoardId === currentBoardId && current.indexOf(item) === -1) {
-                    //         current.push(item);
-                    //     }
-                    //     if (item.taskBoardId === nextId && nexts.indexOf(item) === -1) {
-                    //         nexts.push(item);
-                    //     }
-                    // });
-                })
-                .on('dragend', (el) => {
-                    console.error('--====dragend=====', el.previousSibling.innerText);
-                    // console.log('dragend', el.previousSibling.getAttribute('data-textId'));
-                    // console.log(el.getAttribute('data-ind'));
-                    // console.log(this.props.o.indexOf(el.previousSibling.getAttribute('data-textId')));
-                    // console.log(el.previousSibling.getAttribute('data-ind'));
-                    // const j = el.previousSibling.getAttribute('data-ind');
-                    // console.log(this.state.task[j]);
-                    // this.state.task[j + 1] = el;
-                    // console.log(this.state.task[j + 1], j + 1);
-                    // console.log(el.getAttribute('data-ind'));
-                    // nextId = el.previousSibling.getAttribute('data-index');
-                    // current = current.filter(item => (item._id !== el.getAttribute('data-id')));
-                    // nexts = nexts.filter(item => (item._id !== el.getAttribute('data-id')));
-                    // nexts.forEach((i, index) => {
-                    //     if (i._id === previousSibling.getAttribute('data-id')) {
-                    //         el.setAttribute('data-index', el.parentNode.getAttribute('data-bid'));
-                    //         const CIndex = el.getAttribute('data-ind');
-                    //         const currentEl = this.state.task[Math.floor(CIndex)];
-                    //         console.log(currentEl, Math.floor(CIndex));
-                    //         nexts.splice(index + 1, 0, currentEl);
-                    //     }
-                    // });
-                    // list = current.concat(nexts);
-                    // console.log('--====drop=====', currentBoardId, nextId, current, nexts, list);
+            console.log(componentBackingInstance);
+            Dragula([componentBackingInstance], options)
+                .on('drop', (el, target, source, sibling) => {
+                    console.error('--====drop=====', el, sibling, target, source);
+                    list = this.props.fd;
+                    if (target !== source) {
+                        console.log(sibling.parentNode);
+                        if (sibling.parentNode === target) {
+                            current = list[0][target.getAttribute('data-bid')];
+                            prev = list[0][source.getAttribute('data-bid')];
+                            next = sibling.getAttribute('data-textId');
+                            // 获得它INDEX 值
+                            nextId = current.indexOf(next);
+                            console.log(current);
+                            current.splice(nextId, 0, el.getAttribute('data-textId'));
+                            // current = Array.from(new Set(current));
+                            console.log(current);
+                            Meteor.call(
+                                'changeTaskId', target.getAttribute('data-bid'), current,
+                                (err) => {
+                                    console.log(err);
+                                },
+                            );
+                            console.log(next, nextId, prev, current);
+                        }
+
+                        console.log(current, prev, nextId, next);
+                    }
                 });
         }
     }
@@ -216,36 +173,6 @@ class ProjectBordItem extends Component {
             textId={value.textId}
         />
     ))
-    // if (this.props.taskId === this.props.tastBoardId) {
-    // this.props.o.map(value =>
-    // Task.find({ uuid: value }).fetch(),
-    // value,
-    // return (
-    //     <MiniCard
-    //         value={value.name}
-    //         key={`${value._id}-${index}`}
-    //         idIndex={value._id}
-    //         index={value.taskBoardId}
-    //         ind={index}
-    //     />
-    // );
-    // });
-    // if (value.taskBoardId === this.props.tastBoardId) {
-    //     console.log(index, '排位');
-    //     return (
-    //         <MiniCard
-    //             value={value.name}
-    //             key={`${value._id}-${index}`}
-    //             idIndex={value._id}
-    //             index={value.taskBoardId}
-    //             ind={index}
-    //         />
-    //     );
-    // }
-    // return null;
-
-    // )
-
     render() {
         // console.error(this.state.task);
         const menu = (
@@ -283,11 +210,11 @@ class ProjectBordItem extends Component {
                         </Col>
                     </Row>
                 </div>
-                <div >
-                    <div className="container" ref={this.dragulaDecorator} key={Math.random()} data-bid={this.props.tastBoardId}>
-                        {this.renderTasks()}
-                    </div>
+
+                <div className="container" ref={this.dragulaDecorator} key={1} data-bid={this.props.tastBoardId}>
+                    {this.renderTasks()}
                 </div>
+
                 {this.state.IsShowList ?
                     <div className="list-input">
                         <TextArea
@@ -318,8 +245,11 @@ export default withTracker((indd) => {
     const tasks = Task.find({}).fetch();
     const tasksA = TaskBoard.find({ _id: indd.tastBoardId }).fetch();
     const x = tasksA[0].sortArray;
-    const taskg = Task.find({ textId: {
-        $in: x } }).fetch();
+    const taskg = Task.find({
+        textId: {
+            $in: x,
+        },
+    }).fetch();
     const hash = {};
     const fd = TaskBoard.find({}).fetch().map((value) => {
         console.log(value._id);
@@ -330,12 +260,6 @@ export default withTracker((indd) => {
     });
     const o = Array.from(new Set(x));
     console.log(o);
-    // const taskg = o.map((u) => {
-    //     console.log(u);
-    //     return Task.find({ uuid: u }).fetch()
-    //     ;
-    // });
-    // const taskg = o.map((it)=> return  it);
     console.log(tasks, tasksA, o, taskg, fd);
     return {
         tasks,
