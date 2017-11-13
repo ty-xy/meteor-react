@@ -13,6 +13,7 @@ import Group from '../imports/schema/group';
 import fields from '../imports/util/fields';
 import Company from '../imports/schema/company';
 import Notice from '../imports/schema/notice';
+import Notification from '../imports/schema/notification';
 import Log from '../imports/schema/log';
 import Project from '../imports/schema/project';
 import TaskBoard from '../imports/schema/taskBoard';
@@ -82,6 +83,7 @@ Meteor.publish('company', () => Company.find({}));
 Meteor.publish('log', () => Log.find({}));
 
 Meteor.publish('notice', () => Notice.find({}));
+Meteor.publish('notification', () => Notification.find());
 
 Meteor.publish('leave', () => Leave.find({}));
 Meteor.publish('business', () => Business.find({}));

@@ -11,6 +11,7 @@ Company.schema = new SimpleSchema({
     },
     admin: {
         type: String,
+        optional: true,
     },
     logo: {
         type: String,
@@ -24,64 +25,51 @@ Company.schema = new SimpleSchema({
         type: String,
         optional: true,
     },
-    noDepMember: {
+    deps: {
         type: [Object],
         optional: true,
     },
-    dep: {
+    'deps.$.name': {
+        type: String,
+    },
+    'deps.$.admin': {
+        type: String,
+        optional: true,
+    },
+    'deps.$.avatar': {
+        type: String,
+        optional: true,
+    },
+    'deps.$.comment': {
+        type: String,
+        optional: true,
+    },
+    members: {
         type: [Object],
         optional: true,
     },
-    'dep.$.name': {
+    'members.$.userId': {
         type: String,
     },
-    'dep.$.admin': {
-        type: String,
-        optional: true,
-    },
-    'dep.$.avatar': {
-        type: String,
-        optional: true,
-    },
-    'dep.$.comment': {
-        type: [Object],
-        optional: true,
-    },
-    'dep.$.comment.$.userId': {
+    'members.$.code': {
         type: String,
     },
-    'dep.$.comment.$.name': {
-        type: String,
-    },
-    'dep.$.comment.$.phone': {
-        type: String,
-    },
-    'dep.$.comment.$.code': {
-        type: String,
-    },
-    'dep.$.comment.$.entryTime': {
+    'members.$.entryTime': {
         type: String,
         optional: true,
     },
-    'dep.$.comment.$.location': {
+    'members.$.location': {
         type: String,
         optional: true,
     },
-    'dep.$.comment.$.comment': {
+    'members.$.comment': {
         type: String,
         optional: true,
     },
-    'dep.$.comment.$.birthday': {
-        type: String,
-        optional: true,
-    },
-    'dep.$.comment.$.pos': {
-        type: [String],
-    },
-    'dep.$.comment.$.upLevel': {
+    'members.$.pos': {
         type: String,
     },
-    'dep.$.comment.$.avatar': {
+    'members.$.dep': {
         type: String,
     },
 });

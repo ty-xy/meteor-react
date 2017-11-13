@@ -6,11 +6,27 @@ checkbill.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
-    username: {
+    userId: {
+        type: String,
+    },
+    status: {
+        type: 'String',
+    },
+    type: {
+        type: String,
+    },
+    company: {
         type: String,
     },
     approvers: {
-        type: [String],
+        type: [Object],
+    },
+    'approvers.$.userId': {
+        type: String,
+    },
+    // isAudit: [审核中， 已审核， 已拒绝]
+    'approvers.$.isAudit': {
+        type: String,
     },
     copy: {
         type: [String],
@@ -38,6 +54,23 @@ checkbill.schema = new SimpleSchema({
     file: {
         type: [String],
         optional: true,
+    },
+    comments: {
+        type: [Object],
+        optional: true,
+    },
+    'comments.$.content': {
+        type: String,
+    },
+    'comments.$.createdAt': {
+        type: Date,
+    },
+    'comments.$.userId': {
+        type: String,
+    },
+    // isAudit: [审核中， 已审核， 已拒绝]
+    'comments.$.isAudit': {
+        type: String,
     },
 });
 

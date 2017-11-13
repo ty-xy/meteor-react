@@ -11,6 +11,7 @@ import FileUpload from '../component/FileUpload';
 import SubmitBtn from './component/SubmitBtn';
 import GroupSelect from './component/GroupSelect';
 import feedback from '../../../../util//feedback';
+import UserUtil from '../../../../util/user';
 
 
 const formItemLayout = {
@@ -23,6 +24,7 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
+
 const formItemLayoutWithOutLabel = {
     wrapperCol: {
         xs: { span: 24, offset: 0 },
@@ -30,7 +32,7 @@ const formItemLayoutWithOutLabel = {
     },
 };
 
-const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他'];
+const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
 const FormItem = Form.Item;
 let uuid = 0;
 
@@ -79,7 +81,10 @@ class Business extends Component {
                 });
             }
             const res = {
-                username: Meteor.user().username,
+                userId: Meteor.user()._id,
+                status: '待审核',
+                type: '出差',
+                company: UserUtil.getCompany(),
                 copy,
                 approvers,
                 img,
@@ -261,6 +266,9 @@ class Business extends Component {
                         requiredErr="审批人必选"
                         getGroup={this.getGroup}
                         modelTitle="选人"
+                        formItemLayout={formItemLayout}
+                        offset={6}
+                        iconTitle="审批人"
                     />
                     <GroupSelect
                         keyword="copy"
@@ -269,7 +277,10 @@ class Business extends Component {
                         isSelectedFalseTitleDes="(审批通知后,通知抄送人)"
                         selectedValue={copy}
                         getGroup={this.getGroup}
-                        modelTitle="选团队"
+                        modelTitle="选人"
+                        formItemLayout={formItemLayout}
+                        offset={6}
+                        iconTitle="抄送人"
                     />
                     <SubmitBtn {...this.props} />
                 </Form>

@@ -6,11 +6,24 @@ leave.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
-    username: {
+    status: {
+        type: 'String',
+    },
+    company: {
+        type: String,
+    },
+    userId: {
         type: String,
     },
     approvers: {
-        type: [String],
+        type: [Object],
+    },
+    'approvers.$.userId': {
+        type: String,
+    },
+    // isAudit: [审核中， 已审核， 已拒绝]
+    'approvers.$.isAudit': {
+        type: String,
     },
     copy: {
         type: [String],
@@ -20,10 +33,10 @@ leave.schema = new SimpleSchema({
         type: Number,
     },
     endAt: {
-        type: String,
+        type: Date,
     },
     startAt: {
-        type: String,
+        type: Date,
     },
     img: {
         type: [String],
@@ -33,6 +46,23 @@ leave.schema = new SimpleSchema({
         type: String,
     },
     type: {
+        type: String,
+    },
+    comments: {
+        type: [Object],
+        optional: true,
+    },
+    'comments.$.content': {
+        type: String,
+    },
+    'comments.$.createdAt': {
+        type: Date,
+    },
+    'comments.$.userId': {
+        type: String,
+    },
+    // isAudit: [审核中， 已审核， 已拒绝]
+    'comments.$.isAudit': {
         type: String,
     },
 });
