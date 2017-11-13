@@ -25,7 +25,7 @@ class GroupSelect extends (PureComponent || Component) {
     componentWillMount() {
         const { companyInfo } = this.props;
         const { members = [], deps = [] } = companyInfo;
-        // console.log('selectedValue', this.props.selectedValue, companyInfo);
+        console.log('selectedValue', this.props.selectedValue, companyInfo);
         // deps.forEach((item) => {
         //     (selectedValue || []).forEach((j) => {
         //         if (item.name === j) {
@@ -236,7 +236,7 @@ class GroupSelect extends (PureComponent || Component) {
         if (avatar) {
             return (<img src={avatar} alt="" />);
         }
-        return <span style={{ background: colors[Math.floor(Math.random() * 4)], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{name}</span>;
+        return <span style={{ background: colors[Math.floor(Math.random() * 4)], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
     }
     // 获取群组avatar
     getDepAvatar = (name) => {
@@ -337,7 +337,7 @@ class GroupSelect extends (PureComponent || Component) {
                         ))
                     }
                     <span className="e-mg-audit-seleted-img">
-                        <MyIcon icon="icon-tianjia3" size="36px" onClick={this.showModal} />
+                        <MyIcon icon="icon-tianjia3" size={36} onClick={this.showModal} />
                         <p style={{ marginTop: '-6px' }}>{iconTitle || label}</p>
                         {required ? <span style={{ position: 'absolute',
                             top: '20px',
