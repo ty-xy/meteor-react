@@ -28,7 +28,7 @@ class BackEnd extends Component {
                     <div className="ejianlian-header-bar-tab">
                         <ul className="header-bar-tab backend-nav">
                             <li
-                                className={classnames('header-tab chat', { active: this.context.locationthis.context.location.pathname === '/companySetting' })}
+                                className={classnames('header-tab chat', { active: this.context.location.pathname === '/companySetting' })}
                                 onClick={this.clickTab.bind(this, '/companySetting')}
                             >企业设置</li>
                             <li

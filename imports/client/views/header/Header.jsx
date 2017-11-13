@@ -39,7 +39,7 @@ class Header extends Component {
         this.context.history.push('/login');
     }
     handleBackEnd = () => {
-        this.context.history.push('/backend');
+        this.context.history.push('/companySetting');
     }
     closeMenu = (e) => {
         this.setState({
