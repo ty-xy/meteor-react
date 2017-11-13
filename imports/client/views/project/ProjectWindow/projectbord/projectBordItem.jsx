@@ -2,12 +2,11 @@
 import React, { Component } from 'react';
 import { Row, Col, Input, Button, Menu, Dropdown } from 'antd';
 import PropTypes from 'prop-types';
-import Dragula from 'react-dragula';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import uuid from 'uuid';
 import pureRender from 'pure-render-decorator';
-// import crossvent from 'crossvent';
+import Dragula from 'react-dragula';
 import Icon from '../../../../components/Icon';
 import MiniCard from './miniCard';
 // import ProjectItemDetail from './projectItemDetail';
@@ -112,14 +111,6 @@ class ProjectBordItem extends Component {
             },
         );
     }
-    //   dragulaDecorator = (componentBackingInstance) => {
-    //       if (
-    //           componentBackingInstance
-    //       ) {
-    //           this.options = {};
-    //           this.dragContainers.push(componentBackingInstance);
-    //       }
-    //   };
     dragulaDecorator = (componentBackingInstance) => {
         let list = [];
         let prev = [];

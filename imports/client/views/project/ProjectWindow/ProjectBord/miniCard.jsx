@@ -67,6 +67,7 @@ class MiniCard extends Component {
                 data-index={this.props.index}
                 data-ind={this.props.ind}
                 data-textid={this.props.textId}
+
             >
                 <div
                     className={`list-message-item ${this.state.visible ? 'is-selected' : ''}`}
