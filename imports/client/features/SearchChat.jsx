@@ -101,7 +101,7 @@ class SearchChat extends Component {
                     placeholder="好友,群组,聊天记录"
                     optionLabelProp="value"
                 >
-                    <Input suffix={<Icon type="search" className="certain-category-icon" />} />
+                    <Input suffix={<Icon type="search" className="certain-category-icon" />} ref={i => this.$message = i} />
                 </AutoComplete>
             </div>
         );
