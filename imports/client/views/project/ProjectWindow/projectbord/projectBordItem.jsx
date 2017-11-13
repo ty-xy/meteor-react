@@ -22,7 +22,7 @@ class ProjectBordItem extends Component {
         tastBoardId: PropTypes.string,
         taskg: PropTypes.arrayOf(PropTypes.object),
         tasks: PropTypes.arrayOf(PropTypes.object),
-        // o: PropTypes.string,
+        o: PropTypes.string,
         fd: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(...props) {
@@ -37,6 +37,7 @@ class ProjectBordItem extends Component {
             task: [],
             delClickFlag: true,
             uuid: '',
+            error: null,
         };
     }
     componentWillMount() {
@@ -124,7 +125,10 @@ class ProjectBordItem extends Component {
         let prev = [];
         let next = '';
         let nextId = '';
+        let oldId = '';
+        let oldIndex = '';
         let current = [];
+        let newList = [];
         if (componentBackingInstance) {
             const options = {
                 isContainer(el) {
@@ -133,21 +137,60 @@ class ProjectBordItem extends Component {
                 // direction: 'horizontal',
             };
             console.log(componentBackingInstance);
-            Dragula([componentBackingInstance], options)
+            Dragula([componentBackingInstance], options).on('drag', (el, source) => {
+                console.log(el, source);
+            })
                 .on('drop', (el, target, source, sibling) => {
-                    console.error('--====drop=====', el, sibling, target, source);
+                    console.error('--====drop=====', el, el.parentNode, sibling, target, source);
                     list = this.props.fd;
-                    if (target !== source) {
-                        console.log(sibling.parentNode);
-                        if (sibling.parentNode === target) {
-                            current = list[0][target.getAttribute('data-bid')];
-                            prev = list[0][source.getAttribute('data-bid')];
+                    if (target === source) {
+                        newList = list[0][target.getAttribute('data-bid')];
+                        oldId = el.getAttribute('data-textId');
+                        oldIndex = newList.indexOf(oldId);
+                        if (sibling !== null) {
                             next = sibling.getAttribute('data-textId');
+                            nextId = newList.indexOf(next);
+                            console.log(oldIndex);
+                            if (nextId < oldIndex) {
+                                newList.splice(oldIndex, 1);
+                                newList.splice(nextId, 0, el.getAttribute('data-textId'));
+                                Meteor.call(
+                                    'changeTaskId', target.getAttribute('data-bid'), newList,
+                                    (err) => {
+                                        console.log(err);
+                                    },
+                                );
+                            } else if (nextId > oldIndex) {
+                                newList.splice(oldIndex, 1);
+                                newList.splice(nextId - 1, 0, el.getAttribute('data-textId'));
+                                Meteor.call(
+                                    'changeTaskId', target.getAttribute('data-bid'), newList,
+                                    (err) => {
+                                        console.log(err);
+                                    },
+                                );
+                            }
+                        } else {
+                            newList.splice(oldIndex, 1);
+                            newList.push(oldId);
+                            Meteor.call(
+                                'changeTaskId', target.getAttribute('data-bid'), newList,
+                                (err) => {
+                                    console.log(err);
+                                },
+                            );
+                        }
+                    } else if (target !== source) {
+                        // console.log(sibling.parentNode);
+                        if (el.parentNode === target && sibling !== null) {
+                            current = list[0][target.getAttribute('data-bid')];
+                            next = sibling.getAttribute('data-textId');
+
                             // 获得它INDEX 值
                             nextId = current.indexOf(next);
-                            console.log(current);
                             current.splice(nextId, 0, el.getAttribute('data-textId'));
-                            // current = Array.from(new Set(current));
+
+                            current = Array.from(new Set(current));
                             console.log(current);
                             Meteor.call(
                                 'changeTaskId', target.getAttribute('data-bid'), current,
@@ -155,24 +198,48 @@ class ProjectBordItem extends Component {
                                     console.log(err);
                                 },
                             );
-                            console.log(next, nextId, prev, current);
+                        } else if (sibling === null && el.parentNode === target) {
+                            current = list[0][target.getAttribute('data-bid')];
+                            current.push(el.getAttribute('data-textId'));
                         }
-
-                        console.log(current, prev, nextId, next);
+                        if (sibling !== null && sibling.parentNode === source && sibling.parentNode !== target) {
+                            prev = list[0][source.getAttribute('data-bid')];
+                            oldId = el.getAttribute('data-textId');
+                            oldIndex = prev.indexOf(oldId);
+                            prev.splice(oldIndex, 1);
+                            console.log(prev, sibling.parentNode, source);
+                            Meteor.call('changeTaskId', source.getAttribute('data-bid'), prev, (err) => {
+                                console.log(err);
+                            },
+                            );
+                        }
+                        // alert(current, prev, nextId, next);
                     }
                 });
         }
     }
-    renderTasks = () => this.props.taskg.map((value, index) => (
-        <MiniCard
-            value={value.name}
-            key={`${value._id}-${index}`}
-            idIndex={value._id}
-            index={value.taskBoardId}
-            ind={index}
-            textId={value.textId}
-        />
-    ))
+    renderTasks = () => this.props.o.map((item, index) => {
+        console.log(111111);
+        try {
+            return this.props.taskg.map((value) => {
+                if (value.textId === item) {
+                    console.log(item);
+                    return (<MiniCard
+                        value={value.name}
+                        key={`${value._id}-${index}`}
+                        idIndex={value._id}
+                        index={value.taskBoardId}
+                        ind={index}
+                        textId={value.textId}
+                    />);
+                }
+                return null;
+            });
+        } catch (error) {
+            this.setState({ error });
+        }
+        return null;
+    })
     render() {
         // console.error(this.state.task);
         const menu = (
@@ -211,7 +278,7 @@ class ProjectBordItem extends Component {
                     </Row>
                 </div>
 
-                <div className="container" ref={this.dragulaDecorator} key={1} data-bid={this.props.tastBoardId}>
+                <div className="container" ref={this.dragulaDecorator} key="7" data-bid={this.props.tastBoardId}>
                     {this.renderTasks()}
                 </div>
 

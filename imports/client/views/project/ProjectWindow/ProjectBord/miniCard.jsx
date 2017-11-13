@@ -59,6 +59,7 @@ class MiniCard extends Component {
     render() {
         console.log(this.state.left);
         console.log(this.props.idIndex);
+        console.error('循环到', this.props.value);
         return (
             <div
                 className="list-message"
