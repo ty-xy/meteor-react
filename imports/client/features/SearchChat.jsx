@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Icon, Input, AutoComplete } from 'antd';
+import { Meteor } from 'meteor/meteor';
+import { Input, AutoComplete } from 'antd';
 
 import Avatar from '../components/Avatar';
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
+const Search = Input.Search;
 
 class SearchChat extends Component {
     constructor(...args) {
@@ -46,6 +48,12 @@ class SearchChat extends Component {
                 }],
             }],
         };
+    }
+    search = (value) => {
+        console.log(value);
+        Meteor.call('searchChat', value, (err, result) => {
+            console.log(result);
+        });
     }
     renderTitle = (title, count) => (
         <span>
@@ -90,7 +98,7 @@ class SearchChat extends Component {
     render() {
         return (
             <div className="certain-category-search-wrapper">
-                <AutoComplete
+                {/* <AutoComplete
                     className="certain-category-search"
                     dropdownClassName="certain-category-search-dropdown"
                     dropdownMatchSelectWidth={false}
@@ -100,9 +108,9 @@ class SearchChat extends Component {
                     dataSource={this.renderOptions()}
                     placeholder="好友,群组,聊天记录"
                     optionLabelProp="value"
-                >
-                    <Input suffix={<Icon type="search" className="certain-category-icon" />} ref={i => this.$message = i} />
-                </AutoComplete>
+                > */}
+                <Search onSearch={this.search} placeholder="好友,群组,聊天记录" />
+                {/* </AutoComplete> */}
             </div>
         );
     }
