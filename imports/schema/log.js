@@ -6,10 +6,13 @@ log.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
-    username: {
+    userId: {
         type: String,
     },
     nickname: {
+        type: String,
+    },
+    company: {
         type: String,
     },
     type: {
@@ -23,18 +26,23 @@ log.schema = new SimpleSchema({
     },
     help: {
         type: String,
+        optional: true,
     },
     file: {
         type: [String],
+        optional: true,
     },
     img: {
         type: [String],
+        optional: true,
     },
     peo: {
         type: [String],
+        optional: true,
     },
     group: {
         type: [String],
+        optional: true,
     },
 });
 

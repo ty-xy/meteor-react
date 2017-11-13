@@ -42,6 +42,7 @@
                 width: 188px;
                 padding: 20px 0;
                 border: 1px solid @blueColor;
+                color: @blueColor;
             }
         }
     }
@@ -190,4 +191,133 @@
             border: none;
         }
     }
+}
+
+// my model 自定义model
+.e-mg-model-{
+    width: 600px;
+    overflow: hidden;
+    display: block;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    right: -600px;
+    opacity: 0;
+    background: #eee;
+    // box-shadow: -1px 0 10px #eee;
+    transition: right .2s ease;
+}
+.e-mg-model-show-{
+    opacity: 1;
+    right: 0;
+    z-index: 1;
+}
+.e-mg-model-vertical{
+    width: 600px;
+    overflow: hidden;
+    display: block;
+    position: fixed;
+    top: -300px;
+    left: 50%;
+    transform: translateX(-300px);
+    height: 350px;
+    opacity: 0;
+    background: #eee;
+    // box-shadow: -1px 0 10px #eee;
+    transition: top .2s ease;
+    z-index: -1;
+}
+.e-mg-model-show-vertical{
+    opacity: 1;
+    top: 200px;
+    z-index: 2;
+}
+.e-mg-model-header{
+    padding: 15px 0;
+    background: @blueColor;
+}
+.e-mg-model-header-title{
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+}
+.e-mg-model-header-close{
+    float: right;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 3px;
+    padding-right: 10px;
+}
+.e-mg-model-body{
+    position: absolute;
+    top: 60px;
+    bottom: 45px;
+    left: 0;
+    right: 0;
+    overflow: auto;
+}
+.e-mg-model-footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+    .pull-right{
+        float: right;
+        color: #eee;
+    }
+}
+.e-mg-model-body-avatar{
+    padding: 15px 0;
+    background: #fff;
+    .ant-avatar{
+        height: 60px !important;
+        width: 60px !important;
+        border-radius: 30px !important;
+    }
+}
+.e-mg-model-body-content{
+    background: #fff;
+    padding: 15px;
+    line-height: 2;
+    color: rgba(0, 0, 0, 0.9);
+    .e-mg-body-content-span{
+        color: rgba(0, 0, 0, 0.6);;
+    }
+}
+.e-mg-model-body-comment{
+    padding: 15px;
+    background: #fff;
+    margin-top: 15px;
+    line-height: 60px;
+    .ant-avatar{
+        vertical-align: middle;
+        margin-top: -8px;
+    }
+}
+.e-mg-model-mask-false{
+    .e-mg-model-mask{
+        position: fixed;
+        z-index: -1;
+        background: rgba(0, 0, 0, 0.01)
+    }
+}
+.e-mg-model-mask-true{
+    .e-mg-model-mask{
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+        background: rgba(55,55,55,.6);
+    }
+}
+.e-mg-model-comment{
+    background: #fff;
+    height: 230px;
+    padding: 15px;
+    line-height: 2;
 }

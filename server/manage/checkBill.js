@@ -3,16 +3,29 @@ import { Meteor } from 'meteor/meteor';
 import CheckBill from '../../imports/schema/checkBill';
 
 Meteor.methods({
-    createCheckBill({ username, file, approvers, copy, total, details, img }) {
+    createCheckBill({ userId, file, approvers, copy, total, details, img, comments, status, type, company }) {
+        approvers = approvers.map(item => ({ userId: item, isAudit: '待审核' }));
+        // 第一个审批人信息通知。
+        comments = [
+            {
+                ...approvers[0],
+                content: '',
+                createdAt: new Date(),
+            },
+        ];
         const newLeave = {
             createdAt: new Date(),
-            username,
             approvers,
             copy,
             total,
             img,
             file,
             details,
+            userId,
+            comments,
+            status,
+            type,
+            company,
         };
         CheckBill.schema.validate(newLeave);
         CheckBill.insert(newLeave);

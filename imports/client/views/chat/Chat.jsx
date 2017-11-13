@@ -12,7 +12,8 @@ import ChatWindow from './chatWindow/ChatWindow';
 import UserUtil from '../../../util/user';
 import feedback from '../../../util/feedback';
 
-// import NewFriend from './chatWindow/NewFriend';
+import NewFriend from './chatWindow/NewFriend';
+import SearchChat from '../../features/SearchChat';
 // import ProjectNotice from './chatWindow/ProjectNotice';
 
 
@@ -33,21 +34,28 @@ class Chat extends Component {
             to: '',
             userId: '',
             selectedChat: {},
+            chatType: 'message',
         };
+    }
+    handleNewFriend = () => {
+        this.setState({
+            chatType: 'newFriend',
+        });
     }
     handleClick = (index) => {
         this.setState({
             selected: index,
         });
     }
-    changeTo = (to, userId, type) => {
+    changeTo = (to, userId, type, chatType) => {
+        // 有未读消息(有用户所在的群以及发给用户的消息)且不在聊天列表时,创建新的聊天窗口
         if (type && !this.props.chatList.find(item => item[type] === userId)) {
             Meteor.call('addChatList', userId, type, (err) => {
                 feedback.dealError(err);
             });
         }
         this.handleToggle(userId);
-        this.setState({ to, userId });
+        this.setState({ to, userId, chatType });
     }
     handleToggle = (value) => {
         this.setState({
@@ -63,10 +71,7 @@ class Chat extends Component {
                     {/* 导航部分 */}
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
-                            <div className="chat-search-wrap">
-                                <i className="iconfont icon-search-message icon-sousuo" />
-                                <input type="text" className="search-message" placeholder="搜索" />
-                            </div>
+                            <SearchChat />
                         </div>
                         <ul className="chat-type">
                             {
@@ -87,27 +92,38 @@ class Chat extends Component {
                         </ul>
                     </div>
                     <div className="ejianlian-chat-user-list">
-                        { this.state.selected === 1 ?
+                        {this.state.selected === 1 ?
                             <ContactList
                                 changeTo={this.changeTo}
                                 handleToggle={this.handleToggle}
                                 selectedChat={this.state.selectedChat}
-                            /> : null }
-                        { this.state.selected === 2 ?
+                                handleNewFriend={this.handleNewFriend}
+                            /> : null}
+                        {this.state.selected === 2 ?
                             <FriendsList
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
-                            /> : null }
-                        { this.state.selected === 3 ?
+                                handleNewFriend={this.handleNewFriend}
+                            /> : null}
+                        {this.state.selected === 3 ?
                             <GroupList
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
-                            /> : null }
+                            /> : null}
                     </div>
-                    <AddChat />
+                    <AddChat
+                        changeTo={this.changeTo}
+                        handleToggle={this.handleToggle}
+                    />
                 </div>
-                <ChatWindow to={this.state.to} userId={this.state.userId} />
-                {/* <NewFriend /> */}
+                {
+                    this.state.chatType === 'newFriend' ?
+                        <NewFriend />
+                        :
+                        <ChatWindow to={this.state.to} userId={this.state.userId} changeTo={this.changeTo} handleToggle={this.handleToggle} />
+                }
+
+
                 {/* <ProjectNotice /> */}
             </div>
         );

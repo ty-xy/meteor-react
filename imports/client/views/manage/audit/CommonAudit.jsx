@@ -10,6 +10,7 @@ import FileUpload from '../component/FileUpload';
 import SubmitBtn from './component/SubmitBtn';
 import GroupSelect from './component/GroupSelect';
 import feedback from '../../../../util//feedback';
+import UserUtil from '../../../../util/user';
 
 
 const formItemLayout = {
@@ -60,11 +61,14 @@ class CommonAudit extends Component {
             }
             const res = {
                 ...fieldsValue,
-                username: Meteor.user().username,
                 copy,
                 approvers,
                 img,
                 file,
+                userId: Meteor.user()._id,
+                status: '待审核',
+                type: '通用审批',
+                company: UserUtil.getCompany(),
             };
             console.log('res', res);
             Meteor.call(
@@ -155,6 +159,9 @@ class CommonAudit extends Component {
                         requiredErr="审批人必选"
                         getGroup={this.getGroup}
                         modelTitle="选人"
+                        formItemLayout={formItemLayout}
+                        offset={6}
+                        iconTitle="审批人"
                     />
                     <GroupSelect
                         keyword="copy"
@@ -163,7 +170,10 @@ class CommonAudit extends Component {
                         isSelectedFalseTitleDes="(审批通知后,通知抄送人)"
                         selectedValue={copy}
                         getGroup={this.getGroup}
-                        modelTitle="选团队"
+                        modelTitle="选人"
+                        formItemLayout={formItemLayout}
+                        offset={6}
+                        iconTitle="抄送人"
                     />
                     <SubmitBtn {...this.props} />
                 </Form>

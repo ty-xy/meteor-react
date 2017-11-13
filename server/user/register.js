@@ -25,6 +25,8 @@ Meteor.methods({
                 chatList: [],
                 company: [],
                 mainCompany: '',
+                verifyFriend: '0', // '0': 需要好友认证;'1': 允许任何人; '2': 不允许任何人
+                isHideInfo: false,
             },
         });
     },

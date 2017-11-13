@@ -22,6 +22,7 @@ import expressions from '../../../../util/expressions';
 import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 import EmptyChat from '../../../components/EmptyChat';
+import eventUtil from '../../../../util/eventUtil';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -34,6 +35,8 @@ class ChatWindow extends Component {
         chatUser: PropTypes.object,
         chatGroup: PropTypes.object,
         files: PropTypes.array,
+        changeTo: PropTypes.func,
+        handleToggle: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -46,9 +49,12 @@ class ChatWindow extends Component {
             videoTracks: null,
             isShowVideo: false,
             isShowNotice: false,
+            temporaryChat: false,
+            chatFriendId: '',
+            isNewFriend: false,
+            isNewNotice: false,
         };
     }
-
     componentDidUpdate(prevProps) {
         this.props.messages.forEach((i) => {
             if (!i.readedMembers.includes(Meteor.userId())) {
@@ -57,24 +63,50 @@ class ChatWindow extends Component {
                 });
             }
         });
-        if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.length > 0) {
+        if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.children.length > 0) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage) {
+                // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
                 $lastMessage.scrollIntoView(true);
             }
         }
         if (this.props.to) {
-            this.$message.addEventListener('keydown', this.handleSendMessage);
+            eventUtil.addEvent(this.$message, 'keydown', this.handleSendMessage);
         }
+        if (prevProps.chatGroup && this.props.chatGroup && prevProps.chatGroup.notice !== this.props.chatGroup.notice) {
+            this.setState({
+                isNewNotice: true,
+            });
+        }
+    }
+    // 图片初始高度是0, 图片加载完成后, 把消息撑了起来, 这时候scrollIntoView已经执行完了,所以会出现看到聊天窗口的时候最后一条消息被挡上了,需要滚动一下才能看到
+    // 表情, 写死高度.  图片消息, 等图片onLoad的时候, 再执行一次最后一条消息的 scrollIntoView
+    imageLoad = () => {
+        const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
+        if ($lastMessage) {
+            $lastMessage.scrollIntoView(true);
+        }
+    }
+    showFriendShip = () => {
+        this.setState({
+            isNewFriend: true,
+        });
     }
     handleGroupNotice = () => {
         this.setState({
             isShowNotice: !this.state.isShowNotice,
         });
+        this.readNotice();
+    }
+    handleFriendId = (chatFriendId) => {
+        this.setState({
+            chatFriendId,
+            isShowFriendInfo: true,
+        });
     }
     handleFriendInfo = () => {
         this.setState({
-            isShowFriendInfo: !this.state.isShowFriendInfo,
+            isShowFriendInfo: false,
         });
     }
     handleFriendFile = () => {
@@ -112,7 +144,13 @@ class ChatWindow extends Component {
     }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
-        this.$message.value = `#(${name})`;
+        this.$message.value += `#(${name})`;
+    }
+    // 显示为已读公告
+    readNotice = () => {
+        this.setState({
+            isNewNotice: false,
+        });
     }
     convertExpression = txt => ({
         __html: txt.replace(
@@ -169,6 +207,22 @@ class ChatWindow extends Component {
             image: url,
         });
     }
+    handleChatUser = (fromId, toId, groupId) => {
+        if (fromId === Meteor.userId()) {
+            return;
+        }
+        if (toId === groupId) {
+            // 是一个群里的成员,允许创建临时会话
+            console.log('是一个群里的成员,允许创建临时会话');
+        }
+    }
+    // 个人资料显示临时会话的按钮
+    handleFriendIdInfo = (friendId) => {
+        this.setState({
+            temporaryChat: true,
+        });
+        this.handleFriendId(friendId);
+    }
     closeImageViewer = () => {
         this.setState({
             showImgViewer: false,
@@ -192,6 +246,9 @@ class ChatWindow extends Component {
     )
     renderFile = (content) => {
         const result = PopulateUtil.file(content);
+        if (!result) {
+            return;
+        }
         if (/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(result.type)) {
             return this.renderImage(result.url);
         }
@@ -236,8 +293,9 @@ class ChatWindow extends Component {
         }
     }
     render() {
-        const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
-        const { name = '', avatarColor = '', avatar = '' } = profile;
+        console.log(2222, this.state.isNewNotice);
+        const { profile = {}, _id = '' } = this.props.chatUser || {};
+        const { name = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const members = this.props.chatGroup ? this.props.chatGroup.members : [];
@@ -246,9 +304,9 @@ class ChatWindow extends Component {
         const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
         const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : false;
         const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop : {};
+        const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         return this.props.to ?
             <div className="ejianlian-chat-window">
-
                 {
                     this.state.isShowVideo ?
                         <VideoMeeting
@@ -266,7 +324,10 @@ class ChatWindow extends Component {
                                     <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
                                 </p>
                                 <p>
-                                    <Icon icon="icon-gerenziliao icon" onClick={this.handleFriendInfo} />
+                                    <Icon
+                                        icon="icon-gerenziliao icon"
+                                        onClick={() => this.handleFriendId(_id)}
+                                    />
                                 </p>
                             </div>
                         </div>
@@ -275,6 +336,13 @@ class ChatWindow extends Component {
                             {groupName}
                             <div className="chat-other-account">
                                 <p>
+                                    {
+                                        this.state.isNewNotice ?
+                                            <span className="notive-red-not" />
+                                            :
+                                            null
+                                    }
+
                                     <Icon icon="icon-tongzhi2 icon" onClick={this.handleGroupNotice} />
                                 </p>
                                 <p>
@@ -288,8 +356,10 @@ class ChatWindow extends Component {
                 }
                 <div className="chat-message-list" ref={i => this.messageList = i}>
                     {
-                        this.props.messages.map((message, i) => (
-                            <div key={i}>
+                        this.props.messages.map((message, index) => (
+                            <div
+                                key={index}
+                            >
                                 {
                                     message.showYearMonth ?
                                         <div className="message-time">{formatDate.dealMessageTime(message.createdAt)}</div>
@@ -297,7 +367,7 @@ class ChatWindow extends Component {
                                         null
                                 }
                                 <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
-                                    <p className="user-avatar">
+                                    <p className="user-avatar" onClick={() => this.handleChatUser(message.from._id, message.to, groupId)}>
                                         <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
                                     </p>
                                     <div className="user-message-wrap">
@@ -347,15 +417,19 @@ class ChatWindow extends Component {
                         <p className="chat-send-message" onClick={this.sendText}>发送</p>
                     </div>
                 </div>
-                <ChatFriendInfo
-                    style={{ display: this.state.isShowFriendInfo ? 'block' : 'none' }}
-                    handleFriendInfo={this.handleFriendInfo}
-                    name={name}
-                    avatarColor={avatarColor}
-                    username={username}
-                    avatar={avatar}
-                    friendId={_id}
-                />
+                {
+                    this.state.isShowFriendInfo ?
+                        <ChatFriendInfo
+                            handleFriendInfo={this.handleFriendInfo}
+                            friendId={this.state.chatFriendId}
+                            temporaryChat={this.state.temporaryChat}
+                            changeTo={this.props.changeTo}
+                            handleToggle={this.props.handleToggle}
+                        />
+                        :
+                        null
+
+                }
                 {
                     this.state.isShowFriendFile ?
                         <ChatFriendFile
@@ -375,6 +449,9 @@ class ChatWindow extends Component {
                             admin={admin}
                             isDisturb={isDisturb}
                             stickTop={stickTop}
+                            avatar={groupAvatar}
+                            changeTo={this.props.changeTo}
+                            handleFriendIdInfo={this.handleFriendIdInfo}
                         />
                         :
                         null
@@ -396,6 +473,7 @@ class ChatWindow extends Component {
                             notice={notice}
                             groupId={groupId}
                             noticeTime={noticeTime}
+                            showNewNotice={this.showNewNotice}
                         />
                         :
                         null
@@ -414,16 +492,19 @@ export default withTracker(({ to, userId }) => {
     const chatGroup = Group.findOne({ _id: to });
     PopulateUtil.group(chatGroup);
     const files = Message.find({ to, type: 'file' }).fetch().map(msg => PopulateUtil.file(msg.content));
-    files.forEach((d, i, data) => {
-        d.showYearMonth = false;
-        d.fileFrom = PopulateUtil.user(d.from).profile.name;
-        if (i) {
-            const prev = data[i - 1];
-            d.showYearMonth = format('yyyy-MM', d.createdAt) !== format('yyyy-MM', prev.createdAt);
-        } else {
-            d.showYearMonth = true;
-        }
-    });
+    if (files[0]) {
+        files.forEach((d, i, data) => {
+            d.showYearMonth = false;
+            d.fileFrom = PopulateUtil.user(d.from).profile.name;
+            if (i) {
+                const prev = data[i - 1];
+                d.showYearMonth = format('yyyy-MM', d.createdAt) !== format('yyyy-MM', prev.createdAt);
+            } else {
+                d.showYearMonth = true;
+            }
+        });
+    }
+
     const messages = Message.find({ to }).fetch();
     messages.forEach((d, i, data) => {
         d.showYearMonth = false;

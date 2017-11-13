@@ -15,12 +15,14 @@ class GroupNotice extends Component {
         notice: PropTypes.string,
         groupId: PropTypes.string,
         noticeTime: PropTypes.object,
+
     }
     constructor(...args) {
         super(...args);
         this.state = {
             isEdit: false,
             showNotice: this.props.notice.length > 0,
+
         };
     }
     editNotice = () => {
@@ -32,6 +34,10 @@ class GroupNotice extends Component {
     saveGroupNotice = () => {
         Meteor.call('editGroupNotice', this.props.groupId, this.$notice.value, (err) => {
             feedback.dealError(err);
+            this.setState({
+                isEdit: false,
+                showNotice: true,
+            });
             feedback.dealSuccess('发布成功');
         });
     }

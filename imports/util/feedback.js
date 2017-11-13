@@ -3,6 +3,7 @@ import { Modal, message } from 'antd';
 const confirm = Modal.confirm;
 
 const feedback = {
+    // 抛出Meteor.error的错误处理
     dealError(err) {
         if (err) {
             Modal.error({

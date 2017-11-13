@@ -14,7 +14,7 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
-const MySelect = ({ keyword, label, required, defaultValue, placeholder, requiredErr, form, width, data = [] }) => (
+const MySelect = ({ keyword, label, required, defaultValue, onChange, placeholder, requiredErr, form, width, data = [] }) => (
     <FormItem
         {...formItemLayout}
         label={label}
@@ -25,7 +25,7 @@ const MySelect = ({ keyword, label, required, defaultValue, placeholder, require
                 required, message: requiredErr,
             }],
         })(
-            <Select allowClear placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }}>
+            <Select allowClear onChange={onChange} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }}>
                 {
                     data.map(item => (<Option key={item} value={item}>{item}</Option>))
                 }
@@ -43,5 +43,6 @@ MySelect.propTypes = {
     defaultValue: PropTypes.string,
     width: PropTypes.string,
     data: PropTypes.array,
+    onChange: PropTypes.func,
 };
 export default MySelect;
