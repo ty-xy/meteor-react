@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Form } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
@@ -11,6 +11,7 @@ import ImgUpload from '../component/ImgUpload';
 import SubmitBtn from './component/SubmitBtn';
 import GroupSelect from './component/GroupSelect';
 import feedback from '../../../../util//feedback';
+import UserUtil from '../../../../util/user';
 
 
 const formItemLayout = {
@@ -23,13 +24,10 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
-const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他'];
+const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
 const FormItem = Form.Item;
 
-class Leave extends Component {
-    static propTypes = {
-        location: PropTypes.object,
-    }
+class Leave extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -60,14 +58,16 @@ class Leave extends Component {
             }
             fieldsValue.approvers = approvers;
             fieldsValue.copy = copy;
-            fieldsValue.username = Meteor.user().username;
+            fieldsValue.userId = Meteor.user()._id;
             const startAt = fieldsValue.startAt;
             const endAt = fieldsValue.endAt;
             const res = {
                 ...fieldsValue,
-                endAt: startAt.format('YYYY-MM-DD'),
-                startAt: endAt.format('YYYY-MM-DD'),
+                startAt: startAt._d,
+                endAt: endAt._d,
                 img,
+                status: '待审核',
+                company: UserUtil.getCompany(),
             };
             console.log('res', res);
             Meteor.call(
@@ -181,6 +181,9 @@ class Leave extends Component {
                         requiredErr="审批人必选"
                         getGroup={this.getGroup}
                         modelTitle="选人"
+                        formItemLayout={formItemLayout}
+                        offset={6}
+                        iconTitle="审批人"
                     />
                     <GroupSelect
                         keyword="copy"
@@ -190,6 +193,9 @@ class Leave extends Component {
                         selectedValue={copy}
                         getGroup={this.getGroup}
                         modelTitle="选团队"
+                        formItemLayout={formItemLayout}
+                        offset={6}
+                        iconTitle="抄送人"
                     />
                     <SubmitBtn {...this.props} />
                 </Form>
@@ -201,6 +207,7 @@ class Leave extends Component {
 Leave.propTypes = {
     form: PropTypes.object,
     history: PropTypes.object,
+    location: PropTypes.object,
 };
 
 export default Form.create()(Leave);

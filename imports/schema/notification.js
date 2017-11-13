@@ -1,31 +1,28 @@
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-const log = new Mongo.Collection('log');
-log.schema = new SimpleSchema({
+const notification = new Mongo.Collection('notification');
+notification.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
-    userId: {
-        type: String,
-    },
-    nickname: {
+    username: {
         type: String,
     },
     company: {
         type: String,
     },
-    type: {
+    title: {
         type: String,
     },
-    finish: {
+    author: {
         type: String,
     },
-    plan: {
+    content: {
         type: String,
     },
-    help: {
-        type: String,
+    isSecrecy: {
+        type: Boolean,
         optional: true,
     },
     file: {
@@ -36,14 +33,14 @@ log.schema = new SimpleSchema({
         type: [String],
         optional: true,
     },
-    peo: {
-        type: [String],
-        optional: true,
-    },
     group: {
         type: [String],
         optional: true,
     },
+    up: {
+        type: Boolean,
+        optional: true,
+    },
 });
 
-export default log;
+export default notification;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { DatePicker, Select } from 'antd';
 import PropTypes from 'prop-types';
+import format from 'date-format';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -24,13 +25,14 @@ const MySelect = ({ title, data, type, keyword, width, handleChange }) => (
         </Select>
     </span>
 );
-const MyDatepicker = ({ handleChange, keyword, title }) => (
+const MyDatepicker = ({ handleChange, keyword, title, val = [] }) => (
     <span>
         {title}：
         <RangePicker
             format="YYYY-MM-DD"
             placeholder={['开始时间', '结束时间']}
             onChange={(date, dateString) => handleChange(dateString, keyword)}
+            value={[format('yyyy-MM-dd', val[0] && val[0]._d), format('yyyy-MM-dd', val[1] && val[1]._d)]}
         />
     </span>
 );
@@ -47,6 +49,7 @@ MyDatepicker.propTypes = {
     handleChange: PropTypes.func,
     keyword: PropTypes.string,
     title: PropTypes.string,
+    val: PropTypes.array,
 };
 
 const wrap = props => WrapComponent =>

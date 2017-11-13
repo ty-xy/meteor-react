@@ -1,5 +1,4 @@
 import React from 'react';
-import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 import Day from './component/Day';
 import Week from './component/Week';
@@ -10,15 +9,10 @@ class Tab1 extends (React.PureComponent || React.Component) {
     constructor(props) {
         super(props);
         this.state = {
-            logType: 'day',
+            logType: '日报',
             expand: false,
             disabledType: false,
-            templates: [
-                { name: 'day', value: '日报' },
-                { name: 'week', value: '周报' },
-                // { name: 'month', value: '月报' },
-                // { name: 'business', value: '营业日报' },
-            ],
+            templates: ['日报', '周报', '月报', '营业日报'],
             template: [],
             editData: {},
         };
@@ -35,19 +29,21 @@ class Tab1 extends (React.PureComponent || React.Component) {
     // 日报， 周报切换
     handleLogChange = (e) => {
         const _this = this;
-        Modal.confirm({
-            title: '温馨提示',
-            content: '您尚未保存，确定要离开？',
-            okText: '确认',
-            cancelText: '取消',
-            onOk: () => { _this.setState({ logType: e.target.value, editData: {} }); },
-        });
+        console.log('handleLogChange', this.props, this.state);
+        // Modal.confirm({
+        //     title: '温馨提示',
+        //     content: '您尚未保存，确定要离开？',
+        //     okText: '确认',
+        //     cancelText: '取消',
+        //     onOk: () => { _this.setState({ logType: e.target.value, editData: {} }); },
+        // });
+        _this.setState({ logType: e.target.value, editData: {} });
     }
     showLogtype = () => ({
-        day: <Day {...this.props} {...this.state} />,
-        week: <Week {...this.props} {...this.state} />,
-        month: <Week {...this.props} {...this.state} />,
-        business: <Week {...this.props} {...this.state} />,
+        日报: <Day {...this.props} {...this.state} />,
+        周报: <Week {...this.props} {...this.state} />,
+        月报: <Week {...this.props} {...this.state} />,
+        营业日报: <Week {...this.props} {...this.state} />,
     })
     // more
     moreChange = () => {
@@ -57,6 +53,7 @@ class Tab1 extends (React.PureComponent || React.Component) {
     }
     render() {
         const { logType } = this.state;
+        console.log('PureComponent', this.props, this.state);
         return (
             <div style={{ height: '100%' }}>
                 <ButtonTab handleLogChange={this.handleLogChange} moreChange={this.moreChange} {...this.state} {...this.props} />

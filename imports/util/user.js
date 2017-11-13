@@ -35,6 +35,43 @@ const UserUtil = {
     getChatList() {
         return UserUtil.getProfile().chatList || [];
     },
+    getCompany() {
+        return UserUtil.getProfile().mainCompany || '';
+    },
+};
+
+export const userIdToInfo = {
+    getProfile(users = [], userId) {
+        let res = {};
+        users.forEach((item) => {
+            if (item._id === userId) {
+                res = {
+                    ...item,
+                    ...item.profile,
+                };
+                // return userIdToInfo.userInfo;
+            }
+        });
+        return res;
+    },
+    getName(users, userId) {
+        return userIdToInfo.getProfile(users, userId).name || '';
+    },
+    getAvatar(users, userId) {
+        return userIdToInfo.getProfile(users, userId).avatar || '';
+    },
+    getMaincompany(users, userId) {
+        return userIdToInfo.getProfile(users, userId).mainCompany || '';
+    },
+    getDep(users, userId) {
+        let res = '暂无部门';
+        (users || []).forEach((item) => {
+            if (item.userId === userId) {
+                res = item.dep;
+            }
+        });
+        return res;
+    },
 };
 
 export default UserUtil;
