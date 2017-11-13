@@ -14,14 +14,17 @@ Notice.schema = new SimpleSchema({
         type: String,
         regEx: /.+/,
     },
-    // 通知类型: 1,用户需要确认(加好友验证)2,用户不需要确认(添加好友,删除好友,加入群,被踢了)
-    type: {
+    noticeContent: {
         type: String,
+    },
+    // 通知类型: 0,用户需要确认(加好友验证)1,用户不需要确认(添加好友,删除好友,加入群,被踢了)
+    type: {
+        type: Number,
         optional: true,
     },
-    // 用户处理通知的结果, 比如:0:拒绝加好友;1,同意加好友;
+    // 用户处理通知的结果, 比如:0: 未处理;1:拒绝加好友;2,同意加好友;3, 直接删除
     dealResult: {
-        type: Boolean,
+        type: Number,
         optional: true,
     },
 });

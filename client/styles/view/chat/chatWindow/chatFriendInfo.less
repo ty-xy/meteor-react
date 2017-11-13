@@ -1,10 +1,12 @@
 @import '../../util/util.less';
 .friend-data-block {
+    z-index: 9999 !important;
     & > .container-content {
         width: 400px;
         height: 520px;
         display: flex;
         flex-direction: column;
+        
         & > .friend-data-content {
             height: 158px;
             background: url('/infoBg.png') center center no-repeat;
@@ -50,6 +52,19 @@
                         }
                     }
                 }
+        }
+        .user-company-info {
+            & > li {
+                display: flex;
+                margin-bottom: 20px;
+                font-size: 16px;
+                & > p:nth-of-type(1) {
+                    width: 80px;
+                    .icon-bianji1 {
+                        color: @mainColor;
+                    }
+                }
+            }
         }
         .friend-btn-wrap {
             flex: 1;

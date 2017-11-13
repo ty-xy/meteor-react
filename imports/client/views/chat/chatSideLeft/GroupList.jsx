@@ -66,7 +66,7 @@ class GroupList extends Component {
                                             }}
                                         >
                                             <p>
-                                                <Avatar name={item.name} avatar={item.avatar ? item.avatar : 'http://oxldjnom8.bkt.clouddn.com/team.jpeg'} />
+                                                <Avatar name={item.name} avatar={item.avatar ? item.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} />
                                             </p>
                                             <p className={this.props.groups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}</p>
                                         </div>
