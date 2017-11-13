@@ -22,12 +22,19 @@
         .friend-info {
             display: flex;
             margin: 15px 25px;
+            justify-content: space-between;
+            .friend-base-info {
+                display: flex;
+            }
             .friend-name-info {
                 color: #fff;
                 font-size: 20px;
-                margin-right: 140px;
                 margin-left: 10px;
                 line-height: 50px;
+                width: 200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
             .friend-btn {
                 color: @mainColor;
