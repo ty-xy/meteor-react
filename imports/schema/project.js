@@ -6,9 +6,9 @@ const Project = new Mongo.Collection('project');
 
 Project.schema = new SimpleSchema({
     // 头像地址
-    // headPortrait: {
-    //     type: String,
-    // },
+    headPortrait: {
+        type: String,
+    },
     // 项目名称
     name: {
         type: String,
@@ -36,10 +36,9 @@ Project.schema = new SimpleSchema({
         type: Date,
     },
     // // 是否归档 1：未归档，2：已归档
-    // pigeonhole: {
-    //     type: String,
-    // },
-
+    pigeonhole: {
+        type: Number,
+    },
 
 });
 

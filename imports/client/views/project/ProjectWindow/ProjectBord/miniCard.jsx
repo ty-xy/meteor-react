@@ -20,6 +20,9 @@ class MiniCard extends Component {
         activeL: PropTypes.number,
         endtime: PropTypes.string,
         label: PropTypes.string,
+        index: PropTypes.string,
+        ind: PropTypes.number,
+        textId: PropTypes.string,
     }
     constructor(...args) {
         super(...args);
@@ -33,15 +36,20 @@ class MiniCard extends Component {
             left: '',
         };
     }
+    componentWillReceiveProps(nextProps) {
+        console.log('nextProps', nextProps);
+        // setTimeout(() => {
+        //     this.setState({
+        //         delClickFlag: true,
+        //     });
+        // }, 1);
+        // console.log(this.state.delClickFlag);
+    }
     showModal = (e) => {
         this.setState({
             visible: true,
             left: e.target.offsetLeft,
         });
-        console.log(e.target.style.width);
-        console.log(this.i.offsetTop);
-        console.log(this.props.idIndex);
-        console.log(`${e.target.offsetLeft + 297}`);
     }
     hideModal = () => {
         this.setState({
@@ -51,8 +59,16 @@ class MiniCard extends Component {
     render() {
         console.log(this.state.left);
         console.log(this.props.idIndex);
+        console.error('循环到', this.props.value);
         return (
-            <div className="list-message" ref={j => this.i = j}>
+            <div
+                className="list-message"
+                data-id={this.props.idIndex}
+                data-index={this.props.index}
+                data-ind={this.props.ind}
+                data-textid={this.props.textId}
+
+            >
                 <div
                     className={`list-message-item ${this.state.visible ? 'is-selected' : ''}`}
                     onClick={this.showModal}
@@ -90,7 +106,6 @@ class MiniCard extends Component {
                         width={315}
                         style={{ top: 220, left: this.state.left + 37, boxShadow: 'none' }}
                         mask={this.state.mask}
-                        wrapClassName={'web'}
                         className="Moal-reset"
                         bodyStyle={{ padding: 0 }}
                     >

@@ -9,6 +9,7 @@ Meteor.methods({
             name,
             projectId,
             createTime: new Date(),
+            sortArray: [],
         };
         TaskBoard.schema.validate(newTaskBoard);
         TaskBoard.insert(newTaskBoard);
