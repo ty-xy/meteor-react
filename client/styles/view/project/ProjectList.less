@@ -15,6 +15,7 @@
          display: -webkit-flex;
          width:450px;
          height:100px;
+        //  line-height: 100px;
          border-bottom:1px solid #fff;
          background:#fff;
          box-sizing:border-box;
@@ -48,6 +49,11 @@
                  color:white;
                  font-size:20px;
              }
+             &> .icon-close{
+                // background: #C1C5D2;
+                 color: #333333;
+                font-size:20px;
+             }
          }
          .list-right{
              margin-left:10px;
@@ -63,26 +69,33 @@
                 height:22px;
                 
              }
-            //  p:nth-child(2){
-            //     font-size: 14px;
-            //     color: #666666;
-            //     letter-spacing: 0.17px;
-            //  }
-            //  p:nth-child(3){
-            //     font-size: 12px;
-            //     color: #666666;
-            //     letter-spacing: 0.14px;
-            //  }
 
          }
+          .list-img{
+            // height:100px;
+            margin-top:15px;
+            // line-height:100px;
          img{
-            width: 40px;
-            height: 40px;
-            margin-top: 30px;
-            border: 1px solid #ddd;
+            width: 50px;
+            height: 50px;
+            text-align:center;
+            // margin-top: 30px;
+            // border: 1px solid #ddd;
             border-radius: 50%;
             //margin-left: 20px;
-            margin-right: 20px
-         }
+            margin-right: 20px;
+          }
+        }
+        .list-img-icon{
+            width:50px;
+            height:50px;
+            border-radius:50%;
+            background:#15b4f1;
+            &>.icon{
+                text-align:center;
+                margin-left:5px;
+                line-height:50px;
+            }
+        }
      }    
-}
+    }

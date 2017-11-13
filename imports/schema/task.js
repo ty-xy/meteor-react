@@ -41,6 +41,9 @@ Task.schema = new SimpleSchema({
     describe: {
         type: String,
     },
+    textId: {
+        type: String,
+    },
 });
 
 export default Task;

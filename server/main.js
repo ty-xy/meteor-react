@@ -16,6 +16,7 @@ import Notice from '../imports/schema/notice';
 import Notification from '../imports/schema/notification';
 import Log from '../imports/schema/log';
 import Project from '../imports/schema/project';
+import Task from '../imports/schema/task';
 import TaskBoard from '../imports/schema/taskBoard';
 import Leave from '../imports/schema/leave';
 import Business from '../imports/schema/business';
@@ -77,6 +78,7 @@ Meteor.publish('file', () => File.find({}));
 Meteor.publish('project', () => Project.find({}));
 Meteor.publish('taskboard', () => TaskBoard.find({}));
 Meteor.publish('tasklist', () => TaskList.find({}));
+Meteor.publish('task', () => Task.find({}));
 
 Meteor.publish('company', () => Company.find({}));
 
