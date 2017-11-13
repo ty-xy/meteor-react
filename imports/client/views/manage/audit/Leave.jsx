@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Form } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
@@ -27,10 +27,7 @@ const formItemLayout = {
 const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
 const FormItem = Form.Item;
 
-class Leave extends Component {
-    static propTypes = {
-        location: PropTypes.object,
-    }
+class Leave extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -210,6 +207,7 @@ class Leave extends Component {
 Leave.propTypes = {
     form: PropTypes.object,
     history: PropTypes.object,
+    location: PropTypes.object,
 };
 
 export default Form.create()(Leave);
