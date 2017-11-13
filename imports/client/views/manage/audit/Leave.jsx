@@ -12,7 +12,7 @@ import SubmitBtn from './component/SubmitBtn';
 import GroupSelect from './component/GroupSelect';
 import feedback from '../../../../util//feedback';
 import UserUtil from '../../../../util/user';
-
+import ChoosePeopleModel from '../../../../client/components/ChoosePeopleModel';
 
 const formItemLayout = {
     labelCol: {
@@ -99,10 +99,29 @@ class Leave extends PureComponent {
             this.setState({ file: imgs });
         }
     }
+    // select people
+    showModal = (e) => {
+        e.preventDefault();
+        this.setState({
+            visible: true,
+        });
+    }
+    // select people cancel
+    handleCancel = (e) => {
+        e.preventDefault();
+        this.setState({
+            visible: false,
+            checked: false,
+        });
+    }
+    // 选中的人
+    handleOk = (keyword, leftUsers) => {
+        this.setState({ [keyword]: leftUsers, visible: false });
+    }
     render() {
         // const { location } = this.props;
         const { img, isApproversAuto, requireGroupNotice, approvers, copy } = this.state;
-        // console.log('leave', this.props);
+        console.log('leave', this.state);
         return (
             <div className="e-mg-audit-leave">
                 <Goback {...this.props} title="请假" />
@@ -197,6 +216,17 @@ class Leave extends PureComponent {
                         offset={6}
                         iconTitle="抄送人"
                     />
+                    <ChoosePeopleModel
+                        visible={this.state.visible}
+                        cancel={this.handleCancel}
+                        ok={this.handleOk}
+                        keyword="copy"
+                        defaultValue={this.state.copy || []}
+                        modelTitle="选人"
+                    >
+                        <a href="" onClick={this.showModal}>dsjfkdlsf</a>
+                        {(this.state.copy || []).map(item => (<p key={item}>{item}</p>))}
+                    </ChoosePeopleModel>
                     <SubmitBtn {...this.props} />
                 </Form>
             </div>

@@ -2,18 +2,16 @@ import React, { PureComponent, Component } from 'react';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Modal, Form, Col, Select, Row, Tag, Checkbox, Button } from 'antd';
-import MyIcon from '../../../../components/Icon';
-import Company from '../../../../../schema/company';
-import { userIdToInfo } from '../../../../../util/user';
+import { Modal, Select, Row, Tag, Checkbox, Button } from 'antd';
+import Company from '../../schema/company';
+import { userIdToInfo } from '../../util/user';
 
 const Option = Select.Option;
-const FormItem = Form.Item;
 
 
 const colors = ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'];
 
-class GroupSelect extends (PureComponent || Component) {
+class ChoosePeopleModel extends (PureComponent || Component) {
     state = {
         visible: false,
         users: [],
@@ -25,19 +23,28 @@ class GroupSelect extends (PureComponent || Component) {
     componentWillMount() {
         const { companyInfo } = this.props;
         const { members = [], deps = [] } = companyInfo;
-        // console.log('selectedValue', this.props.selectedValue, companyInfo);
-        // deps.forEach((item) => {
-        //     (selectedValue || []).forEach((j) => {
-        //         if (item.name === j) {
-        //             item.selected = true;
-        //         }
-        //     });
-        // });
         this.setState({
             users: members,
             deps,
             companyInfo,
         });
+    }
+    componentWillReceiveProps(nextProps) {
+        const { users, deps } = this.state;
+        if (nextProps.defaultValue.length) {
+            users.forEach((j) => {
+                nextProps.defaultValue.forEach((item) => {
+                    if (item === j.userId) {
+                        j.selected = true;
+                    }
+                });
+            });
+            console.log('componentWillReceiveProps', nextProps.defaultValue, users, this.state);
+            this.setState({
+                users,
+                deps,
+            });
+        }
     }
     // 切换群组
     onSecondDepChange = (value) => {
@@ -69,12 +76,6 @@ class GroupSelect extends (PureComponent || Component) {
                 checked: depnum === depnumd,
             });
         }
-    }
-    showModal = (e) => {
-        e.preventDefault();
-        this.setState({
-            visible: true,
-        });
     }
     handleOk = () => {
         this.setState({
@@ -175,6 +176,7 @@ class GroupSelect extends (PureComponent || Component) {
             });
         } else {
             if (!depVal) {
+                leftUsers = [];
                 users.forEach((item) => {
                     if (e.target.checked === true) {
                         item.selected = true;
@@ -226,9 +228,9 @@ class GroupSelect extends (PureComponent || Component) {
         return res;
     }
     // 选中的人
-    getSelected = () => {
+    getSelected = (keyword) => {
         this.setState({ componentSelectedUser: this.state.leftUsers, visible: false });
-        return this.state.leftUsers;
+        this.props.ok(keyword, this.state.leftUsers);
     }
     getAvatar = (allUsers, userId) => {
         const avatar = userIdToInfo.getAvatar(allUsers, userId);
@@ -255,9 +257,9 @@ class GroupSelect extends (PureComponent || Component) {
     }
     render() {
         // console.log('group', this.state, this.props);
-        const { allUsers, keyword, label, required, selectedValue = [], isSelectedFalseTitle, isSelectedTrueTitle, modelTitle, isSelectedFalseTitleDes, requiredErr, getGroup, isSelecteGroup, offset, formItemLayout, iconTitle } = this.props;
+        const { allUsers, keyword, isSelecteGroup, modelTitle } = this.props;
         const { name } = this.props.companyInfo;
-        const { depVal, users, deps, checked, allNum, leftUsers, componentSelectedUser } = this.state;
+        const { depVal, users, deps, checked, allNum, leftUsers } = this.state;
         // isSelecteGroup 是否为选择群组
         // 用户列表
         const searchUser = (data) => {
@@ -292,66 +294,14 @@ class GroupSelect extends (PureComponent || Component) {
                 </a>
             ))
         );
-        const formItems = () => {
-            if (formItemLayout) {
-                return (
-                    <FormItem
-                        {...formItemLayout}
-                        label={label}
-                        className="e-mg-audit-groupSelect"
-                    >
-                        {
-                            selectedValue.length ? <p style={{ color: 'rgb(180, 180, 180)' }}>{isSelectedTrueTitle}</p> : <a href="" className="e-mg-audit-leave-a" onClick={this.showModal}>{isSelectedFalseTitle} <span style={{ color: '#ccc' }}>{isSelectedFalseTitleDes}</span></a>
-                        }
-
-                    </FormItem>
-                );
-            }
-            return (
-                <p>{label}: {
-                    selectedValue.length ? <span style={{ color: 'rgb(180, 180, 180)' }}>{isSelectedTrueTitle}</span> : <a href="" className="e-mg-audit-leave-a" onClick={this.showModal}>{isSelectedFalseTitle} <span style={{ color: '#ccc' }}>{isSelectedFalseTitleDes}</span></a>
-                }</p>
-            );
-        };
+        console.log('ChoosePeopleModel', this.props, this.state);
         return (
             <div style={{ marginBottom: '20px' }}>
-                {formItems()}
-                <Col offset={offset || 0} style={{ position: 'relative' }}>
-                    {isSelecteGroup ?
-                        deps.map((item) => {
-                            if (item.selected) {
-                                return (
-                                    <a href="" key={item.name} onClick={e => this.handleGroupChange(e, item.name)} className="e-mg-audit-seleted-img">
-                                        {this.getDepAvatar(item.name)}
-                                        <p>{item.name}</p>
-                                    </a>
-                                );
-                            }
-                            return null;
-                        }) :
-                        componentSelectedUser.map(item => (
-                            <a href="" key={item} onClick={e => this.handleChange(e, item)} className="e-mg-audit-seleted-img">
-                                {this.getAvatar(allUsers, item)}
-                                <p>{userIdToInfo.getName(allUsers, item)}</p>
-                            </a>
-                        ))
-                    }
-                    <span className="e-mg-audit-seleted-img">
-                        <MyIcon icon="icon-tianjia3" size={36} onClick={this.showModal} />
-                        <p style={{ marginTop: '-6px' }}>{iconTitle || label}</p>
-                        {required ? <span style={{ position: 'absolute',
-                            top: '20px',
-                            left: '60px',
-                            color: '#EF5350',
-                        }}
-                        ><MyIcon icon="icon-cuowu" /> {requiredErr}!</span> : null}
-                    </span>
-                </Col>
+                {this.props.children}
                 <Modal
                     title={(<p className="text-center">{modelTitle}</p>)}
-                    visible={this.state.visible}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
+                    visible={this.props.visible}
+                    onCancel={this.props.cancel}
                     footer={null}
                     className="e-mg-audit-xuanze"
                     width="700px"
@@ -388,14 +338,14 @@ class GroupSelect extends (PureComponent || Component) {
                         </div>
                     </Row>
                     <Row className="text-center margin-top-20 e-mg-audit-xuanze-footer" style={{ margin: '20px -15px -15px' }}>
-                        <Button type="primary" disabled={!allNum} onClick={() => getGroup(keyword, this.getSelected())}>提交</Button>
+                        <Button type="primary" disabled={!allNum} onClick={() => this.getSelected(keyword)}>提交</Button>
                     </Row>
                 </Modal>
             </div>
         );
     }
 }
-GroupSelect.propTypes = {
+ChoosePeopleModel.propTypes = {
     form: PropTypes.object,
     keyword: PropTypes.string,
     requiredErr: PropTypes.string,
@@ -428,5 +378,5 @@ export default withTracker(() => {
         companys,
         allUsers: Meteor.users.find().fetch(),
     };
-})(GroupSelect);
+})(ChoosePeopleModel);
 

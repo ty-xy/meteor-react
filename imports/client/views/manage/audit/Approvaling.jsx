@@ -200,7 +200,7 @@ class Approvaling extends Component {
         };
         const allCards = cards;
         const { allUsers, users } = this.props;
-        console.log('approval', this.props, this.state);
+        // console.log('approval', this.props, this.state);
 
         return (
             <div>
