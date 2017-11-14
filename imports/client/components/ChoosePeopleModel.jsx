@@ -288,7 +288,6 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         return avatar;
     }
     render() {
-        console.log('ChoosePeopleModel', this.state);
         const { allUsers, keyword, isSelecteGroup, modelTitle } = this.props;
         const { name } = this.props.companyInfo;
         const { depVal, users, deps, checked, allNum, leftUsers } = this.state;
