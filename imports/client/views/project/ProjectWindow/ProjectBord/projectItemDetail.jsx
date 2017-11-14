@@ -13,6 +13,7 @@ import Task from '../../../../../../imports/schema/task';
 import TaskList from '../../../../../../imports/schema/taskList';
 import Active from '../../../../../../imports/schema/active';
 import feedback from '../../../../../util/feedback';
+import Member from './member';
 // import ProjectTag from './ProjectTag';
 
 const { TextArea } = Input;
@@ -26,6 +27,8 @@ class ProjectItemDetail extends Component {
         activities: PropTypes.arrayOf(PropTypes.object),
         begintime: PropTypes.string,
         endtime: PropTypes.string,
+        clickTop: PropTypes.func,
+        clickBottom: PropTypes.func,
         tasklists: PropTypes.arrayOf(PropTypes.object),
         taskchild: PropTypes.arrayOf(PropTypes.object),
         label: PropTypes.string,
@@ -52,6 +55,7 @@ class ProjectItemDetail extends Component {
             visib: false, // 子菜单的值
             number: 0,
             titleShow: true,
+            isShowAccount: false,
 
         };
     }
@@ -364,6 +368,12 @@ class ProjectItemDetail extends Component {
             },
         );
     }
+    // 显示头像资料
+    handleshowAvatar = () => {
+        this.setState({
+            isShowAccount: !this.state.isShowAccount,
+        });
+    }
     renderTasks = (id) => {
         console.log();
         return this.props.taskchild.map((listChild) => {
@@ -395,16 +405,19 @@ class ProjectItemDetail extends Component {
                 <Menu.Item key="3">编辑标签</Menu.Item>
                 <Menu.Item key="4">编辑附件</Menu.Item>
                 <Menu.Item key="5" >
-                    <a onClick={this.showModal}>修改起始日期</a>
+                    <p onClick={this.showModal}>修改起始日期</p>
                 </Menu.Item>
                 <Menu.Item key="6">修改截止日期</Menu.Item>
                 <Menu.Divider />
-                <Menu.Item key="7">移到顶部</Menu.Item>
-                <Menu.Item key="8">移到底部</Menu.Item>
+                <Menu.Item key="7">
+                    <p onClick={this.props.clickTop}>移到顶部</p>
+                </Menu.Item>
+                <Menu.Item key="8">
+                    <p onClick={this.props.clickBottom}> 移到底部</p>
+                </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key="9">移到卡片</Menu.Item>
                 <Menu.Item key="10">复制卡片</Menu.Item>
-                <Menu.Item key="11">归档卡片</Menu.Item>
             </Menu>
         );
         return (
@@ -456,7 +469,7 @@ class ProjectItemDetail extends Component {
                         <Col span={5}>
                             <p>成员</p>
                             <div style={{ display: 'flex' }}>
-                                <div className="person-size">
+                                <div className="person-size" onClick={this.handleshowAvatar}>
                                     <AvatarSelf />
                                 </div>
                                 <Icon icon="icon-tianjia circle-icon" />
@@ -638,6 +651,7 @@ class ProjectItemDetail extends Component {
                         }
                     </div>
                 </div>
+                <Member style={{ display: this.state.isShowAccount ? 'block' : 'none' }} click={this.handleshowAvatar} />
             </div >
 
         );

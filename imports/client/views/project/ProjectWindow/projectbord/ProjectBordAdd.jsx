@@ -21,10 +21,11 @@ class ProjectBordList extends Component {
         };
     }
     handleClick = () => {
-        this.setState({
-            IsShowAdd: !this.state.IsShowAdd,
-        });
-        console.log(this.state.IsShowAdd);
+        if (this.props.pId) {
+            this.setState({
+                IsShowAdd: !this.state.IsShowAdd,
+            });
+        }
         console.log(this.props.pId);
     }
     handleTitle = () => {

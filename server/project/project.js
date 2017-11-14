@@ -12,6 +12,7 @@ Meteor.methods({
             headPortrait,
             createTime: new Date(),
             pigeonhole: 1,
+            creater: Meteor.userId(),
         };
         Project.schema.validate(newGroup);
         Project.insert(newGroup);

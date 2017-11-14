@@ -23,6 +23,7 @@ class ProjectWindow extends Component {
         taskF: PropTypes.arrayOf(PropTypes.object),
         // project: PropTypes.object,
         projectL: PropTypes.arrayOf(PropTypes.object),
+        projectd: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(...args) {
         super(...args);
@@ -32,7 +33,9 @@ class ProjectWindow extends Component {
         };
     }
     componentWillMount() {
-        console.log('dededede');
+        this.setState({
+            id: this.props.projectd.match.params.id,
+        });
     }
     componentWillReceiveProps(Projectd) {
         console.log('nextProps', Projectd.match.params.id);
@@ -86,12 +89,9 @@ class ProjectWindow extends Component {
                     <Tabs defaultActiveKey="1" className="tab-task" >
                         <TabPane tab="任务流" key="1" style={divStyle.TabStyle}>
                             {
-                                this.props.taskF.map((text) => {
-                                    console.log(text._id);
-                                    return (
-                                        <ProjectBordItem value={text.name} tastBoardId={text._id} key={text._id} />
-                                    );
-                                })
+                                this.props.taskF.map(text => (
+                                    <ProjectBordItem value={text.name} tastBoardId={text._id} key={text._id} />
+                                ))
 
                             }
                             <ProjectBordAdd style={divStyle.taskStyle} pId={this.state.id} />
@@ -129,5 +129,6 @@ export default withTracker((projectd) => {
         taskL,
         project,
         projectL,
+        projectd,
     };
 })(ProjectWindow);

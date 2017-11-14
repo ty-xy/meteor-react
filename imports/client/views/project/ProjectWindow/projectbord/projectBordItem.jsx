@@ -37,6 +37,7 @@ class ProjectBordItem extends Component {
             delClickFlag: true,
             uuid: '',
             error: null,
+            // nextId: '',
         };
     }
     componentWillMount() {
@@ -67,6 +68,18 @@ class ProjectBordItem extends Component {
         this.setState({
             visible: false,
         });
+    }
+    handleDelete = () => {
+        Meteor.call(
+            'deleteaTaskBoardTask', this.props.tastBoardId, (err) => {
+                console.log(err);
+            },
+        );
+        Meteor.call(
+            'deleteaTaskBoard', this.props.tastBoardId, (err) => {
+                console.log(err);
+            },
+        );
     }
     handleClick = () => {
         this.createTask();
@@ -106,6 +119,34 @@ class ProjectBordItem extends Component {
             'changeSortAarry',
             this.props.tastBoardId,
             this.state.uuids,
+            (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 重排序到顶部
+    handleRepeat =(repeat, taskBoardId) => {
+        const topArray = this.props.fd[0][taskBoardId];
+        const IndexTop = topArray.indexOf(repeat);
+        topArray.unshift(repeat);
+        topArray.splice(IndexTop + 1, 1);
+        console.log(topArray, repeat, taskBoardId, IndexTop);
+        Meteor.call(
+            'changeTaskId', taskBoardId, topArray,
+            (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 重排序到底部
+    handleReorder=(repeat, taskBoardId) => {
+        const topArray = this.props.fd[0][taskBoardId];
+        const IndexTop = topArray.indexOf(repeat);
+        topArray.push(repeat);
+        topArray.splice(IndexTop, 1);
+        console.log(topArray, repeat, taskBoardId, IndexTop);
+        Meteor.call(
+            'changeTaskId', taskBoardId, topArray,
             (err) => {
                 console.log(err);
             },
@@ -209,30 +250,23 @@ class ProjectBordItem extends Component {
                 });
         }
     }
-    renderTasks = () => this.props.o.map((item, index) => {
-        console.log(111111);
-        try {
-            return this.props.taskg.map((value) => {
-                if (value.textId === item) {
-                    console.log(item);
-                    return (<MiniCard
-                        value={value.name}
-                        key={`${value._id}-${index}`}
-                        idIndex={value._id}
-                        index={value.taskBoardId}
-                        ind={index}
-                        textId={value.textId}
-                    />);
-                }
-                return null;
-            });
-        } catch (error) {
-            this.setState({ error });
+    renderTasks = () => this.props.o.map((item, index) => this.props.taskg.map((value) => {
+        if (value.textId === item) {
+            console.log(item);
+            return (<MiniCard
+                value={value.name}
+                key={value._id}
+                idIndex={value._id}
+                index={value.taskBoardId}
+                ind={index}
+                textId={value.textId}
+                click={() => this.handleRepeat(value.textId, value.taskBoardId)}
+                clickB={() => this.handleReorder(value.textId, value.taskBoardId)}
+            />);
         }
-        return null;
-    })
+        return <div />;
+    }))
     render() {
-        // console.error(this.state.task);
         const menu = (
             <Menu>
                 <Menu.Item key="0">
@@ -242,11 +276,9 @@ class ProjectBordItem extends Component {
                     }
                 </Menu.Item>
                 <Menu.Divider />
-                <Menu.Item key="1">
-                    <a href="http://www.taobao.com/">归档该卡片</a>
+                <Menu.Item key="3">
+                    <a onClick={this.handleDelete} >删除</a>
                 </Menu.Item>
-                <Menu.Divider />
-                <Menu.Item key="3">删除</Menu.Item>
             </Menu>
         );
         return (
@@ -300,30 +332,33 @@ class ProjectBordItem extends Component {
 export default withTracker((indd) => {
     Meteor.subscribe('task');
     Meteor.subscribe('taskboard');
+    Meteor.subscribe('company');
     const tasks = Task.find({}).fetch();
     const tasksA = TaskBoard.find({ _id: indd.tastBoardId }).fetch();
-    const x = tasksA[0].sortArray;
-    const taskg = Task.find({
-        textId: {
-            $in: x,
-        },
-    }).fetch();
-    const hash = {};
-    const fd = TaskBoard.find({}).fetch().map((value) => {
-        console.log(value._id);
-        const ide = value._id;
-        const dde = value.sortArray;
-        hash[ide] = dde;
-        return hash;
-    });
-    const o = Array.from(new Set(x));
-    console.log(o);
-    console.log(tasks, tasksA, o, taskg, fd);
-    return {
-        tasks,
-        taskg,
-        o,
-        fd,
-        // taskId,
-    };
+    if (tasksA.length !== 0) {
+        const x = tasksA[0].sortArray;
+        const taskg = Task.find({
+            textId: {
+                $in: x,
+            },
+        }).fetch();
+        const hash = {};
+        const fd = TaskBoard.find({}).fetch().map((value) => {
+            console.log(value._id);
+            const ide = value._id;
+            const dde = value.sortArray;
+            hash[ide] = dde;
+            return hash;
+        });
+        const o = Array.from(new Set(x));
+        console.log(o);
+        console.log(tasks, tasksA, o, taskg, fd);
+        return {
+            tasks,
+            taskg,
+            o,
+            fd,
+            // taskId,
+        };
+    }
 })(ProjectBordItem);

@@ -23,6 +23,8 @@ class MiniCard extends Component {
         index: PropTypes.string,
         ind: PropTypes.number,
         textId: PropTypes.string,
+        click: PropTypes.func,
+        clickB: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -38,12 +40,6 @@ class MiniCard extends Component {
     }
     componentWillReceiveProps(nextProps) {
         console.log('nextProps', nextProps);
-        // setTimeout(() => {
-        //     this.setState({
-        //         delClickFlag: true,
-        //     });
-        // }, 1);
-        // console.log(this.state.delClickFlag);
     }
     showModal = (e) => {
         this.setState({
@@ -103,13 +99,18 @@ class MiniCard extends Component {
                         footer={null}
                         onCancel={this.hideModal}
                         onOk={this.hideModal}
-                        width={315}
+                        width={350}
                         style={{ top: 220, left: this.state.left + 37, boxShadow: 'none' }}
                         mask={this.state.mask}
                         className="Moal-reset"
                         bodyStyle={{ padding: 0 }}
                     >
-                        <ProjectItemDetail item={this.props.value} Id={this.props.idIndex} />
+                        <ProjectItemDetail
+                            item={this.props.value}
+                            Id={this.props.idIndex}
+                            clickTop={this.props.click}
+                            clickBottom={this.props.clickB}
+                        />
                     </Modal>
                 </div>
             </div >);
@@ -119,15 +120,17 @@ class MiniCard extends Component {
 export default withTracker((taskid) => {
     Meteor.subscribe('active');
     Meteor.subscribe('task');
-    const tasks = Task.find({ _id: taskid.idIndex }).fetch();
     const activeL = Active.find({ taskId: taskid.idIndex }).fetch().length;
-    const begintime = tasks[0].beginTime;
-    const endtime = tasks[0].endTime;
-    const label = tasks[0].label;
-    return {
-        begintime,
-        activeL,
-        endtime,
-        label,
-    };
+    const tasks = Task.find({ _id: taskid.idIndex }).fetch();
+    if (tasks.length !== 0) {
+        const begintime = tasks[0].beginTime;
+        const endtime = tasks[0].endTime;
+        const label = tasks[0].label;
+        return {
+            begintime,
+            activeL,
+            endtime,
+            label,
+        };
+    }
 })(MiniCard);

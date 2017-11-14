@@ -7,6 +7,8 @@ import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
 import MyIcon from '../../../components/Icon';
 import ImgUpload from '../../manage/component/ImgUpload';
+import AvatarSelf from '../../../components/AvatarSelf';
+import GroupSelect from '../../manage/audit/component/GroupSelect';
 // import AddProject from './Addproject';
 
 const Option = Select.Option;
@@ -35,8 +37,6 @@ export default class ProjectAdd extends Component {
         const newState = {};
         newState[name] = e.target.value;
         this.setState(newState);
-        console.log(newState);
-        console.log(this.state.icon[j]);
     }
     handleChangeT = (value) => {
         this.setState({ affiliation: `${value}` });
@@ -150,11 +150,13 @@ export default class ProjectAdd extends Component {
                     </div>
                     <div className="common-type">
                         <span> 项目负责人:</span>
-                        <MyIcon icon="icon-tianjia icon-add" />
+                        <AvatarSelf />
+                        {/* <MyIcon icon="icon-tianjia icon-add" /> */}
                     </div>
                     <div className="common-type">
-                        <span>项目参与人:</span>
-                        <MyIcon icon="icon-tianjia icon-add" />
+                        <GroupSelect
+                            label="项目参与人"
+                        />
                     </div>
                     <div className="ejianlian-add-projectf" onClick={this.props.click}>
                         <div className="add-button add-button-create" onClick={this.handleMessage}>
