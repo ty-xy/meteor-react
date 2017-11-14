@@ -9,6 +9,10 @@ const InputArea = ({ form, title, keyword, editData, className = '', marginBotto
         e.preventDefault();
         e.target.style.height = `${e.target.scrollHeight}px`;
     };
+    const blur = (e) => {
+        e.preventDefault();
+        console.log('e.preventDefault();', e.target.value.replace(/\r\n/g, '&nbsp;'));
+    };
     return (
         <Col span={24} style={{ marginBottom }}>
             {title && <p className="e-mg-input-label">{title}</p>}
@@ -20,6 +24,7 @@ const InputArea = ({ form, title, keyword, editData, className = '', marginBotto
             })(
                 <TextArea
                     onKeyUp={focus}
+                    onBlur={blur}
                     className={`e-mg-input-area ${className}`}
                     style={{ width: '98%' }}
                     placeholder="请输入文字"

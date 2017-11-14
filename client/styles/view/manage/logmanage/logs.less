@@ -1,3 +1,5 @@
+@import '../../util/main';
+
 .e-mg-tab-scroll{
     height: 100%;
     > .ant-tabs-content{
@@ -19,6 +21,23 @@
         background: #fff;
     }
 }
+// e-mg-log-button-tab
+.e-mg-log-button-tab{
+    display: inline-block;
+    padding: 8px 20px;
+    background: #D1D1D1;
+    color: #fff;
+    border-radius: 3px;
+    &:hover{
+        color: #fff;
+    }
+}
+.e-mg-log-button-tab-active{
+    background: @blueColor;
+    color: #fff;
+}
+
+
 // 我发出的
 .e-mg-log-filter{
     margin-left: 0px !important;

@@ -9,6 +9,7 @@ import CardLog from './component/CardLog';
 import Select from '../audit/component/Select';
 import DatePicker from '../audit/component/DatePicker';
 import UserUtil from '../../../../util/user';
+import feedback from '../../../../util/feedback';
 
 const types = ['日报', '周报', '月报'];
 
@@ -24,8 +25,8 @@ class MyLog extends PureComponent {
             logs: [],
         };
     }
-    componentWillMount() {
-        const { AllLogs } = this.props;
+    componentWillReceiveProps(nextProps) {
+        const { AllLogs } = nextProps;
         const userId = Meteor.user() && Meteor.user()._id;
         const logs = AllLogs.filter(item => (item.userId === userId && item.company === UserUtil.getCompany()));
         this.setState({ logs });
@@ -70,9 +71,39 @@ class MyLog extends PureComponent {
         }
         this.setState({ logs });
     }
+    // 编辑跳转
+    editJump = (e, _id) => {
+        e.preventDefault();
+        let editInfo = {};
+        this.state.logs.forEach((item) => {
+            if (item._id === _id) {
+                editInfo = item;
+            }
+        });
+        this.props.history.push({
+            pathname: '/manage/logging',
+            state: editInfo,
+        });
+    }
+    // 删除日志
+    delLog = (e, _id) => {
+        e.preventDefault();
+        feedback.dealDelete('温馨提示！', '确认删除此条日志吗？', () => this.del(_id));
+    }
+    del = (_id) => {
+        Meteor.call(
+            'deleteLog',
+            { _id },
+            (err) => {
+                if (err) {
+                    return console.error(err.reason);
+                }
+                feedback.successToast('删除成功');
+            },
+        );
+    }
     render() {
         const { logs } = this.state;
-        const { editJump, delLog } = this.props;
         return (
             <Row gutter={25} className="e-mg-log-filter" type="flex" justify="start">
                 <Col span={24} className="margin-bottom-20">
@@ -81,7 +112,7 @@ class MyLog extends PureComponent {
                         <Col span={7}><DatePicker keyword="time" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
                     </Form>
                 </Col>
-                {logs.map(item => (<CardLog edit editLog={editJump} delLog={delLog} key={item._id} {...item} {...this.props} />))}
+                {logs.map(item => (<CardLog edit editLog={this.editJump} delLog={this.delLog} key={item._id} {...item} {...this.props} />))}
                 {
                     logs.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
                 }
@@ -92,6 +123,7 @@ class MyLog extends PureComponent {
 
 MyLog.propTypes = {
     searchLog: PropTypes.func,
+    history: PropTypes.object,
     logs: PropTypes.array,
     allUser: PropTypes.array,
     AllLogs: PropTypes.array,

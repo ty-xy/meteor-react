@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Route } from 'react-router-dom';
 import Day from './component/Day';
-import Week from './component/Week';
-import ButtonTab from '../component/ButtonTab';
+import ButtonTab from './component/ButtonTab';
+
+const urls = ['/manage/logging', '/manage/logging/week', '/manage/logging/day', '/manage/logging/month', '/manage/logging/sale'];
 
 
 class Tab1 extends (React.PureComponent || React.Component) {
@@ -12,19 +14,18 @@ class Tab1 extends (React.PureComponent || React.Component) {
             logType: '日报',
             expand: false,
             disabledType: false,
-            templates: ['日报', '周报', '月报', '营业日报'],
+            templates: [
+                { name: '日报', url: '/manage/logging' },
+                { name: '周报', url: '/manage/logging/week' },
+                { name: '月报', url: '/manage/logging/month' },
+                { name: '营业日报', url: '/manage/logging/sale' },
+            ],
             template: [],
             editData: {},
         };
     }
     componentWillMount() {
-        // console.log('componentWillMount', this.props);
-        const { editInfo } = this.props;
-        if (editInfo._id) {
-            this.setState({ template: this.state.templates.slice(0, 2), editData: editInfo, logType: editInfo.type, disabledType: true });
-        } else {
-            this.setState({ template: this.state.templates.slice(0, 2) });
-        }
+        this.setState({ template: this.state.templates.slice(0, 2) });
     }
     // 日报， 周报切换
     handleLogChange = (e) => {
@@ -39,24 +40,26 @@ class Tab1 extends (React.PureComponent || React.Component) {
         // });
         _this.setState({ logType: e.target.value, editData: {} });
     }
-    showLogtype = () => ({
-        日报: <Day {...this.props} {...this.state} />,
-        周报: <Week {...this.props} {...this.state} />,
-        月报: <Week {...this.props} {...this.state} />,
-        营业日报: <Week {...this.props} {...this.state} />,
-    })
     // more
     moreChange = () => {
         const { expand } = this.state;
         const template = expand ? this.state.templates.slice(0, 2) : this.state.templates.slice(0);
         this.setState({ expand: !expand, template });
     }
+    routers = location => (
+        <div className="">
+            {urls.indexOf(location.pathname) >= 0 ? <ButtonTab handleLogChange={this.handleLogChange} moreChange={this.moreChange} {...this.state} {...this.props} /> : null}
+            <Route exact path="/manage/logging" component={Day} />
+            <Route path="/manage/logging/week" component={Day} />
+            <Route path="/manage/logging/month" component={Day} />
+        </div>
+    )
     render() {
-        const { logType } = this.state;
+        console.log('write', this.props);
+        const { location } = this.props;
         return (
-            <div style={{ height: '100%' }}>
-                <ButtonTab handleLogChange={this.handleLogChange} moreChange={this.moreChange} {...this.state} {...this.props} />
-                {this.showLogtype()[logType]}
+            <div>
+                {this.routers(location)}
             </div>
         );
     }
@@ -64,5 +67,6 @@ class Tab1 extends (React.PureComponent || React.Component) {
 
 Tab1.propTypes = {
     form: PropTypes.object,
+    location: PropTypes.object,
 };
 export default Tab1;
