@@ -53,7 +53,6 @@ class Tab1 extends (React.PureComponent || React.Component) {
     }
     render() {
         const { logType } = this.state;
-        console.log('PureComponent', this.props, this.state);
         return (
             <div style={{ height: '100%' }}>
                 <ButtonTab handleLogChange={this.handleLogChange} moreChange={this.moreChange} {...this.state} {...this.props} />

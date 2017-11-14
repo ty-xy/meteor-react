@@ -23,7 +23,7 @@ import Company from '../../../../../imports/schema/company';
 import UserUtil, { userIdToInfo } from '../../../../util/user';
 
 const { TextArea } = Input;
-const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
+const types = ['事假', '病假', '年假', '调休假', '婚假', '产假', '陪产假', '路途假', '出差', '报销', '通用审批', '其他'];
 let searchFilter = false;
 const filterCodition = {
     type: '',
@@ -200,7 +200,7 @@ class Approvaling extends Component {
         };
         const allCards = cards;
         const { allUsers, users } = this.props;
-        console.log('approval', this.props, this.state);
+        // console.log('approval', this.props, this.state);
 
         return (
             <div>
@@ -277,7 +277,7 @@ class Approvaling extends Component {
                 <MyModel
                     handleCancel={this.commentModelCancel}
                     show={commentModel}
-                    title="钱江艳的请假审批"
+                    title={`${userIdToInfo.getName(allUsers, modelData.userId)}的${modelData.type}审批`}
                     animation="vertical"
                     mask={commentModel}
                     handleCommentbtn={this.handleCommentbtn}

@@ -83,12 +83,15 @@ class GroupSetting extends Component {
     }
     // 解散群聊
     deleteGroup = () => {
-        Meteor.call('deleteGroup', this.props.groupId, (err) => {
-            if (err) {
-                console.error(err.reason);
-            }
-            feedback.dealSuccess('解散群聊成功');
-            this.props.showGroupSet();
+        feedback.dealDelete('解散群聊', '您确定解散该群聊?', () => {
+            Meteor.call('deleteGroup', this.props.groupId, (err) => {
+                if (err) {
+                    console.error(err.reason);
+                }
+                feedback.dealSuccess('解散群聊成功');
+                this.props.showGroupSet();
+                this.props.changeTo('', '');
+            });
         });
     }
     // 移除群成员
@@ -192,7 +195,7 @@ class GroupSetting extends Component {
                                         </div>
 
                                         {
-                                            this.props.admin === Meteor.userId() ?
+                                            this.props.admin === Meteor.userId() && item._id !== Meteor.userId() ?
                                                 <Icon icon="icon-cuowu" iconColor="#ef5350" onClick={() => this.handleDeleteMember(item._id)} />
                                                 :
                                                 null

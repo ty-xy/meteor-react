@@ -19,22 +19,42 @@ Meteor.methods({
             unit = 'MB';
         }
         const fileSize = `${size.toFixed(2)}${unit}`;
-        fileBase64 = fileBase64.replace(/data:image\/(jpeg|jpg|png|gif|zip|rar);base64,/, '');
-        const imageBinary = Buffer.from(fileBase64, 'base64');
+        const fileBase64Key = fileBase64.replace(/data:[a-z]+\/([a-z]+);base64,/, '');
+        const imageBinary = Buffer.from(fileBase64Key, 'base64');
         return new Promise((resolve) => {
+            const newFile = {
+                createdAt: new Date(),
+                from: Meteor.userId(),
+                name,
+                type,
+                size: fileSize,
+                url: fileBase64,
+            };
+            Files.schema.validate(newFile);
+            const fileId = Files.insert(newFile);
+            resolve(fileId);
             qiniu.uploadBytes(`file_${Date.now()}_${name}`, imageBinary)
                 .then(Meteor.bindEnvironment((imageKey) => {
-                    const newFile = {
-                        createdAt: new Date(),
-                        from: Meteor.userId(),
-                        name,
-                        type,
-                        size: fileSize,
-                        url: imageKey,
-                    };
-                    Files.schema.validate(newFile);
-                    const fileId = Files.insert(newFile);
-                    resolve(fileId);
+                    Files.update(
+                        { _id: fileId },
+                        {
+                            $set: {
+                                url: imageKey,
+                            },
+                        },
+
+                    );
+                    // const newFile = {
+                    //     createdAt: new Date(),
+                    //     from: Meteor.userId(),
+                    //     name,
+                    //     type,
+                    //     size: fileSize,
+                    //     url: imageKey,
+                    // };
+                    // Files.schema.validate(newFile);
+                    // const fileId = Files.insert(newFile);
+                    // resolve(fileId);
                 }),
                 );
         });

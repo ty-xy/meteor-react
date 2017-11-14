@@ -10,7 +10,7 @@ function goback(e, history) {
 const Goback = ({ history, title }) => (
     <div className="e-mg-audit-goback">
         <a href="" className="e-mg-audit-send-card-link" onClick={e => goback(e, history)}>
-            <MyIcon icon="icon-fanhui1" size="20px" /> {title}
+            <MyIcon icon="icon-fanhui1" size={20} /> {title}
         </a>
     </div>
 );

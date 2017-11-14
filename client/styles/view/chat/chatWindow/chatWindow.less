@@ -201,6 +201,29 @@
                 font-size: 13px;
                 color: #999999;
             }
+            .file-progress {
+                position: absolute;
+                bottom: -4px;
+                .ant-progress-outer {
+                    padding-right: 25px !important;
+                }
+                .ant-progress-inner {
+                    height: 5px !important;
+                    bottom: 5px;
+                }
+               .ant-progress-bg  {
+                   background-color: #ffca28;
+                   height: 5px !important;
+               }
+               .ant-progress-text {
+                   position: absolute;
+                   bottom: -25px;
+                   right: 20px;
+                   color: #999;
+                   font-size: 12px;
+               }
+            }
+            
             & > a {
                 display: block;
                 margin-top: 12px;
@@ -221,6 +244,28 @@
                 max-width: 200px;
                 margin-top: 5px;
             }
+            .img-progress {
+                .ant-progress-outer {
+                    padding-right: 0 !important;
+                }
+                .ant-progress-inner {
+                    height: 5px !important;
+                    bottom: 5px;
+                    width: 100%;
+                }
+               .ant-progress-bg  {
+                   background-color: #ffca28;
+                   height: 5px !important;
+               }
+               .ant-progress-text {
+                   position: absolute;
+                   bottom: -30px;
+                   right: -10px;
+                   color: #999;
+                   font-size: 12px;
+               }
+            }
+            
         }
     }
     .chat-window-bottom {
