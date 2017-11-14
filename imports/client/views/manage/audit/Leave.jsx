@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import { Form } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+import Company from '../../../../schema/company';
 import Goback from './component/Goback';
 import MyInput from './component/Input';
 import MySelect from './component/Select';
@@ -9,10 +11,11 @@ import MyDatePicker from './component/Date';
 import MyTextArea from './component/InputArea';
 import ImgUpload from '../component/ImgUpload';
 import SubmitBtn from './component/SubmitBtn';
-import GroupSelect from './component/GroupSelect';
+// import GroupSelect from './component/GroupSelect';
 import feedback from '../../../../util//feedback';
 import UserUtil from '../../../../util/user';
-
+import ChoosePeopleModel from '../../../../client/components/ChoosePeopleModel';
+import PeopleList from './component/PeopleList';
 
 const formItemLayout = {
     labelCol: {
@@ -99,10 +102,35 @@ class Leave extends PureComponent {
             this.setState({ file: imgs });
         }
     }
+    // select people
+    showModal = (e, keyword) => {
+        e.preventDefault();
+        this.setState({
+            [`visible${keyword}`]: true,
+        });
+    }
+    // select people cancel
+    handleCancel = (e, keyword) => {
+        e.preventDefault();
+        this.setState({
+            [`visible${keyword}`]: false,
+            checked: false,
+        });
+    }
+    // 选中的人
+    handleOk = (keyword, leftUsers) => {
+        this.setState({ [keyword]: leftUsers, [`visible${keyword}`]: false, requireGroupNotice: false });
+    }
+    // 选中后删除
+    handlePeopleChange = (e, id, keyword) => {
+        e.preventDefault();
+        const res = this.state[keyword];
+        const peos = res.filter(item => (item !== id));
+        this.setState({ [keyword]: peos });
+    }
     render() {
         // const { location } = this.props;
-        const { img, isApproversAuto, requireGroupNotice, approvers, copy } = this.state;
-        // console.log('leave', this.props);
+        const { img, visibleapprovers, visiblecopy, requireGroupNotice, approvers, copy } = this.state;
         return (
             <div className="e-mg-audit-leave">
                 <Goback {...this.props} title="请假" />
@@ -170,33 +198,60 @@ class Leave extends PureComponent {
                     >
                         <ImgUpload title="（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                     </FormItem>
-                    <GroupSelect
+                    <ChoosePeopleModel
+                        visible={visibleapprovers}
+                        cancel={this.handleCancel}
+                        ok={this.handleOk}
                         keyword="approvers"
-                        label="审批人"
-                        isSelected={isApproversAuto}
-                        isSelectedTrueTitle="审批人已经由管理员预设"
-                        isSelectedFalseTitle="添加审批人"
-                        selectedValue={approvers}
-                        required={requireGroupNotice}
-                        requiredErr="审批人必选"
-                        getGroup={this.getGroup}
+                        defaultValue={approvers || []}
                         modelTitle="选人"
-                        formItemLayout={formItemLayout}
-                        offset={6}
-                        iconTitle="审批人"
-                    />
-                    <GroupSelect
+                    >
+                        <FormItem
+                            {...formItemLayout}
+                            label="审批人"
+                        >
+                            <a href="" onClick={this.showModal} style={{ color: 'rgb(204, 204, 204)' }}>(添加审批人，按照选择顺序提醒审批人)</a>
+                            <PeopleList
+                                keyword="approvers"
+                                iconTitle="审批人"
+                                componentSelectedUser={approvers || []}
+                                showModal={this.showModal}
+                                handleGroupChange={this.handleGroupChange}
+                                handlePeopleChange={this.handlePeopleChange}
+                                requiredErr="审批人必选"
+                                required={requireGroupNotice}
+                                {...this.props}
+                                {...this.state}
+                            />
+                        </FormItem>
+                    </ChoosePeopleModel>
+                    <ChoosePeopleModel
+                        visible={visiblecopy}
+                        cancel={this.handleCancel}
+                        ok={this.handleOk}
                         keyword="copy"
-                        label="抄送人"
-                        isSelectedFalseTitle="添加抄送人"
-                        isSelectedFalseTitleDes="(审批通知后,通知抄送人)"
-                        selectedValue={copy}
-                        getGroup={this.getGroup}
-                        modelTitle="选团队"
-                        formItemLayout={formItemLayout}
-                        offset={6}
-                        iconTitle="抄送人"
-                    />
+                        defaultValue={copy || []}
+                        modelTitle="选人"
+                        isSelecteGroup
+                    >
+                        <FormItem
+                            {...formItemLayout}
+                            label="抄送人"
+                        >
+                            <a href="" onClick={this.showModal} style={{ color: 'rgb(204, 204, 204)' }}>(审批通知后,通知抄送人)</a>
+                            <PeopleList
+                                keyword="copy"
+                                iconTitle="抄送人"
+                                componentSelectedUser={copy || []}
+                                showModal={this.showModal}
+                                handleGroupChange={this.handleGroupChange}
+                                handlePeopleChange={this.handlePeopleChange}
+                                isSelecteGroup
+                                {...this.props}
+                                {...this.state}
+                            />
+                        </FormItem>
+                    </ChoosePeopleModel>
                     <SubmitBtn {...this.props} />
                 </Form>
             </div>
@@ -210,4 +265,20 @@ Leave.propTypes = {
     location: PropTypes.object,
 };
 
-export default Form.create()(Leave);
+export default withTracker(() => {
+    Meteor.subscribe('company');
+    Meteor.subscribe('users');
+    const companys = Company.find().fetch();
+    const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
+    let companyInfo = {};
+    companys.forEach((item) => {
+        if (item._id === mainCompany) {
+            companyInfo = item;
+        }
+    });
+    return {
+        companyInfo,
+        companys,
+        allUsers: Meteor.users.find().fetch(),
+    };
+})(Form.create()(Leave));

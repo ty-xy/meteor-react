@@ -20,7 +20,7 @@ export default () => (
             categorys.map(item => (
                 <div key={item.icon} className="e-mg-audit-send-card">
                     <Link className="e-mg-audit-send-card-link" to={item.url}>
-                        <MyIcon icon={item.icon} size="50px" />
+                        <MyIcon icon={item.icon} size={50} />
                         <p className="font18">{item.name}</p>
                     </Link>
                 </div>

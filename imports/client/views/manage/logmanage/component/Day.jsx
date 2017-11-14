@@ -23,6 +23,14 @@ class Day extends (React.PureComponent || React.Component) {
         };
     }
     componentWillMount() {
+        console.log('editInfo', this.props.editInfo);
+        const { img, file } = this.props.editInfo;
+        if (img) {
+            this.setState({ img });
+        }
+        if (file) {
+            this.setState({ file });
+        }
         // const { editInfo } = this.props;
         // const { peo = [], group = [] } = editInfo;
         // const res = {
@@ -89,8 +97,9 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { editInfo } = this.props;
-        const { img = [], file = [], peo, group } = editInfo;
-        const { requirepeoNotice, requiregroupNotice } = this.state;
+        const { peo, group } = editInfo;
+        const { requirepeoNotice, requiregroupNotice, img = [], file = [] } = this.state;
+        console.log('img-file', this.state);
         return (
             <Form onSubmit={this.formSubmit} style={{ height: '100%' }}>
                 <InputArea title="今日工作总结：" keyword="finish" required {...this.props} />

@@ -209,7 +209,7 @@ class MyAudit extends Component {
         };
         const allCards = cards;
         const { allUsers, users } = this.props;
-        console.log('approval', this.props, this.state);
+        // console.log('approval', this.props, this.state);
 
         return (
             <div>
@@ -286,7 +286,7 @@ class MyAudit extends Component {
                 <MyModel
                     handleCancel={this.commentModelCancel}
                     show={commentModel}
-                    title="钱江艳的请假审批"
+                    title={`${userIdToInfo.getName(allUsers, modelData.userId)}的${modelData.type}审批`}
                     animation="vertical"
                     mask={commentModel}
                     handleCommentbtn={this.handleCommentbtn}

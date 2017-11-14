@@ -119,7 +119,7 @@ class ImgUpload extends (PureComponent || Component) {
         }));
         const uploadButton = (
             <div style={{ marginTop: '-4px' }}>
-                <MyIcon icon="icon-tupian-copy" size="28px" />
+                <MyIcon icon="icon-tupian-copy" size={28} />
             </div>
         );
         const props = {
