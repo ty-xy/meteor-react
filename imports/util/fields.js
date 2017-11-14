@@ -9,4 +9,18 @@ export default {
         'profile.company': 1,
         'profile.mainCompany': 1,
     },
+    searchUser: {
+        'profile.name': 1,
+        'profile.avatar': 1,
+        'profile.avatarColor': 1,
+    },
+    searchGroup: {
+        name: 1,
+        avatar: 1,
+    },
+    searchMessage: {
+        content: 1,
+        from: 1,
+        to: 1,
+    },
 };

@@ -15,7 +15,6 @@ class NoticeSound extends Component {
         return (
             <div>
                 <audio
-                    ref={sound => this.sound = sound}
                     className="notice-sound"
                 >
                     <source src="http://oxldjnom8.bkt.clouddn.com/notice.mp3" type="audio/mp3" />
