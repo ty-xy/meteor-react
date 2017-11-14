@@ -1,8 +1,8 @@
 import React, { PureComponent, Component } from 'react';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
-import { withTracker } from 'meteor/react-meteor-data';
 import { Modal, Select, Row, Tag, Checkbox, Button } from 'antd';
+import { withTracker } from 'meteor/react-meteor-data';
 import Company from '../../schema/company';
 import { userIdToInfo } from '../../util/user';
 
@@ -31,18 +31,49 @@ class ChoosePeopleModel extends (PureComponent || Component) {
     }
     componentWillReceiveProps(nextProps) {
         const { users, deps } = this.state;
+        const _users = [];
+        const _deps = [];
+        const leftUsers = [];
         if (nextProps.defaultValue.length) {
-            users.forEach((j) => {
-                nextProps.defaultValue.forEach((item) => {
-                    if (item === j.userId) {
-                        j.selected = true;
+            if (!nextProps.isSelecteGroup) {
+                users.forEach((j) => {
+                    for (let i = 0, item = nextProps.defaultValue; i < item.length; i++) {
+                        if (item[i] === j.userId) {
+                            j.selected = true;
+                            leftUsers.push(j.userId);
+                            break;
+                        } else {
+                            j.selected = false;
+                        }
                     }
+                    _users.push(j);
                 });
+            } else {
+                deps.forEach((j) => {
+                    for (let i = 0, item = nextProps.defaultValue; i < item.length; i++) {
+                        if (item[i] === j.name) {
+                            j.selected = true;
+                            leftUsers.push(item[i]);
+                            break;
+                        } else {
+                            j.selected = false;
+                        }
+                    }
+                    _deps.push(j);
+                });
+            }
+            this.setState({
+                users: _users,
+                deps: _deps,
+                leftUsers,
             });
-            console.log('componentWillReceiveProps', nextProps.defaultValue, users, this.state);
+        } else {
+            users.forEach((j) => { j.selected = false; });
+            deps.forEach((j) => { j.selected = false; });
             this.setState({
                 users,
                 deps,
+                leftUsers,
             });
         }
     }
@@ -156,6 +187,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         let leftUsers = this.state.leftUsers;
         const _dep = [];
         if (isSelecteGroup) {
+            leftUsers = [];
             deps.forEach((item) => {
                 if (e.target.checked === true) {
                     allNum++;
@@ -256,7 +288,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         return avatar;
     }
     render() {
-        // console.log('group', this.state, this.props);
+        console.log('ChoosePeopleModel', this.state);
         const { allUsers, keyword, isSelecteGroup, modelTitle } = this.props;
         const { name } = this.props.companyInfo;
         const { depVal, users, deps, checked, allNum, leftUsers } = this.state;
@@ -294,14 +326,13 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 </a>
             ))
         );
-        console.log('ChoosePeopleModel', this.props, this.state);
         return (
-            <div style={{ marginBottom: '20px' }}>
+            <div>
                 {this.props.children}
                 <Modal
                     title={(<p className="text-center">{modelTitle}</p>)}
                     visible={this.props.visible}
-                    onCancel={this.props.cancel}
+                    onCancel={e => this.props.cancel(e, keyword)}
                     footer={null}
                     className="e-mg-audit-xuanze"
                     width="700px"
@@ -361,6 +392,7 @@ ChoosePeopleModel.propTypes = {
     iconTitle: PropTypes.string,
     formItemLayout: PropTypes.object,
     isSelecteGroup: PropTypes.bool,
+    children: PropTypes.object,
 };
 export default withTracker(() => {
     Meteor.subscribe('company');
