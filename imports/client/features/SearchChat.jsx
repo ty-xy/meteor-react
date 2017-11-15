@@ -74,9 +74,8 @@ class SearchChat extends Component {
         eventUtil.stopProPagation(e);
         eventUtil.removeEvent(document, 'click', this.closeMenu);
     }
-    render() {
-        // console.log(1111, this.state.friends, this.state.groups, this.state.messages);
 
+    render() {
         return (
             <div className="serach-chat">
                 <div className="certain-category-search-wrapper">
@@ -103,7 +102,7 @@ class SearchChat extends Component {
                                                     this.state.friends.map(friend =>
                                                         (<div className="user-item-card" key={friend._id}>
                                                             <Avatar name={friend.profile.name} avatarColor={friend.profile.avatarColor} avatar={friend.profile.avatar} />
-                                                            <div className="user-name">{friend.profile.name}</div>
+                                                            <div className="user-name">{this.getHighlightedText(friend.profile.name, this.state.searchValue)}</div>
                                                         </div>),
                                                     )
                                                     :
@@ -117,7 +116,7 @@ class SearchChat extends Component {
                                                     this.state.groups.map(group =>
                                                         (<div className="user-item-card" key={group._id}>
                                                             <Avatar name={group.name} avatar={group.avatar} />
-                                                            <div className="user-name">{group.name}</div>
+                                                            <div className="user-name">{this.getHighlightedText(group.name, this.state.searchValue)}</div>
                                                         </div>),
                                                     )
                                                     :
@@ -152,7 +151,6 @@ class SearchChat extends Component {
 
                                                                 }
                                                                 <div className="chat-record">{this.getHighlightedText(message.content, this.state.searchValue)}</div>
-                                                                {/* <div className="chat-record">{message.content.replace(reg, this.renderValue(this.state.searchValue))}</div> */}
                                                             </div>
 
 
