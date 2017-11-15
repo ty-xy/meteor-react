@@ -17,10 +17,23 @@ class SearchChat extends Component {
             groups: [],
             messages: [],
             showSearchResult: false,
+            searchValue: '',
         };
+    }
+    getHighlightedText = (text, higlight) => {
+        // Split on higlight term and include term into parts, ignore case
+        const parts = text.split(new RegExp(`(${higlight})`, 'gi'));
+        return (<span> {parts.map((part, i) =>
+            (<span key={i} style={part.toLowerCase() === higlight.toLowerCase() ? { color: '#29b6f6' } : {}}>
+                {part}
+            </span>))
+        } </span>);
     }
     search = (value) => {
         // console.log(value);
+        this.setState({
+            searchValue: value,
+        });
         Meteor.call('searchChat', value, async (err, result) => {
             // console.log(7777, result);
             this.setState({
@@ -53,6 +66,7 @@ class SearchChat extends Component {
             eventUtil.addEvent(document, 'click', this.closeMenu);
         });
     }
+
     closeMenu = (e) => {
         this.setState({
             showSearchResult: false,
@@ -62,6 +76,7 @@ class SearchChat extends Component {
     }
     render() {
         // console.log(1111, this.state.friends, this.state.groups, this.state.messages);
+
         return (
             <div className="serach-chat">
                 <div className="certain-category-search-wrapper">
@@ -136,7 +151,8 @@ class SearchChat extends Component {
                                                                             <div>用户名</div>
 
                                                                 }
-                                                                <div className="chat-record">{message.content}</div>
+                                                                <div className="chat-record">{this.getHighlightedText(message.content, this.state.searchValue)}</div>
+                                                                {/* <div className="chat-record">{message.content.replace(reg, this.renderValue(this.state.searchValue))}</div> */}
                                                             </div>
 
 
