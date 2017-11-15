@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { Input, Card } from 'antd';
+import PropTypes from 'prop-types';
 
 import Avatar from '../components/Avatar';
 import eventUtil from '../../util/eventUtil';
+import IdUtil from '../../util/id';
 
 const Search = Input.Search;
 
 class SearchChat extends Component {
+    static propTypes = {
+        changeTo: PropTypes.func.isRequired,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
@@ -31,6 +36,7 @@ class SearchChat extends Component {
             searchValue: value,
         });
         Meteor.call('searchChat', value, async (err, result) => {
+            console.log(result);
             this.setState({
                 friends: result.friends,
                 groups: result.groups,
@@ -60,7 +66,7 @@ class SearchChat extends Component {
                     this.state.showSearchResult ?
                         <div>
                             {
-                                this.state.friends.length === 0 && this.state.groups.length === 0 && this.state.messages.length === 0 ?
+                                this.state.friends && this.state.groups && this.state.friends.length === 0 && this.state.groups.length === 0 ?
                                     <div className="search-chat-no-result">
                                         <div className="no-result">
                                             <img src="/noSearchResult.png" alt="" />
@@ -71,11 +77,17 @@ class SearchChat extends Component {
 
 
                                     <div className="search-chat-result">
-                                        <Card title="好友" extra={<span>{this.state.friends.length}</span>}>
+                                        <Card title="好友" extra={this.state.friends && this.state.friends.length ? <span>{this.state.friends.length}</span> : null}>
                                             {
-                                                this.state.friends.length > 0 ?
+                                                this.state.friends && this.state.friends.length > 0 ?
                                                     this.state.friends.map(friend =>
-                                                        (<div className="user-item-card" key={friend._id}>
+                                                        (<div
+                                                            className="user-item-card"
+                                                            key={friend._id}
+                                                            onClick={() => {
+                                                                this.props.changeTo(IdUtil.merge(Meteor.userId(), friend._id), friend._id);
+                                                            }}
+                                                        >
                                                             <Avatar name={friend.profile.name} avatarColor={friend.profile.avatarColor} avatar={friend.profile.avatar} />
                                                             <div className="user-name">{this.getHighlightedText(friend.profile.name, this.state.searchValue)}</div>
                                                         </div>),
@@ -85,11 +97,17 @@ class SearchChat extends Component {
                                             }
 
                                         </Card>
-                                        <Card title="群组" extra={<span>{this.state.groups.length}</span>}>
+                                        <Card title="群组" extra={this.state.groups && this.state.groups.length ? <span>{this.state.groups.length}</span> : null}>
                                             {
-                                                this.state.groups.length > 0 ?
+                                                this.state.groups && this.state.groups.length > 0 ?
                                                     this.state.groups.map(group =>
-                                                        (<div className="user-item-card" key={group._id}>
+                                                        (<div
+                                                            className="user-item-card"
+                                                            key={group._id}
+                                                            onClick={() => {
+                                                                this.props.changeTo(group._id, group._id);
+                                                            }}
+                                                        >
                                                             <Avatar name={group.name} avatar={group.avatar} />
                                                             <div className="user-name">{this.getHighlightedText(group.name, this.state.searchValue)}</div>
                                                         </div>),

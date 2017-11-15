@@ -71,7 +71,7 @@ class Chat extends Component {
                     {/* 导航部分 */}
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
-                            <SearchChat />
+                            <SearchChat changeTo={this.changeTo} />
                         </div>
                         <ul className="chat-type">
                             {
