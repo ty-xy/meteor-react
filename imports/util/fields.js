@@ -23,4 +23,22 @@ export default {
         from: 1,
         to: 1,
     },
+    searchAllUser: {
+        createdAt: 1,
+        'profile.name': 1,
+        'profile.avatar': 1,
+        'profile.avatarColor': 1,
+    },
+    searchAllGroup: {
+        name: 1,
+        avatar: 1,
+        admin: 1,
+        createdAt: 1,
+    },
+    searchAllFile: {
+        createdAt: 1,
+        name: 1,
+        from: 1,
+        url: 1,
+    },
 };

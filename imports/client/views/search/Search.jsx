@@ -1,34 +1,66 @@
 import React, { Component } from 'react';
-import { Icon, Button, Input, Menu, Layout } from 'antd';
-import SearchFile from './SearchFile';
+import { Input, Menu, Layout } from 'antd';
+import { Meteor } from 'meteor/meteor';
+
+import SearchTask from './SearchTask';
+import SearchUser from './SearchUser';
+import SearchGroup from './SearchGroup';
+import UserUtil from '../../../util/user';
 
 const { Content } = Layout;
+const Search = Input.Search;
 
-class Search extends Component {
+class SearchAll extends Component {
     constructor(...args) {
         super(...args);
         this.state = {
             current: 'all',
+            friends: [],
+            groups: [],
+            tasks: [],
         };
     }
     handleClick = (e) => {
-        console.log('click ', e);
         this.setState({
             current: e.key,
+        });
+    }
+    searchAll = (value) => {
+        this.setState({
+            searchValue: value,
+        });
+        Meteor.call('search', value, async (err, result) => {
+            const { friends, groups, tasks } = result;
+            friends.forEach(x => x.key = x._id);
+            groups.forEach((x) => {
+                x.key = x._id;
+                x.profile = {
+                    name: x.name,
+                    avatar: x.avatar,
+                };
+                x.adminName = UserUtil.getName();
+            });
+            tasks.forEach((x) => {
+                x.key = x._id;
+                x.createdName = UserUtil.getName();
+            });
+            this.setState({
+                friends,
+                groups,
+                tasks,
+            });
         });
     }
     renderSearchResult = (key) => {
         switch (key) {
         case 'all':
-            return <SearchFile />;
+            return <SearchTask />;
         case 'user':
-            return <SearchFile />;
+            return <SearchUser friends={this.state.friends} />;
         case 'group':
-            return <SearchFile />;
+            return <SearchGroup />;
         case 'task':
-            return <SearchFile />;
-        case 'file':
-            return <SearchFile />;
+            return <SearchTask />;
         default:
             return <span>未知数据</span>;
         }
@@ -37,13 +69,7 @@ class Search extends Component {
         return (
             <div className="search-all-wrap">
                 <div className="search-all-btn">
-                    <Input
-                        suffix={(
-                            <Button className="search-btn" size="large" >
-                                <Icon type="search" />
-                            </Button>
-                        )}
-                    />
+                    <Search onSearch={this.searchAll} />
                 </div>
                 <div className="search-result">
                     <Menu
@@ -63,9 +89,6 @@ class Search extends Component {
                         <Menu.Item key="task">
                           任务
                         </Menu.Item>
-                        <Menu.Item key="file">
-                          文件
-                        </Menu.Item>
                     </Menu>
                     <Content>
                         {
@@ -78,4 +101,4 @@ class Search extends Component {
     }
 }
 
-export default Search;
+export default SearchAll;
