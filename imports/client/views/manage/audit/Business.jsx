@@ -6,7 +6,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Company from '../../../../schema/company';
 import Goback from './component/Goback';
 import MyInput from './component/Input';
-import MyDatePicker from './component/Date';
+import DatePicker from './component/DatePicker';
 import MyTextArea from './component/InputArea';
 import ImgUpload from '../component/ImgUpload';
 import FileUpload from '../component/FileUpload';
@@ -35,7 +35,6 @@ const formItemLayoutWithOutLabel = {
     },
 };
 
-const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
 const FormItem = Form.Item;
 let uuid = 0;
 
@@ -70,8 +69,8 @@ class Business extends Component {
             }
             const details = [];
             for (let i = 0; i < uuid + 1; i++) {
-                const startAt = fieldsValue[`startAt-${i}`];
-                const endAt = fieldsValue[`endAt-${i}`];
+                const startAt = fieldsValue[`datepicker-${i}`][0];
+                const endAt = fieldsValue[`datepicker-${i}`][1];
                 const location = fieldsValue[`location-${i}`];
                 details.push({
                     startAt: startAt.format('YYYY-MM-DD'),
@@ -169,6 +168,17 @@ class Business extends Component {
         const peos = res.filter(item => (item !== id));
         this.setState({ [keyword]: peos });
     }
+    // 开始时间限制
+    disabledDate = (current, k) => {
+        if (k === 0) {
+            return current && current.valueOf() < Date.now();
+        }
+        const preEnd = this.state[`date${k - 1}`];
+        return current && current.valueOf() < ((preEnd && preEnd.valueOf()) || Date.now());
+    }
+    handleChangeDate = (date, key) => {
+        this.setState({ [`date${key}`]: date[1] });
+    }
     // 明细列表
     formItem = () => {
         const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -190,33 +200,23 @@ class Business extends Component {
                     typeErr="请假天数必须为数字且不能超过20天"
                     required
                     requiredErr="出差地点不能为空"
-                    width="260"
+                    width="300"
                 />
-                <MyDatePicker
-                    {...this.props}
-                    label="开始时间"
-                    placeholder="请选择(必选)"
-                    keyword={`startAt-${k}`}
-                    defaultValue=""
+                <DatePicker
+                    keyword={`datepicker-${k}`}
+                    k={k}
+                    label="时间范围"
+                    placeholder={['开始时间(必选)', '结束时间(必选)']}
+                    width="300"
+                    disabledDate={current => this.disabledDate(current, k)}
+                    onChange={this.handleChangeDate}
                     required
-                    requiredErr="请选择开始时间"
-                    data={types || []}
-                    width="260"
-                />
-                <MyDatePicker
+                    requiredErr="请选择时间范围"
                     {...this.props}
-                    label="结束时间"
-                    placeholder="请选择(必选)"
-                    keyword={`endAt-${k}`}
-                    defaultValue=""
-                    required
-                    requiredErr="请选择结束时间"
-                    data={types || []}
-                    width="260"
                 />
                 {keys.length > 1 ? (
                     <FormItem {...formItemLayoutWithOutLabel}>
-                        <Button type="dashed" onClick={() => this.remove(k)} style={{ width: '260px', color: '#F6423A', borderColor: '#F6423A' }}>
+                        <Button type="dashed" onClick={() => this.remove(k)} style={{ width: '300px', color: '#F6423A', borderColor: '#F6423A' }}>
                             <Icon
                                 className="dynamic-delete-button"
                                 type="delete"
@@ -239,7 +239,7 @@ class Business extends Component {
                 <Form onSubmit={this.handleSubmit} className="margin-top-40 e-mg-audit-form">
                     {this.formItem()}
                     <FormItem {...formItemLayoutWithOutLabel}>
-                        <Button type="dashed" onClick={this.add} style={{ width: '260px' }}>
+                        <Button type="dashed" onClick={this.add} style={{ width: '300px' }}>
                             <Icon type="plus" /> 增加行程明细
                         </Button>
                     </FormItem>
@@ -255,7 +255,7 @@ class Business extends Component {
                         typeErr="出差天数必须为数字且不能超过20天"
                         required
                         requiredErr="出差天数不能为空"
-                        width="260"
+                        width="300"
                     />
                     <MyTextArea
                         {...this.props}

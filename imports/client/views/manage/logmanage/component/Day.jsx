@@ -41,6 +41,13 @@ class Day extends (React.PureComponent || React.Component) {
         const { state = {} } = location;
         this.setState({ logType, textShow, ...state });
     }
+    // componentDidMount() {
+    //     window.addEventListener('beforeunload', (e) => {
+    //         const confirmationMessage = '确定要离开吗？';
+    //         e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
+    //         return confirmationMessage; // Gecko, WebKit, Chrome <34
+    //     });
+    // }
     componentWillReceiveProps(nextProps) {
         const { pathname, state = {} } = nextProps.location;
         if (pathname === '/manage/logging' && !state.edit) {
@@ -50,6 +57,13 @@ class Day extends (React.PureComponent || React.Component) {
             }
         }
     }
+    // componentWillUnmount() {
+    //     window.removeEventListener('beforeunload', (e) => {
+    //         const confirmationMessage = '确定要离开吗？';
+    //         e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
+    //         return confirmationMessage; // Gecko, WebKit, Chrome <34
+    //     });
+    // }
     formSubmit = (e) => {
         e.preventDefault();
         const { form } = this.props;
@@ -81,7 +95,6 @@ class Day extends (React.PureComponent || React.Component) {
         if (state.edit || state.handleTab || firstCache) {
             fields._id = this.state._id;
             fields.cache = false;
-            console.log('fields', fields);
             Meteor.call(
                 'updateLog',
                 { ...fields },
@@ -111,7 +124,7 @@ class Day extends (React.PureComponent || React.Component) {
     changeUpdate = (name, imgs) => {
         // const img = [];
         // const file = [];
-        console.log('changeUpdate', name, imgs);
+        // console.log('changeUpdate', name, imgs);
         // const { img, file } = this.state;
         if (name === 'img') {
             this.setState({ img: imgs });
@@ -229,7 +242,7 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
-        console.log('day', this.props, this.state);
+        // console.log('day', this.props, this.state);
         return (
             <Form onSubmit={this.formSubmit}>
                 <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
