@@ -30,7 +30,8 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         });
     }
     componentWillReceiveProps(nextProps) {
-        const { users, deps } = this.state;
+        const { members, deps } = nextProps.companyInfo;
+        const users = members;
         const _users = [];
         const _deps = [];
         const leftUsers = [];

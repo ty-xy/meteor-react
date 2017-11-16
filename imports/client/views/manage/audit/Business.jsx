@@ -361,4 +361,4 @@ export default withTracker(() => {
         companys,
         allUsers: Meteor.users.find().fetch(),
     };
-})(Form.create()(Form.create()(Business)));
+})(Form.create()(Business));

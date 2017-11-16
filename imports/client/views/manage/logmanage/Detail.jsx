@@ -40,35 +40,11 @@ class Detail extends (PureComponent || Component) {
                         <p>{num || 0}人已读</p>
                         <Col span={24} data-peos={peos}>
                             <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
+                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="36" />
                                 <p>王晓儿</p>
                             </span>
                             <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
+                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="36px" />
                                 <p>王晓儿</p>
                             </span>
                         </Col>

@@ -22,14 +22,7 @@ class MyLog extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            logs: [],
         };
-    }
-    componentWillReceiveProps(nextProps) {
-        const { AllLogs } = nextProps;
-        const userId = Meteor.user() && Meteor.user()._id;
-        const logs = AllLogs.filter(item => (item.userId === userId && item.company === UserUtil.getCompany()));
-        this.setState({ logs });
     }
     // 搜索函数
     filterChange = (date, dateString) => {
@@ -59,12 +52,11 @@ class MyLog extends PureComponent {
     // 搜索所有日志
     searchLog = (vals) => {
         const { AllLogs } = this.props;
-        vals.userId = Meteor.user()._id;
         let logs = AllLogs;
         if (vals.nickname && vals.type) {
-            logs = Log.find({ type: vals.type, nickname: vals.nickname }).fetch();
+            logs = logs.filter(item => (item.nickname === vals.nickname && item.type === vals.type));
         } else if (vals.type) {
-            logs = Log.find({ type: vals.type }).fetch();
+            logs = logs.filter(item => (item.type === vals.type));
         }
         if (vals.time.length) {
             logs = logs.filter(item => (this.daySecond(vals.time[0]) <= this.daySecond(item.createdAt) && this.daySecond(item.createdAt) <= this.daySecond(vals.time[1])));
@@ -75,11 +67,12 @@ class MyLog extends PureComponent {
     editJump = (e, _id) => {
         e.preventDefault();
         let editInfo = {};
-        this.state.logs.forEach((item) => {
+        this.props.AllLogs.forEach((item) => {
             if (item._id === _id) {
                 editInfo = item;
             }
         });
+        editInfo.edit = true;
         this.props.history.push({
             pathname: '/manage/logging',
             state: editInfo,
@@ -103,7 +96,10 @@ class MyLog extends PureComponent {
         );
     }
     render() {
+        const { AllLogs } = this.props;
         const { logs } = this.state;
+        // console.log('props', this.props);
+        const data = logs || AllLogs;
         return (
             <Row gutter={25} className="e-mg-log-filter" type="flex" justify="start">
                 <Col span={24} className="margin-bottom-20">
@@ -112,9 +108,9 @@ class MyLog extends PureComponent {
                         <Col span={7}><DatePicker keyword="time" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
                     </Form>
                 </Col>
-                {logs.map(item => (<CardLog edit editLog={this.editJump} delLog={this.delLog} key={item._id} {...item} {...this.props} />))}
+                {data.map(item => (<CardLog edit editLog={this.editJump} delLog={this.delLog} key={item._id} {...item} {...this.props} />))}
                 {
-                    logs.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
+                    data.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
                 }
             </Row>
         );
@@ -135,10 +131,10 @@ MyLog.propTypes = {
 };
 export default withTracker(() => {
     Meteor.subscribe('log');
+    const userId = Meteor.user() && Meteor.user()._id;
     return {
         users: Meteor.user() || {},
-        AllLogs: Log.find().fetch(),
-        allUsers: Meteor.users.find().fetch(),
+        AllLogs: Log.find({ userId, company: UserUtil.getCompany() }).fetch(),
     };
 })(Form.create()(MyLog));
 

@@ -3,7 +3,8 @@ import { Button, Form } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-import Company from '../../../../../schema/company';
+import Log from '../../../../../schema/log';
+import Company from '../../../../../schema//company';
 import InputArea from '../../component/InputArea';
 import ImgUpload from '../../component/ImgUpload';
 import FileUpload from '../../component/FileUpload';
@@ -21,6 +22,7 @@ class Day extends (React.PureComponent || React.Component) {
             img: [],
             peo: [], // 选择的审核对象
             group: [],
+            cache: true, // 是否设置缓存
         };
     }
     componentWillMount() {
@@ -40,11 +42,14 @@ class Day extends (React.PureComponent || React.Component) {
         const { state = {} } = location;
         this.setState({ logType, textShow, ...state });
     }
-    componentDidMount() {
-        const { form, location } = this.props;
-        if (location.state) {
-            const { finish, plan, help } = location.state;
-            form.setFieldsValue({ finish, plan, help });
+    componentWillReceiveProps(nextProps) {
+        // console.log('componentWillReceiveProps', nextProps.cachelog, this.props.cachelog);
+        const { pathname, state = {} } = nextProps.location;
+        if (pathname === '/manage/logging' && !state.edit) {
+            const caches = nextProps.cachelog;
+            if (caches.length) {
+                this.setState({ ...this.state, ...caches[0] });
+            }
         }
     }
     formSubmit = (e) => {
@@ -53,7 +58,6 @@ class Day extends (React.PureComponent || React.Component) {
         const { img, file, group, peo, logType } = this.state;
         form.validateFields((err, fields) => {
             if (err) {
-                feedback.dealWarning('工作总结和工作计划必填');
                 return false;
             }
             if (peo.length === 0 && group.length === 0) {
@@ -84,7 +88,7 @@ class Day extends (React.PureComponent || React.Component) {
                     if (_err) {
                         feedback.dealError(_err);
                     } else {
-                        feedback.successToastFb('更新成功', () => { _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
+                        feedback.successToastFb('更新成功', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
                     }
                 },
             );
@@ -96,7 +100,7 @@ class Day extends (React.PureComponent || React.Component) {
                     if (_err) {
                         feedback.dealError(_err);
                     } else {
-                        feedback.successToastFb('创建成功', () => { _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
+                        feedback.successToastFb('创建成功', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
                     }
                 },
             );
@@ -148,14 +152,44 @@ class Day extends (React.PureComponent || React.Component) {
     goback = () => {
         this.props.history.push({ pathname: '/manage/logging/outbox' });
     }
+    // handlechange input改变缓存
+    handlechange = (e, keyword) => {
+        this.setState({ [keyword]: e.target.value });
+    }
+    handleblur = () => {
+        const { finish, plan, help, img, file, peo, group, logType } = this.state;
+        const userId = Meteor.user()._id;
+        const nickname = Meteor.user().profile.name;
+        const company = Meteor.user().profile.mainCompany;
+        const cache = {
+            finish, plan, help, img, file, peo, group,
+        };
+        let isCache = false;
+        if (finish || plan || help || img.length || file.length || peo.length || group.length) {
+            isCache = true;
+        }
+        if (isCache) {
+            Meteor.call(
+                'createLog',
+                { ...cache, type: logType, userId, nickname, company, cache: true },
+                (_err) => {
+                    if (_err) {
+                        feedback.dealError(_err);
+                    } else {
+                        feedback.successToast('缓存成功');
+                    }
+                },
+            );
+        }
+    }
     render() {
-        const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [] } = this.state;
-        console.log('day', this.props);
+        const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
+        // console.log('day', this.props);
         return (
             <Form onSubmit={this.formSubmit}>
-                <InputArea title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required {...this.props} />
-                <InputArea title={textShow === '日' ? '明日工作计划' : `下${textShow}工作计划`} keyword="plan" required {...this.props} />
-                <InputArea title="需要协调与帮助：" keyword="help" marginBottom="20px" {...this.props} />
+                <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
+                <InputArea defaultValue={plan} title={textShow === '日' ? '明日工作计划' : `下${textShow}工作计划`} keyword="plan" required requiredErr="工作计划必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
+                <InputArea defaultValue={help} title="需要协调与帮助：" keyword="help" marginBottom="20px" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                 <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
                 <ChoosePeopleModel
@@ -223,6 +257,7 @@ Day.propTypes = {
 export default withTracker(() => {
     Meteor.subscribe('company');
     Meteor.subscribe('users');
+    Meteor.subscribe('log');
     const companys = Company.find().fetch();
     const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
     let companyInfo = {};
@@ -231,9 +266,11 @@ export default withTracker(() => {
             companyInfo = item;
         }
     });
+    const userId = Meteor.user() && Meteor.user()._id;
     return {
         companyInfo,
         companys,
         allUsers: Meteor.users.find().fetch(),
+        cachelog: Log.find({ userId, company: mainCompany, type: '日报', cache: true }).fetch(),
     };
 })(Form.create()(Day));
