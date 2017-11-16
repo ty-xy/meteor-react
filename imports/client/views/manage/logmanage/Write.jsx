@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Route } from 'react-router-dom';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+import Log from '../../../../schema/log';
 import Day from './component/Day';
-import Week from './component/Week';
-import ButtonTab from '../component/ButtonTab';
+import ButtonTab from './component/ButtonTab';
 
+const urls = ['/manage/logging', '/manage/logging/week', '/manage/logging/day', '/manage/logging/month', '/manage/logging/sale'];
 
 class Tab1 extends (React.PureComponent || React.Component) {
     constructor(props) {
@@ -12,58 +16,63 @@ class Tab1 extends (React.PureComponent || React.Component) {
             logType: '日报',
             expand: false,
             disabledType: false,
-            templates: ['日报', '周报', '月报', '营业日报'],
+            templates: [
+                { name: '日报', url: '/manage/logging' },
+                { name: '周报', url: '/manage/logging/week' },
+                { name: '月报', url: '/manage/logging/month' },
+                { name: '营业日报', url: '/manage/logging/sale' },
+            ],
             template: [],
-            editData: {},
         };
     }
     componentWillMount() {
-        // console.log('componentWillMount', this.props);
-        const { editInfo } = this.props;
-        if (editInfo._id) {
-            this.setState({ template: this.state.templates.slice(0, 2), editData: editInfo, logType: editInfo.type, disabledType: true });
-        } else {
-            this.setState({ template: this.state.templates.slice(0, 2) });
-        }
+        this.setState({ template: this.state.templates.slice(0, 2) });
     }
-    // 日报， 周报切换
-    handleLogChange = (e) => {
-        const _this = this;
-        console.log('handleLogChange', this.props, this.state);
-        // Modal.confirm({
-        //     title: '温馨提示',
-        //     content: '您尚未保存，确定要离开？',
-        //     okText: '确认',
-        //     cancelText: '取消',
-        //     onOk: () => { _this.setState({ logType: e.target.value, editData: {} }); },
-        // });
-        _this.setState({ logType: e.target.value, editData: {} });
-    }
-    showLogtype = () => ({
-        日报: <Day {...this.props} {...this.state} />,
-        周报: <Week {...this.props} {...this.state} />,
-        月报: <Week {...this.props} {...this.state} />,
-        营业日报: <Week {...this.props} {...this.state} />,
-    })
     // more
     moreChange = () => {
         const { expand } = this.state;
         const template = expand ? this.state.templates.slice(0, 2) : this.state.templates.slice(0);
         this.setState({ expand: !expand, template });
     }
+    choooseCachelog = (type) => {
+        const { cachelog } = this.props;
+        let cache = {};
+        for (let i = 0; i < cachelog.length; i++) {
+            if (type === cachelog[i].type) {
+                cache = cachelog[i];
+                break;
+            }
+        }
+        return cache;
+    }
+    routers = location => (
+        <div className="">
+            {urls.indexOf(location.pathname) >= 0 ? <ButtonTab choooseCachelog={this.choooseCachelog} moreChange={this.moreChange} {...this.state} {...this.props} /> : null}
+            <Route exact path="/manage/logging" component={Day} />
+            <Route path="/manage/logging/week" component={Day} />
+            <Route path="/manage/logging/month" component={Day} />
+        </div>
+    )
     render() {
-        const { logType } = this.state;
-        console.log('PureComponent', this.props, this.state);
+        const { location } = this.props;
+        // console.log('wirite', this.props);
         return (
-            <div style={{ height: '100%' }}>
-                <ButtonTab handleLogChange={this.handleLogChange} moreChange={this.moreChange} {...this.state} {...this.props} />
-                {this.showLogtype()[logType]}
+            <div>
+                {this.routers(location)}
             </div>
         );
     }
 }
-
 Tab1.propTypes = {
     form: PropTypes.object,
+    location: PropTypes.object,
 };
-export default Tab1;
+
+export default withTracker(() => {
+    Meteor.subscribe('log');
+    const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
+    const userId = Meteor.user() && Meteor.user()._id;
+    return {
+        cachelog: Log.find({ userId, company: mainCompany, cache: true }).fetch(),
+    };
+})(Tab1);

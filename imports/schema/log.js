@@ -20,9 +20,11 @@ log.schema = new SimpleSchema({
     },
     finish: {
         type: String,
+        optional: true,
     },
     plan: {
         type: String,
+        optional: true,
     },
     help: {
         type: String,
@@ -42,6 +44,10 @@ log.schema = new SimpleSchema({
     },
     group: {
         type: [String],
+        optional: true,
+    },
+    cache: {
+        type: Boolean,
         optional: true,
     },
 });

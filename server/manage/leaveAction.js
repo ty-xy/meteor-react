@@ -36,7 +36,7 @@ Meteor.methods({
         // 通知下一级审批人
     },
     // 处理审批
-    updateAudit({ content, userId, _id, type, isAudit }) {
+    updateAudit({ content, userId, _id, type, isAudit, transit }) {
         const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他'];
         let allApp = 0;
         let getLeave = {};
@@ -87,8 +87,20 @@ Meteor.methods({
                 approvers.push(item);
             });
             break;
-        case '转发':
-            console.log('isAudit', isAudit);
+        case '转交':
+            comments[comments.length - 1] = {
+                userId: transit,
+                isAudit: '待审核',
+                content,
+                createdAt: new Date(),
+            };
+            approvers = getLeave.approvers;
+            approvers.forEach((item) => {
+                if (item.userId === userId) {
+                    item.isAudit = '待审核';
+                    item.userId = transit;
+                }
+            });
             break;
         case '同意':
             comments.forEach((item) => {

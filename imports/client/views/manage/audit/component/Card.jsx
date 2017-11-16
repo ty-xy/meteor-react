@@ -14,7 +14,13 @@ const CardAudit = ({ handlerAudit, type, reason, daynum, createdAt, status, user
             </Col>
             <Col span={8} className="e-mg-log-card-header-right">{type}</Col>
         </div>
-        <div className="e-mg-log-card-body">
+        <div className="e-mg-log-card-body e-mg-audit-card-yes">
+            {
+                status === '同意' && (<img src="/audit_yes.png" />)
+            }
+            {
+                status === '拒绝' && (<img src="/audit_no.png" />)
+            }
             {
                 /假/g.test(type) && (<div>
                     <p><span>请假事由：</span>{reason}</p>
@@ -50,7 +56,7 @@ const CardAudit = ({ handlerAudit, type, reason, daynum, createdAt, status, user
             <Col span={12} className="right">
                 <a onClick={e => handlerAudit(e, _id)} href="">
                     {
-                        status === '待审核' ? (<span style={{ color: '#FFA200' }}>待审核</span>)
+                        status === '待审核' ? (<span style={{ color: '#FFA200' }}>审批中</span>)
                             : status === '拒绝' ? (<span style={{ color: '#ef5350' }}>已{status}</span>)
                                 : status === '同意' ? (<span style={{ color: '#15B4F1' }}>已{status}</span>)
                                     : null

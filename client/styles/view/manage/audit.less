@@ -26,6 +26,10 @@
     }
     .e-mg-audit-content-body{
         height: 100%;
+        .e-mg-log-filter{
+            max-height: 740px;
+            overflow: auto;
+        }
         // 发起审批卡片
         .e-mg-audit-send{
             margin: 20px 0;
@@ -47,6 +51,26 @@
         }
     }
 }
+.e-mg-audit-peopleList{
+    margin-bottom: 0px !important;
+}
+.e-mg-audit-card-no{
+    position: relative;
+    img{
+        position: absolute;
+        width: 200px;
+        right: 40px;
+    }
+}
+.e-mg-audit-card-yes{
+    position: relative;
+    img{
+        position: absolute;
+        width: 200px;
+        right: 40px;
+    }
+}
+
 // 请假
 .e-mg-audit-leave{
     height: 100%;
@@ -65,6 +89,8 @@
 
 
 // 组件样式
+
+
 // goback
 .e-mg-audit-goback{
     border-bottom: 1px solid rgb(220, 220, 220);
@@ -86,6 +112,7 @@
     display: inline-block;
     margin-right: 20px;
     text-align: center;
+    line-height: 1;
     img{
         width: 45px;
         height: 45px;
@@ -95,6 +122,7 @@
     }
     p{
         color: #666;
+        margin-top: 5px;
     }
     .e-mg-audit-deps-people-per-img{
         display: inline-block;
