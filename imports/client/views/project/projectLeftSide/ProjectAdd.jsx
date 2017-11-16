@@ -1,21 +1,37 @@
 
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { Input, Select, Tooltip } from 'antd';
+import { Input, Select, Tooltip, Form } from 'antd';
 
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
+import { withTracker } from 'meteor/react-meteor-data';
+
 import MyIcon from '../../../components/Icon';
+import Company from '../../../../schema/company';
 import ImgUpload from '../../manage/component/ImgUpload';
 import AvatarSelf from '../../../components/AvatarSelf';
-import GroupSelect from '../../manage/audit/component/GroupSelect';
+import ChoosePeopleModel from '../../../components/ChoosePeopleModel';
+// import UserUtil from '../../../../util/user';
+import PeopleList from '../../manage/audit/component/PeopleList';
 // import AddProject from './Addproject';
 
 const Option = Select.Option;
 const text = <span>点击切换头像</span>;
 const j = Math.floor(Math.random() * 4);
+const FormItem = Form.Item;
+const formItemLayout = {
+    labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
+    },
+    wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 14 },
+    },
+};
 @pureRender
-export default class ProjectAdd extends Component {
+class ProjectAdd extends Component {
     static propTypes = {
         click: PropTypes.func,
         // to: PropTypes.string,
@@ -30,6 +46,9 @@ export default class ProjectAdd extends Component {
             color: ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'],
             showImage: true,
             img: '',
+            requireGroupNotice: false, // 必填项错误信息是否提示
+            approvers: [], // 选择的审核对象
+            copy: [],
         };
     }
 
@@ -65,6 +84,30 @@ export default class ProjectAdd extends Component {
             },
         );
     }
+    showModal = (e, keyword) => {
+        e.preventDefault();
+        this.setState({
+            [`visible${keyword}`]: true,
+        });
+    }
+    handleCancel = (e, keyword) => {
+        e.preventDefault();
+        this.setState({
+            [`visible${keyword}`]: false,
+            checked: false,
+        });
+    }
+    // 选中的人
+    handleOk = (keyword, leftUsers) => {
+        this.setState({ [keyword]: leftUsers, [`visible${keyword}`]: false, requireGroupNotice: false });
+    }
+    // 选中后删除
+    handlePeopleChange = (e, id, keyword) => {
+        e.preventDefault();
+        const res = this.state[keyword];
+        const peos = res.filter(item => (item !== id));
+        this.setState({ [keyword]: peos });
+    }
     // 图片id返回
     changeUpdate = (name, imgs) => {
         // const img = [];
@@ -86,6 +129,8 @@ export default class ProjectAdd extends Component {
         const divStyle = {
             background: this.state.color[j],
         };
+        console.log(this.props);
+        const { visiblecopy, copy, approvers, requireGroupNotice } = this.state;
         return (
             <div className="ejianlian-project-add" >
                 <div id="title-f">
@@ -154,9 +199,33 @@ export default class ProjectAdd extends Component {
                         {/* <MyIcon icon="icon-tianjia icon-add" /> */}
                     </div>
                     <div className="common-type">
-                        <GroupSelect
-                            label="项目参与人"
-                        />
+                        <ChoosePeopleModel
+                            visible={visiblecopy}
+                            cancel={this.handleCancel}
+                            ok={this.handleOk}
+                            keyword="copy"
+                            defaultValue={copy || []}
+                            modelTitle="项目成员"
+                        >
+                            <FormItem
+                                {...formItemLayout}
+                                label="项目成员"
+                            >
+                                <a href="" onClick={this.showModal} style={{ color: 'rgb(204, 204, 204)' }} >对方过后就</a>
+                                <PeopleList
+                                    keyword="copy"
+                                    iconTitle="审批人"
+                                    componentSelectedUser={approvers || []}
+                                    showModal={this.showModal}
+                                    handleGroupChange={this.handleGroupChange}
+                                    handlePeopleChange={this.handlePeopleChange}
+                                    requiredErr="审批人必选"
+                                    required={requireGroupNotice}
+                                    {...this.props}
+                                    {...this.state}
+                                />
+                            </FormItem>
+                        </ChoosePeopleModel>
                     </div>
                     <div className="ejianlian-add-projectf" onClick={this.props.click}>
                         <div className="add-button add-button-create" onClick={this.handleMessage}>
@@ -169,3 +238,21 @@ export default class ProjectAdd extends Component {
         );
     }
 }
+export default withTracker(() => {
+    Meteor.subscribe('company');
+    Meteor.subscribe('users');
+    const companys = Company.find().fetch();
+    const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
+    let companyInfo = {};
+    companys.forEach((item) => {
+        if (item._id === mainCompany) {
+            companyInfo = item;
+        }
+    });
+    return {
+        companyInfo,
+        companys,
+        allUsers: Meteor.users.find().fetch(),
+    };
+})(ProjectAdd);
+

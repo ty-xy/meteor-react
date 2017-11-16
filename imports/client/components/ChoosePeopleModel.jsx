@@ -68,6 +68,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 leftUsers,
             });
         } else {
+            console.log('sehgj', users);
             users.forEach((j) => { j.selected = false; });
             deps.forEach((j) => { j.selected = false; });
             this.setState({
@@ -292,6 +293,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         const { allUsers, keyword, isSelecteGroup, modelTitle } = this.props;
         const { name } = this.props.companyInfo;
         const { depVal, users, deps, checked, allNum, leftUsers } = this.state;
+        console.log(this.state);
         // isSelecteGroup 是否为选择群组
         // 用户列表
         const searchUser = (data) => {

@@ -15,6 +15,7 @@ Meteor.methods({
             endTime: '',
             label: '#7ED321',
             textId,
+            fileId: [],
         };
         Task.schema.validate(newTask);
         Task.insert(newTask);

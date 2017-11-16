@@ -12,4 +12,14 @@ Meteor.methods({
             },
         );
     },
+    changeFileId(taskId, fileId) {
+        Task.update(
+            { _id: taskId },
+            {
+                $push: {
+                    fileId,
+                },
+            },
+        );
+    },
 });

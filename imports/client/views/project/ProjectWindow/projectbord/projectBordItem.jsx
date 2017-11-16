@@ -7,11 +7,14 @@ import { Meteor } from 'meteor/meteor';
 import uuid from 'uuid';
 import pureRender from 'pure-render-decorator';
 import Dragula from 'react-dragula';
+
 import Icon from '../../../../components/Icon';
 import MiniCard from './miniCard';
+import ProjectInput from './projectInput';
 // import ProjectItemDetail from './projectItemDetail';
 import Task from '../../../../../../imports/schema/task';
 import TaskBoard from '../../../../../../imports/schema/taskBoard';
+import feedback from '../../../../../util/feedback';
 // import Active from '../../../../../../imports/schema/active';
 const { TextArea } = Input;
 @pureRender
@@ -21,7 +24,9 @@ class ProjectBordItem extends Component {
         tastBoardId: PropTypes.string,
         taskg: PropTypes.arrayOf(PropTypes.object),
         tasks: PropTypes.arrayOf(PropTypes.object),
-        o: PropTypes.string,
+        tasksA: PropTypes.array,
+        o: PropTypes.array,
+        // changeTitle: PropTypes.func,
         fd: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(...props) {
@@ -37,12 +42,11 @@ class ProjectBordItem extends Component {
             delClickFlag: true,
             uuid: '',
             error: null,
-            // nextId: '',
+            showTaskBoardTitle: true,
+            titleValue: '',
         };
     }
     componentWillMount() {
-        // const tasks = Task.find({}).fetch();
-        // console.log('nextProps', tasks);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -70,16 +74,17 @@ class ProjectBordItem extends Component {
         });
     }
     handleDelete = () => {
-        Meteor.call(
-            'deleteaTaskBoardTask', this.props.tastBoardId, (err) => {
-                console.log(err);
-            },
-        );
-        Meteor.call(
-            'deleteaTaskBoard', this.props.tastBoardId, (err) => {
-                console.log(err);
-            },
-        );
+        const exsist = this.props.fd[0][this.props.tastBoardId];
+        console.log(exsist);
+        if (exsist.length === 0) {
+            Meteor.call(
+                'deleteaTaskBoard', this.props.tastBoardId, (err) => {
+                    console.log(err);
+                },
+            );
+        } else {
+            feedback.dealWarning('你还有未清空的任务卡');
+        }
     }
     handleClick = () => {
         this.createTask();
@@ -93,13 +98,33 @@ class ProjectBordItem extends Component {
         this.setState({
             cardInput: e.target.value,
         });
-        // console.log(this.state.cardInput);
-        // console.log(this.props.tastId);
     }
     handleList = () => {
         this.setState({
             IsShowList: !this.state.IsShowList,
             uuids: uuid.v4(),
+        });
+    }
+    // 更改任务版的标题
+    handlechangeTitle =() => {
+        this.setState({
+            showTaskBoardTitle: !this.state.showTaskBoardTitle,
+        });
+    }
+    handleChangeBTitle =(e) => {
+        this.setState({
+            titleValue: e.target.value,
+        });
+    }
+    handleChangeTitleB =() => {
+        Meteor.call(
+            'changeTaskBoard', this.props.tastBoardId, this.state.titleValue, (err) => {
+                console.log(err);
+            },
+        );
+        this.setState({
+            titleValue: '',
+            showTaskBoardTitle: !this.state.showTaskBoardTitle,
         });
     }
     createTask = () => {
@@ -124,30 +149,13 @@ class ProjectBordItem extends Component {
             },
         );
     }
-    // 重排序到顶部
-    handleRepeat =(repeat, taskBoardId) => {
-        const topArray = this.props.fd[0][taskBoardId];
-        const IndexTop = topArray.indexOf(repeat);
-        topArray.unshift(repeat);
-        topArray.splice(IndexTop + 1, 1);
-        console.log(topArray, repeat, taskBoardId, IndexTop);
+    // 删除卡片 
+    handleDeleteTask = (itemd) => {
+        const deleteCard = this.props.fd[0][this.props.tastBoardId];
+        const deleteIndex = deleteCard.indexOf(itemd);
+        deleteCard.splice(deleteIndex, 1);
         Meteor.call(
-            'changeTaskId', taskBoardId, topArray,
-            (err) => {
-                console.log(err);
-            },
-        );
-    }
-    // 重排序到底部
-    handleReorder=(repeat, taskBoardId) => {
-        const topArray = this.props.fd[0][taskBoardId];
-        const IndexTop = topArray.indexOf(repeat);
-        topArray.push(repeat);
-        topArray.splice(IndexTop, 1);
-        console.log(topArray, repeat, taskBoardId, IndexTop);
-        Meteor.call(
-            'changeTaskId', taskBoardId, topArray,
-            (err) => {
+            'deleteaTaskBoardTask', this.props.tastBoardId, deleteCard, itemd, (err) => {
                 console.log(err);
             },
         );
@@ -260,11 +268,10 @@ class ProjectBordItem extends Component {
                 index={value.taskBoardId}
                 ind={index}
                 textId={value.textId}
-                click={() => this.handleRepeat(value.textId, value.taskBoardId)}
-                clickB={() => this.handleReorder(value.textId, value.taskBoardId)}
+                deleteCard={() => this.handleDeleteTask(value.textId)}
             />);
         }
-        return <div />;
+        return null;
     }))
     render() {
         const menu = (
@@ -286,7 +293,15 @@ class ProjectBordItem extends Component {
                 <div className="list-title">
                     <Row>
                         <Col span={19} style={{ display: 'flex' }}>
-                            <p>{this.props.value}</p>
+                            {this.state.showTaskBoardTitle ?
+                                <p onClick={this.handlechangeTitle}>{this.props.value}</p> :
+                                <ProjectInput
+                                    input="更改"
+                                    onClick={this.handleChangeTitleB}
+                                    value={this.state.titleValue}
+                                    onChange={this.handleChangeBTitle}
+                                    onConcel={this.handlechangeTitle}
+                                />}
                             {this.state.concern ?
                                 <Icon icon="icon-guanzhu icon icon-eye" /> : null}
                         </Col>
@@ -302,7 +317,7 @@ class ProjectBordItem extends Component {
                 </div>
 
                 <div className="container" ref={this.dragulaDecorator} key="7" data-bid={this.props.tastBoardId}>
-                    {this.renderTasks()}
+                    {this.props.tasksA.length > 0 && this.props.tasksA[0].sortArray ? this.renderTasks() : null}
                 </div>
 
                 {this.state.IsShowList ?
@@ -358,7 +373,10 @@ export default withTracker((indd) => {
             taskg,
             o,
             fd,
-            // taskId,
+            tasksA,
         };
     }
+    return {
+        tasksA,
+    };
 })(ProjectBordItem);

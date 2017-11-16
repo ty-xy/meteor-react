@@ -21,9 +21,9 @@ const TabPane = Tabs.TabPane;
 class ProjectWindow extends Component {
     static propTypes = {
         taskF: PropTypes.arrayOf(PropTypes.object),
-        // project: PropTypes.object,
+        projectd: PropTypes.object,
         projectL: PropTypes.arrayOf(PropTypes.object),
-        projectd: PropTypes.arrayOf(PropTypes.object),
+        //  projectd: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(...args) {
         super(...args);
@@ -90,7 +90,11 @@ class ProjectWindow extends Component {
                         <TabPane tab="任务流" key="1" style={divStyle.TabStyle}>
                             {
                                 this.props.taskF.map(text => (
-                                    <ProjectBordItem value={text.name} tastBoardId={text._id} key={text._id} />
+                                    <ProjectBordItem
+                                        value={text.name}
+                                        tastBoardId={text._id}
+                                        key={text._id}
+                                    />
                                 ))
 
                             }

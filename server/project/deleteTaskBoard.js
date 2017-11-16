@@ -2,14 +2,17 @@ import {
     Meteor,
 } from 'meteor/meteor';
 import TaskBoard from '../../imports/schema/taskBoard';
-import Task from '../../imports/schema/task';
 
 Meteor.methods({
-    deleteaTaskBoardTask(activeId) {
-        const tasks = TaskBoard.findOne({ _id: activeId });
-        tasks.sortArray.map(item => Task.remove({
-            textId: item,
-        }));
+    changeTaskBoard(taskBoardId, name) {
+        TaskBoard.update(
+            { _id: taskBoardId },
+            {
+                $set: {
+                    name,
+                },
+            },
+        );
     },
     deleteaTaskBoard(activeId) {
         TaskBoard.remove({
