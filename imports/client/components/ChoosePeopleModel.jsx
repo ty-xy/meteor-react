@@ -30,10 +30,10 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         });
     }
     componentWillReceiveProps(nextProps) {
-        const { members, deps } = nextProps.companyInfo;
+        const { members = [], deps = [] } = nextProps.companyInfo;
         const users = members;
         const _users = [];
-        const _deps = [];
+        let _deps = deps;
         const leftUsers = [];
         if (nextProps.defaultValue.length) {
             if (!nextProps.isSelecteGroup) {
@@ -50,6 +50,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                     _users.push(j);
                 });
             } else {
+                _deps = [];
                 deps.forEach((j) => {
                     for (let i = 0, item = nextProps.defaultValue; i < item.length; i++) {
                         if (item[i] === j.name) {

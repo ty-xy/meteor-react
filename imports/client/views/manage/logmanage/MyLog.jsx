@@ -64,7 +64,7 @@ class MyLog extends PureComponent {
         this.setState({ logs });
     }
     // 编辑跳转
-    editJump = (e, _id) => {
+    editJump = (e, _id, type) => {
         e.preventDefault();
         let editInfo = {};
         this.props.AllLogs.forEach((item) => {
@@ -73,8 +73,14 @@ class MyLog extends PureComponent {
             }
         });
         editInfo.edit = true;
+        let pathname = '/manage/logging';
+        if (type === '周报') {
+            pathname = '/manage/logging/week';
+        } else if (type === '月报') {
+            pathname = '/manage/logging/month';
+        }
         this.props.history.push({
-            pathname: '/manage/logging',
+            pathname,
             state: editInfo,
         });
     }
@@ -134,7 +140,7 @@ export default withTracker(() => {
     const userId = Meteor.user() && Meteor.user()._id;
     return {
         users: Meteor.user() || {},
-        AllLogs: Log.find({ userId, company: UserUtil.getCompany() }).fetch(),
+        AllLogs: Log.find({ userId, company: UserUtil.getCompany(), cache: false }).fetch(),
     };
 })(Form.create()(MyLog));
 
