@@ -11,7 +11,6 @@ import MyDatePicker from './component/Date';
 import MyTextArea from './component/InputArea';
 import ImgUpload from '../component/ImgUpload';
 import SubmitBtn from './component/SubmitBtn';
-// import GroupSelect from './component/GroupSelect';
 import feedback from '../../../../util//feedback';
 import UserUtil from '../../../../util/user';
 import ChoosePeopleModel from '../../../../client/components/ChoosePeopleModel';
@@ -40,10 +39,6 @@ class Leave extends PureComponent {
             approvers: [], // 选择的审核对象
             copy: [],
         };
-    }
-    // 获取添加的人员
-    getGroup = (keyword, data) => {
-        this.setState({ [keyword]: data, requireGroupNotice: false });
     }
     handleSubmit = (e) => {
         e.preventDefault();
@@ -194,7 +189,7 @@ class Leave extends PureComponent {
                     <FormItem
                         {...formItemLayout}
                         label="添加图片"
-                        style={{ color: '#2A2A2A' }}
+                        style={{ color: '#2A2A2A', marginBottom: '0px' }}
                     >
                         <ImgUpload title="（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                     </FormItem>
@@ -209,6 +204,7 @@ class Leave extends PureComponent {
                         <FormItem
                             {...formItemLayout}
                             label="审批人"
+                            className="e-mg-audit-peopleList"
                         >
                             <a href="" onClick={this.showModal} style={{ color: 'rgb(204, 204, 204)' }}>(添加审批人，按照选择顺序提醒审批人)</a>
                             <PeopleList
@@ -232,7 +228,6 @@ class Leave extends PureComponent {
                         keyword="copy"
                         defaultValue={copy || []}
                         modelTitle="选人"
-                        isSelecteGroup
                     >
                         <FormItem
                             {...formItemLayout}
@@ -246,7 +241,6 @@ class Leave extends PureComponent {
                                 showModal={this.showModal}
                                 handleGroupChange={this.handleGroupChange}
                                 handlePeopleChange={this.handlePeopleChange}
-                                isSelecteGroup
                                 {...this.props}
                                 {...this.state}
                             />

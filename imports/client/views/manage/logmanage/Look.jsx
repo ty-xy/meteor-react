@@ -24,25 +24,7 @@ class Look extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            logs: [],
         };
-    }
-    componentWillMount() {
-        const { AllLogs } = this.props;
-        const userId = Meteor.user() && Meteor.user()._id;
-        const logs = Log.find({ company: UserUtil.getCompany(), peo: userId }).fetch();
-        (AllLogs || []).forEach((item) => {
-            AllLogs.forEach((j) => {
-                if (item.group.indexOf(j.dep) > -1) {
-                    logs.forEach((i) => {
-                        if (i.userId !== userId) {
-                            logs.push(item);
-                        }
-                    });
-                }
-            });
-        });
-        this.setState({ logs });
     }
     // 搜索函数
     filterChange = (date, dateString) => {
@@ -75,11 +57,11 @@ class Look extends PureComponent {
         vals.userId = Meteor.user()._id;
         let logs = AllLogs;
         if (vals.nickname && vals.type) {
-            logs = Log.find({ type: vals.type, nickname: vals.nickname }).fetch();
+            logs = logs.filter(item => (item.nickname === vals.nickname && item.type === vals.type));
         } else if (vals.nickname) {
-            logs = Log.find({ nickname: vals.nickname }).fetch();
+            logs = logs.filter(item => (item.nickname === vals.nickname));
         } else if (vals.type) {
-            logs = Log.find({ type: vals.type }).fetch();
+            logs = logs.filter(item => (item.type === vals.type));
         }
         if (vals.time.length) {
             logs = logs.filter(item => (this.daySecond(vals.time[0]) <= this.daySecond(item.createdAt) && this.daySecond(item.createdAt) <= this.daySecond(vals.time[1])));
@@ -88,6 +70,8 @@ class Look extends PureComponent {
     }
     render() {
         const { logs } = this.state;
+        const { AllLogs } = this.props;
+        const data = logs || AllLogs;
         return (
             <Row gutter={25} className="e-mg-log-filter" type="flex" justify="start">
                 <Col span={24} className="margin-bottom-20">
@@ -97,9 +81,9 @@ class Look extends PureComponent {
                         <Col span={7}><DatePicker keyword="time" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
                     </Form>
                 </Col>
-                {logs.map(item => (<CardLog key={item._id} {...item} />))}
+                {data.map(item => (<CardLog key={item._id} {...item} />))}
                 {
-                    logs.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
+                    data.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
                 }
             </Row>
         );
@@ -127,9 +111,16 @@ export default withTracker(() => {
             allusers = item.members;
         }
     });
+    const userId = Meteor.user() && Meteor.user()._id;
+    let userdep = '';
+    allusers.forEach((item) => {
+        if (item.userId === userId) {
+            userdep = item.dep;
+        }
+    });
     return {
         users: Meteor.user() || {},
-        AllLogs: Log.find().fetch(),
+        AllLogs: Log.find({ peo: userId, group: userdep, company: UserUtil.getCompany() }).fetch(),
         allusers,
     };
 })(Form.create()(Look));

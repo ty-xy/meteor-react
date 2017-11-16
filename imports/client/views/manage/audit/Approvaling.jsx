@@ -21,6 +21,7 @@ import Checkbill from '../../../../../imports/schema/checkBill';
 import Business from '../../../../../imports/schema/business';
 import Company from '../../../../../imports/schema/company';
 import UserUtil, { userIdToInfo } from '../../../../util/user';
+import ChoosePeopleModel from '../../../../client/components/ChoosePeopleModel';
 
 const { TextArea } = Input;
 const types = ['事假', '病假', '年假', '调休假', '婚假', '产假', '陪产假', '路途假', '出差', '报销', '通用审批', '其他'];
@@ -177,22 +178,66 @@ class Approvaling extends Component {
                 } else {
                     feedback.successToast(`${auditIdea}成功`);
                     _this.setState({ commentModel: false, auditComment: '', showAuditCard: false });
-                    // setTimeout(() => {
-                    //     _this.handlerAudit(null, modelData._id);
-                    // }, 1000);
                 }
             },
         );
     }
+    // 转发
+    // select people
+    showModal = (e, keyword) => {
+        e.preventDefault();
+        this.setState({
+            [`visible${keyword}`]: true,
+        });
+    }
+    // select people cancel
+    handleSelectCancel = (e, keyword) => {
+        e.preventDefault();
+        this.setState({
+            [`visible${keyword}`]: false,
+            checked: false,
+        });
+    }
+    // 选中的人
+    handleOk = (keyword, leftUsers) => {
+        if (leftUsers.length === 1) {
+            this.setState({ [keyword]: leftUsers, [`visible${keyword}`]: false, requireGroupNotice: false });
+            const { modelData } = this.state;
+            const _this = this;
+            const res = {
+                content: `${UserUtil.getName()}已经转交给${userIdToInfo.getName(this.props.allUsers, leftUsers[0])}`,
+                userId: Meteor.user()._id,
+                _id: modelData._id,
+                type: modelData.type,
+                isAudit: '转交',
+                transit: leftUsers[0],
+            };
+            console.log('res', res);
+            Meteor.call(
+                'updateAudit',
+                { ...res },
+                (err) => {
+                    if (err) {
+                        feedback.dealError(err.reason);
+                    } else {
+                        feedback.successToast('转交成功');
+                        _this.setState({ commentModel: false, auditComment: '', showAuditCard: false });
+                    }
+                },
+            );
+        } else {
+            feedback.dealWarning('只能转交一个人审批');
+        }
+    }
     render() {
-        const { showAuditCard, cards, modelData, commentModel, auditIdea, auditComment } = this.state;
+        const { showAuditCard, cards, modelData, commentModel, auditIdea, visibletransit, auditComment } = this.state;
         const footer = () => {
             if (modelData.status === '待审核') {
                 return (
                     <div className="e-mg-model-footer clearfix" key={23}>
                         <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '同意')}>同意</a><span className="pull-right">|</span></Col>
                         <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '拒绝')}>拒绝</a><span className="pull-right">|</span></Col>
-                        <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '转交')}>转交</a><span className="pull-right">|</span></Col>
+                        <Col span={6} className="text-center"><a href="" onClick={e => this.showModal(e, 'transit')}>转交</a><span className="pull-right">|</span></Col>
                         <Col span={6} className="text-center"><a href="" onClick={e => this.handleComment(e, '评论')}>评论</a></Col>
                     </div>
                 );
@@ -290,6 +335,14 @@ class Approvaling extends Component {
                         </Col>
                     </div>
                 </MyModel>
+                <ChoosePeopleModel
+                    visible={visibletransit}
+                    cancel={this.handleSelectCancel}
+                    ok={this.handleOk}
+                    keyword="transit"
+                    defaultValue={[]}
+                    modelTitle="选人"
+                />
             </div>
         );
     }
