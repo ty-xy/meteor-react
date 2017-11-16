@@ -2,14 +2,18 @@ import React, { PureComponent } from 'react';
 import { Button, Col, Form, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+import Company from '../../../../../schema/company';
 import InputArea from '../../component/InputArea';
 import InputType from '../../component/InputType';
 import ImgUpload from '../../component/ImgUpload';
 import FileUpload from '../../component/FileUpload';
 import MyRadio from '../../component/Radio';
 import feedback from '../../../../../util/feedback';
-import GroupSelect from '../../audit/component/GroupSelect';
+import ChoosePeopleModel from '../../../../components/ChoosePeopleModel';
+import PeopleList from '../../audit/component/PeopleList';
 
+const FormItem = Form.Item;
 
 class Write extends PureComponent {
     static propTypes = {
@@ -118,9 +122,35 @@ class Write extends PureComponent {
     handleCancel = (bool) => {
         this.setState({ visible: bool });
     }
+    // select people
+    showModal = (e, keyword) => {
+        e.preventDefault();
+        this.setState({
+            [`visible${keyword}`]: true,
+        });
+    }
+    // select people cancel
+    handleCancel = (e, keyword) => {
+        e.preventDefault();
+        this.setState({
+            [`visible${keyword}`]: false,
+            checked: false,
+        });
+    }
+    // 选中的人
+    handleOk = (keyword, leftUsers) => {
+        this.setState({ [keyword]: leftUsers, [`visible${keyword}`]: false, requireGroupNotice: false });
+    }
+    // 选中后删除
+    handlePeopleChange = (e, id, keyword) => {
+        e.preventDefault();
+        const res = this.state[keyword];
+        const peos = res.filter(item => (item !== id));
+        this.setState({ [keyword]: peos });
+    }
     render() {
         const { editData = {} } = this.props.location.state || {};
-        const { img, file, requireGroupNotice } = this.state;
+        const { img, visiblecopy, copy, file } = this.state;
         const { title, content } = this.props.form.getFieldsValue();
         const date = new Date();
         const year = date.getFullYear();
@@ -133,20 +163,33 @@ class Write extends PureComponent {
         const day = date.getDate();
         return (
             <Form onSubmit={this.formSubmit} style={{ height: '100%', overflow: 'auto' }}>
-                <Col span={24} style={{ marginTop: '20px', marginBottom: '-20px' }}>
-                    <GroupSelect
-                        keyword="approvers"
-                        label="发布范围"
-                        isSelected={false}
-                        isSelectedTrueTitle="(点击头像可删除)"
-                        selectedValue={[{}]}
-                        required={requireGroupNotice}
-                        requiredErr="请选择审批范围"
-                        getGroup={this.getGroup}
-                        modelTitle="选部门"
+                <Col span={24} style={{ marginTop: '20px', marginBottom: '-10px' }}>
+                    <ChoosePeopleModel
+                        visible={visiblecopy}
+                        cancel={this.handleCancel}
+                        ok={this.handleOk}
+                        keyword="copy"
+                        defaultValue={copy || []}
+                        modelTitle="选人"
                         isSelecteGroup
-                        offset={0}
-                    />
+                    >
+                        <FormItem
+                            label="发送范围"
+                            style={{ marginBottom: '0px' }}
+                        >
+                            <PeopleList
+                                keyword="copy"
+                                iconTitle="选择部门"
+                                isSelecteGroup
+                                componentSelectedUser={copy || []}
+                                showModal={this.showModal}
+                                handleGroupChange={this.handleGroupChange}
+                                handlePeopleChange={this.handlePeopleChange}
+                                {...this.props}
+                                {...this.state}
+                            />
+                        </FormItem>
+                    </ChoosePeopleModel>
                 </Col>
                 <InputType title="标题：" required requiredErr="请填写公告标题" keyword="title" editData={editData} {...this.props} />
                 <InputType title="作者：" required requiredErr="请填写公告作者" keyword="author" editData={editData} {...this.props} />
@@ -173,4 +216,20 @@ class Write extends PureComponent {
     }
 }
 
-export default Form.create()(Write);
+export default withTracker(() => {
+    Meteor.subscribe('company');
+    Meteor.subscribe('users');
+    const companys = Company.find().fetch();
+    const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
+    let companyInfo = {};
+    companys.forEach((item) => {
+        if (item._id === mainCompany) {
+            companyInfo = item;
+        }
+    });
+    return {
+        companyInfo,
+        companys,
+        allUsers: Meteor.users.find().fetch(),
+    };
+})(Form.create()(Write));

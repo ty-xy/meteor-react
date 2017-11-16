@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import Log from '../../imports/schema/log';
 
 Meteor.methods({
-    createLog({ userId, type, finish, plan, help, file, img, peo, nickname, group, company }) {
+    createLog({ userId, type, finish, plan, help, file, img, peo, nickname, group, company, cache }) {
         const newLog = {
             createdAt: new Date(),
             userId,
@@ -17,12 +17,13 @@ Meteor.methods({
             peo,
             group,
             company,
+            cache,
         };
         Log.schema.validate(newLog);
         Log.insert(newLog);
     },
     // 修改
-    updateLog({ type, _id, finish, userId, nickname, plan, help, file, img, peo, group, company }) {
+    updateLog({ type, _id, finish, userId, nickname, plan, help, file, img, peo, group, company, cache }) {
         const updateLog = {
             createdAt: new Date(),
             type,
@@ -36,6 +37,7 @@ Meteor.methods({
             userId,
             nickname,
             company,
+            cache,
         };
         Log.schema.validate(updateLog);
         Log.update(

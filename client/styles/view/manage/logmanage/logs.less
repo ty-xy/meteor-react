@@ -1,3 +1,5 @@
+@import '../../util/main';
+
 .e-mg-tab-scroll{
     height: 100%;
     > .ant-tabs-content{
@@ -19,6 +21,23 @@
         background: #fff;
     }
 }
+// e-mg-log-button-tab
+.e-mg-log-button-tab{
+    display: inline-block;
+    padding: 8px 20px;
+    background: #D1D1D1;
+    color: #fff;
+    border-radius: 3px;
+    &:hover{
+        color: #fff;
+    }
+}
+.e-mg-log-button-tab-active{
+    background: @blueColor;
+    color: #fff;
+}
+
+
 // 我发出的
 .e-mg-log-filter{
     margin-left: 0px !important;
@@ -87,9 +106,13 @@
 // 详情
 .e-mg-log-details {
     height: 100% !important;
+    margin-left: 20px !important;
+    margin-top: 20px;
+    width: 95%;
+    font-size: 12px;
     .e-mg-log-details-header{
         text-align: center;
-        font-size: 24px;
+        font-size: 18px;
         color: #666666;
         letter-spacing: 0.29px;
         line-height: 80px;
@@ -117,19 +140,16 @@
             margin-right: 10px;
         }
         .title{
-            font-size: 24px;
             color: #666666;
             letter-spacing: 0.29px;
             padding-top: 2px;
         }
         p{
-            font-size: 20px;
             color: #666666;
             letter-spacing: 0.24px;
             line-height: 34px;
         }
         p:first-child{
-            font-size: 20px;
             color: #999999;
             letter-spacing: 0.24px;
         }
@@ -139,13 +159,11 @@
         padding: 20px 0;
         border-top: 1px solid #eee;
         p{
-            font-size: 20px;
             color: #666666;
             letter-spacing: 0.24px;
         }
         .ant-col-24{
             margin-top: 10px;
-            font-size: 20px;
             color: #666666;
             letter-spacing: 0.24px;
             span{

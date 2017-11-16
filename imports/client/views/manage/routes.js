@@ -3,7 +3,7 @@ import {
     Route,
 } from 'react-router-dom';
 import Welcome from './component/Welcome';
-import Log from './logmanage/Log';
+import Log from './logmanage/Log_';
 import Notice from './notice/Notice';
 import Audit from './audit/Audit';
 

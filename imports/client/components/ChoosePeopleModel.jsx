@@ -30,7 +30,8 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         });
     }
     componentWillReceiveProps(nextProps) {
-        const { users, deps } = this.state;
+        const { members, deps } = nextProps.companyInfo;
+        const users = members;
         const _users = [];
         const _deps = [];
         const leftUsers = [];
@@ -288,7 +289,6 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         return avatar;
     }
     render() {
-        console.log('ChoosePeopleModel', this.state);
         const { allUsers, keyword, isSelecteGroup, modelTitle } = this.props;
         const { name } = this.props.companyInfo;
         const { depVal, users, deps, checked, allNum, leftUsers } = this.state;

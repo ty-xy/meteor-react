@@ -1,5 +1,8 @@
 import React, { PureComponent, Component } from 'react';
 import { Row, Col } from 'antd';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+import { userIdToInfo } from '../../../../util/user';
 
 
 class Detail extends (PureComponent || Component) {
@@ -8,7 +11,8 @@ class Detail extends (PureComponent || Component) {
         this.props.history.goBack();
     }
     render() {
-        const { nickname, avatar, plan, finish, help, num, peos } = this.props.location.state;
+        const { nickname, plan, finish, _id, help, num, peos } = this.props.location.state;
+        const { allUsers } = this.props;
         console.log('location', this.props);
         return (
             <Row className="e-mg-log-details">
@@ -18,7 +22,7 @@ class Detail extends (PureComponent || Component) {
                 </Col>
                 <Col span={24} className="e-mg-log-details-content">
                     <Col span={24} className="e-mg-log-details-area">
-                        <img src={avatar || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" /><span className="title">{nickname}</span>
+                        <img src={userIdToInfo.getAvatar(allUsers, _id) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" /><span className="title">{nickname}</span>
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
                         <p>今日完成任务</p>
@@ -36,63 +40,11 @@ class Detail extends (PureComponent || Component) {
                         <p>{num || 0}人已读</p>
                         <Col span={24} data-peos={peos}>
                             <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
+                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="36" />
                                 <p>王晓儿</p>
                             </span>
                             <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="56px" />
+                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="36px" />
                                 <p>王晓儿</p>
                             </span>
                         </Col>
@@ -111,6 +63,10 @@ class Detail extends (PureComponent || Component) {
 //     num: PropTypes.string,
 //     peos: PropTypes.array,
 // };
-
-export default Detail;
+export default withTracker(() => {
+    Meteor.subscribe('users');
+    return {
+        allUsers: Meteor.users.find().fetch(),
+    };
+})(Detail);
 
