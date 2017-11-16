@@ -48,7 +48,7 @@ class ChatFriendFile extends Component {
                                                     </p>
                                                 </div>
                                                 <div className="download-icon">
-                                                    <a href={item.url} download>
+                                                    <a href={item.url} download={item.name}>
                                                         <Icon icon="icon-xiazai icon" size={18} />
                                                     </a>
 

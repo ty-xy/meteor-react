@@ -18,6 +18,7 @@ Notice.schema = new SimpleSchema({
         type: String,
     },
     // 通知类型: 0,用户需要确认(加好友验证)1,用户不需要确认(添加好友,删除好友,加入群,被踢了)
+    // verifyFriend: 加好友验证; workNotice: 工作通知; projectNotice: 项目通知
     type: {
         type: Number,
         optional: true,
