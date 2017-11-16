@@ -43,12 +43,11 @@ class Day extends (React.PureComponent || React.Component) {
         this.setState({ logType, textShow, ...state });
     }
     componentWillReceiveProps(nextProps) {
-        // console.log('componentWillReceiveProps', nextProps.cachelog, this.props.cachelog);
         const { pathname, state = {} } = nextProps.location;
         if (pathname === '/manage/logging' && !state.edit) {
             const caches = nextProps.cachelog;
             if (caches.length) {
-                this.setState({ ...this.state, ...caches[0] });
+                this.setState({ ...this.state, ...caches[0], firstCacheEdit: true });
             }
         }
     }
@@ -78,8 +77,24 @@ class Day extends (React.PureComponent || React.Component) {
         fields.userId = Meteor.user()._id;
         fields.nickname = Meteor.user().profile.name;
         fields.company = Meteor.user().profile.mainCompany;
-        const { state } = this.props.location;
-        if (state) {
+        const { state = {} } = this.props.location;
+        const { firstCacheEdit } = this.state;
+        if (state.edit) {
+            fields._id = state._id;
+            fields.cache = false;
+            Meteor.call(
+                'updateLog',
+                { ...fields },
+                (_err) => {
+                    if (_err) {
+                        feedback.dealError(_err);
+                    } else {
+                        feedback.successToastFb('发布成功', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
+                    }
+                },
+            );
+        } else if (!state.edit && firstCacheEdit) {
+            fields.cache = false;
             fields._id = state._id;
             Meteor.call(
                 'updateLog',
@@ -88,7 +103,7 @@ class Day extends (React.PureComponent || React.Component) {
                     if (_err) {
                         feedback.dealError(_err);
                     } else {
-                        feedback.successToastFb('更新成功', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
+                        feedback.successToastFb('firstCacheEdit', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
                     }
                 },
             );
@@ -100,7 +115,7 @@ class Day extends (React.PureComponent || React.Component) {
                     if (_err) {
                         feedback.dealError(_err);
                     } else {
-                        feedback.successToastFb('创建成功', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
+                        feedback.successToastFb('发布成功', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
                     }
                 },
             );
@@ -157,21 +172,66 @@ class Day extends (React.PureComponent || React.Component) {
         this.setState({ [keyword]: e.target.value });
     }
     handleblur = () => {
-        const { finish, plan, help, img, file, peo, group, logType } = this.state;
+        const { finish, plan, help, img, file, peo, group, logType, _id, firstCacheEdit } = this.state;
         const userId = Meteor.user()._id;
         const nickname = Meteor.user().profile.name;
         const company = Meteor.user().profile.mainCompany;
         const cache = {
             finish, plan, help, img, file, peo, group,
         };
-        let isCache = false;
+        let isText = false;
         if (finish || plan || help || img.length || file.length || peo.length || group.length) {
-            isCache = true;
+            isText = true;
         }
-        if (isCache) {
+        const { state = {} } = this.props.location;
+        const { cachelog } = this.props;
+        if (firstCacheEdit && isText && cachelog.length) {
+            const res = { ...cache, type: logType, _id, userId, nickname, company, cache: true, ...this.props.form.getFieldsValue() };
+            Meteor.call(
+                'updateLog',
+                { ...res },
+                (_err) => {
+                    if (_err) {
+                        feedback.dealError(_err);
+                    } else {
+                        feedback.successToast('缓存成功');
+                    }
+                },
+            );
+        }
+        if (isText && state.edit) {
+            const res = { ...cache, type: logType, userId, nickname, company, cache: true };
+            if (state._id) {
+                res._id = _id;
+                Meteor.call(
+                    'updateLog',
+                    { ...res },
+                    (_err) => {
+                        if (_err) {
+                            feedback.dealError(_err);
+                        } else {
+                            feedback.successToast('缓存成功');
+                        }
+                    },
+                );
+            } else {
+                Meteor.call(
+                    'createLog',
+                    { ...res },
+                    (_err) => {
+                        if (_err) {
+                            feedback.dealError(_err);
+                        } else {
+                            feedback.successToast('缓存成功');
+                        }
+                    },
+                );
+            }
+        } else if (isText && !state.edit && !firstCacheEdit) {
+            const res = { ...cache, type: logType, userId, nickname, company, cache: true };
             Meteor.call(
                 'createLog',
-                { ...cache, type: logType, userId, nickname, company, cache: true },
+                { ...res },
                 (_err) => {
                     if (_err) {
                         feedback.dealError(_err);
@@ -184,7 +244,7 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
-        // console.log('day', this.props);
+        // console.log('day', this.props, this.state);
         return (
             <Form onSubmit={this.formSubmit}>
                 <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
