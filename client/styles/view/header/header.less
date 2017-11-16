@@ -95,6 +95,23 @@
             }
         }
     }
+    .backend-right {
+        width: 15%;
+        display: flex;
+        margin-left: 20px;
+        justify-content: space-around;
+
+        & > li {
+            cursor: pointer;
+            margin-top: 20px;
+            height: 40px;
+            line-height: 40px;
+        }
+        .backend-help {
+            color: #29B6F6;
+            font-size: 16px;
+        }
+    }
 }
 .color-primary-font-color {
     background-color: #F4F4F4;
@@ -110,12 +127,17 @@
         color: #333333;
         line-height: 72px;
     }
+    .backend-nav {
+        width: 65%;
+        & > .header-tab {
+            width: 100px;
+        }
+    }
 }
 .header-tab {
     width: 60px;
     text-align: center;
     cursor: pointer;
-
     &.active {
         border-bottom: 6px solid #29B6F6;
         width: 60px;

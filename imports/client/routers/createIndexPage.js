@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Header from '../views/header/Header';
+import BackEnd from '../views/backEnd/BackEnd';
 
 class IndexPageWrap extends Component {
     static propTypes = {
@@ -9,6 +10,7 @@ class IndexPageWrap extends Component {
         location: PropTypes.object.isRequired,
         match: PropTypes.object.isRequired,
         children: PropTypes.element,
+        headType: PropTypes.string,
     }
     static childContextTypes = {
         history: PropTypes.object.isRequired,
@@ -26,17 +28,22 @@ class IndexPageWrap extends Component {
     render() {
         return (
             <div className="index-page-wrap">
-                <Header goto={this.goto} />
+                {
+                    this.props.headType === 'backend' ?
+                        <BackEnd />
+                        :
+                        <Header />
+                }
                 {this.props.children}
             </div>
         );
     }
 }
 
-function createIndexPage(PageComponent) {
+function createIndexPage(PageComponent, headType) {
     return function render(router) {
         return (
-            <IndexPageWrap {...router}>
+            <IndexPageWrap {...router} headType={headType}>
                 <PageComponent {...router} />
             </IndexPageWrap>
         );

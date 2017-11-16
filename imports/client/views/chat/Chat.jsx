@@ -3,10 +3,13 @@ import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+
 
 import ContactList from './chatSideLeft/ContactList';
 import FriendsList from './chatSideLeft/FriendsList';
 import GroupList from './chatSideLeft/GroupList';
+import TeamList from './chatSideLeft/TeamList';
 import AddChat from '../chat/chatSideLeft/addChat/AddChat';
 import ChatWindow from './chatWindow/ChatWindow';
 import UserUtil from '../../../util/user';
@@ -26,8 +29,13 @@ class Chat extends Component {
         super(...args);
         this.state = {
             selected: 1,
+            selectedLinkMan: 1,
             chatSideNav: [
                 { name: '消息', content: 'icon-xiaoxi' },
+                { name: '联系人', content: 'icon-group' },
+                { name: '团队', content: 'icon-qunzu' },
+            ],
+            linkManNav: [
                 { name: '好友', content: 'icon-group' },
                 { name: '群组', content: 'icon-qunzu' },
             ],
@@ -45,6 +53,11 @@ class Chat extends Component {
     handleClick = (index) => {
         this.setState({
             selected: index,
+        });
+    }
+    handleLinkManNav = (index) => {
+        this.setState({
+            selectedLinkMan: index,
         });
     }
     changeTo = (to, userId, type, chatType) => {
@@ -71,7 +84,7 @@ class Chat extends Component {
                     {/* 导航部分 */}
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
-                            <SearchChat />
+                            <SearchChat changeTo={this.changeTo} />
                         </div>
                         <ul className="chat-type">
                             {
@@ -100,16 +113,34 @@ class Chat extends Component {
                                 handleNewFriend={this.handleNewFriend}
                             /> : null}
                         {this.state.selected === 2 ?
+                            <div className="linkman-nav">
+                                {
+                                    this.state.linkManNav.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className={classnames('linkman-list', { linkmanActive: this.state.selectedLinkMan === index + 1 })}
+                                            onClick={this.handleLinkManNav.bind(this, index + 1)}
+                                        >
+                                            <p>{item.name}</p>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+
+                            : null}
+                        {this.state.selectedLinkMan === 1 && this.state.selected === 2 ?
                             <FriendsList
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
                                 handleNewFriend={this.handleNewFriend}
                             /> : null}
-                        {this.state.selected === 3 ?
+                        {this.state.selectedLinkMan === 2 && this.state.selected === 2 ?
                             <GroupList
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
                             /> : null}
+                        {this.state.selected === 3 ?
+                            <TeamList /> : null}
                     </div>
                     <AddChat
                         changeTo={this.changeTo}

@@ -45,16 +45,23 @@ class ContactList extends Component {
     }
     compare = property => (a, b) => b[property] - a[property];
     deleteChat = (userId, type, unreadMessage) => {
-        Meteor.call('deleteChat', userId, type, (err) => {
-            feedback.dealError(err);
-            this.props.changeTo('', '');
-        });
+        // console.log(111, unreadMessage);
+
         if (unreadMessage > 0) {
-            this.props.allUnRead.forEach((x) => {
-                console.log(9999);
-                Meteor.call('readMessage', x._id, Meteor.userId(), (err) => {
-                    console.log(err);
+            // console.log(555, this.props.allUnRead);
+            Meteor.call('readMessages', this.props.allUnRead.map(x => x._id), Meteor.userId(), (err) => {
+                console.log(333, err);
+                Meteor.call('deleteChat', userId, type, (err2) => {
+                    feedback.dealError(err2);
+                    // console.log(444);
+                    this.props.changeTo('', '');
                 });
+            });
+        } else {
+            Meteor.call('deleteChat', userId, type, (err2) => {
+                feedback.dealError(err2);
+                // console.log(444);
+                this.props.changeTo('', '');
             });
         }
     }
@@ -236,40 +243,36 @@ export default withTracker(() => {
     // console.log('所有的消息', allMessage);
     // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
     let allUnRead = [];
-    setTimeout(() => {
-        allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
-        // 点击删除的时候,将所有未读消息变为已读,但是allUnReload此时不会立刻更新数据,
-        // 所以有未读消息时点击删除事此时这个消息列表已经删除,但是此时未读消息条数不会立刻更新,判断有未读消息,不存在该聊天窗口,则创建新的聊天窗口,过了一会数据更新了,未读消息为0
-        // console.log('有和你有关的未读消息', allUnRead, allUnRead.length);
-        if (allUnRead.length > 0) {
-            allUnRead.forEach((k) => {
-                if (k.to.length <= 17) {
+    allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
+    // 点击删除的时候,将所有未读消息变为已读,但是allUnReload此时不会立刻更新数据,
+    // 所以有未读消息时点击删除事此时这个消息列表已经删除,但是此时未读消息条数不会立刻更新,判断有未读消息,不存在该聊天窗口,则创建新的聊天窗口,过了一会数据更新了,未读消息为0
+    // console.log(222, '有和你有关的未读消息', allUnRead.length);
+    if (allUnRead.length > 0) {
+        allUnRead.forEach((k) => {
+            if (k.to.length <= 17) {
                 // if (!chatList.find(j => j.group && j.group._id === k.to)) {
-                    Meteor.call('addChatList', k.to, 'groupId', (err) => {
-                        feedback.dealError(err);
-                    });
+                Meteor.call('addChatList', k.to, 'groupId', (err) => {
+                    feedback.dealError(err);
+                });
                 // }
                 // 群聊天
-                } else if (k.to.length >= 34) {
-                    const userId = k.to.slice(0, k.to.length / 2);
-                    if (userId !== Meteor.userId()) {
+            } else if (k.to.length >= 34) {
+                const userId = k.to.slice(0, k.to.length / 2);
+                if (userId !== Meteor.userId()) {
                     // 用户聊天
-                        Meteor.call('addChatList', userId, 'userId', (err) => {
-                            feedback.dealError(err);
-                        });
-                    } else {
-                        Meteor.call('addChatList', k.from._id, 'userId', (err) => {
-                            feedback.dealError(err);
-                        });
-                    }
+                    Meteor.call('addChatList', userId, 'userId', (err) => {
+                        feedback.dealError(err);
+                    });
                 } else {
-                    console.log('to字段Id的长度', k.to.length);
+                    Meteor.call('addChatList', k.from._id, 'userId', (err) => {
+                        feedback.dealError(err);
+                    });
                 }
-            });
-        }
-    }, 500);
-
-
+            } else {
+                console.log('to字段Id的长度', k.to.length);
+            }
+        });
+    }
     // 已存在聊天列表中显示未读消息
     chatList.forEach((x) => {
         if (x.type === 'user') {

@@ -4,7 +4,7 @@ import { Meteor } from 'meteor/meteor';
 
 Meteor.methods({
     deleteChat(chatId, type) {
-        console.log(111, chatId, type);
+        console.log(111, '删除聊天', chatId, type);
         // const chatList = UserUtil.getChatList();
         // if (!chatList.find(j => j[type] === chatId)) {
         //     return;
