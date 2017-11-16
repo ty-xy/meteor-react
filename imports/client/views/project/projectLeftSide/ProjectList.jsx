@@ -37,7 +37,7 @@ class ProjectList extends Component {
                 <ul >
                     {
                         this.props.projects.map((value) => {
-                            if (value.headPortrait.indexOf('icon') === -1 && value.pigeonhole === 1) {
+                            if (value.headPortrait && value.headPortrait.indexOf('icon') === -1 && value.pigeonhole === 1) {
                                 return (
                                     <Link to={`/project/task/${value._id}`} key={value._id}>
                                         <li className="list-item" key={value._id}>
@@ -50,7 +50,7 @@ class ProjectList extends Component {
                                         </li>
                                     </Link>
                                 );
-                            } else if (value.headPortrait.indexOf('icon') === 0 && value.pigeonhole === 1) {
+                            } else if (value.headPortrait && value.headPortrait.indexOf('icon') === 0 && value.pigeonhole === 1) {
                                 return (
                                     <Link to={`/project/task/${value._id}`} key={value._id}>
                                         <li className="list-item" key={value._id}>
