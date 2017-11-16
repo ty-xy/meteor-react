@@ -22,7 +22,6 @@ class Day extends (React.PureComponent || React.Component) {
             img: [],
             peo: [], // 选择的审核对象
             group: [],
-            cache: true, // 是否设置缓存
         };
     }
     componentWillMount() {
@@ -47,7 +46,7 @@ class Day extends (React.PureComponent || React.Component) {
         if (pathname === '/manage/logging' && !state.edit) {
             const caches = nextProps.cachelog;
             if (caches.length) {
-                this.setState({ ...this.state, ...caches[0], firstCacheEdit: true });
+                this.setState({ ...this.state, ...caches[0], firstCache: true });
             }
         }
     }
@@ -78,10 +77,11 @@ class Day extends (React.PureComponent || React.Component) {
         fields.nickname = Meteor.user().profile.name;
         fields.company = Meteor.user().profile.mainCompany;
         const { state = {} } = this.props.location;
-        const { firstCacheEdit } = this.state;
-        if (state.edit) {
-            fields._id = state._id;
+        const { firstCache } = this.state;
+        if (state.edit || state.handleTab || firstCache) {
+            fields._id = this.state._id;
             fields.cache = false;
+            console.log('fields', fields);
             Meteor.call(
                 'updateLog',
                 { ...fields },
@@ -89,21 +89,7 @@ class Day extends (React.PureComponent || React.Component) {
                     if (_err) {
                         feedback.dealError(_err);
                     } else {
-                        feedback.successToastFb('发布成功', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
-                    }
-                },
-            );
-        } else if (!state.edit && firstCacheEdit) {
-            fields.cache = false;
-            fields._id = state._id;
-            Meteor.call(
-                'updateLog',
-                { ...fields },
-                (_err) => {
-                    if (_err) {
-                        feedback.dealError(_err);
-                    } else {
-                        feedback.successToastFb('firstCacheEdit', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
+                        feedback.successToastFb('更新成功', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
                     }
                 },
             );
@@ -172,7 +158,7 @@ class Day extends (React.PureComponent || React.Component) {
         this.setState({ [keyword]: e.target.value });
     }
     handleblur = () => {
-        const { finish, plan, help, img, file, peo, group, logType, _id, firstCacheEdit } = this.state;
+        const { finish, plan, help, img, file, peo, group, logType, _id, firstCache } = this.state;
         const userId = Meteor.user()._id;
         const nickname = Meteor.user().profile.name;
         const company = Meteor.user().profile.mainCompany;
@@ -184,8 +170,7 @@ class Day extends (React.PureComponent || React.Component) {
             isText = true;
         }
         const { state = {} } = this.props.location;
-        const { cachelog } = this.props;
-        if (firstCacheEdit && isText && cachelog.length) {
+        if (firstCache && isText) {
             const res = { ...cache, type: logType, _id, userId, nickname, company, cache: true, ...this.props.form.getFieldsValue() };
             Meteor.call(
                 'updateLog',
@@ -199,8 +184,8 @@ class Day extends (React.PureComponent || React.Component) {
                 },
             );
         }
-        if (isText && state.edit) {
-            const res = { ...cache, type: logType, userId, nickname, company, cache: true };
+        if (isText && state.handleTab) {
+            const res = { ...cache, type: logType, userId, nickname, company, cache: true, ...this.props.form.getFieldsValue() };
             if (state._id) {
                 res._id = _id;
                 Meteor.call(
@@ -227,8 +212,8 @@ class Day extends (React.PureComponent || React.Component) {
                     },
                 );
             }
-        } else if (isText && !state.edit && !firstCacheEdit) {
-            const res = { ...cache, type: logType, userId, nickname, company, cache: true };
+        } else if (isText && !state.edit && !firstCache && !state.handleTab) {
+            const res = { ...cache, type: logType, userId, nickname, company, cache: true, ...this.props.form.getFieldsValue() };
             Meteor.call(
                 'createLog',
                 { ...res },
@@ -244,7 +229,7 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
-        // console.log('day', this.props, this.state);
+        console.log('day', this.props, this.state);
         return (
             <Form onSubmit={this.formSubmit}>
                 <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
