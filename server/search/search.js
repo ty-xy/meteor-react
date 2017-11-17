@@ -19,7 +19,7 @@ Meteor.methods({
             { fields: fields.searchAllGroup },
         ).fetch();
         const tasks = Task.find(
-            { name: { $regex: `${pattern}` }, members: { $elemMatch: Meteor.userId() } },
+            { name: { $regex: `${pattern}` }, members: Meteor.userId() },
             { fields: fields.searchAllFile },
         ).fetch();
         const searchResult = {
