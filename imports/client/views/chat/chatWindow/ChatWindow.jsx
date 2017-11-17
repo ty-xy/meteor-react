@@ -58,7 +58,7 @@ class ChatWindow extends Component {
     }
     componentDidUpdate(prevProps) {
         this.props.messages.forEach((i) => {
-            if (!i.readedMembers.includes(Meteor.userId())) {
+            if (i.readedMembers && !i.readedMembers.includes(Meteor.userId())) {
                 Meteor.call('readMessage', i._id, Meteor.userId(), (err) => {
                     console.log(err);
                 });

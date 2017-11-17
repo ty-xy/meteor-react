@@ -97,7 +97,7 @@ export default class ProjectAdd extends Component {
                         <Tooltip placement="right" title={text}>
                             {this.state.showImage ?
                                 <p className="icon-person" style={divStyle} onClick={this.changeUpdateTitle}>
-                                    <MyIcon icon={this.state.icon[j]} size="30px" iconColor="#fff" />
+                                    <MyIcon icon={this.state.icon[j]} size={30} iconColor="#fff" />
                                 </p> :
                                 <ImgUpload keyword="img" className="img-title" fileList={[]} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload}{...this.props} />}
                         </Tooltip>

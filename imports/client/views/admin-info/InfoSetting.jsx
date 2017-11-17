@@ -90,7 +90,6 @@ class InfoSetting extends Component {
                     <label htmlFor="avatar">头像</label>
                     <AvatarSelf />
                     <p className="edit-avatar">修改头像
-
                         <input type="file" id="avatar" onChange={this.handleUploadImg} />
                     </p>
                 </li>
