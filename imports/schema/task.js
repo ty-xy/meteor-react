@@ -44,6 +44,10 @@ Task.schema = new SimpleSchema({
     textId: {
         type: String,
     },
+    // 文件的id 
+    fileId: {
+        type: [String],
+    },
 });
 
 export default Task;

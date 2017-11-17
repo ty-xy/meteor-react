@@ -15,24 +15,29 @@ import ProjectBordItem from './ProjectBord/projectBordItem';
 import TaskBoard from '../../../../../imports/schema/taskBoard';
 import Project from '../../../../../imports/schema/project';
 import ProjectSet from './ProjectBord/ProjectSet';
+import ProjectMembers from './ProjectBord/projectMembers';
 
 const TabPane = Tabs.TabPane;
 @pureRender
 class ProjectWindow extends Component {
     static propTypes = {
         taskF: PropTypes.arrayOf(PropTypes.object),
-        // project: PropTypes.object,
+        projectd: PropTypes.object,
         projectL: PropTypes.arrayOf(PropTypes.object),
+        //  projectd: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(...args) {
         super(...args);
         this.state = {
             visible: false,
             id: '',
+            see: false,
         };
     }
     componentWillMount() {
-        console.log('dededede');
+        this.setState({
+            id: this.props.projectd.match.params.id,
+        });
     }
     componentWillReceiveProps(Projectd) {
         console.log('nextProps', Projectd.match.params.id);
@@ -43,6 +48,16 @@ class ProjectWindow extends Component {
     showModal = () => {
         this.setState({
             visible: true,
+        });
+    }
+    showMo = () => {
+        this.setState({
+            see: true,
+        });
+    }
+    hideOk =() => {
+        this.setState({
+            see: false,
         });
     }
     hideModal =() => {
@@ -59,13 +74,28 @@ class ProjectWindow extends Component {
             },
         };
         return (
+
             <div className="ejianlian-project-window-show">
                 {this.props.projectL.map((project, index) => {
-                    console.log(111);
+                    console.log(project.members);
                     return (<div className="window-title" key={index} >
                         <Row>
                             <Col span={22}><p>{project.name}</p></Col>
-                            <Col span={1}> <Icon icon="icon-qunzu" className="icon-one" /></Col>
+                            <Col span={1}> <Icon icon="icon-qunzu" className="icon-one" onClick={this.showMo} />
+                                <Modal
+                                    visible={this.state.see}
+                                    footer={null}
+                                    onOk={this.hideOk}
+                                    onCancel={this.hideOk}
+                                    className="modal-reset"
+                                    mask={false}
+                                    style={{ top: 0, right: 0, position: 'absolute', height: '100%' }}
+                                    bodyStyle={{ padding: 0 }}
+                                    width={375}
+                                >
+                                    <ProjectMembers member={project.members} />
+                                </Modal>
+                            </Col>
                             <Col span={1}> <Icon icon="icon-shezhi" className="icon-two" onClick={this.showModal} />
                                 <Modal
                                     visible={this.state.visible}
@@ -86,12 +116,13 @@ class ProjectWindow extends Component {
                     <Tabs defaultActiveKey="1" className="tab-task" >
                         <TabPane tab="任务流" key="1" style={divStyle.TabStyle}>
                             {
-                                this.props.taskF.map((text) => {
-                                    console.log(text._id);
-                                    return (
-                                        <ProjectBordItem value={text.name} tastBoardId={text._id} key={text._id} />
-                                    );
-                                })
+                                this.props.taskF.map(text => (
+                                    <ProjectBordItem
+                                        value={text.name}
+                                        tastBoardId={text._id}
+                                        key={text._id}
+                                    />
+                                ))
 
                             }
                             <ProjectBordAdd style={divStyle.taskStyle} pId={this.state.id} />
@@ -129,5 +160,6 @@ export default withTracker((projectd) => {
         taskL,
         project,
         projectL,
+        projectd,
     };
 })(ProjectWindow);

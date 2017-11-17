@@ -4,6 +4,8 @@ import { Card } from 'antd';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
+import format from 'date-format';
+
 import Icon from '../../../../components/Icon';
 import Project from '../../../../../../imports/schema/project';
 import feedback from '../../../../../util/feedback';
@@ -63,8 +65,8 @@ class projectOverFile extends Component {
                                             <div className="list-right">
                                                 <p>{value.name}</p>
                                             </div>
-                                            <div className="list-right">周小妹</div>
-                                            <div className="list-right">归档于 2017-05-30 17:03</div>
+                                            <div className="list-right">{Meteor.user().profile.name}</div>
+                                            <div className="list-right">归档于{format('yyyy-MM-dd hh:mm:ss', value.createTime)}</div>
                                             <div className="button-borad back-borad" style={{ marginLeft: '400px' }} onClick={() => this.handleClick(value._id)}>还原</div>
                                             <div className="button-borad use-borad">使用模板</div>
                                         </li>
@@ -78,8 +80,8 @@ class projectOverFile extends Component {
                                         <div className="list-right">
                                             <p>{value.name}</p>
                                         </div>
-                                        <div className="list-right">周小妹</div>
-                                        <div className="list-right">归档于 2017-05-30 17:03</div>
+                                        <div className="list-right">{Meteor.user().profile.name}</div>
+                                        <div className="list-right">归档于{format('yyyy-MM-dd hh:mm:ss', value.createTime)}</div>
                                         <div className="button-borad back-borad" style={{ marginLeft: '400px' }} onClick={() => this.handleClick(value._id)}>还原</div>
                                         <div className="button-borad use-borad">使用模板</div>
                                     </li>
@@ -94,6 +96,7 @@ class projectOverFile extends Component {
 }
 export default withTracker(() => {
     Meteor.subscribe('project');
+    console.log(Meteor.user());
     const projects = Project.find({ pigeonhole: 2 }).fetch();
     const length = projects.length;
     console.log(projects, length);

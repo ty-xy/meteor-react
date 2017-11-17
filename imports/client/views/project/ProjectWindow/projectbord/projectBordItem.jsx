@@ -7,11 +7,14 @@ import { Meteor } from 'meteor/meteor';
 import uuid from 'uuid';
 import pureRender from 'pure-render-decorator';
 import Dragula from 'react-dragula';
+
 import Icon from '../../../../components/Icon';
 import MiniCard from './miniCard';
+import ProjectInput from './projectInput';
 // import ProjectItemDetail from './projectItemDetail';
 import Task from '../../../../../../imports/schema/task';
 import TaskBoard from '../../../../../../imports/schema/taskBoard';
+import feedback from '../../../../../util/feedback';
 // import Active from '../../../../../../imports/schema/active';
 const { TextArea } = Input;
 @pureRender
@@ -21,7 +24,9 @@ class ProjectBordItem extends Component {
         tastBoardId: PropTypes.string,
         taskg: PropTypes.arrayOf(PropTypes.object),
         tasks: PropTypes.arrayOf(PropTypes.object),
-        o: PropTypes.string,
+        tasksA: PropTypes.array,
+        o: PropTypes.array,
+        // changeTitle: PropTypes.func,
         fd: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(...props) {
@@ -37,11 +42,11 @@ class ProjectBordItem extends Component {
             delClickFlag: true,
             uuid: '',
             error: null,
+            showTaskBoardTitle: true,
+            titleValue: '',
         };
     }
     componentWillMount() {
-        // const tasks = Task.find({}).fetch();
-        // console.log('nextProps', tasks);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -68,6 +73,19 @@ class ProjectBordItem extends Component {
             visible: false,
         });
     }
+    handleDelete = () => {
+        const exsist = this.props.fd[0][this.props.tastBoardId];
+        console.log(exsist);
+        if (exsist.length === 0) {
+            Meteor.call(
+                'deleteaTaskBoard', this.props.tastBoardId, (err) => {
+                    console.log(err);
+                },
+            );
+        } else {
+            feedback.dealWarning('你还有未清空的任务卡');
+        }
+    }
     handleClick = () => {
         this.createTask();
         this.setState({
@@ -80,13 +98,33 @@ class ProjectBordItem extends Component {
         this.setState({
             cardInput: e.target.value,
         });
-        // console.log(this.state.cardInput);
-        // console.log(this.props.tastId);
     }
     handleList = () => {
         this.setState({
             IsShowList: !this.state.IsShowList,
             uuids: uuid.v4(),
+        });
+    }
+    // 更改任务版的标题
+    handlechangeTitle =() => {
+        this.setState({
+            showTaskBoardTitle: !this.state.showTaskBoardTitle,
+        });
+    }
+    handleChangeBTitle =(e) => {
+        this.setState({
+            titleValue: e.target.value,
+        });
+    }
+    handleChangeTitleB =() => {
+        Meteor.call(
+            'changeTaskBoard', this.props.tastBoardId, this.state.titleValue, (err) => {
+                console.log(err);
+            },
+        );
+        this.setState({
+            titleValue: '',
+            showTaskBoardTitle: !this.state.showTaskBoardTitle,
         });
     }
     createTask = () => {
@@ -107,6 +145,17 @@ class ProjectBordItem extends Component {
             this.props.tastBoardId,
             this.state.uuids,
             (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 删除卡片 
+    handleDeleteTask = (itemd) => {
+        const deleteCard = this.props.fd[0][this.props.tastBoardId];
+        const deleteIndex = deleteCard.indexOf(itemd);
+        deleteCard.splice(deleteIndex, 1);
+        Meteor.call(
+            'deleteaTaskBoardTask', this.props.tastBoardId, deleteCard, itemd, (err) => {
                 console.log(err);
             },
         );
@@ -209,30 +258,22 @@ class ProjectBordItem extends Component {
                 });
         }
     }
-    renderTasks = () => this.props.o.map((item, index) => {
-        console.log(111111);
-        try {
-            return this.props.taskg.map((value) => {
-                if (value.textId === item) {
-                    console.log(item);
-                    return (<MiniCard
-                        value={value.name}
-                        key={`${value._id}-${index}`}
-                        idIndex={value._id}
-                        index={value.taskBoardId}
-                        ind={index}
-                        textId={value.textId}
-                    />);
-                }
-                return null;
-            });
-        } catch (error) {
-            this.setState({ error });
+    renderTasks = () => this.props.o.map((item, index) => this.props.taskg.map((value) => {
+        if (value.textId === item) {
+            console.log(item);
+            return (<MiniCard
+                value={value.name}
+                key={value._id}
+                idIndex={value._id}
+                index={value.taskBoardId}
+                ind={index}
+                textId={value.textId}
+                deleteCard={() => this.handleDeleteTask(value.textId)}
+            />);
         }
         return null;
-    })
+    }))
     render() {
-        // console.error(this.state.task);
         const menu = (
             <Menu>
                 <Menu.Item key="0">
@@ -242,11 +283,9 @@ class ProjectBordItem extends Component {
                     }
                 </Menu.Item>
                 <Menu.Divider />
-                <Menu.Item key="1">
-                    <a href="http://www.taobao.com/">归档该卡片</a>
+                <Menu.Item key="3">
+                    <a onClick={this.handleDelete} >删除</a>
                 </Menu.Item>
-                <Menu.Divider />
-                <Menu.Item key="3">删除</Menu.Item>
             </Menu>
         );
         return (
@@ -254,7 +293,15 @@ class ProjectBordItem extends Component {
                 <div className="list-title">
                     <Row>
                         <Col span={19} style={{ display: 'flex' }}>
-                            <p>{this.props.value}</p>
+                            {this.state.showTaskBoardTitle ?
+                                <p onClick={this.handlechangeTitle}>{this.props.value}</p> :
+                                <ProjectInput
+                                    input="更改"
+                                    onClick={this.handleChangeTitleB}
+                                    value={this.state.titleValue}
+                                    onChange={this.handleChangeBTitle}
+                                    onConcel={this.handlechangeTitle}
+                                />}
                             {this.state.concern ?
                                 <Icon icon="icon-guanzhu icon icon-eye" /> : null}
                         </Col>
@@ -270,7 +317,7 @@ class ProjectBordItem extends Component {
                 </div>
 
                 <div className="container" ref={this.dragulaDecorator} key="7" data-bid={this.props.tastBoardId}>
-                    {this.renderTasks()}
+                    {this.props.tasksA.length > 0 && this.props.tasksA[0].sortArray ? this.renderTasks() : null}
                 </div>
 
                 {this.state.IsShowList ?
@@ -300,30 +347,36 @@ class ProjectBordItem extends Component {
 export default withTracker((indd) => {
     Meteor.subscribe('task');
     Meteor.subscribe('taskboard');
+    Meteor.subscribe('company');
     const tasks = Task.find({}).fetch();
     const tasksA = TaskBoard.find({ _id: indd.tastBoardId }).fetch();
-    const x = tasksA[0].sortArray;
-    const taskg = Task.find({
-        textId: {
-            $in: x,
-        },
-    }).fetch();
-    const hash = {};
-    const fd = TaskBoard.find({}).fetch().map((value) => {
-        console.log(value._id);
-        const ide = value._id;
-        const dde = value.sortArray;
-        hash[ide] = dde;
-        return hash;
-    });
-    const o = Array.from(new Set(x));
-    console.log(o);
-    console.log(tasks, tasksA, o, taskg, fd);
+    if (tasksA.length !== 0) {
+        const x = tasksA[0].sortArray;
+        const taskg = Task.find({
+            textId: {
+                $in: x,
+            },
+        }).fetch();
+        const hash = {};
+        const fd = TaskBoard.find({}).fetch().map((value) => {
+            console.log(value._id);
+            const ide = value._id;
+            const dde = value.sortArray;
+            hash[ide] = dde;
+            return hash;
+        });
+        const o = Array.from(new Set(x));
+        console.log(o);
+        console.log(tasks, tasksA, o, taskg, fd);
+        return {
+            tasks,
+            taskg,
+            o,
+            fd,
+            tasksA,
+        };
+    }
     return {
-        tasks,
-        taskg,
-        o,
-        fd,
-        // taskId,
+        tasksA,
     };
 })(ProjectBordItem);

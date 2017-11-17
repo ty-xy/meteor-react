@@ -27,10 +27,13 @@ Project.schema = new SimpleSchema({
     //     regEx: SimpleSchema.RegEx.Id,
     // },
     // // 创建人id
-    // creater: {
-    //     type: String,
-    //     regEx: SimpleSchema.RegEx.Id,
-    // },
+    creater: {
+        type: String,
+    },
+    members: {
+        type: [String],
+        optional: true,
+    },
     // 创建时间
     createTime: {
         type: Date,

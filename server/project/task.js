@@ -15,6 +15,8 @@ Meteor.methods({
             endTime: '',
             label: '#7ED321',
             textId,
+            fileId: [],
+
         };
         Task.schema.validate(newTask);
         Task.insert(newTask);
@@ -25,6 +27,18 @@ Meteor.methods({
             {
                 $push: {
                     sortArray: taskId,
+                },
+            },
+        );
+    },
+    repeatTask(textId, describe, beginTime, endTime, label) {
+        Task.update(
+            { textId }, {
+                $set: {
+                    describe,
+                    beginTime,
+                    endTime,
+                    label,
                 },
             },
         );
