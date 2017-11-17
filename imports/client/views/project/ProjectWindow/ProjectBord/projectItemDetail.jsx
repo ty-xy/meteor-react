@@ -72,6 +72,10 @@ class ProjectItemDetail extends Component {
     componentDidMount() {
         console.log(this.state.uuids);
     }
+    componentWillReceiveProps(nextProps) {
+        console.log('nextProps', nextProps);
+        console.log(uuid.v4());
+    }
     onPanelChange = (value) => {
         Meteor.call(
             'changeTime', this.props.Id.Id, value.format('L'),
@@ -202,7 +206,9 @@ class ProjectItemDetail extends Component {
             'createTaskList', {
                 name: this.state.checkValue,
                 taskId: this.props.Id.Id,
+                textId: this.props.Id.textId,
                 fatherId: '',
+                listId: uuid.v4(),
             },
             (err) => {
                 console.log(err);
@@ -338,7 +344,9 @@ class ProjectItemDetail extends Component {
             'createTaskList', {
                 name: this.state.listValue,
                 taskId: this.props.Id.Id,
+                textId: this.props.Id.textId,
                 fatherId: id,
+                listId: uuid.v4(),
             },
             (err) => {
                 console.log(err);
@@ -425,6 +433,44 @@ class ProjectItemDetail extends Component {
                 console.log(err);
             },
         );
+        this.props.tasklists.map((value) => {
+            console.log(value);
+            if (value) {
+                const ude = uuid.v4();
+                Meteor.call(
+                    'createTaskList',
+                    {
+                        name: value.name,
+                        taskId: task.taskBoardId,
+                        textId: this.state.uuids,
+                        fatherId: '',
+                        listId: ude,
+                    },
+                    (err) => {
+                        console.log(err);
+                    },
+                );
+                this.props.taskchild.map((item) => {
+                    if (item.fatherId === value.listId) {
+                        return Meteor.call(
+                            'createTaskList',
+                            {
+                                name: item.name,
+                                taskId: task.taskBoardId,
+                                textId: this.state.uuids,
+                                fatherId: ude,
+                                listId: uuid.v4(),
+                            },
+                            (err) => {
+                                console.log(err);
+                            },
+                        );
+                    }
+                    return null;
+                });
+            }
+            return null;
+        });
     }
     // 渲染子清单
     renderTasks = (id) => {
@@ -442,9 +488,6 @@ class ProjectItemDetail extends Component {
     }
     // 开始渲染
     render() {
-        console.log(this.state.time, 1111);
-        console.log(this.props.files);
-        // const { startValue, endValue, endOpen } = this.state;
         const menu = (
             <Menu >
                 <Menu.Item key="0">
@@ -605,17 +648,17 @@ class ProjectItemDetail extends Component {
                                         删除
                                     </Col>
                                 </Row>
-                                {this.renderTasks(tasklist._id, index)}
+                                {this.renderTasks(tasklist.listId, index)}
                                 <div style={{ marginLeft: '20px' }}>
-                                    {this.state[`shownT${tasklist._id}`] ?
+                                    {this.state[`shownT${tasklist.listId}`] ?
                                         <ProjectInput
                                             input="添加"
                                             value={this.state.listValue}
                                             onChange={this.handldeChangetaskList}
-                                            onClick={() => this.handleSendTaskList(tasklist._id)}
+                                            onClick={() => this.handleSendTaskList(tasklist.listId)}
                                         /> :
                                         <p>
-                                            <Icon icon="icon-tianjia1" onClick={() => this.handldetaskList(tasklist._id)} />
+                                            <Icon icon="icon-tianjia1" onClick={() => this.handldetaskList(tasklist.listId)} />
                                             扩充清单
                                         </p>
                                     }
@@ -726,15 +769,15 @@ export default withTracker((Id) => {
     Meteor.subscribe('files');
     const activities = Active.find({ taskId: Id.Id }, { sort: { createTime: -1 } }).fetch();
     const tasks = Task.find({ _id: Id.Id }).fetch();
-    const tasklists = TaskList.find({ $and: [{ taskId: Id.Id }, { fatherId: '' }] }).fetch();
-    const taskchild = TaskList.find({ $and: [{ taskId: Id.Id }, { fatherId: { $ne: '' } }] }).fetch();
+    const tasklists = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: '' }] }).fetch();
+    const taskchild = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: { $ne: '' } }] }).fetch();
     const idd = tasklists.map((id) => {
-        const length = TaskList.find({ $and: [{ taskId: Id.Id }, { fatherId: id._id }] }).fetch();
+        const length = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: id.listId }] }).fetch();
         return length;
     });
     const iddd = idd.map(element => (element.length));
     //  const file = tasks[0].fileId;
-    console.log(tasks);
+    console.log(tasks, Id);
     //  const files = File.find({ _id: { $in: file } }).fetch();
     return {
         Id,

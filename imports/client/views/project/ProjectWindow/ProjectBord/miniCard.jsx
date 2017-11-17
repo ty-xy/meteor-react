@@ -169,6 +169,7 @@ class MiniCard extends Component {
                         <ProjectItemDetail
                             item={this.props.value}
                             Id={this.props.idIndex}
+                            textId={this.props.textId}
                             delete={this.props.deleteCard}
                         />
                     </Modal>
