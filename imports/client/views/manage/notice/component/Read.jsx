@@ -67,7 +67,7 @@ class Read extends PureComponent {
     )
     reCall = (e, _id) => {
         e.preventDefault();
-        feedback.dealDelete('温馨提示', '此操作不可撤回', () => {
+        feedback.dealDelete('温馨提示', '你确定要撤回公告吗？', () => {
             Meteor.call(
                 'deleteNotice',
                 { _id },

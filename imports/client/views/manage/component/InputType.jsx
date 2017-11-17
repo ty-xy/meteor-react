@@ -1,23 +1,28 @@
 import React from 'react';
-import { Input, Col } from 'antd';
+import { Input, Col, Form } from 'antd';
 import PropTypes from 'prop-types';
+
+const FormItem = Form.Item;
 
 const InputType = ({ form, title, keyword, editData, required, requiredErr, marginBottom = 0 }) => (
     <Col span={24} style={{ marginBottom }}>
-        {title && <p className="e-mg-input-label">{title}</p>}
-        {form.getFieldDecorator(keyword, {
-            initialValue: editData && editData[keyword],
-            rules: [{
-                required, message: requiredErr,
-            }],
-        })(
-            <Input
-                className="e-mg-input-type"
-                size="large"
-                style={{ width: '98%' }}
-                placeholder="请输入文字"
-            />,
-        )}
+        <FormItem
+            label={title}
+        >
+            {form.getFieldDecorator(keyword, {
+                initialValue: editData && editData[keyword],
+                rules: [{
+                    required, message: requiredErr,
+                }],
+            })(
+                <Input
+                    className="e-mg-input-type"
+                    size="large"
+                    style={{ width: '98%' }}
+                    placeholder="请输入文字"
+                />,
+            )}
+        </FormItem>
     </Col>
 );
 

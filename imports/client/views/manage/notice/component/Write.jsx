@@ -30,20 +30,13 @@ class Write extends PureComponent {
             visible: false,
             groupRequire: true,
             requireGroupNotice: false,
-            approvers: [],
         };
     }
     componentWillMount() {
         const { editData = {} } = this.props.location.state || {};
         if (editData._id) {
-            this.setState({ img: editData.img, file: editData.file });
+            this.setState({ ...editData });
         }
-        console.log(Meteor.call(
-            'getCommaudit',
-            (err, d) => {
-                console.log('err', err, d);
-            },
-        ));
     }
     // 获取添加的人员
     getGroup = (keyword, data) => {
@@ -53,10 +46,9 @@ class Write extends PureComponent {
     formSubmit = (e) => {
         e.preventDefault();
         const { form, location } = this.props;
-        const { img, file, group, groupRequire, approvers } = this.state;
+        const { img, file, group, groupRequire } = this.state;
         form.validateFields((err, fields) => {
             if (err) {
-                feedback.dealError({ reason: '标题、作者、正文都需填写' });
                 return false;
             }
             fields.username = Meteor.user().username;
@@ -67,7 +59,7 @@ class Write extends PureComponent {
             fields.group = group;
             fields.company = Meteor.user().profile.mainCompany;
             if (groupRequire) {
-                if (approvers.length === 0) {
+                if (group.length === 0) {
                     this.setState({ requireGroupNotice: true });
                     feedback.dealError({ reason: '请选择通知范围' });
                     return false;
@@ -105,7 +97,6 @@ class Write extends PureComponent {
     changeUpdate = (name, imgs) => {
         // const img = [];
         // const file = [];
-        console.log('changeUpdate', name, imgs);
         // const { img, file } = this.state;
         if (name === 'img') {
             this.setState({ img: imgs });
@@ -119,8 +110,18 @@ class Write extends PureComponent {
         this.setState({ [keyword]: imgs });
     }
     // 预览
-    handleCancel = (bool) => {
-        this.setState({ visible: bool });
+    handlePreviewCancel = (bool) => {
+        const { form } = this.props;
+        if (bool) {
+            const res = form.getFieldsValue();
+            if (!res.content) {
+                feedback.dealError({ reason: '尚未输入正文无法预览！' });
+            } else {
+                this.setState({ visible: bool });
+            }
+        } else {
+            this.setState({ visible: bool });
+        }
     }
     // select people
     showModal = (e, keyword) => {
@@ -150,8 +151,7 @@ class Write extends PureComponent {
     }
     render() {
         const { editData = {} } = this.props.location.state || {};
-        const { img, visiblecopy, copy, file } = this.state;
-        const { title, content } = this.props.form.getFieldsValue();
+        const { img, visiblegroup, title, content, group, file } = this.state;
         const date = new Date();
         const year = date.getFullYear();
         let month = '';
@@ -163,13 +163,13 @@ class Write extends PureComponent {
         const day = date.getDate();
         return (
             <Form onSubmit={this.formSubmit} style={{ height: '100%', overflow: 'auto' }}>
-                <Col span={24} style={{ marginTop: '20px', marginBottom: '-10px' }}>
+                <Col span={24} style={{ marginTop: '20px', marginBottom: '10px' }}>
                     <ChoosePeopleModel
-                        visible={visiblecopy}
+                        visible={visiblegroup}
                         cancel={this.handleCancel}
                         ok={this.handleOk}
-                        keyword="copy"
-                        defaultValue={copy || []}
+                        keyword="group"
+                        defaultValue={group || []}
                         modelTitle="选人"
                         isSelecteGroup
                     >
@@ -178,10 +178,10 @@ class Write extends PureComponent {
                             style={{ marginBottom: '0px' }}
                         >
                             <PeopleList
-                                keyword="copy"
+                                keyword="group"
                                 iconTitle="选择部门"
                                 isSelecteGroup
-                                componentSelectedUser={copy || []}
+                                componentSelectedUser={group || []}
                                 showModal={this.showModal}
                                 handleGroupChange={this.handleGroupChange}
                                 handlePeopleChange={this.handlePeopleChange}
@@ -193,18 +193,18 @@ class Write extends PureComponent {
                 </Col>
                 <InputType title="标题：" required requiredErr="请填写公告标题" keyword="title" editData={editData} {...this.props} />
                 <InputType title="作者：" required requiredErr="请填写公告作者" keyword="author" editData={editData} {...this.props} />
-                <InputArea title="正文：" required requiredErr="请填写公告正文" className="margin-bottom-20" editData={editData} keyword="content" {...this.props} />
+                <InputArea title="正文：" required requiredErr="请填写公告正文" className="margin-bottom-20" defaultValue={content} keyword="content" {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                 <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
                 <MyRadio title="设为保密公告" subtitle="接收人只能查看，消息不可转发；公告详情页有接收人真实姓名水印，防止截图发送" keyword="isSecrecy" editData={editData} {...this.props} />
                 <Col span={24} className="margin-top-20">
                     <Button htmlType="submit" className="e-mg-button-primary margin-right-20">保存</Button>
-                    <Button className="e-mg-button-default" onClick={() => this.handleCancel(true)}>预览</Button>
+                    <Button className="e-mg-button-default" onClick={() => this.handlePreviewCancel(true)}>预览</Button>
                 </Col>
                 <Modal
                     title={title}
                     visible={this.state.visible}
-                    onCancel={() => this.handleCancel(false)}
+                    onCancel={() => this.handlePreviewCancel(false)}
                     footer={null}
                     className="e-mg-notice-preview"
                 >
