@@ -6,7 +6,7 @@ import { userIdToInfo } from '../../../../../util/user';
 
 
 const CardAudit = ({ handlerAudit, type, reason, daynum, createdAt, status, userId, _id, allUsers, details, total, content, detail }) => (
-    <Col className="e-mg-log-card" style={{ width: '260px', marginRight: '30px' }}>
+    <Col className="e-mg-log-card">
         <div className="e-mg-log-card-header">
             <Col span={16}>
                 <img src={userIdToInfo.getAvatar(allUsers, userId) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" alt="" />
@@ -23,6 +23,13 @@ const CardAudit = ({ handlerAudit, type, reason, daynum, createdAt, status, user
             }
             {
                 /假/g.test(type) && (<div>
+                    <p><span>请假事由：</span>{reason}</p>
+                    <p><span>请假类型：</span>{type}</p>
+                    <p><span>请假天数：</span>{daynum}</p>
+                </div>)
+            }
+            {
+                type === '调休' && (<div>
                     <p><span>请假事由：</span>{reason}</p>
                     <p><span>请假类型：</span>{type}</p>
                     <p><span>请假天数：</span>{daynum}</p>

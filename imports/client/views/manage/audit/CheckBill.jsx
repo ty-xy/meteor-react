@@ -66,10 +66,8 @@ class CheckBill extends Component {
                 }
             }
             const details = [];
-            let total = 0;
             for (let i = 0; i < uuid + 1; i++) {
                 const amount = fieldsValue[`amount-${i}`];
-                total += amount;
                 const category = fieldsValue[`category-${i}`];
                 const reason = fieldsValue[`reason-${i}`];
                 details.push({
@@ -88,9 +86,8 @@ class CheckBill extends Component {
                 img,
                 file,
                 details,
-                total,
+                total: fieldsValue.total,
             };
-            console.log('res', res);
             Meteor.call(
                 'createCheckBill',
                 { ...res },
@@ -211,7 +208,7 @@ class CheckBill extends Component {
                 />
                 {keys.length > 1 ? (
                     <FormItem {...formItemLayoutWithOutLabel}>
-                        <Button type="dashed" onClick={() => this.remove(k)} style={{ width: '260px', color: '#F6423A', borderColor: '#F6423A' }}>
+                        <Button type="dashed" onClick={() => this.remove(k)} style={{ width: '300px', color: '#F6423A', borderColor: '#F6423A' }}>
                             <Icon
                                 className="dynamic-delete-button"
                                 type="delete"
@@ -238,6 +235,18 @@ class CheckBill extends Component {
                             <Icon type="plus" /> 增加报销明细
                         </Button>
                     </FormItem>
+                    <MyInput
+                        {...this.props}
+                        label="报销总金额"
+                        placeholder="请输入报销总金额"
+                        keyword="total"
+                        defaultValue=""
+                        type="number"
+                        typeErr="出差天数必须为数字"
+                        required
+                        requiredErr="出差天数不能为空"
+                        width="500"
+                    />
                     <FormItem
                         {...formItemLayout}
                         label="添加图片"

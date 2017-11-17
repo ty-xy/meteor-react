@@ -16,7 +16,7 @@ const formItemLayout = {
     },
 };
 const formatDate = 'YYYY-MM-DD';
-const MyDate = ({ keyword, label, required, defaultValue, placeholder, requiredErr, form, width }) => (
+const MyDate = ({ keyword, label, required, defaultValue, placeholder, requiredErr, form, width, disabledDate }) => (
     <FormItem
         {...formItemLayout}
         label={label}
@@ -27,7 +27,7 @@ const MyDate = ({ keyword, label, required, defaultValue, placeholder, requiredE
                 required, message: requiredErr,
             }],
         })(
-            <DatePicker allowClear format={formatDate} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }} />,
+            <DatePicker allowClear format={formatDate} placeholder={placeholder} disabledDate={disabledDate} style={{ width: width ? `${width}px` : '100%' }} />,
         )}
     </FormItem>
 );
@@ -40,5 +40,6 @@ MyDate.propTypes = {
     placeholder: PropTypes.string,
     defaultValue: PropTypes.string,
     width: PropTypes.string,
+    disabledDate: PropTypes.func,
 };
 export default MyDate;

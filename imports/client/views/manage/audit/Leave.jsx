@@ -7,7 +7,7 @@ import Company from '../../../../schema/company';
 import Goback from './component/Goback';
 import MyInput from './component/Input';
 import MySelect from './component/Select';
-import MyDatePicker from './component/Date';
+import DatePicker from './component/DatePicker';
 import MyTextArea from './component/InputArea';
 import ImgUpload from '../component/ImgUpload';
 import SubmitBtn from './component/SubmitBtn';
@@ -57,17 +57,17 @@ class Leave extends PureComponent {
             fieldsValue.approvers = approvers;
             fieldsValue.copy = copy;
             fieldsValue.userId = Meteor.user()._id;
-            const startAt = fieldsValue.startAt;
-            const endAt = fieldsValue.endAt;
+            fieldsValue.startAt = fieldsValue.datepicker[0]._d;
+            fieldsValue.endAt = fieldsValue.datepicker[1]._d;
+            // const startAt = fieldsValue.startAt;
+            // const endAt = fieldsValue.endAt;
             const res = {
                 ...fieldsValue,
-                startAt: startAt._d,
-                endAt: endAt._d,
                 img,
                 status: '待审核',
                 company: UserUtil.getCompany(),
             };
-            console.log('res', res);
+            delete res.datepicker;
             Meteor.call(
                 'createLeave',
                 { ...res },
@@ -123,6 +123,9 @@ class Leave extends PureComponent {
         const peos = res.filter(item => (item !== id));
         this.setState({ [keyword]: peos });
     }
+    // 开始时间限制
+    disabledDate = current => current && current.valueOf() < Date.now()
+
     render() {
         // const { location } = this.props;
         const { img, visibleapprovers, visiblecopy, requireGroupNotice, approvers, copy } = this.state;
@@ -139,29 +142,17 @@ class Leave extends PureComponent {
                         required
                         requiredErr="请假类型不能为空"
                         data={types || []}
-                        width="260"
+                        width="300"
                     />
-                    <MyDatePicker
-                        {...this.props}
-                        label="开始时间"
-                        placeholder="请选择(必选)"
-                        keyword="startAt"
-                        defaultValue=""
+                    <DatePicker
+                        keyword="datepicker"
+                        label="时间范围"
+                        placeholder={['开始时间(必选)', '结束时间(必选)']}
+                        width="300"
+                        disabledDate={this.disabledDate}
                         required
-                        requiredErr="请选择开始时间"
-                        data={types || []}
-                        width="260"
-                    />
-                    <MyDatePicker
+                        requiredErr="请选择时间范围"
                         {...this.props}
-                        label="结束时间"
-                        placeholder="请选择(必选)"
-                        keyword="endAt"
-                        defaultValue=""
-                        required
-                        requiredErr="请选择结束时间"
-                        data={types || []}
-                        width="260"
                     />
                     <MyInput
                         {...this.props}
@@ -174,7 +165,7 @@ class Leave extends PureComponent {
                         typeErr="请假天数必须为数字且不能超过20天"
                         required
                         requiredErr="请假天数不能为空"
-                        width="260"
+                        width="300"
                     />
                     <MyTextArea
                         {...this.props}
