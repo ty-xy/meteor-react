@@ -495,7 +495,7 @@ class ProjectItemDetail extends Component {
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key="10">
-                    <p onClick={this.handleCopy}>复制卡片</p>
+                    <p onClick={this.handleCopys}>复制卡片</p>
                 </Menu.Item>
             </Menu>
         );

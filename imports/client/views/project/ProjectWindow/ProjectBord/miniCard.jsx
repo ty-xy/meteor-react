@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 // import format from 'date-format';
+
 import pureRender from 'pure-render-decorator';
 // import format from 'date-format';
 
