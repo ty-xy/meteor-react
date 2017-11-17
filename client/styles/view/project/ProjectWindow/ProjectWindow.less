@@ -1,5 +1,68 @@
 @blueBtn: #15B4F1;
 
+.project-members{
+    width:500px;
+    height:100%;
+    background: #FFFFFF;
+    border-radius: 3px 3px 0 0;
+    display: flex;
+    flex: 1;
+    justify-content: stretch;
+    flex-direction: column;
+    .member-search{
+        height:100px;
+        text-align:center;
+        line-height:100px;
+        background: #FFFFFF;
+        border-bottom:1px solid #ddd;       
+    }
+    .member-title{
+        height:59px;
+        background: #FFFFFF;
+        border-radius: 3px 3px 0 0;
+        border: 1px solid #E2E2E2;
+        text-align:center;
+        font-family: PingFangSC-Regular;
+        font-size: 18px;
+        color: #333333;
+        letter-spacing: 0.22px;
+        line-height:59px;
+    }
+    .p-m-list{
+        display:flex;
+        padding:5px;
+        height:89px;
+        // line-height:89px;
+        border-bottom:1px solid #ddd;
+        &>p{
+         margin-left:20px;
+         font-family: PingFangSC-Regular;
+         font-size: 16px;
+         color: #333333;
+         letter-spacing: 0.19px;
+         margin-top:25px;
+        }
+        &>.p-c-o{
+            margin-left:20px;
+           margin-top:20px;
+            height:36px;
+            line-height:36px;
+            width:70px;
+           text-align:center;
+           background: @blueBtn;
+           border-radius: 3px;
+           a{
+               font-size: 12px;
+            color: #FFFFFF;
+            letter-spacing: 0.17px;}
+        }
+    }
+}
+.modal-reset{
+    .ant-modal-content{
+        height:100%;
+    }
+}
 .ejianlian-project-window-show{
     background: #FFFFFF;
     box-shadow: 2px 2px 15px 1px rgba(221,221,221,0.50);
@@ -11,7 +74,8 @@
     position: relative;
     display: flex;
     flex-direction:column;
-    max-height: 100%;;
+    max-height: 100%;
+    height:100%;
     flex: 1;
     justify-content: stretch;
     .window-title{

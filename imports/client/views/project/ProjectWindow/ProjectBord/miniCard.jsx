@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Modal } from 'antd';
+import { Modal, Calendar } from 'antd';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
+// import format from 'date-format';
 import pureRender from 'pure-render-decorator';
 // import format from 'date-format';
 
@@ -10,6 +11,7 @@ import ProjectItemDetail from './projectItemDetail';
 import Task from '../../../../../../imports/schema/task';
 import Active from '../../../../../../imports/schema/active';
 import Icon from '../../../../components/Icon';
+// import eventUtil from '../../../../../util/eventUtil';
 
 @pureRender
 class MiniCard extends Component {
@@ -23,6 +25,7 @@ class MiniCard extends Component {
         index: PropTypes.string,
         ind: PropTypes.number,
         textId: PropTypes.string,
+        deleteCard: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -34,16 +37,45 @@ class MiniCard extends Component {
             concern: false,
             mask: false,
             left: '',
+            showStartTime: false,
+            showOverTime: false,
         };
     }
     componentWillReceiveProps(nextProps) {
         console.log('nextProps', nextProps);
-        // setTimeout(() => {
-        //     this.setState({
-        //         delClickFlag: true,
-        //     });
-        // }, 1);
-        // console.log(this.state.delClickFlag);
+    }
+    onPanelChange=(value) => {
+        console.log(value.format('L'));
+        Meteor.call(
+            'changeTime', this.props.idIndex, value.format('L'),
+            (err) => {
+                console.log(err);
+            },
+        );
+        this.setState({
+            showStartTime: !this.state.showStartTime,
+        });
+    }
+    onPanellChange=(value) => {
+        console.log(value.format('L'));
+        Meteor.call(
+            'changeEndTime', this.props.idIndex, value.format('L'),
+            (err) => {
+                console.log(err);
+            },
+        );
+        this.setState({
+            showOverTime: !this.state.showOverTime,
+        });
+    }
+    handlePop =(e) => {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    }
+    hideModal = () => {
+        this.setState({
+            visible: false,
+        });
     }
     showModal = (e) => {
         this.setState({
@@ -51,9 +83,19 @@ class MiniCard extends Component {
             left: e.target.offsetLeft,
         });
     }
-    hideModal = () => {
+    handleChangeStart =(e) => {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
         this.setState({
-            visible: false,
+            showStartTime: !this.state.showStartTime,
+        });
+        // eventUtil.addEvent(document, 'click', this.closeMenu);
+    }
+    handleChangeEnd =(e) => {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+        this.setState({
+            showOverTime: !this.state.showOverTime,
         });
     }
     render() {
@@ -77,18 +119,33 @@ class MiniCard extends Component {
                         <p>{this.props.value}</p>
                         {this.props.label ? <p className="label-show" style={{ background: this.props.label }} /> : null}
                     </div>
-                    <div style={{ display: 'flex' }}>
+                    <div className="try-stop" style={{ display: 'flex' }}>
                         {this.props.begintime ?
-
-                            <div className="time-show">
+                            <div className="time-show" onClick={e => this.handleChangeStart(e)}>
                                 <Icon icon="icon-qingjiaicon" />
                                 <p className="time-number">{this.props.begintime}</p>
-                            </div> : null
+                                <div className="try" style={{ display: this.state.showStartTime ? 'block' : 'none' }} />
+                                {this.state.showStartTime ?
+                                    <div className="clender-setting" onClick={e => this.handlePop(e)}>
+                                        <Calendar fullscreen={false} onSelect={this.onPanelChange} />
+                                        <button onClick={e => this.handleChangeStart(e)}>取消</button>
+                                    </div>
+                                    : null}
+                            </div>
+                            : null
                         }
                         {this.props.endtime ?
-                            <div className="time-show">
-                                <Icon icon="icon-qingjiaicon" />
-                                <p className="time-number">{this.props.endtime}</p>
+                            <div>
+                                <div className="time-show" onClick={e => this.handleChangeEnd(e)}>
+                                    <Icon icon="icon-qingjiaicon" />
+                                    <p className="time-number">{this.props.endtime}</p>
+                                    <div className="try" style={{ display: this.state.showOverTime ? 'block' : 'none' }} />
+                                    {this.state.showOverTime ?
+                                        <div className="clender-setting" onClick={e => this.handlePop(e)}>
+                                            <Calendar fullscreen={false} onSelect={this.onPanellChange} />
+                                            <button onClick={e => this.handleChangeEnd(e)}>取消</button>
+                                        </div> : null}
+                                </div>
                             </div> : null
                         }
                     </div>
@@ -103,31 +160,39 @@ class MiniCard extends Component {
                         footer={null}
                         onCancel={this.hideModal}
                         onOk={this.hideModal}
-                        width={315}
+                        width={350}
                         style={{ top: 220, left: this.state.left + 37, boxShadow: 'none' }}
                         mask={this.state.mask}
                         className="Moal-reset"
                         bodyStyle={{ padding: 0 }}
                     >
-                        <ProjectItemDetail item={this.props.value} Id={this.props.idIndex} />
+                        <ProjectItemDetail
+                            item={this.props.value}
+                            Id={this.props.idIndex}
+                            textId={this.props.textId}
+                            delete={this.props.deleteCard}
+                        />
                     </Modal>
                 </div>
-            </div >);
+            </div >
+        );
     }
 }
 
 export default withTracker((taskid) => {
     Meteor.subscribe('active');
     Meteor.subscribe('task');
-    const tasks = Task.find({ _id: taskid.idIndex }).fetch();
     const activeL = Active.find({ taskId: taskid.idIndex }).fetch().length;
-    const begintime = tasks[0].beginTime;
-    const endtime = tasks[0].endTime;
-    const label = tasks[0].label;
-    return {
-        begintime,
-        activeL,
-        endtime,
-        label,
-    };
+    const tasks = Task.find({ _id: taskid.idIndex }).fetch();
+    if (tasks.length !== 0) {
+        const begintime = tasks[0].beginTime;
+        const endtime = tasks[0].endTime;
+        const label = tasks[0].label;
+        return {
+            begintime,
+            activeL,
+            endtime,
+            label,
+        };
+    }
 })(MiniCard);

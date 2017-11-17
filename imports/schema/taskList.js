@@ -16,8 +16,14 @@ TaskList.schema = new SimpleSchema({
         type: String,
         regEx: SimpleSchema.RegEx.Id,
     },
+    textId: {
+        type: String,
+    },
     // 父清单id
     fatherId: {
+        type: String,
+    },
+    listId: {
         type: String,
     },
     // 创建人id

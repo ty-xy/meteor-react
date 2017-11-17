@@ -73,7 +73,7 @@ Meteor.publish('users', () => Meteor.users.find(
 ));
 
 Meteor.publish('group', () => Group.find({}));
-Meteor.publish('file', () => File.find({}));
+Meteor.publish('files', () => File.find({}));
 
 Meteor.publish('project', () => Project.find({}));
 Meteor.publish('taskboard', () => TaskBoard.find({}));
