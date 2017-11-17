@@ -107,9 +107,6 @@ class ChatFriendInfo extends Component {
                                     {name}
                                 </p>
                             </li>
-                            {/* <li>
-                                
-                            </li> */}
                             {
                                 this.props.friendId !== Meteor.userId() ?
 

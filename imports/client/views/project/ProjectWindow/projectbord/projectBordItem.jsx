@@ -149,7 +149,7 @@ class ProjectBordItem extends Component {
             },
         );
     }
-    // 删除卡片 
+    // 删除卡片x
     handleDeleteTask = (itemd) => {
         const deleteCard = this.props.fd[0][this.props.tastBoardId];
         const deleteIndex = deleteCard.indexOf(itemd);

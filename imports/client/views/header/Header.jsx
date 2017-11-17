@@ -4,7 +4,7 @@ import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
 import AvatarSelf from '../../components/AvatarSelf';
 
-import Notice from './Notice';
+// import Notice from './Notice';
 import eventUtil from '../../../util/eventUtil';
 
 
@@ -100,7 +100,7 @@ class Header extends Component {
                         <li onClick={this.handleLogin}>退出登录</li>
                     </ul>
                 </div>
-                <Notice style={{ display: this.state.isShowNotice ? 'block' : 'none' }} handleNotice={this.handleClick} />
+                {/* <Notice style={{ display: this.state.isShowNotice ? 'block' : 'none' }} handleNotice={this.handleClick} /> */}
             </div>
         );
     }
