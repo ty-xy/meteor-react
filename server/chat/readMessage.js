@@ -13,4 +13,16 @@ Meteor.methods({
             },
         );
     },
+    readMessages(messageIds, userId) {
+        messageIds.map(messageId =>
+            Messages.update(
+                { _id: messageId },
+                {
+                    $push: {
+                        readedMembers: userId,
+                    },
+                },
+            ),
+        );
+    },
 });

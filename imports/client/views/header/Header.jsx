@@ -38,6 +38,9 @@ class Header extends Component {
     handleLogin = () => {
         this.context.history.push('/login');
     }
+    handleBackEnd = () => {
+        this.context.history.push('/companySetting');
+    }
     closeMenu = (e) => {
         this.setState({
             isShowAccount: false,
@@ -73,18 +76,14 @@ class Header extends Component {
                         </ul>
                     </div>
                     <ul className="ejianlian-header-account">
-                        {/* <li className="header-search-all">
-                            <input type="text" placeholder="请输入关键词"/>>
-                            <span className="close-search">X</span>
-                        </li> */}
-                        <li>
+                        <li onClick={this.clickTab.bind(this, '/search')}>
                             <i className="iconfont icon-ejianlain-search icon-sousuo" />
                         </li>
                         <li className="icon-all-notice" onClick={this.handleClick}>
                             <p className="icon-notice-redDot" />
                             <i className="iconfont icon-ejianlain-notice icon-tongzhi" />
                         </li>
-                        <li>
+                        <li onClick={this.handleBackEnd}>
                             <i className="iconfont icon-ejianlain-pc icon-diannao" />
                         </li>
                         <li className="admin-account" onClick={this.handleShowAccount}>

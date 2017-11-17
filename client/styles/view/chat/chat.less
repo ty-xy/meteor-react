@@ -166,8 +166,26 @@
     display: flex;
     flex-direction: row;
     position: relative;
+    .linkman-nav {
+        position: absolute;
+        height: 60px;
+        line-height: 60px;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        background-color: #fff;
+        & > .linkman-list {
+            width: 35%;
+            text-align: center;
+        }
+        .linkmanActive {
+            color: #29B6F6;
+            border-bottom: 2px solid #29B6F6;
+        }
+    }
     & > .ejianlian-chat-friend-list {
         width: 100%;
+        padding-top: 60px;
         & > .chat-friend-pannel {
             font-size: 16px;
             .friend-pannel-type {
@@ -204,6 +222,7 @@
     }
     & > .ejianlian-chat-group-list {
         width: 100%;
+        padding-top: 60px;
         .friend-pannel-type {
             width: 100%;
             height: 30px;

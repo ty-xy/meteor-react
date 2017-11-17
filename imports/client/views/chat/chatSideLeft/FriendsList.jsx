@@ -22,6 +22,7 @@ class FriendsList extends Component {
         return (
             <div className="ejianlian-chat-friend-list">
                 <div className="chat-friend-pannel" onClick={this.props.handleNewFriend}>
+                    <div className="friend-pannel-type" />
                     <div className="new-friend-pannel">
                         <p className="new-friend">
                             <Icon icon="icon-icon15" />
@@ -72,7 +73,7 @@ export default withTracker(() => {
     const users = friendIds.map(_id => Meteor.users.findOne({ _id }));
     const pinyinData = users.map(user => ({
         user,
-        pinyin: pinyin(user.profile.name, {
+        pinyin: pinyin(user.profile && user.profile.name, {
             style: pinyin.STYLE_FIRST_LETTER,
         },
         )[0][0], // 可以自行选择不同的生成拼音方案和风格。
