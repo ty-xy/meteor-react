@@ -66,8 +66,6 @@ class ProjectList extends Component {
                             }
                             return null;
                         })
-                        // }
-                        // 
 
                     }
                 </ul>

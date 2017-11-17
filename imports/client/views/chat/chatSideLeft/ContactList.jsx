@@ -291,7 +291,6 @@ export default withTracker(() => {
     });
     // 找出别人向你发起的未处理的好友认证
     const newFriendNotice = Notice.find({ type: 0, to: Meteor.userId(), dealResult: 0 }).fetch();
-    // 
     newFriendNotice.forEach((x) => {
         x.notice = Notice.findOne({ _id: x._id });
         x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};

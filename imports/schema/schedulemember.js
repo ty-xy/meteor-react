@@ -18,7 +18,7 @@ ScheduleMember.SimpleSchema = new SimpleSchema({
     remind: {
         type: Boolean,
     },
-    // 提醒时间 
+    // 提醒时间
     remindTime: {
         type: Date,
     },
