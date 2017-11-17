@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const { TextArea } = Input;
 const FormItem = Form.Item;
 
-const InputArea = ({ form, title, keyword, defaultValue, className = '', marginBottom = 0, required, requiredErr, onChange, handleblur }) => {
+const InputArea = ({ form, title, keyword, defaultValue, className = '', marginBottom = 0, required, requiredErr, onChange = () => {}, handleblur = () => {} }) => {
     const focus = (e) => {
         e.preventDefault();
         e.target.style.height = 'auto';
