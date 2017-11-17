@@ -30,6 +30,10 @@ Project.schema = new SimpleSchema({
     creater: {
         type: String,
     },
+    members: {
+        type: [String],
+        optional: true,
+    },
     // 创建时间
     createTime: {
         type: Date,

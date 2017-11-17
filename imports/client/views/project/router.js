@@ -7,7 +7,7 @@ import ProjectStart from './ProjectWindow/ProjectStart';
 import ProjectOverFile from './ProjectWindow/ProjectBord/projectOverFile';
 
 export default () => (
-    <div>
+    <div style={{ height: '100%' }}>
         <Route exact path="/project" component={ProjectStart} />
         <Route path="/project/task/:id" component={ProjectWindow} />
         <Route path="/project/over" component={ProjectOverFile} />

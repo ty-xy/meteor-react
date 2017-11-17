@@ -28,7 +28,7 @@ export default class OverProject extends Component {
     }
     render() {
         return (
-            <div>
+            <div style={{ height: '140px' }}>
                 <Modal
                     visible={this.state.visible}
                     footer={null}

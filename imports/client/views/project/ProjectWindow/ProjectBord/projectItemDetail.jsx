@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 // import format from 'date-format';
+import uuid from 'uuid';
 import format from 'date-format';
 import pureRender from 'pure-render-decorator';
 import AvatarSelf from '../../../../components/AvatarSelf';
@@ -33,7 +34,7 @@ class ProjectItemDetail extends Component {
         taskchild: PropTypes.arrayOf(PropTypes.object),
         // label: PropTypes.string,
         iddd: PropTypes.array,
-        files: PropTypes.arrayOf(PropTypes.object),
+        files: PropTypes.string,
     }
     constructor(...props) {
         super(...props);
@@ -59,10 +60,17 @@ class ProjectItemDetail extends Component {
             isShowAccount: false,
             showBegin: false,
             showEnd: false,
+            uuids: '',
         };
     }
-    componentDidMount() {
+    componentWillMount() {
         console.log('componentWillMount', this.props.tasklists);
+        this.setState({
+            uuids: uuid.v4(),
+        });
+    }
+    componentDidMount() {
+        console.log(this.state.uuids);
     }
     onPanelChange = (value) => {
         Meteor.call(
@@ -104,33 +112,35 @@ class ProjectItemDetail extends Component {
         this.handleEnd();
     }
     handleChangeStart=() => {
+        // e.stopPropagation();
+        // e.nativeEvent.stopImmediatePropagation();
         this.handleStart();
     }
-    showModal = () => {
-        this.setState({
-            visible: true,
-        });
-    }
+    // showModal = () => {
+    //     this.setState({
+    //         visible: true,
+    //     });
+    // }
     showOk = () => {
         this.setState({
             visiblel: true,
         });
     }
-    showOver = () => {
-        this.setState({
-            visib: true,
-        });
-    }
-    hideModal = () => {
-        this.setState({
-            visible: false,
-        });
-    }
-    hideOver = () => {
-        this.setState({
-            visib: false,
-        });
-    }
+    // showOver = () => {
+    //     this.setState({
+    //         visib: true,
+    //     });
+    // }
+    // hideModal = () => {
+    //     this.setState({
+    //         visible: false,
+    //     });
+    // }
+    // hideOver = () => {
+    //     this.setState({
+    //         visib: false,
+    //     });
+    // }
     handleOk = () => {
         this.setState({
             visiblel: false,
@@ -386,7 +396,37 @@ class ProjectItemDetail extends Component {
                 console.log(err);
             });
     }
-    // 显示头像资料
+    // 复制卡片
+    handleCopy = () => {
+        const task = this.props.tasks[0];
+        console.log(task);
+        Meteor.call(
+            'createTask',
+            { name: task.name,
+                taskBoardId: task.taskBoardId,
+                textId: this.state.uuids,
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
+        Meteor.call('changeSortAarry', task.taskBoardId, this.state.uuids, (err) => {
+            console.log(err);
+        },
+        );
+        Meteor.call(
+            'repeatTask',
+            this.state.uuids,
+            task.describe,
+            task.beginTime,
+            task.endTime,
+            task.label,
+            (err) => {
+                console.log(err);
+            },
+        );
+    }
+    // 渲染子清单
     renderTasks = (id) => {
         console.log();
         return this.props.taskchild.map((listChild) => {
@@ -412,7 +452,7 @@ class ProjectItemDetail extends Component {
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key="10">
-                    <p>复制卡片</p>
+                    <p onClick={this.handleCopy}>复制卡片</p>
                 </Menu.Item>
             </Menu>
         );
@@ -437,28 +477,6 @@ class ProjectItemDetail extends Component {
                             </Dropdown>
                         </Col>
                     </Row>
-                    <Modal
-                        visible={this.state.visible}
-                        z-index={1050}
-                        className="Modal-mask"
-                        mask={this.state.mask}
-                        onCancel={this.hideModal}
-                        onOk={this.hideModal}
-                        width={200}
-                    >
-                        <Calendar fullscreen={false} onChange={this.onPanellChange} />
-                    </Modal>
-                    <Modal
-                        visible={this.state.visib}
-                        z-index={1050}
-                        className="Modal-mask"
-                        mask={this.state.mask}
-                        onCancel={this.hideOver}
-                        onOk={this.hideOver}
-                        width={200}
-                    >
-                        <Calendar fullscreen={false} onChange={this.onPanelChange} />
-                    </Modal>
                 </div>
                 <div className="modal-detail-content detail-common">
                     <Row className="detail-list-common">
@@ -512,10 +530,11 @@ class ProjectItemDetail extends Component {
                         <Col span={7} style={{ textAlign: 'center' }} >
                             <p >开始</p>
                             {this.props.tasks[0] && this.props.tasks[0].beginTime ?
-                                <div>
+                                <div onClick={this.handleStart}>
                                     <div className="start-time" onClick={this.handleStart}>
                                         {this.props.tasks[0].beginTime}
                                     </div>
+                                    <div className="try" style={{ display: this.state.showBegin ? 'block' : 'none' }} />
                                     {this.state.showBegin ?
                                         <div className="clender-setting  clender-setting-more" >
                                             <Calendar fullscreen={false} onSelect={this.onSelectChange} />
@@ -534,10 +553,11 @@ class ProjectItemDetail extends Component {
                         <Col span={7} >
                             <p >结束</p>
                             {this.props.tasks[0] && this.props.tasks[0].endTime ?
-                                <div>
-                                    <div className="start-time" onClick={this.handleEnd}>
+                                <div onClick={this.handleChangeEnd}>
+                                    <div className="start-time" onClick={this.handleEnd} >
                                         {this.props.tasks[0].endTime}
                                     </div>
+                                    <div className="try" style={{ display: this.state.showEnd ? 'block' : 'none' }} />
                                 </div>
                                 :
                                 <div className="none-time">
@@ -574,7 +594,7 @@ class ProjectItemDetail extends Component {
                             <div key={tasklist._id} >
                                 <Row>
                                     <Col span={19}>
-                                        <Checkbox onChange={this.handleChange} defaultChecked disabled>{tasklist.name}</Checkbox>
+                                        <Checkbox onChange={this.handleChange} defaultChecked >{tasklist.name}</Checkbox>
                                     </Col>
                                     <Col span={2}>
                                         <span>0</span>
@@ -714,6 +734,7 @@ export default withTracker((Id) => {
     });
     const iddd = idd.map(element => (element.length));
     //  const file = tasks[0].fileId;
+    console.log(tasks);
     //  const files = File.find({ _id: { $in: file } }).fetch();
     return {
         Id,

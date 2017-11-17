@@ -38,7 +38,7 @@ class MiniCard extends Component {
             mask: false,
             left: '',
             showStartTime: false,
-            showOverTime: true,
+            showOverTime: false,
         };
     }
     componentWillReceiveProps(nextProps) {
@@ -121,30 +121,31 @@ class MiniCard extends Component {
                     </div>
                     <div className="try-stop" style={{ display: 'flex' }}>
                         {this.props.begintime ?
-                            <div >
-                                <div className="time-show" onClick={e => this.handleChangeStart(e)}>
-                                    <Icon icon="icon-qingjiaicon" />
-                                    <p className="time-number">{this.props.begintime}</p>
-                                </div>
+                            <div className="time-show" onClick={e => this.handleChangeStart(e)}>
+                                <Icon icon="icon-qingjiaicon" />
+                                <p className="time-number">{this.props.begintime}</p>
+                                <div className="try" style={{ display: this.state.showStartTime ? 'block' : 'none' }} />
                                 {this.state.showStartTime ?
                                     <div className="clender-setting" onClick={e => this.handlePop(e)}>
                                         <Calendar fullscreen={false} onSelect={this.onPanelChange} />
                                         <button onClick={e => this.handleChangeStart(e)}>取消</button>
-                                    </div> : null}
-                            </div> : null
+                                    </div>
+                                    : null}
+                            </div>
+                            : null
                         }
                         {this.props.endtime ?
                             <div>
-                                {this.state.showOverTime ?
-                                    <div className="time-show" onClick={e => this.handleChangeEnd(e)}>
-                                        <Icon icon="icon-qingjiaicon" />
-                                        <p className="time-number">{this.props.endtime}</p>
-                                    </div>
-                                    :
-                                    <div className="clender-setting" onClick={e => this.handlePop(e)}>
-                                        <Calendar fullscreen={false} onSelect={this.onPanellChange} />
-                                        <button onClick={e => this.handleChangeEnd(e)}>取消</button>
-                                    </div>}
+                                <div className="time-show" onClick={e => this.handleChangeEnd(e)}>
+                                    <Icon icon="icon-qingjiaicon" />
+                                    <p className="time-number">{this.props.endtime}</p>
+                                    <div className="try" style={{ display: this.state.showOverTime ? 'block' : 'none' }} />
+                                    {this.state.showOverTime ?
+                                        <div className="clender-setting" onClick={e => this.handlePop(e)}>
+                                            <Calendar fullscreen={false} onSelect={this.onPanellChange} />
+                                            <button onClick={e => this.handleChangeEnd(e)}>取消</button>
+                                        </div> : null}
+                                </div>
                             </div> : null
                         }
                     </div>
@@ -172,7 +173,8 @@ class MiniCard extends Component {
                         />
                     </Modal>
                 </div>
-            </div >);
+            </div >
+        );
     }
 }
 

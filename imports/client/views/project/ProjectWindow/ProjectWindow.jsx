@@ -15,6 +15,7 @@ import ProjectBordItem from './ProjectBord/projectBordItem';
 import TaskBoard from '../../../../../imports/schema/taskBoard';
 import Project from '../../../../../imports/schema/project';
 import ProjectSet from './ProjectBord/ProjectSet';
+import ProjectMembers from './ProjectBord/projectMembers';
 
 const TabPane = Tabs.TabPane;
 @pureRender
@@ -30,6 +31,7 @@ class ProjectWindow extends Component {
         this.state = {
             visible: false,
             id: '',
+            see: false,
         };
     }
     componentWillMount() {
@@ -48,6 +50,16 @@ class ProjectWindow extends Component {
             visible: true,
         });
     }
+    showMo = () => {
+        this.setState({
+            see: true,
+        });
+    }
+    hideOk =() => {
+        this.setState({
+            see: false,
+        });
+    }
     hideModal =() => {
         this.setState({
             visible: false,
@@ -62,13 +74,28 @@ class ProjectWindow extends Component {
             },
         };
         return (
+
             <div className="ejianlian-project-window-show">
                 {this.props.projectL.map((project, index) => {
-                    console.log(111);
+                    console.log(project.members);
                     return (<div className="window-title" key={index} >
                         <Row>
                             <Col span={22}><p>{project.name}</p></Col>
-                            <Col span={1}> <Icon icon="icon-qunzu" className="icon-one" /></Col>
+                            <Col span={1}> <Icon icon="icon-qunzu" className="icon-one" onClick={this.showMo} />
+                                <Modal
+                                    visible={this.state.see}
+                                    footer={null}
+                                    onOk={this.hideOk}
+                                    onCancel={this.hideOk}
+                                    className="modal-reset"
+                                    mask={false}
+                                    style={{ top: 0, right: 0, position: 'absolute', height: '100%' }}
+                                    bodyStyle={{ padding: 0 }}
+                                    width={375}
+                                >
+                                    <ProjectMembers member={project.members} />
+                                </Modal>
+                            </Col>
                             <Col span={1}> <Icon icon="icon-shezhi" className="icon-two" onClick={this.showModal} />
                                 <Modal
                                     visible={this.state.visible}

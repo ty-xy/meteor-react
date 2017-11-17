@@ -78,6 +78,7 @@ class ProjectAdd extends Component {
                 intro: this.state.intro,
                 affiliation: this.state.affiliation,
                 headPortrait: this.state.showImage ? this.state.icon[j] : this.state.img[0],
+                members: this.state.copy,
             },
             (err) => {
                 console.log(err);
@@ -130,7 +131,7 @@ class ProjectAdd extends Component {
             background: this.state.color[j],
         };
         console.log(this.props);
-        const { visiblecopy, copy, approvers, requireGroupNotice } = this.state;
+        const { visiblecopy, copy, requireGroupNotice } = this.state;
         return (
             <div className="ejianlian-project-add" >
                 <div id="title-f">
@@ -142,7 +143,7 @@ class ProjectAdd extends Component {
                         <Tooltip placement="right" title={text}>
                             {this.state.showImage ?
                                 <p className="icon-person" style={divStyle} onClick={this.changeUpdateTitle}>
-                                    <MyIcon icon={this.state.icon[j]} size="30px" iconColor="#fff" />
+                                    <MyIcon icon={this.state.icon[j]} size={30} iconColor="#fff" />
                                 </p> :
                                 <ImgUpload keyword="img" className="img-title" fileList={[]} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload}{...this.props} />}
                         </Tooltip>
@@ -196,26 +197,25 @@ class ProjectAdd extends Component {
                     <div className="common-type">
                         <span> 项目负责人:</span>
                         <AvatarSelf />
-                        {/* <MyIcon icon="icon-tianjia icon-add" /> */}
                     </div>
-                    <div className="common-type">
+                    <div>
                         <ChoosePeopleModel
                             visible={visiblecopy}
                             cancel={this.handleCancel}
                             ok={this.handleOk}
                             keyword="copy"
                             defaultValue={copy || []}
-                            modelTitle="项目成员"
+                            modelTitle="项目组成员"
                         >
                             <FormItem
                                 {...formItemLayout}
-                                label="项目成员"
+                                label="项目组成员"
                             >
                                 <a href="" onClick={this.showModal} style={{ color: 'rgb(204, 204, 204)' }} >对方过后就</a>
                                 <PeopleList
                                     keyword="copy"
-                                    iconTitle="审批人"
-                                    componentSelectedUser={approvers || []}
+                                    iconTitle="项目组成员"
+                                    componentSelectedUser={copy || []}
                                     showModal={this.showModal}
                                     handleGroupChange={this.handleGroupChange}
                                     handlePeopleChange={this.handlePeopleChange}
