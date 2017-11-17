@@ -41,13 +41,6 @@ class Day extends (React.PureComponent || React.Component) {
         const { state = {} } = location;
         this.setState({ logType, textShow, ...state });
     }
-    // componentDidMount() {
-    //     window.addEventListener('beforeunload', (e) => {
-    //         const confirmationMessage = '确定要离开吗？';
-    //         e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-    //         return confirmationMessage; // Gecko, WebKit, Chrome <34
-    //     });
-    // }
     componentWillReceiveProps(nextProps) {
         const { pathname, state = {} } = nextProps.location;
         if (pathname === '/manage/logging' && !state.edit) {
@@ -57,13 +50,6 @@ class Day extends (React.PureComponent || React.Component) {
             }
         }
     }
-    // componentWillUnmount() {
-    //     window.removeEventListener('beforeunload', (e) => {
-    //         const confirmationMessage = '确定要离开吗？';
-    //         e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-    //         return confirmationMessage; // Gecko, WebKit, Chrome <34
-    //     });
-    // }
     formSubmit = (e) => {
         e.preventDefault();
         const { form } = this.props;
@@ -124,13 +110,17 @@ class Day extends (React.PureComponent || React.Component) {
     changeUpdate = (name, imgs) => {
         // const img = [];
         // const file = [];
-        // console.log('changeUpdate', name, imgs);
+        console.log('changeUpdate', name, imgs);
         // const { img, file } = this.state;
         if (name === 'img') {
-            this.setState({ img: imgs });
+            this.setState({ img: imgs }, () => {
+                this.handleblur();
+            });
         }
         if (name === 'file') {
-            this.setState({ file: imgs });
+            this.setState({ file: imgs }, () => {
+                this.handleblur();
+            });
         }
     }
     // 删除图片
@@ -154,7 +144,9 @@ class Day extends (React.PureComponent || React.Component) {
     }
     // 选中的人
     handleOk = (keyword, leftUsers) => {
-        this.setState({ [keyword]: leftUsers, [`visible${keyword}`]: false, requireGroupNotice: false });
+        this.setState({ [keyword]: leftUsers, [`visible${keyword}`]: false, requireGroupNotice: false }, () => {
+            this.handleblur();
+        });
     }
     // 选中后删除
     handlePeopleChange = (e, id, keyword) => {
@@ -168,7 +160,9 @@ class Day extends (React.PureComponent || React.Component) {
     }
     // handlechange input改变缓存
     handlechange = (e, keyword) => {
-        this.setState({ [keyword]: e.target.value });
+        this.setState({ [keyword]: e.target.value }, () => {
+            this.handleblur();
+        });
     }
     handleblur = () => {
         const { finish, plan, help, img, file, peo, group, logType, _id, firstCache } = this.state;
@@ -192,7 +186,7 @@ class Day extends (React.PureComponent || React.Component) {
                     if (_err) {
                         feedback.dealError(_err);
                     } else {
-                        feedback.successToast('缓存成功');
+                        // feedback.successToast('缓存成功');
                     }
                 },
             );
@@ -208,7 +202,7 @@ class Day extends (React.PureComponent || React.Component) {
                         if (_err) {
                             feedback.dealError(_err);
                         } else {
-                            feedback.successToast('缓存成功');
+                            // feedback.successToast('缓存成功');
                         }
                     },
                 );
@@ -220,7 +214,7 @@ class Day extends (React.PureComponent || React.Component) {
                         if (_err) {
                             feedback.dealError(_err);
                         } else {
-                            feedback.successToast('缓存成功');
+                            // feedback.successToast('缓存成功');
                         }
                     },
                 );
@@ -234,7 +228,7 @@ class Day extends (React.PureComponent || React.Component) {
                     if (_err) {
                         feedback.dealError(_err);
                     } else {
-                        feedback.successToast('缓存成功');
+                        // feedback.successToast('缓存成功');
                     }
                 },
             );
@@ -242,9 +236,9 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
-        // console.log('day', this.props, this.state);
+        console.log('day', this.props, this.state.img);
         return (
-            <Form onSubmit={this.formSubmit}>
+            <Form onSubmit={this.formSubmit} id="formDiv" ref={i => this.$formDiv = i}>
                 <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
                 <InputArea defaultValue={plan} title={textShow === '日' ? '明日工作计划' : `下${textShow}工作计划`} keyword="plan" required requiredErr="工作计划必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
                 <InputArea defaultValue={help} title="需要协调与帮助：" keyword="help" marginBottom="20px" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
