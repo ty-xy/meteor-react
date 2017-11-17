@@ -1,8 +1,8 @@
 /*
- * @Author: toringo 
- * @Date: 2017-11-15 14:44:38 
- * @Last Modified by: toringo
- * @Last Modified time: 2017-11-15 14:51:28
+ * @Author: toringo
+ * @Date: 2017-11-15 14:44:38
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-11-17 15:31:53
  * setItem 设置缓存 day 代表缓存时间
  * getItem 获取缓存
  */

@@ -291,7 +291,7 @@ class ProjectItemDetail extends Component {
             [`shownCreadite${id}`]: true,
         });
     }
-    // 编辑active 
+    // 编辑active
     handleCreadite = (id) => {
         // console.log(this.props.id)
         this.setState({
