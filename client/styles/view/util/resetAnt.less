@@ -1,0 +1,30 @@
+@import '../util/util.less';
+.create-team-mask {
+    .ant-modal-title {
+        text-align: center;
+    }
+    .ant-modal-close-x {
+        line-height: 60px !important;
+    }
+    .upload-team-avatar {
+        width: 80px;
+        margin: 0 auto;
+        & > p {
+            color: @mainColor;
+            font-size: 14px;
+            text-indent: -4px;
+        }
+    }
+    .members-avatar {
+        display: flex;
+        .avatar-wrap {
+            display: flex;
+            & > .avatar {
+                margin-right: 10px;
+            }
+        }
+        .add-members {
+            margin-top: 3px;
+        }
+    }
+}

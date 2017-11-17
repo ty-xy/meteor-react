@@ -9,7 +9,9 @@ const ButtonTab = ({ logType, disabledType, expand, template, moreChange, locati
         {
             disabledType ? template.map((item) => {
                 const state = choooseCachelog(item.name);
-                state.edit = true;
+                if (state._id) {
+                    state.handleTab = true;
+                }
                 if (item === logType) {
                     return (<Link
                         key={item.name}
@@ -22,7 +24,9 @@ const ButtonTab = ({ logType, disabledType, expand, template, moreChange, locati
                 return null;
             }) : template.map((item) => {
                 const state = choooseCachelog(item.name);
-                state.edit = true;
+                if (state._id) {
+                    state.handleTab = true;
+                }
                 return (<Link
                     className={location.pathname !== item.url ? 'margin-right-20 e-mg-log-button-tab' : 'margin-right-20 e-mg-log-button-tab e-mg-log-button-tab-active'}
                     key={item.name}

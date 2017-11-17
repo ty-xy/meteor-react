@@ -168,7 +168,6 @@ class Approvaling extends Component {
             type: modelData.type,
             isAudit: auditIdea,
         };
-        console.log('res', res);
         Meteor.call(
             'updateAudit',
             { ...res },
@@ -176,8 +175,11 @@ class Approvaling extends Component {
                 if (err) {
                     feedback.dealError(err.reason);
                 } else {
-                    feedback.successToast(`${auditIdea}成功`);
-                    _this.setState({ commentModel: false, auditComment: '', showAuditCard: false });
+                    feedback.successToastFb(`${auditIdea}成功`, () => {
+                        _this.setState({ commentModel: false, auditComment: '', showAuditCard: false }, () => {
+                            _this.handlerAudit('', modelData._id);
+                        });
+                    });
                 }
             },
         );
