@@ -15,6 +15,7 @@ import File from '../../../../../../imports/schema/file';
 import TaskList from '../../../../../../imports/schema/taskList';
 import Active from '../../../../../../imports/schema/active';
 import feedback from '../../../../../util/feedback';
+import ProjectCopy from './ProjectCopy';
 // import ProjectTag from './ProjectTag';
 
 const { TextArea } = Input;
@@ -35,6 +36,7 @@ class ProjectItemDetail extends Component {
         // label: PropTypes.string,
         iddd: PropTypes.array,
         files: PropTypes.string,
+        projectId: PropTypes.string,
     }
     constructor(...props) {
         super(...props);
@@ -61,6 +63,7 @@ class ProjectItemDetail extends Component {
             showBegin: false,
             showEnd: false,
             uuids: '',
+            showCopyCard: false,
         };
     }
     componentWillMount() {
@@ -472,6 +475,16 @@ class ProjectItemDetail extends Component {
             return null;
         });
     }
+    handleCopys=() => {
+        this.setState({
+            showCopyCard: !this.state.showCopyCard,
+        });
+    }
+    handleCop = () => {
+        this.setState({
+            showCopyCard: false,
+        });
+    }
     // 渲染子清单
     renderTasks = (id) => {
         console.log();
@@ -514,7 +527,8 @@ class ProjectItemDetail extends Component {
                                     onConcel={this.handleTitle}
                                 />}
                         </Col>
-                        <Col span={4}>
+                        <Col span={4} onClick={this.handleCop}>
+                            <div className="try" style={{ display: this.state.showCopyCard ? 'block' : 'none' }} />
                             <Dropdown overlay={menu} trigger={['click']}>
                                 <Icon icon="icon-gengduo1" />
                             </Dropdown>
@@ -757,6 +771,14 @@ class ProjectItemDetail extends Component {
                         <Calendar fullscreen={false} onSelect={this.onEndChange} />
                         <button onClick={e => this.handleChangeEnd(e)}>取消</button>
                     </div> : null}
+                {this.state.showCopyCard ?
+                    <ProjectCopy
+                        hidden={this.handleCop}
+                        title={this.props.item}
+                        projectId={this.props.projectId}
+                        Cclick={this.handleCopy}
+                    /> : null
+                }
             </div >
 
         );

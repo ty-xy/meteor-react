@@ -27,6 +27,7 @@ class MiniCard extends Component {
         ind: PropTypes.number,
         textId: PropTypes.string,
         deleteCard: PropTypes.func,
+        projectId: PropTypes.string,
     }
     constructor(...args) {
         super(...args);
@@ -161,7 +162,7 @@ class MiniCard extends Component {
                         footer={null}
                         onCancel={this.hideModal}
                         onOk={this.hideModal}
-                        width={350}
+                        width="26.25rem"
                         style={{ top: 220, left: this.state.left + 37, boxShadow: 'none' }}
                         mask={this.state.mask}
                         className="Moal-reset"
@@ -171,6 +172,7 @@ class MiniCard extends Component {
                             item={this.props.value}
                             Id={this.props.idIndex}
                             textId={this.props.textId}
+                            projectId={this.props.projectId}
                             delete={this.props.deleteCard}
                         />
                     </Modal>

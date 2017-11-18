@@ -26,6 +26,7 @@ class ProjectBordItem extends Component {
         tasks: PropTypes.arrayOf(PropTypes.object),
         tasksA: PropTypes.array,
         o: PropTypes.array,
+        projectId: PropTypes.string,
         // changeTitle: PropTypes.func,
         fd: PropTypes.arrayOf(PropTypes.object),
     }
@@ -268,6 +269,7 @@ class ProjectBordItem extends Component {
                 index={value.taskBoardId}
                 ind={index}
                 textId={value.textId}
+                projectId={this.props.projectId}
                 deleteCard={() => this.handleDeleteTask(value.textId)}
             />);
         }

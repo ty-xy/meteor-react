@@ -121,6 +121,7 @@ class ProjectWindow extends Component {
                                         value={text.name}
                                         tastBoardId={text._id}
                                         key={text._id}
+                                        projectId={text.projectId}
                                     />
                                 ))
 
@@ -153,7 +154,7 @@ export default withTracker((projectd) => {
     const projectL = Project.find({ _id: projectd.match.params.id }).fetch();
     // const projectId1 = Project.find({ name: this.state.minchen })._id;
     const project = projectL[0];
-    console.log(project, projectL, projectd);
+    console.log(project, projectL, projectd, taskF);
     // console.log(projectd.match.params.id);
     return {
         taskF,

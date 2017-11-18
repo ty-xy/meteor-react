@@ -7,9 +7,9 @@ import Icon from '../../../../../components/Icon';
 export default function ProjectTitle({ title, onClick, onCancel }) {
     return (
         <div className="common-title-set">
-            <Icon icon="icon-fanhui icon" size="10px" iconColor="#BDBDBD" onClick={onClick} />
+            <Icon icon="icon-fanhui icon" size={10} iconColor="#BDBDBD" onClick={onClick} />
             <p>{title}</p>
-            <Icon icon="icon-guanbi1 icon-second" size="10px" iconColor="#BDBDBD" onClick={onCancel} />
+            <Icon icon="icon-guanbi1 icon-second" size={10} iconColor="#BDBDBD" onClick={onCancel} />
         </div>
     );
 }
