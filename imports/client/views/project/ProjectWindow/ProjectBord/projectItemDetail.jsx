@@ -779,9 +779,7 @@ export default withTracker((Id) => {
         return length;
     });
     const iddd = idd.map(element => (element.length));
-    //  const file = tasks[0].fileId;
     console.log(tasks, Id);
-    //  const files = File.find({ _id: { $in: file } }).fetch();
     return {
         Id,
         activities,
