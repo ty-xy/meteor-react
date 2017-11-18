@@ -23,7 +23,7 @@ class ProjectCopy extends Component {
             color: true,
         };
     }
-    handleClick =(e) => {
+    handleClick =(e, array) => {
         this.setState({
             color: !this.state.color,
         });
@@ -32,7 +32,7 @@ class ProjectCopy extends Component {
         } else {
             e.target.setAttribute('class', 'copy-task');
         }
-        this.props.Cclick();
+        this.props.Cclick(array);
     }
     render() {
         return (
@@ -46,7 +46,7 @@ class ProjectCopy extends Component {
                         {this.props.taskboard.map(value => (
                             <li
                                 className="copy-task"
-                                onClick={e => this.handleClick(e)}
+                                onClick={e => this.handleClick(e, value._id)}
                                 key={value._id}
                             >{value.name}</li>
                         ))}

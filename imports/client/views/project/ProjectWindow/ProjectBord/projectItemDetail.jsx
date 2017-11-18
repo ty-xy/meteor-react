@@ -75,9 +75,10 @@ class ProjectItemDetail extends Component {
     componentDidMount() {
         console.log(this.state.uuids);
     }
-    componentWillReceiveProps(nextProps) {
-        console.log('nextProps', nextProps);
-        console.log(uuid.v4());
+    componentWillReceiveProps() {
+        this.setState({
+            uuids: uuid.v4(),
+        });
     }
     onPanelChange = (value) => {
         Meteor.call(
@@ -119,35 +120,13 @@ class ProjectItemDetail extends Component {
         this.handleEnd();
     }
     handleChangeStart=() => {
-        // e.stopPropagation();
-        // e.nativeEvent.stopImmediatePropagation();
         this.handleStart();
     }
-    // showModal = () => {
-    //     this.setState({
-    //         visible: true,
-    //     });
-    // }
     showOk = () => {
         this.setState({
             visiblel: true,
         });
     }
-    // showOver = () => {
-    //     this.setState({
-    //         visib: true,
-    //     });
-    // }
-    // hideModal = () => {
-    //     this.setState({
-    //         visible: false,
-    //     });
-    // }
-    // hideOver = () => {
-    //     this.setState({
-    //         visib: false,
-    //     });
-    // }
     handleOk = () => {
         this.setState({
             visiblel: false,
@@ -408,7 +387,9 @@ class ProjectItemDetail extends Component {
             });
     }
     // 复制卡片
-    handleCopy = () => {
+    handleCopy = (v) => {
+        console.log(v);
+
         const task = this.props.tasks[0];
         console.log(task);
         Meteor.call(
@@ -421,7 +402,7 @@ class ProjectItemDetail extends Component {
                 console.log(err);
             },
         );
-        Meteor.call('changeSortAarry', task.taskBoardId, this.state.uuids, (err) => {
+        Meteor.call('changeSortAarry', v, this.state.uuids, (err) => {
             console.log(err);
         },
         );
