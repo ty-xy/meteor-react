@@ -6,8 +6,7 @@ import PropTypes from 'prop-types';
 // import format from 'date-format';
 
 import pureRender from 'pure-render-decorator';
-// import format from 'date-format';
-
+import TaskList from '../../../../../../imports/schema/taskList';
 import ProjectItemDetail from './projectItemDetail';
 import Task from '../../../../../../imports/schema/task';
 import Active from '../../../../../../imports/schema/active';
@@ -28,6 +27,8 @@ class MiniCard extends Component {
         textId: PropTypes.string,
         deleteCard: PropTypes.func,
         projectId: PropTypes.string,
+        TaskLength: PropTypes.number,
+        taskOver: PropTypes.number,
     }
     constructor(...args) {
         super(...args);
@@ -151,12 +152,33 @@ class MiniCard extends Component {
                             </div> : null
                         }
                     </div>
-                    {this.props.activeL ?
-                        <div className="talk-show">
-                            <Icon icon="icon-xiaoxi1" />
-                            <p className="talk-number">{this.props.activeL} </p>
-                        </div> : null
-                    }
+                    <div style={{ display: 'flex' }}>
+                        {this.props.activeL ?
+                            <div className="talk-show">
+                                <Icon icon="icon-xiaoxi1" />
+                                <p className="talk-number">{this.props.activeL} </p>
+                            </div> : null
+                        }
+                        {this.props.TaskLength ?
+                            <div >
+                                {this.props.taskOver < this.props.TaskLength ?
+                                    <div className="talk-show list-show">
+                                        <Icon icon="icon-squarecheck" />
+                                        <div className="talk-number" style={{ display: 'flex' }}>
+                                            <p>{this.props.taskOver}</p>
+                                            <p>/</p>
+                                            <p >{this.props.TaskLength} </p>
+                                        </div>
+                                    </div> : <div className="talk-show list-show list-color">
+                                        <Icon icon="icon-squarecheck icon" />
+                                        <div className="talk-number" style={{ display: 'flex' }}>
+                                            <p>{this.props.taskOver}</p>
+                                            <p>/</p>
+                                            <p >{this.props.TaskLength} </p>
+                                        </div>
+                                    </div>}
+                            </div> : null}
+                    </div>
                     <Modal
                         visible={this.state.visible}
                         footer={null}
@@ -185,8 +207,11 @@ class MiniCard extends Component {
 export default withTracker((taskid) => {
     Meteor.subscribe('active');
     Meteor.subscribe('task');
+    Meteor.subscribe('tasklist');
     const activeL = Active.find({ taskId: taskid.idIndex }).fetch().length;
     const tasks = Task.find({ _id: taskid.idIndex }).fetch();
+    const TaskLength = TaskList.find({ $and: [{ textId: taskid.textId }, { fatherId: { $ne: '' } }] }).fetch().length;
+    const taskOver = TaskList.find({ $and: [{ textId: taskid.textId }, { fatherId: { $ne: '' } }, { checkble: 1 }] }).fetch().length;
     if (tasks.length !== 0) {
         const begintime = tasks[0].beginTime;
         const endtime = tasks[0].endTime;
@@ -196,6 +221,8 @@ export default withTracker((taskid) => {
             activeL,
             endtime,
             label,
+            TaskLength,
+            taskOver,
         };
     }
 })(MiniCard);

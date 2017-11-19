@@ -35,6 +35,7 @@ class ProjectItemDetail extends Component {
         taskchild: PropTypes.arrayOf(PropTypes.object),
         // label: PropTypes.string,
         iddd: PropTypes.array,
+        cId: PropTypes.array,
         files: PropTypes.string,
         projectId: PropTypes.string,
     }
@@ -64,6 +65,11 @@ class ProjectItemDetail extends Component {
             showEnd: false,
             uuids: '',
             showCopyCard: false,
+            overNumber: 0,
+            checked: true,
+            FlistValue: '',
+            // showList: true,
+            TtitleValue: '',
         };
     }
     componentWillMount() {
@@ -158,8 +164,20 @@ class ProjectItemDetail extends Component {
         });
     }
     // checkbox的状态值
-    handleChange = (e) => {
-        console.log(`checked = ${e.target.checked}`);
+    handleChange = (e, id) => {
+        if (e.target.checked === true) {
+            Meteor.call(
+                'changeCheckble', id, 1, (err) => {
+                    console.log(err);
+                },
+            );
+        } else if (e.target.checked === false) {
+            Meteor.call(
+                'changeCheckble', id, 0, (err) => {
+                    console.log(err);
+                },
+            );
+        }
     }
     // 获得变化的值
     handleChangeT = (e) => {
@@ -307,7 +325,6 @@ class ProjectItemDetail extends Component {
         this.setState({
             [`shownT${id}`]: true,
         });
-        console.log(this.list);
     }
     // 子菜单的编辑变化
     handldeChangetaskList = (e) => {
@@ -466,14 +483,124 @@ class ProjectItemDetail extends Component {
             showCopyCard: false,
         });
     }
+    handleTaskList = (id) => {
+        this.setState({
+            [`showList${id}`]: true,
+        });
+    }
+    handleTaskListC =(id) => {
+        this.setState({
+            [`showList${id}`]: false,
+        });
+    }
+    handleChangeTitleT =(e) => {
+        this.setState({
+            TtitleValue: e.target.value,
+        });
+    }
+    handleChangeTTitle =(id) => {
+        Meteor.call(
+            'changeTaskList', id, this.state.TtitleValue, (err) => {
+                console.log(err);
+            },
+        );
+        this.setState({
+            TtitleValue: '',
+        });
+        this.handleTaskListC(id);
+    }
+    handleClick=(e) => {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    }
+
+    // 更改父清单的值
+    handldeFList =(e) => {
+        this.setState({
+            FlistValue: e.target.value,
+        });
+    }
+    handleSendFList =(id) => {
+        Meteor.call(
+            'changeTaskList', id, this.state.FlistValue, (err) => {
+                console.log(err);
+            },
+        );
+        this.handleCancelF(id);
+    }
+    handleFlist =(id) => {
+        this.setState({
+            [`fatherList${id}`]: true,
+        });
+    }
+    handleCancelF =(id) => {
+        this.setState({
+            [`fatherList${id}`]: false,
+        });
+    }
+    handleDeleteC =(id) => {
+        this.handleRemoveList(id);
+    }
     // 渲染子清单
     renderTasks = (id) => {
         console.log();
         return this.props.taskchild.map((listChild) => {
-            if (listChild.fatherId === id) {
+            if (listChild.fatherId === id && listChild.checkble === 1) {
                 return (
-                    <div style={{ marginLeft: '20px' }} key={listChild._id} >
-                        <Checkbox onChange={this.handleChange}>{listChild.name}</Checkbox>
+                    <div key={listChild._id}>
+                        {!this.state[`showList${listChild.listId}`] ?
+                            <div
+                                style={{ marginLeft: '20px', display: 'flex' }}
+                            >
+                                <Checkbox
+                                    onClick={e => this.handleClick(e)}
+                                    onChange={e => this.handleChange(e, listChild.listId)}
+                                    checked={this.state.checked}
+                                    dataId={listChild.fatherId}
+                                />
+                                <p
+                                    style={{ marginLeft: '15px' }}
+                                    onClick={() => this.handleTaskList(listChild.listId)}
+                                >{listChild.name}</p>
+                            </div> :
+                            <div style={{ display: 'flex' }}>
+                                <ProjectInput
+                                    input="更改"
+                                    onClick={() => this.handleChangeTTitle(listChild.listId)}
+                                    value={this.state.TtitleValue}
+                                    onChange={this.handleChangeTitleT}
+                                    onConcel={() => this.handleTaskListC(listChild.listId)}
+                                />
+                                <p
+                                    style={{ marginLeft: '45px', marginTop: '20px' }}
+                                    onClick={() => this.handleDeleteC(listChild.listId)}
+                                >删除</p>
+                            </div>
+                        }
+                    </div>
+                );
+            } else if (listChild.fatherId === id && listChild.checkble === 0) {
+                return (
+                    <div key={listChild._id}>
+                        {!this.state[`showList${listChild.listId} `] ?
+                            <div
+                                style={{ marginLeft: '20px', display: 'flex' }}
+                                onClick={() => this.handleTaskList(listChild.listId)}
+                            >
+                                <Checkbox
+                                    onClick={e => this.handleClick(e)}
+                                    onChange={e => this.handleChange(e, listChild.listId)}
+                                    checked={!this.state.checked}
+                                    dataId={listChild.fatherId}
+                                />
+                                <p style={{ marginLeft: '15px' }}>{listChild.name}</p>
+                            </div> : <ProjectInput
+                                input="更改"
+                                onClick={() => this.handleChangeTTitle(listChild.listId)}
+                                value={this.state.TtitleValue}
+                                onChange={this.handleChangeTitleT}
+                                onConcel={() => this.handleTaskListC(listChild.listId)}
+                            />}
                     </div>
                 );
             }
@@ -630,19 +757,31 @@ class ProjectItemDetail extends Component {
                         {/* <ProjectTag /> */}
                         {this.props.tasklists.map((tasklist, index) => (
                             <div key={tasklist._id} >
-                                <Row>
-                                    <Col span={19}>
-                                        <Checkbox onChange={this.handleChange} defaultChecked >{tasklist.name}</Checkbox>
-                                    </Col>
-                                    <Col span={2}>
-                                        <span>0</span>
-                                        <span>/</span>
-                                        <span>{this.props.iddd[index]}</span>
-                                    </Col>
-                                    <Col span={3} onClick={() => this.handleRemoveList(tasklist._id)}>
+                                {!this.state[`fatherList${tasklist.listId}`] ?
+                                    <Row>
+                                        <Col
+                                            span={19}
+                                            style={{ display: 'flex' }}
+                                            onClick={() => this.handleFlist(tasklist.listId)}
+                                        >
+                                            <Icon icon="icon-squarecheck" />
+                                            <p>{tasklist.name}</p>
+                                        </Col>
+                                        <Col span={2}>
+                                            <span>{this.props.cId[index]}</span>
+                                            <span>/</span>
+                                            <span>{this.props.iddd[index]}</span>
+                                        </Col>
+                                        <Col span={3} onClick={() => this.handleRemoveList(tasklist.listId)}>
                                         删除
-                                    </Col>
-                                </Row>
+                                        </Col>
+                                    </Row> : <ProjectInput
+                                        input="添加"
+                                        value={this.state.FlistValue}
+                                        onChange={this.handldeFList}
+                                        onConcel={() => this.handleCancelF(tasklist.listId)}
+                                        onClick={() => this.handleSendFList(tasklist.listId)}
+                                    />}
                                 {this.renderTasks(tasklist.listId, index)}
                                 <div style={{ marginLeft: '20px' }}>
                                     {this.state[`shownT${tasklist.listId}`] ?
@@ -778,14 +917,21 @@ export default withTracker((Id) => {
         const length = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: id.listId }] }).fetch();
         return length;
     });
+    const checkId = tasklists.map((id) => {
+        const length = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: id.listId }, { checkble: 1 }] }).fetch();
+        return length;
+    });
     const iddd = idd.map(element => (element.length));
-    console.log(tasks, Id);
+    const cId = checkId.map(element => (element.length));
+    console.log(Id.textId);
     return {
         Id,
         activities,
         tasklists,
         taskchild,
         iddd,
+        cId,
+        checkId,
         tasks,
         files: tasks[0] && tasks[0].fileId.length > 0 ? File.find({ _id: { $in: tasks[0].fileId } }).fetch() : '',
     };
