@@ -582,10 +582,9 @@ class ProjectItemDetail extends Component {
             } else if (listChild.fatherId === id && listChild.checkble === 0) {
                 return (
                     <div key={listChild._id}>
-                        {!this.state[`showList${listChild.listId} `] ?
+                        {!this.state[`showList${listChild.listId}`] ?
                             <div
                                 style={{ marginLeft: '20px', display: 'flex' }}
-                                onClick={() => this.handleTaskList(listChild.listId)}
                             >
                                 <Checkbox
                                     onClick={e => this.handleClick(e)}
@@ -593,14 +592,25 @@ class ProjectItemDetail extends Component {
                                     checked={!this.state.checked}
                                     dataId={listChild.fatherId}
                                 />
-                                <p style={{ marginLeft: '15px' }}>{listChild.name}</p>
-                            </div> : <ProjectInput
-                                input="更改"
-                                onClick={() => this.handleChangeTTitle(listChild.listId)}
-                                value={this.state.TtitleValue}
-                                onChange={this.handleChangeTitleT}
-                                onConcel={() => this.handleTaskListC(listChild.listId)}
-                            />}
+                                <p
+                                    style={{ marginLeft: '15px' }}
+                                    onClick={() => this.handleTaskList(listChild.listId)}
+                                >{listChild.name}</p>
+                            </div> :
+                            <div style={{ display: 'flex' }}>
+                                <ProjectInput
+                                    input="更改"
+                                    onClick={() => this.handleChangeTTitle(listChild.listId)}
+                                    value={this.state.TtitleValue}
+                                    onChange={this.handleChangeTitleT}
+                                    onConcel={() => this.handleTaskListC(listChild.listId)}
+                                />
+                                <p
+                                    style={{ marginLeft: '45px', marginTop: '20px' }}
+                                    onClick={() => this.handleDeleteC(listChild.listId)}
+                                >删除</p>
+                            </div>
+                        }
                     </div>
                 );
             }
