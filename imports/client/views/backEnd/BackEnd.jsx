@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { Button, Tooltip, Icon } from 'antd';
 
 const text = <span>帮助</span>;
@@ -23,7 +24,7 @@ class BackEnd extends Component {
             <div className="ejianlianHeader">
                 <div className="ejianlian-header-bar">
                     <div className="ejianlian-header-logo">
-                        <img src="/logo.png" />
+                        <Link to="/chat"><img src="/logo.png" style={{ width: '80px', margin: '12px 20px' }} /></Link>
                     </div>
                     <div className="ejianlian-header-bar-tab">
                         <ul className="header-bar-tab backend-nav">

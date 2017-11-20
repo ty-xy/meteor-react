@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import AvatarSelf from '../../components/AvatarSelf';
 
 // import Notice from './Notice';
@@ -53,7 +54,7 @@ class Header extends Component {
             <div className="ejianlianHeader">
                 <div className="ejianlian-header-bar">
                     <div className="ejianlian-header-logo">
-                        <img src="/logo.png" />
+                        <Link to="/"><img style={{ width: '80px', margin: '12px 20px' }} src="/logo.png" /></Link>
                     </div>
                     <div className="ejianlian-header-bar-tab">
                         <ul className="header-bar-tab">

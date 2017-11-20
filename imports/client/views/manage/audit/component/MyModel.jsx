@@ -18,7 +18,7 @@ class MyModel extends PureComponent {
                     <div className="e-mg-model-header">
                         <div className="e-mg-model-header-title">
                             {title}
-                            <span className="e-mg-model-header-close" onClick={handleCancel}>关闭</span>
+                            <span className="e-mg-model-header-close" onClick={handleCancel}><i className="iconfont icon-chuyidong" /></span>
                         </div>
                     </div>
                     <div className="e-mg-model-body">{this.props.children}</div>
