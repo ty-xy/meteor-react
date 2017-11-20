@@ -67,7 +67,6 @@ class ProjectWindow extends Component {
     }
     render() {
         const divStyle = {
-            taskStyle: { marginLeft: '30px' },
             TabStyle: {
                 display: 'flex',
                 marginTop: '10px',
@@ -126,7 +125,7 @@ class ProjectWindow extends Component {
                                 ))
 
                             }
-                            <ProjectBordAdd style={divStyle.taskStyle} pId={this.state.id} />
+                            <ProjectBordAdd style={{ marginLeft: '30px' }} pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="日历" key="2">
                             <ProjectLender />

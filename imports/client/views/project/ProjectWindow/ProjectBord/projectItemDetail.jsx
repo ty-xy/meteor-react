@@ -87,8 +87,9 @@ class ProjectItemDetail extends Component {
         });
     }
     onPanelChange = (value) => {
+        console.log(value, value._d);
         Meteor.call(
-            'changeTime', this.props.Id.Id, value.format('L'),
+            'changeTime', this.props.Id.Id, value._d,
             (err) => {
                 console.log(err);
             },
