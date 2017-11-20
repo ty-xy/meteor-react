@@ -328,7 +328,7 @@ class ProjectBordItem extends Component {
                             type="text"
                             className="Input-text"
                             placeholder="请输入卡片内容"
-                            autosize
+                            autosize={{ minRows: 1, maxRows: 6 }}
                             value={this.state.cardInput}
                             onChange={this.handleChange}
                         />

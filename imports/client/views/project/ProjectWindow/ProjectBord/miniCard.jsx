@@ -3,7 +3,7 @@ import { Modal, Calendar } from 'antd';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
-// import format from 'date-format';
+import format from 'date-format';
 
 import pureRender from 'pure-render-decorator';
 import TaskList from '../../../../../../imports/schema/taskList';
@@ -18,9 +18,9 @@ class MiniCard extends Component {
     static propTypes = {
         value: PropTypes.string,
         idIndex: PropTypes.string,
-        begintime: PropTypes.string,
+        begintime: PropTypes.instanceOf(Date),
         activeL: PropTypes.number,
-        endtime: PropTypes.string,
+        endtime: PropTypes.instanceOf(Date),
         label: PropTypes.string,
         index: PropTypes.string,
         ind: PropTypes.number,
@@ -50,7 +50,7 @@ class MiniCard extends Component {
     onPanelChange=(value) => {
         console.log(value.format('L'));
         Meteor.call(
-            'changeTime', this.props.idIndex, value.format('L'),
+            'changeTime', this.props.idIndex, value._d,
             (err) => {
                 console.log(err);
             },
@@ -60,9 +60,8 @@ class MiniCard extends Component {
         });
     }
     onPanellChange=(value) => {
-        console.log(value.format('L'));
         Meteor.call(
-            'changeEndTime', this.props.idIndex, value.format('L'),
+            'changeEndTime', this.props.idIndex, value._d,
             (err) => {
                 console.log(err);
             },
@@ -102,8 +101,6 @@ class MiniCard extends Component {
         });
     }
     render() {
-        console.log(this.state.left);
-        console.log(this.props.idIndex);
         console.error('循环到', this.props.value);
         return (
             <div
@@ -126,7 +123,7 @@ class MiniCard extends Component {
                         {this.props.begintime ?
                             <div className="time-show" onClick={e => this.handleChangeStart(e)}>
                                 <Icon icon="icon-qingjiaicon" />
-                                <p className="time-number">{this.props.begintime}</p>
+                                <p className="time-number">{format('yyyy-MM-dd', this.props.begintime)}</p>
                                 <div className="try" style={{ display: this.state.showStartTime ? 'block' : 'none' }} />
                                 {this.state.showStartTime ?
                                     <div className="clender-setting" onClick={e => this.handlePop(e)}>
@@ -141,7 +138,7 @@ class MiniCard extends Component {
                             <div>
                                 <div className="time-show" onClick={e => this.handleChangeEnd(e)}>
                                     <Icon icon="icon-qingjiaicon" />
-                                    <p className="time-number">{this.props.endtime}</p>
+                                    <p className="time-number">{format('yyyy-MM-dd', this.props.endtime)}</p>
                                     <div className="try" style={{ display: this.state.showOverTime ? 'block' : 'none' }} />
                                     {this.state.showOverTime ?
                                         <div className="clender-setting" onClick={e => this.handlePop(e)}>

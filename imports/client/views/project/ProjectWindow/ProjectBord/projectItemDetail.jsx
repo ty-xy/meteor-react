@@ -97,7 +97,7 @@ class ProjectItemDetail extends Component {
     }
     onPanellChange = (value) => {
         Meteor.call(
-            'changeEndTime', this.props.Id.Id, value.format('L'),
+            'changeEndTime', this.props.Id.Id, value._d,
             (err) => {
                 console.log(err);
             },
@@ -708,7 +708,7 @@ class ProjectItemDetail extends Component {
                             {this.props.tasks[0] && this.props.tasks[0].beginTime ?
                                 <div onClick={this.handleStart}>
                                     <div className="start-time" onClick={this.handleStart}>
-                                        {this.props.tasks[0].beginTime}
+                                        {format('yyyy年MM月dd日', this.props.tasks[0].beginTime)}
                                     </div>
                                     <div className="try" style={{ display: this.state.showBegin ? 'block' : 'none' }} />
                                     {this.state.showBegin ?
@@ -731,7 +731,7 @@ class ProjectItemDetail extends Component {
                             {this.props.tasks[0] && this.props.tasks[0].endTime ?
                                 <div onClick={this.handleChangeEnd}>
                                     <div className="start-time" onClick={this.handleEnd} >
-                                        {this.props.tasks[0].endTime}
+                                        {format('yyyy年MM月dd日', this.props.tasks[0].endTime)}
                                     </div>
                                     <div className="try" style={{ display: this.state.showEnd ? 'block' : 'none' }} />
                                 </div>

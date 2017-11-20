@@ -42,12 +42,14 @@ class ProjectSet extends Component {
     }
     componentWillReceiveProps(nextProps) {
         const nextItem = nextProps.projects[0];
-        this.setState({
-            name: nextItem.name,
-            intro: nextItem.intro,
-            affiliation: nextItem.affiliation,
-            headPortrait: nextItem.headPortrait,
-        });
+        if (this.props.projects[0].length > 0) {
+            this.setState({
+                name: nextItem.name,
+                intro: nextItem.intro,
+                affiliation: nextItem.affiliation,
+                headPortrait: nextItem.headPortrait,
+            });
+        }
     }
     handleProject=() => {
         Meteor.call(
@@ -109,7 +111,7 @@ class ProjectSet extends Component {
                 style={{ width: '60px', height: '60px', borderRadius: '50%' }}
             />);
         }
-        return <MyIcon icon={`${item} icon`} size="30px" />;
+        return <MyIcon icon={`${item} icon`} size={30} />;
     }
     render() {
         console.log(this.props.setId);
@@ -174,15 +176,6 @@ class ProjectSet extends Component {
                         </Option>
                     </Select>
                 </div>
-                {/* <div className="common-type">
-                            <span> 项目创建者:</span>
-                            <AvatarSelf />
-                        </div>
-                        <div className="common-type">
-                            <GroupSelect
-                                label="项目参与人"
-                            />
-                        </div> */}
 
                 <div className="ejianlian-add-projectf">
                     <div className="add-button add-button-save" onClick={this.handleChange}>
