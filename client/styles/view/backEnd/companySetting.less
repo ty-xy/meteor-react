@@ -1,3 +1,4 @@
+@import '../util/util.less';
 .company-setting {
     display: flex;
     flex: 1;
@@ -10,15 +11,100 @@
         display: flex;
         flex-direction: column;
         background-color: white;
+        .logo-mark {
+            text-align: center;
+            color: #fff;
+            margin-top: 15px;
+            font-size: 18px;
+            .avatar {
+                margin: 0 auto;
+                margin-top: 20px;
+                width: 80px;
+                height: 80px;
+                line-height: 80px;
+            }
+        }
+        .logo-info {
+            height: 260px;
+            background-color: @mainColor;
+        }
+        .company-base-info {
+            width: 390px;
+            height: 130px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 2px 2px 15px 1px rgba(221,221,221,0.50);
+            border-radius: 3px;
+            margin-left: 30px;
+            margin-top: -65px;
+            background-color: #fff;
+            .base-info {
+                text-align: center;
+                margin-top: 40px;
+                .base-count {
+                    color:  @mainColor;
+                    font-size: 30px;
+                }
+            }
+        }
+        .setting-nav {
+            & > .title {
+                padding: 15px;
+                margin-top: 5px;
+                .border-bottom;
+                margin-bottom: 10px;
+            }
+            .ant-menu-item, .ant-menu-submenu-title {
+                padding: 0 15px;
+                text-align: center;
+            }
+            .ant-menu {
+                display: flex;
+                justify-content: space-around;
+                .ant-menu-item-selected {
+                    // border: 0 !important;
+                    color:  @mainColor;
+                    border-color:  @mainColor;
+                }
+                .ant-menu-item-selected:hover{
+                    // border: 0 !important;
+                    color:  @mainColor;
+                    border-color:  @mainColor;
+                }
+                
+            }
+            .ant-menu-horizontal {
+                border: 0 !important;
+            }
+            .ant-menu-item:hover {
+                // border: 0 !important;
+                color:  @mainColor;
+                border-color:  @mainColor;
+            }
+            .set-tab {
+                p {
+                    margin-top: -30px;
+                }
+            }
+        }
     }
     .company-info-setting {
         flex: 1;
         background-color: white;
-        margin-top: 30px;
         // 需要修改,高度不能写死
         min-height: 400px;
         display: flex;
         flex-direction: row;
         position: relative;
+        .company-set-arae {
+            width: 100%;
+            .set-title {
+                text-align: center;
+                height: 60px;
+                font-size: 18px;
+                line-height: 60px;
+                .border-bottom;
+            }
+        }
     }
 }
