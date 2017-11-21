@@ -21,6 +21,9 @@ Project.schema = new SimpleSchema({
     affiliation: {
         type: String,
     },
+    uprojectId: {
+        type: String,
+    },
     // // 项目模板id
     // formBoard: {
     //     type: String,

@@ -347,8 +347,8 @@ class ProjectBordItem extends Component {
                             <button onClick={this.handleList}>取消</button>
                         </div>
                     </div> :
-                    <div className="list-add list-title" >
-                        <Icon icon="icon-jiahao icon" onClick={this.handleList} />
+                    <div className="list-add list-title" onClick={this.handleList}>
+                        <Icon icon="icon-jiahao icon" />
                         <p>添加卡片</p>
                     </div>
                 }

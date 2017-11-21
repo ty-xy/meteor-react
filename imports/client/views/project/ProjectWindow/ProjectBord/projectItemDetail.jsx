@@ -701,6 +701,10 @@ class ProjectItemDetail extends Component {
 
                         />
                                                  正常
+
+                        { this.props.tasks[0].label === '#d8d8d8' ?
+                            <Icon icon="icon-xuanze icon-right" /> : null}
+
                     </div>
                 </Menu.Item>
                 <Menu.Item key="1" className="tag-li-show">
@@ -715,6 +719,8 @@ class ProjectItemDetail extends Component {
                             onClick={this.handleColor}
                         />
                                                 紧急
+                        { this.props.tasks[0].label === '#F3b152' ?
+                            <Icon icon="icon-xuanze icon-right" /> : null}
                     </div>
                 </Menu.Item>
                 <Menu.Item key="2" className="tag-li-show">
@@ -727,6 +733,8 @@ class ProjectItemDetail extends Component {
                             className="label-circle"
                         />
                                                  非常紧急
+                        { this.props.tasks[0].label === '#ef5350' ?
+                            <Icon icon="icon-xuanze icon-right" /> : null}
                     </div>
                 </Menu.Item>
             </Menu>
@@ -886,8 +894,8 @@ class ProjectItemDetail extends Component {
                                             onChange={this.handldeChangetaskList}
                                             onClick={() => this.handleSendTaskList(tasklist.listId)}
                                         /> :
-                                        <p>
-                                            <Icon icon="icon-tianjia1" onClick={() => this.handldetaskList(tasklist.listId)} />
+                                        <p onClick={() => this.handldetaskList(tasklist.listId)}>
+                                            <Icon icon="icon-tianjia1" />
                                             扩充清单
                                         </p>
                                     }
@@ -896,8 +904,8 @@ class ProjectItemDetail extends Component {
                         ))
                         }
                         {this.state.shownR ?
-                            <p className="ready-task">
-                                <Icon icon="icon-tianjia1" onClick={this.handleChangeR} />
+                            <p className="ready-task" onClick={this.handleChangeR}>
+                                <Icon icon="icon-tianjia1" />
                                 添加待办事项
                             </p> : <ProjectInput
                                 input="添加"

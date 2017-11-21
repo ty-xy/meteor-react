@@ -39,7 +39,7 @@ class ProjectList extends Component {
                         this.props.projects.map((value) => {
                             if (value.headPortrait && value.headPortrait.indexOf('icon') === -1 && value.pigeonhole === 1) {
                                 return (
-                                    <Link to={`/project/task/${value._id}`} key={value._id}>
+                                    <Link to={`/project/task/${value.uprojectId}`} key={value._id}>
                                         <li className="list-item" key={value._id}>
                                             <div className="list-img">
                                                 {<img src={`http://oxldjnom8.bkt.clouddn.com//${value.headPortrait}`} alt="" />}
@@ -52,7 +52,7 @@ class ProjectList extends Component {
                                 );
                             } else if (value.headPortrait && value.headPortrait.indexOf('icon') === 0 && value.pigeonhole === 1) {
                                 return (
-                                    <Link to={`/project/task/${value._id}`} key={value._id}>
+                                    <Link to={`/project/task/${value.uprojectId}`} key={value._id}>
                                         <li className="list-item" key={value._id}>
                                             <div className="list-img-icon">
                                                 {<MyIcon icon={`${value.headPortrait} icon`} size={30} iconColor="#ddd" />}
