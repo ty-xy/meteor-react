@@ -47,24 +47,18 @@ Meteor.methods({
         );
     },
     // 公司添加人员
-    updateMember({ _id, member }) {
-        const members = Company.findOne({ _id }).members || [];
-        members.push({
-            userId: member,
-            position: [],
-            department: [],
-        });
-        console.log('members', members);
-        const newCompany = {
-            createdAt: new Date(),
-            members,
-            name: Company.findOne({ _id }).name,
+    addMember({ _id, userId, name, dep, pos, phone }) {
+        const member = {
+            userId,
+            username: phone,
+            dep,
+            pos,
+            name,
         };
-        Company.schema.validate(newCompany);
         Company.update(
             { _id },
             {
-                $set: newCompany,
+                $push: { members: member },
             },
         );
     },

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import MyModel from '../../../manage/audit/component/MyModel';
 import MyInput from '../../../manage/audit/component/Input';
+import Select from '../../../manage/audit/component/Select';
 
 
 class AddMembers extends PureComponent {
@@ -13,6 +14,8 @@ class AddMembers extends PureComponent {
         postAddMembers: PropTypes.func,
         modelMember: PropTypes.bool,
         form: PropTypes.object,
+        data: PropTypes.array,
+        handleSubmitMember: PropTypes.func,
     }
     constructor(props) {
         super(props);
@@ -21,9 +24,8 @@ class AddMembers extends PureComponent {
     }
     // 取消
     handleCancel = () => {
-        this.setState({ isAutoChat: false, name: '', required: false }, () => {
-            this.props.modelShowHide(false, 'modelMember');
-        });
+        this.props.form.resetFields();
+        this.props.modelShowHide(false, 'modelMember');
     }
     handleInput = (e, name) => {
         if (name === 'checkout') {
@@ -32,30 +34,23 @@ class AddMembers extends PureComponent {
             this.setState({ name: e.target.value, require: false });
         }
     }
-    // 新增部门提交
+    // 新增人员提交
     handleCommentbtn = (e) => {
         e.preventDefault();
-        const { form } = this.props;
+        const { form, handleSubmitMember } = this.props;
         form.validateFields((err, fields) => {
             if (err) {
                 return false;
             }
-            console.log(fields);
+            handleSubmitMember(fields);
         });
     }
 
     render() {
         // const {  } = this.state;
-        const { modelMember } = this.props;
-        console.log('addmember', this.props, this.state);
-        const footer = (
-            <div className="e-mg-model-footer">
-                <div className="text-center">
-                    <Button type="primary" htmlType="submit">确定</Button>
-                    <Button className="margin-left-20" onClick={this.handleCancel}>取消</Button>
-                </div>
-            </div>
-        );
+        const { modelMember, data } = this.props;
+        const deps = data.map(item => (item.name));
+        const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
         return (
             <MyModel
                 handleCancel={this.handleCancel}
@@ -63,12 +58,18 @@ class AddMembers extends PureComponent {
                 title="新增员工"
                 animation="vertical"
                 mask={modelMember}
-                footer={footer}
+                footer={<div />}
+                height="370px"
             >
-                <Form className="clearfix e-mg-model-comment" onSubmit={this.handleCommentbtn}>
-                    <MyInput keyword="name" required label="姓名" placeholder="请输入姓名" {...this.props} />
-                    <MyInput keyword="phone" required label="手机" placeholder="请输入手机" {...this.props} type="number" />
-                    <MyInput keyword="pos" required label="职务" placeholder="请输入职务" {...this.props} />
+                <Form onSubmit={this.handleCommentbtn}>
+                    <MyInput keyword="name" required label="姓名" placeholder="请输入姓名" {...this.props} requiredErr="姓名必填" />
+                    <MyInput keyword="phone" required label="手机" placeholder="请输入手机" {...this.props} reg={reg} typeErr="请填写正确的手机号" requiredErr="手机号必填" />
+                    <Select keyword="dep" label="部门" placeholder="请选择部门" {...this.props} data={deps} />
+                    <MyInput keyword="pos" label="职务" placeholder="请输入职务" {...this.props} />
+                    <div className="text-center form-buttom">
+                        <Button type="primary" htmlType="submit">确定</Button>
+                        <Button className="margin-left-20" onClick={this.handleCancel}>取消</Button>
+                    </div>
                 </Form>
             </MyModel>
         );

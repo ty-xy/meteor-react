@@ -53,6 +53,7 @@ class AddDep extends PureComponent {
                 animation="vertical"
                 mask={modelDep}
                 handleCommentbtn={this.handleCommentbtn}
+                height="269px"
             >
                 <div className="clearfix e-mg-model-comment">
                     <div className="ant-row ant-form-item ant-form-item-with-help">
