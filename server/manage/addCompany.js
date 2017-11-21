@@ -3,27 +3,29 @@ import { Meteor } from 'meteor/meteor';
 import Company from '../../imports/schema/company';
 
 Meteor.methods({
-    createCompany({ name, admin }) {
+    createCompany({ name, admin, deps = [] }) {
         const newCompany = {
             createdAt: new Date(),
             name,
             admin,
+            deps,
         };
         Company.schema.validate(newCompany);
         Company.insert(newCompany);
     },
-    // 更新职位
-    updatePosition({ name, _id, department }) {
+    // 增加部门
+    addDepartment({ _id, name, isAutoChat, admin = '', avatar = '' }) {
         const newCompany = {
-            createdAt: new Date(),
             name,
-            department,
+            isAutoChat,
+            admin,
+            avatar,
         };
-        Company.schema.validate(newCompany);
+        // isAutoChat 是否自动创建部门群聊
         Company.update(
             { _id },
             {
-                $set: newCompany,
+                $push: { deps: newCompany },
             },
         );
     },
