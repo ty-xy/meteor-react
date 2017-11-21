@@ -13,10 +13,8 @@ import Company from '../../../../schema/company';
 import ImgUpload from '../../manage/component/ImgUpload';
 import AvatarSelf from '../../../components/AvatarSelf';
 import ChoosePeopleModel from '../../../components/ChoosePeopleModel';
-// import Project from '../../../../../imports/schema/project';
-// import UserUtil from '../../../../util/user';
 import PeopleList from '../../manage/audit/component/PeopleList';
-// import AddProject from './Addproject';
+
 
 const Option = Select.Option;
 const text = <span>点击切换头像</span>;
@@ -39,11 +37,6 @@ class ProjectAdd extends Component {
         history: PropTypes.object,
         // to: PropTypes.string,
     }
-    // static childContextTypes = {
-    //     history: PropTypes.object.isRequired,
-    //     location: PropTypes.object.isRequired,
-    //     match: PropTypes.object.isRequired,
-    // }
     constructor(props) {
         super(props);
         this.state = {
@@ -59,14 +52,6 @@ class ProjectAdd extends Component {
             copy: [],
         };
     }
-    // getChildContext() {
-    //     const { history, location, match } = this.props;
-    //     return {
-    //         history,
-    //         location,
-    //         match,
-    //     };
-    // }
     componentWillMount() {
         this.setState({
             uuids: uuid.v4(),
@@ -76,9 +61,9 @@ class ProjectAdd extends Component {
         console.log(this.state.uuids);
     }
     componentWillReceiveProps() {
-        // this.setState({
-        //     uuids: uuid.v4(),
-        // });
+        this.setState({
+            uuids: uuid.v4(),
+        });
     }
 
     handleChange(name, e) {
@@ -88,13 +73,9 @@ class ProjectAdd extends Component {
     }
     handleChangeT = (value) => {
         this.setState({ affiliation: `${value}` });
-        // alert(`${value}`);
     }
     handleMessage = () => {
         this.createProject();
-        // const id = Project.findOne({ uprojectId: this.state.uuids });
-        // console.log(id);
-        // console.log(Project.findOne({ intro: this.state.intro }));
     }
     changeUpdateTitle = () => {
         this.setState({
