@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Calendar, Menu, Dropdown, Checkbox, Modal, Tooltip, Tag, DatePicker } from 'antd';
+import { Row, Col, Input, Calendar, Menu, Dropdown, Checkbox, Tooltip, Tag, DatePicker } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
@@ -16,15 +16,19 @@ import TaskList from '../../../../../../imports/schema/taskList';
 import Active from '../../../../../../imports/schema/active';
 import feedback from '../../../../../util/feedback';
 import ProjectCopy from './ProjectCopy';
+import TaskBoard from '../../../../../../imports/schema/taskBoard';
 // import ProjectTag from './ProjectTag';
 
 const { TextArea } = Input;
+const list = [];
 // const confirm = Modal.confirm;
 @pureRender
 class ProjectItemDetail extends Component {
     static propTypes = {
         item: PropTypes.string, // 传送项目
         Id: PropTypes.object, //
+        index: PropTypes.string,
+        textId: PropTypes.string,
         tasks: PropTypes.arrayOf(PropTypes.object),
         // decription: PropTypes.string, // 描述的值
         activities: PropTypes.arrayOf(PropTypes.object),
@@ -36,7 +40,7 @@ class ProjectItemDetail extends Component {
         // label: PropTypes.string,
         iddd: PropTypes.array,
         cId: PropTypes.array,
-        files: PropTypes.string,
+        files: PropTypes.array,
         projectId: PropTypes.string,
     }
     constructor(...props) {
@@ -361,8 +365,27 @@ class ProjectItemDetail extends Component {
             },
         );
     }
+    handleOrder =(array) => {
+        Meteor.call(
+            'changeTaskId', this.props.index, array, (err) => {
+                console.log(err);
+            },
+        );
+    }
+
     handleColor = (event) => {
         const number = event.currentTarget.getAttribute('data-color');
+        const taskAarray = TaskBoard.find({ _id: this.props.index }).fetch();
+        const taskSort = taskAarray[0].sortArray;
+        const index = taskSort.indexOf(this.props.textId);
+        if (number === '#ef5350') {
+            taskSort.unshift(this.props.textId);
+            taskSort.splice(index + 1, 1);
+            this.handleOrder(taskSort);
+        } else if (number === '#F3b152') {
+            console.log(list.length.list);
+            console.log(index);
+        }
         Meteor.call(
             'changeLabel', this.props.Id.Id, number, (err) => {
                 console.log(err);
@@ -622,6 +645,9 @@ class ProjectItemDetail extends Component {
     render() {
         const menu = (
             <Menu >
+                <Menu.Item key="1">
+                    <p onClick={this.handleTitle}>编辑名称</p>
+                </Menu.Item>
                 <Menu.Item key="0">
                     <p onClick={this.props.delete}>删除</p>
                 </Menu.Item>
@@ -631,13 +657,67 @@ class ProjectItemDetail extends Component {
                 </Menu.Item>
             </Menu>
         );
+        const menuL = (
+            <Menu className="change-modal tag-show">
+                <Menu.Item key="0" className="tag-li-show">
+                    <Row>
+                        <Col span={20}>
+                            <div className="tag-title">标签</div>
+                        </Col>
+                        <Col span={4}>
+                            <Icon icon="icon-guanbi1 icon" onClick={this.handleOk} />
+                        </Col>
+                    </Row>
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item key="3" className="tag-li-show">
+                    <div
+                        data-color={'#d8d8d8'}
+                        onClick={this.handleColor}
+                    >
+                        <Tag
+                            color="#d8d8d8"
+                            className="label-circle"
+
+                        />
+                                                 正常
+                    </div>
+                </Menu.Item>
+                <Menu.Item key="1" className="tag-li-show">
+                    <div
+                        data-color={'#F3b152'}
+                        onClick={this.handleColor}
+                    >
+                        <Tag
+                            color="#F3b152"
+                            className="label-circle"
+                            data-color={'#F3b152'}
+                            onClick={this.handleColor}
+                        />
+                                                紧急
+                    </div>
+                </Menu.Item>
+                <Menu.Item key="2" className="tag-li-show">
+                    <div
+                        data-color={'#ef5350'}
+                        onClick={this.handleColor}
+                    >
+                        <Tag
+                            color="#ef5350"
+                            className="label-circle"
+                        />
+                                                 非常紧急
+                    </div>
+                </Menu.Item>
+            </Menu>
+        );
         return (
             <div className="ejian-lian-project-detail">
                 <div className="detail-title detail-common">
                     <Row>
                         <Col span={20}>
                             {this.state.titleShow ?
-                                <h1 onClick={this.handleTitle}>{this.props.item}</h1> :
+                                <h1 onClick={this.handleTitle}>{this.props.item }</h1> :
                                 <ProjectInput
                                     input="更改"
                                     onClick={this.handleChangeTitleQ}
@@ -669,38 +749,14 @@ class ProjectItemDetail extends Component {
                             <p>标签</p>
                             <div style={{ display: 'flex' }}>
                                 <Tooltip title="点击切换" placement="top">
-                                    <p className="circle-icon-l" onClick={this.showOk} style={{ background: this.props.tasks[0] && this.props.tasks[0].label ? this.props.tasks[0].label : '#7ED321' }} />
+                                    <Dropdown overlay={menuL} trigger={['click']} className="change-modal">
+                                        <p
+                                            className="circle-icon-l"
+                                            onClick={this.showOk}
+                                            style={{ background: this.props.tasks[0] && this.props.tasks[0].label ? this.props.tasks[0].label : '#7ED321' }}
+                                        />
+                                    </Dropdown>
                                 </Tooltip>
-                                <Modal
-                                    visible={this.state.visiblel}
-                                    onOk={this.handleOk}
-                                    width={174}
-                                    footer={null}
-                                    onCancel={this.handleOk}
-                                    bodyStyle={{ padding: 0 }}
-                                    style={{ top: 330 }}
-                                    closable={false}
-                                    mask={this.state.mask}
-                                >
-                                    <div className="change-modal">
-                                        <Row>
-                                            <Col span={20}>
-                                                <div className="tag-title">标签</div>
-                                            </Col>
-                                            <Col span={4}>
-                                                <Icon icon="icon-guanbi1 icon" onClick={this.handleOk} />
-                                            </Col>
-                                        </Row>
-                                        <div className="tag-show" >
-                                            <Tag color="#7ED321" className="label-circle" data-color={'#7ED321'} onClick={this.handleColor} />
-                                            <Tag color="#F5D949" className="label-circle" data-color={'#F5D949'} onClick={this.handleColor} />
-                                            <Tag color="#F2A240" className="label-circle" data-color={'#F2A240'} onClick={this.handleColor} />
-                                            <Tag color="#D9534E" className="label-circle" data-color={'#D9534E'} onClick={this.handleColor} />
-                                            <Tag color="#9941D3" className="label-circle" data-color={'#9941D3'} onClick={this.handleColor} />
-                                            <Tag color="#3378B9" className="label-circle" data-color={'#3378B9'} onClick={this.handleColor} />
-                                        </div>
-                                    </div>
-                                </Modal>
                             </div>
                         </Col>
                         <Col span={7} style={{ textAlign: 'center' }} >
@@ -846,15 +902,18 @@ class ProjectItemDetail extends Component {
                         {this.props.files.length > 0 ?
                             <div>{
                                 this.props.files.map(value => (
-                                    <div style={{ display: 'flex' }} key={value._id}>
-                                        <div style={{ display: 'flex', width: '180px' }} >
-                                            <Icon icon="icon-wenjiangeshi-jpg" />
-                                            <p style={{ marginLeft: '10px' }}>{value.type}</p>
-                                        </div>
-                                        <p style={{ marginRight: '10px' }}>下载</p>
-                                        <p style={{ marginRight: '10px' }} onClick={() => this.handleRemoveFile(value._id)}>删除</p>
-                                        <p>10月20</p>
-                                    </div>))}</div> : null}
+                                    <Row key={value._id}>
+                                        <Col style={{ display: 'flex' }} span={14} >
+                                            <Row>
+                                                <Col span={2}><Icon icon="icon-wenjiangeshi-jpg" /></Col>
+                                                <Col span={19}><p style={{ marginLeft: '10px' }}>{value.name}</p></Col>
+                                                <Col span={3}><p>{value.size}</p></Col>
+                                            </Row>
+                                        </Col>
+                                        <Col span={3} >下载</Col>
+                                        <Col span={3} onClick={() => this.handleRemoveFile(value._id)}>删除</Col>
+                                        <Col span={4}>10月20</Col>
+                                    </Row>))}</div> : null}
 
                     </div>
                     <div className="detail-list-common detail-comment">
@@ -918,10 +977,11 @@ class ProjectItemDetail extends Component {
 export default withTracker((Id) => {
     Meteor.subscribe('task');
     Meteor.subscribe('tasklist');
+    Meteor.subscribe('taskboard');
     Meteor.subscribe('active');
     Meteor.subscribe('files');
-    const activities = Active.find({ taskId: Id.Id }, { sort: { createTime: -1 } }).fetch();
-    const tasks = Task.find({ _id: Id.Id }).fetch();
+    const activities = Active.find({ taskId: Id.idIndex }, { sort: { createTime: -1 } }).fetch();
+    const tasks = Task.find({ _id: Id.idIndex }).fetch();
     const tasklists = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: '' }] }).fetch();
     const taskchild = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: { $ne: '' } }] }).fetch();
     const idd = tasklists.map((id) => {
@@ -934,7 +994,7 @@ export default withTracker((Id) => {
     });
     const iddd = idd.map(element => (element.length));
     const cId = checkId.map(element => (element.length));
-    console.log(Id.textId);
+    console.log(Id.textId, Id);
     return {
         Id,
         activities,
