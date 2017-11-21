@@ -36,6 +36,7 @@ class AddDep extends PureComponent {
         if (!name) {
             this.setState({ required: true });
         } else {
+            this.setState({ name: '', isAutoChat: false });
             this.props.postAddDep({ name, isAutoChat });
         }
     }
@@ -67,7 +68,7 @@ class AddDep extends PureComponent {
                     </div>
                     <Row className="margin-top-20">
                         <Col span={6} className="text-right margin-right-10"><Checkbox onChange={e => this.handleInput(e, 'checkout')} checked={isAutoChat} /></Col>
-                        <Col span={14}>生成部门群组,该部门所有成员自动加入该群新加入成员亦是。</Col>
+                        <Col span={14} className="text-left">生成部门群组,该部门所有成员自动加入该群新加入成员亦是。</Col>
                     </Row>
                 </div>
             </MyModel>

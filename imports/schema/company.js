@@ -40,8 +40,8 @@ Company.schema = new SimpleSchema({
         type: String,
         optional: true,
     },
-    'deps.$.comment': {
-        type: String,
+    'deps.$.isAutoChat': {
+        type: Boolean,
         optional: true,
     },
     members: {
