@@ -31,11 +31,13 @@ Task.schema = new SimpleSchema({
     },
     // // 开始时间
     beginTime: {
-        type: String,
+        type: Date,
+        optional: true,
     },
     // 结束时间
     endTime: {
-        type: String,
+        type: Date,
+        optional: true,
     },
     // 描述
     describe: {

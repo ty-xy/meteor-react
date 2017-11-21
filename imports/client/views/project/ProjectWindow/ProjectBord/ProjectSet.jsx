@@ -188,9 +188,11 @@ class ProjectSet extends Component {
                     <div className="add-button add-button-save" onClick={this.handleChange}>
                                       保存修改
                     </div>
-                    <div className="add-button add-button-delete" onClick={this.handleProject}>
+                    <Link to="/project">
+                        <div className="add-button add-button-delete" onClick={this.handleProject}>
                                        删除该项目
-                    </div>
+                        </div>
+                    </Link>
                     <Link to="/project">
                         <div className="add-button add-button-back" onClick={this.handlechangePig}>
                             <MyIcon icon="icon-guidangxiangmu icon-guidang" />归档该项目
