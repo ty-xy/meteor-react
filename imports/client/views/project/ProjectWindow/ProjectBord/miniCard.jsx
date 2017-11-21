@@ -107,6 +107,23 @@ class MiniCard extends Component {
             showOverTime: !this.state.showOverTime,
         });
     }
+    // 处理时间背景的函数
+    handleShowColor =() => {
+        const time = Math.ceil((this.props.endtime - new Date()) / 1000 / 3600 / 24);
+        if (time === 0 || time === 1) {
+            const bStyle = {
+                background: '#FFD663' };
+            return bStyle;
+        } else if (time < 0) {
+            const bStyle = {
+                background: '#EF5350' };
+            return bStyle;
+        } else if (time > 1) {
+            const bStyle = {
+                background: '#d8d8d8' };
+            return bStyle;
+        }
+    }
     render() {
         console.error('循环到', this.props.value);
         return (
@@ -143,9 +160,15 @@ class MiniCard extends Component {
                         }
                         {this.props.endtime ?
                             <div>
-                                <div className="time-show" onClick={e => this.handleChangeEnd(e)}>
+                                <div
+                                    className="time-show"
+                                    style={this.handleShowColor()}
+                                    onClick={e => this.handleChangeEnd(e)}
+                                >
                                     <Icon icon="icon-qingjiaicon" />
-                                    <p className="time-number">{format('yyyy-MM-dd', this.props.endtime)}</p>
+                                    <p
+                                        className="time-number"
+                                    >{format('yyyy-MM-dd', this.props.endtime)}</p>
                                     <div className="try" style={{ display: this.state.showOverTime ? 'block' : 'none' }} />
                                     {this.state.showOverTime ?
                                         <div className="clender-setting" onClick={e => this.handlePop(e)}>

@@ -29,17 +29,13 @@ class ProjectItemDetail extends Component {
         index: PropTypes.string,
         textId: PropTypes.string,
         tasks: PropTypes.arrayOf(PropTypes.object),
-        // decription: PropTypes.string, // 描述的值
         activities: PropTypes.arrayOf(PropTypes.object),
-        // begintime: PropTypes.string,
-        // endtime: PropTypes.string,
         delete: PropTypes.func,
         tasklists: PropTypes.arrayOf(PropTypes.object),
         taskchild: PropTypes.arrayOf(PropTypes.object),
-        // label: PropTypes.string,
         iddd: PropTypes.array,
         cId: PropTypes.array,
-        files: PropTypes.array,
+        files: PropTypes.string,
         projectId: PropTypes.string,
     }
     constructor(...props) {
@@ -371,6 +367,9 @@ class ProjectItemDetail extends Component {
             },
         );
     }
+    handleRList = (id) => {
+        feedback.dealDelete('提示', '确定要删除该清单吗?', () => this.handleRemoveList(id));
+    }
     handleOrder =(array) => {
         Meteor.call(
             'changeTaskId', this.props.index, array, (err) => {
@@ -540,7 +539,23 @@ class ProjectItemDetail extends Component {
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
     }
-
+    // 时间函数
+    handleShowColor =() => {
+        const time = Math.ceil((this.props.tasks[0].endTime - new Date()) / 1000 / 3600 / 24);
+        if (time === 0 || time === 1) {
+            const bStyle = {
+                background: '#FFD663' };
+            return bStyle;
+        } else if (time < 0) {
+            const bStyle = {
+                background: '#EF5350' };
+            return bStyle;
+        } else if (time > 1) {
+            const bStyle = {
+                background: '#d8d8d8' };
+            return bStyle;
+        }
+    }
     // 更改父清单的值
     handldeFList =(e) => {
         this.setState({
@@ -756,7 +771,7 @@ class ProjectItemDetail extends Component {
                                         <p
                                             className="circle-icon-l"
                                             onClick={this.showOk}
-                                            style={{ background: this.props.tasks[0] && this.props.tasks[0].label ? this.props.tasks[0].label : '#7ED321' }}
+                                            style={{ background: this.props.tasks[0] && this.props.tasks[0].label ? this.props.tasks[0].label : '#d8d8d8' }}
                                         />
                                     </Dropdown>
                                 </Tooltip>
@@ -789,7 +804,11 @@ class ProjectItemDetail extends Component {
                             <p >结束</p>
                             {this.props.tasks[0] && this.props.tasks[0].endTime ?
                                 <div onClick={this.handleChangeEnd}>
-                                    <div className="start-time" onClick={this.handleEnd} >
+                                    <div
+                                        className="start-time"
+                                        onClick={this.handleEnd}
+                                        style={this.handleShowColor()}
+                                    >
                                         {format('yyyy年MM月dd日', this.props.tasks[0].endTime)}
                                     </div>
                                     <div className="try" style={{ display: this.state.showEnd ? 'block' : 'none' }} />
@@ -846,7 +865,7 @@ class ProjectItemDetail extends Component {
                                             <span>/</span>
                                             <span>{this.props.iddd[index]}</span>
                                         </Col>
-                                        <Col span={3} onClick={() => this.handleRemoveList(tasklist.listId)}>
+                                        <Col span={3} onClick={() => this.handleRList(tasklist.listId)}>
                                         删除
                                         </Col>
                                     </Row> : <ProjectInput
