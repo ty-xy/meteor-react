@@ -7,9 +7,8 @@ import { Meteor } from 'meteor/meteor';
 import feedback from '../../../../util/feedback';
 import UserUtil from '../../../../util/user';
 import Company from '../../../../../imports/schema/company';
-
-
 import MyModel from './component/AddDep';
+import AddMember from './component/AddMember';
 import RightHeader from './component/RightHeader';
 
 class Organization extends PureComponent {
@@ -33,9 +32,9 @@ class Organization extends PureComponent {
     showMenu = () => {
         this.setState({ showMenu: !this.state.showMenu });
     }
-    // 添加部门model
-    addDepModel = (bool) => {
-        this.setState({ commentModel: bool });
+    // model 控制
+    modelShowHide = (bool, name) => {
+        this.setState({ [name]: bool });
     }
     // 新增部门提交
     postAddDep = (info) => {
@@ -66,15 +65,15 @@ class Organization extends PureComponent {
     addDepCompoennt = () => (
         <div className="e-mg-organization-card text-center e-mg-organization-addDep">
             <div>
-                <i className="iconfont icon-Shape" onClick={() => this.addDepModel(true)} />
-                <p onClick={() => this.addDepModel(true)}>新增部门</p>
+                <i className="iconfont icon-Shape" onClick={() => this.modelShowHide(true, 'commentModel')} />
+                <p onClick={() => this.modelShowHide(true, 'commentModel')}>新增部门</p>
             </div>
             <MyModel
                 title="新增部门"
                 handleResult={this.handleResult}
-                addDepModel={this.addDepModel}
+                addDepModel={this.modelShowHide}
                 postAddDep={this.postAddDep}
-                {...this.state}
+                modelDep={this.state.commentModel}
             />
         </div>
     )
@@ -118,10 +117,23 @@ class Organization extends PureComponent {
         console.log('handleBtns');
         return (
             <div className="handle-btns clearfix">
-                <Button>新增员工</Button>
+                <Button onClick={() => this.modelShowHide(true, 'modelMember')}>新增员工</Button>
                 <Button>邀请员工</Button>
                 <Button>调整员工</Button>
             </div>
+        );
+    }
+    // 新增员工
+    addMembers = (addMembers) => {
+        console.log('addMembers', addMembers);
+        return (
+            <AddMember
+                title="新增部门"
+                handleResult={this.handleResult}
+                modelShowHide={this.modelShowHide}
+                postAddDep={this.postAddDep}
+                modelMember={this.state.modelMember}
+            />
         );
     }
     // table列表
@@ -184,6 +196,7 @@ class Organization extends PureComponent {
                         <RightHeader name="中亿集团有限公司" handleSetting={this.handleSetting} />
                         {this.handleBtns()}
                         {this.tableList()}
+                        {this.addMembers()}
                     </Col>
                 </Row>
             </div>

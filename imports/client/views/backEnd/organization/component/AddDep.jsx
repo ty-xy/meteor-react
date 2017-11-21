@@ -10,7 +10,7 @@ class AddDep extends PureComponent {
     static propTypes = {
         addDepModel: PropTypes.func,
         postAddDep: PropTypes.func,
-        commentModel: PropTypes.bool,
+        modelDep: PropTypes.bool,
     }
     constructor(props) {
         super(props);
@@ -20,7 +20,7 @@ class AddDep extends PureComponent {
     // 取消
     handleCancel = () => {
         this.setState({ isAutoChat: false, name: '', required: false }, () => {
-            this.props.addDepModel(false);
+            this.props.addDepModel(false, 'commentModel');
         });
     }
     handleInput = (e, name) => {
@@ -43,15 +43,15 @@ class AddDep extends PureComponent {
 
     render() {
         const { required, name, isAutoChat } = this.state;
-        const { commentModel } = this.props;
+        const { modelDep } = this.props;
         console.log('adddep', this.props, this.state);
         return (
             <MyModel
                 handleCancel={this.handleCancel}
-                show={commentModel}
+                show={modelDep}
                 title="新增部门"
                 animation="vertical"
-                mask={commentModel}
+                mask={modelDep}
                 handleCommentbtn={this.handleCommentbtn}
             >
                 <div className="clearfix e-mg-model-comment">
