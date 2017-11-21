@@ -34,7 +34,7 @@ class TeamList extends Component {
                     wrapClassName="create-team-mask"
                     footer={null}
                 >
-                    <CreateTeam />
+                    <CreateTeam isShowAdd="true" />
                 </Modal>
             </div>
         );

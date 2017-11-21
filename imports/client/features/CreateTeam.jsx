@@ -36,6 +36,7 @@ const residences = [{
 class CreateTeam extends Component {
     static propTypes = {
         form: PropTypes.object,
+        isShowAdd: PropTypes.bool,
     }
     constructor() {
         super();
@@ -96,6 +97,8 @@ class CreateTeam extends Component {
                         {getFieldDecorator('img', {
                             rules: [{
                                 type: 'string', message: '类型为string!',
+                            }, {
+                                required: true, message: '请选择行业类型!',
                             }],
                         })(
                             <Select placeholder="行业类型">
@@ -120,23 +123,29 @@ class CreateTeam extends Component {
                             <Cascader options={residences} />,
                         )}
                     </FormItem>
-                    <FormItem
-                        label="添加成员"
-                        {...formItemLayout}
-                    >
-                        <br />
-                        <div className="members-avatar">
-                            <div className="avatar-wrap">
-                                <AvatarSelf />
-                                <Avatar name="哈哈" avatarColor="red" avatar="" />
-                            </div>
-                            <div className="add-members" onClick={this.handleAddMembers}>
-                                <Icon icon="icon-tianjia3 icon" size={35} />
-                            </div>
-                        </div>
-                    </FormItem>
+                    {
+                        this.props.isShowAdd ?
+                            <FormItem
+                                label="添加成员"
+                                {...formItemLayout}
+                            >
+                                <br />
+                                <div className="members-avatar">
+                                    <div className="avatar-wrap">
+                                        <AvatarSelf />
+                                        <Avatar name="哈哈" avatarColor="red" avatar="" />
+                                    </div>
+                                    <div className="add-members" onClick={this.handleAddMembers}>
+                                        <Icon icon="icon-tianjia3 icon" size={35} />
+                                    </div>
+                                </div>
+                            </FormItem>
+                            :
+                            null
+
+                    }
                     <FormItem {...buttonItemLayout}>
-                        <Button type="primary" htmlType="submit">创建</Button>
+                        <Button type="primary" htmlType="submit">{this.props.isShowAdd ? '创建' : '保存'}</Button>
                     </FormItem>
                 </Form>
                 {/* <AddGroup
