@@ -11,7 +11,6 @@ import ProjectItemDetail from './projectItemDetail';
 import Task from '../../../../../../imports/schema/task';
 import Active from '../../../../../../imports/schema/active';
 import Icon from '../../../../components/Icon';
-// import eventUtil from '../../../../../util/eventUtil';
 
 @pureRender
 class MiniCard extends Component {
@@ -87,11 +86,9 @@ class MiniCard extends Component {
     }
     handleChangeStart =(e) => {
         e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
         this.setState({
             showStartTime: !this.state.showStartTime,
         });
-        // eventUtil.addEvent(document, 'click', this.closeMenu);
     }
     handleChangeEnd =(e) => {
         e.stopPropagation();

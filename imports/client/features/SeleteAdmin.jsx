@@ -3,9 +3,9 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
-import Icon from '../../../components/Icon';
-import Avatar from '../../../components/Avatar';
-import feedback from '../../../../util/feedback';
+import Icon from '../components/Icon';
+import Avatar from '../components/Avatar';
+import feedback from '../../util/feedback';
 
 @pureRender
 class SeleteAdmin extends Component {

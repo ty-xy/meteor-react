@@ -4,7 +4,6 @@ import { Input, Card } from 'antd';
 import PropTypes from 'prop-types';
 
 import Avatar from '../components/Avatar';
-import eventUtil from '../../util/eventUtil';
 import IdUtil from '../../util/id';
 
 const Search = Input.Search;
@@ -44,7 +43,7 @@ class SearchChat extends Component {
             await this.setState({
                 showSearchResult: true,
             });
-            eventUtil.addEvent(document, 'click', this.closeMenu);
+            document.addEventListener('click', this.closeMenu);
         });
     }
 
@@ -52,10 +51,9 @@ class SearchChat extends Component {
         this.setState({
             showSearchResult: false,
         });
-        eventUtil.stopProPagation(e);
-        eventUtil.removeEvent(document, 'click', this.closeMenu);
+        e.stopProPagation();
+        document.removeEventListener('click', this.closeMenu);
     }
-
     render() {
         return (
             <div className="serach-chat">

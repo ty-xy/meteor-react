@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import AddFriend from './AddFriend';
 import AddGroup from './AddGroup';
 import UserUtil from '../../../../../util/user';
-import eventUtil from '../../../../../util/eventUtil';
 
 @pureRender
 class AddChat extends Component {
@@ -29,14 +28,14 @@ class AddChat extends Component {
         this.setState({
             isShowAddTooltip: !this.state.isShowAddTooltip,
         });
-        eventUtil.addEvent(document, 'click', this.closeMenu);
+        document.addEventListener('click', this.closeMenu);
     }
     closeMenu = (e) => {
         this.setState({
             isShowAddTooltip: false,
         });
-        eventUtil.stopProPagation(e);
-        eventUtil.removeEvent(document, 'click', this.closeMenu);
+        e.stopProPagation();
+        document.removeEventListener('click', this.closeMenu);
     }
     handleAddFriend = () => {
         this.setState({

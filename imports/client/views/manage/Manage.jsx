@@ -36,7 +36,6 @@ class Manage extends (PureComponent || Component) {
             'createCompany',
             {
                 name: `公司${i}`,
-                createdAt: new Date(),
             },
             (err) => {
                 if (err) {

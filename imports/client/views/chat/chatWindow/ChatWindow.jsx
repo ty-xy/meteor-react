@@ -22,7 +22,6 @@ import expressions from '../../../../util/expressions';
 import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 import EmptyChat from '../../../components/EmptyChat';
-import eventUtil from '../../../../util/eventUtil';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -72,7 +71,7 @@ class ChatWindow extends Component {
             }
         }
         if (this.props.to) {
-            eventUtil.addEvent(this.$message, 'keydown', this.handleSendMessage);
+            this.$message.addEventListener('keydown', this.handleSendMessage);
         }
         if (prevProps.chatGroup && this.props.chatGroup && prevProps.chatGroup.notice !== this.props.chatGroup.notice) {
             this.setState({
@@ -80,6 +79,9 @@ class ChatWindow extends Component {
             });
         }
     }
+    // componentWillUnmount() {
+    //     this.$message.removeEventListener('keydown', this.handleSendMessage);
+    // }
     // 图片初始高度是0, 图片加载完成后, 把消息撑了起来, 这时候scrollIntoView已经执行完了,所以会出现看到聊天窗口的时候最后一条消息被挡上了,需要滚动一下才能看到
     // 表情, 写死高度.  图片消息, 等图片onLoad的时候, 再执行一次最后一条消息的 scrollIntoView
     imageLoad = () => {
@@ -535,7 +537,7 @@ class ChatWindow extends Component {
 export default withTracker(({ to, userId }) => {
     Meteor.subscribe('message');
     Meteor.subscribe('group');
-    Meteor.subscribe('file');
+    Meteor.subscribe('files');
     const chatGroup = Group.findOne({ _id: to });
     PopulateUtil.group(chatGroup);
     const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));

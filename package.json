@@ -36,6 +36,7 @@
     }
   },
   "dependencies": {
+    "@alicloud/sms-sdk": "^1.0.2",
     "antd": "^2.13.10",
     "babel-runtime": "^6.20.0",
     "bcrypt": "^1.0.3",

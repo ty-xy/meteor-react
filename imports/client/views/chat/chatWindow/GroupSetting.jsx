@@ -8,7 +8,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
 import AddGroup from '../chatSideLeft/addChat/AddGroup';
-import SeleteAdmin from './SeleteAdmin';
+import SeleteAdmin from '../../../features/SeleteAdmin';
 import UserUtil from '../../../../util/user';
 import feedback from '../../../../util/feedback';
 
