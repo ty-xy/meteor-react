@@ -279,10 +279,11 @@ class ProjectBordItem extends Component {
         const menu = (
             <Menu>
                 <Menu.Item key="0">
-                    {this.state.concern ?
+                    {/* {this.state.concern ?
                         <a onClick={this.handleConcern}>取消关注</a> :
                         <a onClick={this.handleConcern}>关注</a>
-                    }
+                    } */}
+                    <p onClick={this.handlechangeTitle}>编辑名称</p>
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key="3">
@@ -328,7 +329,7 @@ class ProjectBordItem extends Component {
                             type="text"
                             className="Input-text"
                             placeholder="请输入卡片内容"
-                            autosize
+                            autosize={{ minRows: 1, maxRows: 6 }}
                             value={this.state.cardInput}
                             onChange={this.handleChange}
                         />

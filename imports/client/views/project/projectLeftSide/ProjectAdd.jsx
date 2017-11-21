@@ -12,6 +12,7 @@ import Company from '../../../../schema/company';
 import ImgUpload from '../../manage/component/ImgUpload';
 import AvatarSelf from '../../../components/AvatarSelf';
 import ChoosePeopleModel from '../../../components/ChoosePeopleModel';
+// import Project from '../../../../../imports/schema/project';
 // import UserUtil from '../../../../util/user';
 import PeopleList from '../../manage/audit/component/PeopleList';
 // import AddProject from './Addproject';
@@ -34,6 +35,7 @@ const formItemLayout = {
 class ProjectAdd extends Component {
     static propTypes = {
         click: PropTypes.func,
+        history: PropTypes.object,
         // to: PropTypes.string,
     }
     constructor(props) {
@@ -63,6 +65,10 @@ class ProjectAdd extends Component {
     }
     handleMessage = () => {
         this.createProject();
+        // const id = Project.findOne({ intro: this.state.intro });
+        // console.log(Project.findOne({ intro: this.state.intro }));
+        // const pathName = `/project/task/${id}`;
+        // this.props.history.push(pathName);
     }
     changeUpdateTitle = () => {
         this.setState({
@@ -241,6 +247,7 @@ class ProjectAdd extends Component {
 export default withTracker(() => {
     Meteor.subscribe('company');
     Meteor.subscribe('users');
+    Meteor.subscribe('project');
     const companys = Company.find().fetch();
     const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
     let companyInfo = {};
