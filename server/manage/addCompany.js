@@ -3,15 +3,30 @@ import { Meteor } from 'meteor/meteor';
 import Company from '../../imports/schema/company';
 
 Meteor.methods({
-    createCompany({ name, admin, deps = [] }) {
+    // 创建公司/团队 必传字段: name,industryType
+    createCompany({ name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', deps = [] }) {
         const newCompany = {
             createdAt: new Date(),
             name,
-            admin,
+            admin: Meteor.userId(),
             deps,
+            logo,
+            industryType,
+            residence,
         };
         Company.schema.validate(newCompany);
-        Company.insert(newCompany);
+        return Company.insert(newCompany);
+    },
+    // 更换主管理员
+    changeMainManage(companyId, newManageId) {
+        Company.update(
+            { _id: companyId },
+            {
+                $set: {
+                    admin: newManageId,
+                },
+            },
+        );
     },
     // 增加部门
     addDepartment({ _id, name, isAutoChat, admin = '', avatar = '' }) {
@@ -89,5 +104,30 @@ Meteor.methods({
                 $set: newCompany,
             },
         );
+    },
+    // 解散团队
+    deleteCompany(companyId) {
+        const companyMembers = Company.findOne({
+            _id: companyId,
+        });
+        companyMembers.members.map(user => (
+            Meteor.users.update({
+                _id: user,
+            }, {
+                $pull: {
+                    'profile.company': companyId,
+                    'profile.chatList': {
+                        companyId,
+                    },
+                },
+
+            })
+        ));
+        Company.remove({
+            _id: companyId,
+        });
+        // Messages.remove({
+        //     to: groupId,
+        // });
     },
 });

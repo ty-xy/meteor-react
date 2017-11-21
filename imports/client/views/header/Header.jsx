@@ -95,7 +95,7 @@ class Header extends Component {
                     <ul className="account-setting" style={{ display: this.state.isShowAccount ? 'block' : 'none' }}>
                         <div className="triangle-up" />
                         <li className="account-message" onClick={this.clickTab.bind(this, '/adminInfo')}>个人资料</li>
-                        <li>下载应用</li>
+                        {/* <li>下载应用</li> */}
                         <li>使用帮助</li>
                         <li onClick={this.handleLogin}>退出登录</li>
                     </ul>

@@ -23,10 +23,11 @@ Meteor.methods({
                 friends: [],
                 groups: [],
                 chatList: [],
-                company: [],
+                company: [], // 用户所在的公司
+                createdCompany: [], // 用户创建的公司
                 mainCompany: '',
                 verifyFriend: '0', // '0': 需要好友认证;'1': 允许任何人; '2': 不允许任何人
-                isHideInfo: false,
+                isHideInfo: false, // 默认隐藏个人信息
             },
         });
     },

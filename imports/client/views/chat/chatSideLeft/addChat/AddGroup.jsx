@@ -15,8 +15,8 @@ class AddGroup extends Component {
     static propTypes = {
         isShowAddGroup: PropTypes.bool,
         handleAddGroup: PropTypes.func,
-        users: PropTypes.array,
-        type: PropTypes.string,
+        users: PropTypes.array, // 传入可以选择的人
+        type: PropTypes.string, // 创建的时候,还是
         groupId: PropTypes.string,
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,

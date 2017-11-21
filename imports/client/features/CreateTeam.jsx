@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Select, Cascader } from 'antd';
 import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
 
 import Avatar from '../components/Avatar';
 import AvatarSelf from '../components/AvatarSelf';
 import Icon from '../components/Icon';
+import feedback from '../../util/feedback';
 // import AddGroup from '../views/chat/chatSideLeft/addChat/AddGroup';
 
 const FormItem = Form.Item;
@@ -43,12 +45,50 @@ class CreateTeam extends Component {
         this.state = {
             formLayout: 'horizontal',
             isShowAddGroup: false,
+            teamLogo: 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png',
             industryType: [
                 {
 
                 },
             ],
         };
+    }
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFieldsAndScroll(async (err, formValues) => {
+            if (!err) {
+                formValues.logo = this.state.teamLogo;
+                console.log(formValues);
+                Meteor.call('createCompany', formValues, (error, result) => {
+                    if (result) {
+                        feedback.dealSuccess('创建成功');
+                    }
+                });
+            }
+        });
+    }
+    handleUploadImg = (e) => {
+        const image = e.target.files[0];
+        if (!image) {
+            return;
+        }
+        const reader = new FileReader();
+        const changeAvatar = this.changeAvatar;
+        reader.onloadend = function () {
+            Meteor.call('uploadImg', this.result, (err, result) => {
+                changeAvatar(result);
+                if (err) {
+                    return console.error(err.reason);
+                }
+                console.log('修改头像成功');
+            });
+        };
+        reader.readAsDataURL(image);
+    }
+    changeAvatar = (avatarUrl) => {
+        this.setState({
+            teamLogo: avatarUrl,
+        });
     }
     handleAddMembers = () => {
         this.setState({
@@ -69,10 +109,11 @@ class CreateTeam extends Component {
             <div>
                 <Form layout={formLayout} onSubmit={this.handleSubmit}>
                     <FormItem>
+
                         <div className="upload-team-avatar">
-                            <Avatar avatar="http://oxldjnom8.bkt.clouddn.com/groupAvatar.png" name="团队" />
+                            <Avatar avatar={this.state.teamLogo} name="团队" />
                             <p className="edit-avatar">修改头像
-                                <input type="file" id="avatar" onChange={this.handleUploadImg} />
+                                <input type="file" id="avatar" onChange={this.handleUploadImg} ref={i => this.fileInput = i} />
                             </p>
                         </div>
                     </FormItem>
@@ -84,7 +125,7 @@ class CreateTeam extends Component {
                             rules: [{
                                 type: 'string', message: '类型为string!',
                             }, {
-                                required: true, message: '商品名称!',
+                                required: true, message: '团队名称!',
                             }],
                         })(
                             <Input placeholder="团队名称" />,
@@ -94,7 +135,7 @@ class CreateTeam extends Component {
                         label="行业类型"
                         {...formItemLayout}
                     >
-                        {getFieldDecorator('img', {
+                        {getFieldDecorator('industryType', {
                             rules: [{
                                 type: 'string', message: '类型为string!',
                             }, {
@@ -102,13 +143,13 @@ class CreateTeam extends Component {
                             }],
                         })(
                             <Select placeholder="行业类型">
-                                <Option value="china">建筑设计</Option>
-                                <Option value="use">土木工程</Option>
-                                <Option value="use">装饰装潢</Option>
-                                <Option value="use">房地产</Option>
-                                <Option value="use">物业管理</Option>
-                                <Option value="use">建材</Option>
-                                <Option value="use">其他</Option>
+                                <Option value="建筑设计">建筑设计</Option>
+                                <Option value="土木工程">土木工程</Option>
+                                <Option value="装饰装潢">装饰装潢</Option>
+                                <Option value="房地产">房地产</Option>
+                                <Option value="物业管理">物业管理</Option>
+                                <Option value="建材">建材</Option>
+                                <Option value="其他">其他</Option>
                             </Select>,
                         )}
                     </FormItem>

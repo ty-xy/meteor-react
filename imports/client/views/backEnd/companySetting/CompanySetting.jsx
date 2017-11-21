@@ -42,7 +42,7 @@ class CompanySetting extends Component {
                     <div className="logo-info">
                         <div className="logo-mark">
                             <p>中艺装饰</p>
-                            <Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/groupAvatar.png" />
+                            <Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" />
                         </div>
 
                     </div>
