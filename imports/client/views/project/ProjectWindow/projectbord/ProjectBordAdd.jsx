@@ -55,7 +55,7 @@ class ProjectBordList extends Component {
 
     render() {
         return (
-            <div>
+            <div style={{ marginLeft: '30px' }}>
                 <div className="ejianlian-add-item-bar">
                     <MyIcon icon="icon-jiahao" onClick={this.handleClick} />
                     <p>添加任务版</p>

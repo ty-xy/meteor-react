@@ -20,7 +20,6 @@ import TaskBoard from '../../../../../../imports/schema/taskBoard';
 // import ProjectTag from './ProjectTag';
 
 const { TextArea } = Input;
-const list = [];
 // const confirm = Modal.confirm;
 @pureRender
 class ProjectItemDetail extends Component {
@@ -116,6 +115,13 @@ class ProjectItemDetail extends Component {
     onEndChange = (value) => {
         this.onPanellChange(value);
         this.handleEnd();
+    }
+    disabledEndDate = (endValue) => {
+        const startValue = this.props.tasks[0].beginTime;
+        if (!endValue || !startValue) {
+            return false;
+        }
+        return endValue.valueOf() <= startValue.valueOf();
     }
     handleStart =() => {
         this.setState({
@@ -382,9 +388,6 @@ class ProjectItemDetail extends Component {
             taskSort.unshift(this.props.textId);
             taskSort.splice(index + 1, 1);
             this.handleOrder(taskSort);
-        } else if (number === '#F3b152') {
-            console.log(list.length.list);
-            console.log(index);
         }
         Meteor.call(
             'changeLabel', this.props.Id.Id, number, (err) => {
@@ -793,7 +796,11 @@ class ProjectItemDetail extends Component {
                                 </div>
                                 :
                                 <div className="none-time">
-                                    <DatePicker placeholder=" 设置结束时间" onChange={this.onPanellChange} />
+                                    <DatePicker
+                                        placeholder=" 设置结束时间"
+                                        disabledDate={this.disabledEndDate}
+                                        onChange={this.onPanellChange}
+                                    />
                                 </div>}
                         </Col>
                     </Row>
@@ -904,11 +911,13 @@ class ProjectItemDetail extends Component {
                                 this.props.files.map(value => (
                                     <Row key={value._id}>
                                         <Col style={{ display: 'flex' }} span={14} >
-                                            <Row>
-                                                <Col span={2}><Icon icon="icon-wenjiangeshi-jpg" /></Col>
-                                                <Col span={19}><p style={{ marginLeft: '10px' }}>{value.name}</p></Col>
-                                                <Col span={3}><p>{value.size}</p></Col>
-                                            </Row>
+                                            <Col span={2}><Icon icon="icon-wenjiangeshi-jpg" /></Col>
+                                            <Col span={12} style={{ marginLeft: '10px' }}>
+                                                <p >
+                                                    {value.name.slice(0, 8)}
+                                                </p>
+                                            </Col>
+                                            <Col span={7} style={{ textAlign: 'center' }}><p>{value.size}</p></Col>
                                         </Col>
                                         <Col span={3} >下载</Col>
                                         <Col span={3} onClick={() => this.handleRemoveFile(value._id)}>删除</Col>
@@ -958,7 +967,11 @@ class ProjectItemDetail extends Component {
                 </div>
                 {this.state.showEnd ?
                     <div className="clender-setting  clender-setting-more clender-over" >
-                        <Calendar fullscreen={false} onSelect={this.onEndChange} />
+                        <Calendar
+                            fullscreen={false}
+                            onSelect={this.onEndChange}
+                            disabledDate={this.disabledEndDate}
+                        />
                         <button onClick={e => this.handleChangeEnd(e)}>取消</button>
                     </div> : null}
                 {this.state.showCopyCard ?

@@ -70,6 +70,13 @@ class MiniCard extends Component {
             showOverTime: !this.state.showOverTime,
         });
     }
+    disabledEndDate = (endValue) => {
+        const startValue = this.props.begintime;
+        if (!endValue || !startValue) {
+            return false;
+        }
+        return endValue.valueOf() <= startValue.valueOf();
+    }
     handlePop =(e) => {
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
@@ -142,7 +149,11 @@ class MiniCard extends Component {
                                     <div className="try" style={{ display: this.state.showOverTime ? 'block' : 'none' }} />
                                     {this.state.showOverTime ?
                                         <div className="clender-setting" onClick={e => this.handlePop(e)}>
-                                            <Calendar fullscreen={false} onSelect={this.onPanellChange} />
+                                            <Calendar
+                                                fullscreen={false}
+                                                onSelect={this.onPanellChange}
+                                                disabledDate={this.disabledEndDate}
+                                            />
                                             <button onClick={e => this.handleChangeEnd(e)}>取消</button>
                                         </div> : null}
                                 </div>

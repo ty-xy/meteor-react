@@ -125,7 +125,7 @@ class ProjectWindow extends Component {
                                 ))
 
                             }
-                            <ProjectBordAdd style={{ marginLeft: '30px' }} pId={this.state.id} />
+                            <ProjectBordAdd pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="日历" key="2">
                             <ProjectLender />
