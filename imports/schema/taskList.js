@@ -36,6 +36,10 @@ TaskList.schema = new SimpleSchema({
         type: Date,
     },
     // 是否完成
+    checkble: {
+        type: Number,
+        optional: true,
+    },
 
 });
 

@@ -67,7 +67,6 @@ class ProjectWindow extends Component {
     }
     render() {
         const divStyle = {
-            taskStyle: { marginLeft: '30px' },
             TabStyle: {
                 display: 'flex',
                 marginTop: '10px',
@@ -121,11 +120,12 @@ class ProjectWindow extends Component {
                                         value={text.name}
                                         tastBoardId={text._id}
                                         key={text._id}
+                                        projectId={text.projectId}
                                     />
                                 ))
 
                             }
-                            <ProjectBordAdd style={divStyle.taskStyle} pId={this.state.id} />
+                            <ProjectBordAdd style={{ marginLeft: '30px' }} pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="日历" key="2">
                             <ProjectLender />
@@ -153,7 +153,7 @@ export default withTracker((projectd) => {
     const projectL = Project.find({ _id: projectd.match.params.id }).fetch();
     // const projectId1 = Project.find({ name: this.state.minchen })._id;
     const project = projectL[0];
-    console.log(project, projectL, projectd);
+    console.log(project, projectL, projectd, taskF);
     // console.log(projectd.match.params.id);
     return {
         taskF,

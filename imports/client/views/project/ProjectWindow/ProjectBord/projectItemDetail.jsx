@@ -15,6 +15,7 @@ import File from '../../../../../../imports/schema/file';
 import TaskList from '../../../../../../imports/schema/taskList';
 import Active from '../../../../../../imports/schema/active';
 import feedback from '../../../../../util/feedback';
+import ProjectCopy from './ProjectCopy';
 // import ProjectTag from './ProjectTag';
 
 const { TextArea } = Input;
@@ -34,7 +35,9 @@ class ProjectItemDetail extends Component {
         taskchild: PropTypes.arrayOf(PropTypes.object),
         // label: PropTypes.string,
         iddd: PropTypes.array,
+        cId: PropTypes.array,
         files: PropTypes.string,
+        projectId: PropTypes.string,
     }
     constructor(...props) {
         super(...props);
@@ -61,6 +64,12 @@ class ProjectItemDetail extends Component {
             showBegin: false,
             showEnd: false,
             uuids: '',
+            showCopyCard: false,
+            overNumber: 0,
+            checked: true,
+            FlistValue: '',
+            // showList: true,
+            TtitleValue: '',
         };
     }
     componentWillMount() {
@@ -72,13 +81,15 @@ class ProjectItemDetail extends Component {
     componentDidMount() {
         console.log(this.state.uuids);
     }
-    componentWillReceiveProps(nextProps) {
-        console.log('nextProps', nextProps);
-        console.log(uuid.v4());
+    componentWillReceiveProps() {
+        this.setState({
+            uuids: uuid.v4(),
+        });
     }
     onPanelChange = (value) => {
+        console.log(value, value._d);
         Meteor.call(
-            'changeTime', this.props.Id.Id, value.format('L'),
+            'changeTime', this.props.Id.Id, value._d,
             (err) => {
                 console.log(err);
             },
@@ -116,35 +127,13 @@ class ProjectItemDetail extends Component {
         this.handleEnd();
     }
     handleChangeStart=() => {
-        // e.stopPropagation();
-        // e.nativeEvent.stopImmediatePropagation();
         this.handleStart();
     }
-    // showModal = () => {
-    //     this.setState({
-    //         visible: true,
-    //     });
-    // }
     showOk = () => {
         this.setState({
             visiblel: true,
         });
     }
-    // showOver = () => {
-    //     this.setState({
-    //         visib: true,
-    //     });
-    // }
-    // hideModal = () => {
-    //     this.setState({
-    //         visible: false,
-    //     });
-    // }
-    // hideOver = () => {
-    //     this.setState({
-    //         visib: false,
-    //     });
-    // }
     handleOk = () => {
         this.setState({
             visiblel: false,
@@ -176,8 +165,20 @@ class ProjectItemDetail extends Component {
         });
     }
     // checkbox的状态值
-    handleChange = (e) => {
-        console.log(`checked = ${e.target.checked}`);
+    handleChange = (e, id) => {
+        if (e.target.checked === true) {
+            Meteor.call(
+                'changeCheckble', id, 1, (err) => {
+                    console.log(err);
+                },
+            );
+        } else if (e.target.checked === false) {
+            Meteor.call(
+                'changeCheckble', id, 0, (err) => {
+                    console.log(err);
+                },
+            );
+        }
     }
     // 获得变化的值
     handleChangeT = (e) => {
@@ -325,7 +326,6 @@ class ProjectItemDetail extends Component {
         this.setState({
             [`shownT${id}`]: true,
         });
-        console.log(this.list);
     }
     // 子菜单的编辑变化
     handldeChangetaskList = (e) => {
@@ -405,7 +405,9 @@ class ProjectItemDetail extends Component {
             });
     }
     // 复制卡片
-    handleCopy = () => {
+    handleCopy = (v) => {
+        console.log(v);
+
         const task = this.props.tasks[0];
         console.log(task);
         Meteor.call(
@@ -418,7 +420,7 @@ class ProjectItemDetail extends Component {
                 console.log(err);
             },
         );
-        Meteor.call('changeSortAarry', task.taskBoardId, this.state.uuids, (err) => {
+        Meteor.call('changeSortAarry', v, this.state.uuids, (err) => {
             console.log(err);
         },
         );
@@ -472,14 +474,144 @@ class ProjectItemDetail extends Component {
             return null;
         });
     }
+    handleCopys=() => {
+        this.setState({
+            showCopyCard: !this.state.showCopyCard,
+        });
+    }
+    handleCop = () => {
+        this.setState({
+            showCopyCard: false,
+        });
+    }
+    handleTaskList = (id) => {
+        this.setState({
+            [`showList${id}`]: true,
+        });
+    }
+    handleTaskListC =(id) => {
+        this.setState({
+            [`showList${id}`]: false,
+        });
+    }
+    handleChangeTitleT =(e) => {
+        this.setState({
+            TtitleValue: e.target.value,
+        });
+    }
+    handleChangeTTitle =(id) => {
+        Meteor.call(
+            'changeTaskList', id, this.state.TtitleValue, (err) => {
+                console.log(err);
+            },
+        );
+        this.setState({
+            TtitleValue: '',
+        });
+        this.handleTaskListC(id);
+    }
+    handleClick=(e) => {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    }
+
+    // 更改父清单的值
+    handldeFList =(e) => {
+        this.setState({
+            FlistValue: e.target.value,
+        });
+    }
+    handleSendFList =(id) => {
+        Meteor.call(
+            'changeTaskList', id, this.state.FlistValue, (err) => {
+                console.log(err);
+            },
+        );
+        this.handleCancelF(id);
+    }
+    handleFlist =(id) => {
+        this.setState({
+            [`fatherList${id}`]: true,
+        });
+    }
+    handleCancelF =(id) => {
+        this.setState({
+            [`fatherList${id}`]: false,
+        });
+    }
+    handleDeleteC =(id) => {
+        this.handleRemoveList(id);
+    }
     // 渲染子清单
     renderTasks = (id) => {
         console.log();
         return this.props.taskchild.map((listChild) => {
-            if (listChild.fatherId === id) {
+            if (listChild.fatherId === id && listChild.checkble === 1) {
                 return (
-                    <div style={{ marginLeft: '20px' }} key={listChild._id} >
-                        <Checkbox onChange={this.handleChange}>{listChild.name}</Checkbox>
+                    <div key={listChild._id}>
+                        {!this.state[`showList${listChild.listId}`] ?
+                            <div
+                                style={{ marginLeft: '20px', display: 'flex' }}
+                            >
+                                <Checkbox
+                                    onClick={e => this.handleClick(e)}
+                                    onChange={e => this.handleChange(e, listChild.listId)}
+                                    checked={this.state.checked}
+                                    dataId={listChild.fatherId}
+                                />
+                                <p
+                                    style={{ marginLeft: '15px' }}
+                                    onClick={() => this.handleTaskList(listChild.listId)}
+                                >{listChild.name}</p>
+                            </div> :
+                            <div style={{ display: 'flex' }}>
+                                <ProjectInput
+                                    input="更改"
+                                    onClick={() => this.handleChangeTTitle(listChild.listId)}
+                                    value={this.state.TtitleValue}
+                                    onChange={this.handleChangeTitleT}
+                                    onConcel={() => this.handleTaskListC(listChild.listId)}
+                                />
+                                <p
+                                    style={{ marginLeft: '45px', marginTop: '20px' }}
+                                    onClick={() => this.handleDeleteC(listChild.listId)}
+                                >删除</p>
+                            </div>
+                        }
+                    </div>
+                );
+            } else if (listChild.fatherId === id && listChild.checkble === 0) {
+                return (
+                    <div key={listChild._id}>
+                        {!this.state[`showList${listChild.listId}`] ?
+                            <div
+                                style={{ marginLeft: '20px', display: 'flex' }}
+                            >
+                                <Checkbox
+                                    onClick={e => this.handleClick(e)}
+                                    onChange={e => this.handleChange(e, listChild.listId)}
+                                    checked={!this.state.checked}
+                                    dataId={listChild.fatherId}
+                                />
+                                <p
+                                    style={{ marginLeft: '15px' }}
+                                    onClick={() => this.handleTaskList(listChild.listId)}
+                                >{listChild.name}</p>
+                            </div> :
+                            <div style={{ display: 'flex' }}>
+                                <ProjectInput
+                                    input="更改"
+                                    onClick={() => this.handleChangeTTitle(listChild.listId)}
+                                    value={this.state.TtitleValue}
+                                    onChange={this.handleChangeTitleT}
+                                    onConcel={() => this.handleTaskListC(listChild.listId)}
+                                />
+                                <p
+                                    style={{ marginLeft: '45px', marginTop: '20px' }}
+                                    onClick={() => this.handleDeleteC(listChild.listId)}
+                                >删除</p>
+                            </div>
+                        }
                     </div>
                 );
             }
@@ -495,7 +627,7 @@ class ProjectItemDetail extends Component {
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key="10">
-                    <p onClick={this.handleCopy}>复制卡片</p>
+                    <p onClick={this.handleCopys}>复制卡片</p>
                 </Menu.Item>
             </Menu>
         );
@@ -514,7 +646,8 @@ class ProjectItemDetail extends Component {
                                     onConcel={this.handleTitle}
                                 />}
                         </Col>
-                        <Col span={4}>
+                        <Col span={4} onClick={this.handleCop}>
+                            <div className="try" style={{ display: this.state.showCopyCard ? 'block' : 'none' }} />
                             <Dropdown overlay={menu} trigger={['click']}>
                                 <Icon icon="icon-gengduo1" />
                             </Dropdown>
@@ -635,19 +768,31 @@ class ProjectItemDetail extends Component {
                         {/* <ProjectTag /> */}
                         {this.props.tasklists.map((tasklist, index) => (
                             <div key={tasklist._id} >
-                                <Row>
-                                    <Col span={19}>
-                                        <Checkbox onChange={this.handleChange} defaultChecked >{tasklist.name}</Checkbox>
-                                    </Col>
-                                    <Col span={2}>
-                                        <span>0</span>
-                                        <span>/</span>
-                                        <span>{this.props.iddd[index]}</span>
-                                    </Col>
-                                    <Col span={3} onClick={() => this.handleRemoveList(tasklist._id)}>
+                                {!this.state[`fatherList${tasklist.listId}`] ?
+                                    <Row>
+                                        <Col
+                                            span={19}
+                                            style={{ display: 'flex' }}
+                                            onClick={() => this.handleFlist(tasklist.listId)}
+                                        >
+                                            <Icon icon="icon-squarecheck" />
+                                            <p>{tasklist.name}</p>
+                                        </Col>
+                                        <Col span={2}>
+                                            <span>{this.props.cId[index]}</span>
+                                            <span>/</span>
+                                            <span>{this.props.iddd[index]}</span>
+                                        </Col>
+                                        <Col span={3} onClick={() => this.handleRemoveList(tasklist.listId)}>
                                         删除
-                                    </Col>
-                                </Row>
+                                        </Col>
+                                    </Row> : <ProjectInput
+                                        input="添加"
+                                        value={this.state.FlistValue}
+                                        onChange={this.handldeFList}
+                                        onConcel={() => this.handleCancelF(tasklist.listId)}
+                                        onClick={() => this.handleSendFList(tasklist.listId)}
+                                    />}
                                 {this.renderTasks(tasklist.listId, index)}
                                 <div style={{ marginLeft: '20px' }}>
                                     {this.state[`shownT${tasklist.listId}`] ?
@@ -757,6 +902,14 @@ class ProjectItemDetail extends Component {
                         <Calendar fullscreen={false} onSelect={this.onEndChange} />
                         <button onClick={e => this.handleChangeEnd(e)}>取消</button>
                     </div> : null}
+                {this.state.showCopyCard ?
+                    <ProjectCopy
+                        hidden={this.handleCop}
+                        title={this.props.item}
+                        projectId={this.props.projectId}
+                        Cclick={this.handleCopy}
+                    /> : null
+                }
             </div >
 
         );
@@ -775,16 +928,21 @@ export default withTracker((Id) => {
         const length = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: id.listId }] }).fetch();
         return length;
     });
+    const checkId = tasklists.map((id) => {
+        const length = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: id.listId }, { checkble: 1 }] }).fetch();
+        return length;
+    });
     const iddd = idd.map(element => (element.length));
-    //  const file = tasks[0].fileId;
-    console.log(tasks, Id);
-    //  const files = File.find({ _id: { $in: file } }).fetch();
+    const cId = checkId.map(element => (element.length));
+    console.log(Id.textId);
     return {
         Id,
         activities,
         tasklists,
         taskchild,
         iddd,
+        cId,
+        checkId,
         tasks,
         files: tasks[0] && tasks[0].fileId.length > 0 ? File.find({ _id: { $in: tasks[0].fileId } }).fetch() : '',
     };
