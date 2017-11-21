@@ -4,18 +4,49 @@ import Company from '../../imports/schema/company';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
-    createCompany({ name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', deps = [] }) {
+    createCompany({ name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [] }) {
         const newCompany = {
             createdAt: new Date(),
             name,
             admin: Meteor.userId(),
-            deps,
             logo,
             industryType,
             residence,
+            members,
         };
         Company.schema.validate(newCompany);
-        return Company.insert(newCompany);
+        const companyId = Company.insert(newCompany);
+        // 创建爱完成后,需自动创建,需要在chatList里添加
+        members.map((user =>
+            Meteor.users.update(
+                { _id: user },
+                {
+                    $push: {
+                        'profile.company': companyId,
+                        'profile.chatList': {
+                            type: 'team',
+                            companyId,
+                            time: new Date(),
+                        },
+                    },
+                },
+            )
+        ));
+        return members;
+    },
+    // 修改公司/团队信息
+    changeCompanyInfo(companyId, { name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png' }) {
+        Company.update(
+            { _id: companyId },
+            {
+                $set: {
+                    name,
+                    logo,
+                    industryType,
+                    residence,
+                },
+            },
+        );
     },
     // 更换主管理员
     changeMainManage(companyId, newManageId) {
