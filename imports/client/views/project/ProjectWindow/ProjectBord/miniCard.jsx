@@ -29,6 +29,7 @@ class MiniCard extends Component {
         projectId: PropTypes.string,
         TaskLength: PropTypes.number,
         taskOver: PropTypes.number,
+        files: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
@@ -209,6 +210,10 @@ class MiniCard extends Component {
                                         </div>
                                     </div>}
                             </div> : null}
+                        {this.props.files.length > 0 ?
+                            <div className="talk-show list-show">
+                                <Icon icon="icon-fujian1" />
+                            </div> : null}
                     </div>
                     <Modal
                         visible={this.state.visible}
@@ -248,6 +253,7 @@ export default withTracker((taskid) => {
         const begintime = tasks[0].beginTime;
         const endtime = tasks[0].endTime;
         const label = tasks[0].label;
+        const files = tasks[0].fileId;
         return {
             begintime,
             activeL,
@@ -255,6 +261,7 @@ export default withTracker((taskid) => {
             label,
             TaskLength,
             taskOver,
+            files,
         };
     }
 })(MiniCard);
