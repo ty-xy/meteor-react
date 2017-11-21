@@ -72,9 +72,9 @@ class ProjectItemDetail extends Component {
         };
     }
     componentWillMount() {
-        console.log('componentWillMount', this.props.tasklists);
         this.setState({
             uuids: uuid.v4(),
+            titleValue: this.props.item,
         });
     }
     componentDidMount() {
@@ -83,6 +83,7 @@ class ProjectItemDetail extends Component {
     componentWillReceiveProps() {
         this.setState({
             uuids: uuid.v4(),
+            titleValue: this.props.item,
         });
     }
     onPanelChange = (value) => {
@@ -593,6 +594,7 @@ class ProjectItemDetail extends Component {
                         {!this.state[`showList${listChild.listId}`] ?
                             <div
                                 style={{ marginLeft: '20px', display: 'flex' }}
+                                onClick={() => this.handleTaskList(listChild.listId)}
                             >
                                 <Checkbox
                                     onClick={e => this.handleClick(e)}
@@ -602,7 +604,7 @@ class ProjectItemDetail extends Component {
                                 />
                                 <p
                                     style={{ marginLeft: '15px' }}
-                                    onClick={() => this.handleTaskList(listChild.listId)}
+
                                 >{listChild.name}</p>
                             </div> :
                             <div style={{ display: 'flex' }}>
@@ -627,6 +629,7 @@ class ProjectItemDetail extends Component {
                         {!this.state[`showList${listChild.listId}`] ?
                             <div
                                 style={{ marginLeft: '20px', display: 'flex' }}
+                                onClick={() => this.handleTaskList(listChild.listId)}
                             >
                                 <Checkbox
                                     onClick={e => this.handleClick(e)}
@@ -636,14 +639,13 @@ class ProjectItemDetail extends Component {
                                 />
                                 <p
                                     style={{ marginLeft: '15px' }}
-                                    onClick={() => this.handleTaskList(listChild.listId)}
                                 >{listChild.name}</p>
                             </div> :
                             <div style={{ display: 'flex' }}>
                                 <ProjectInput
                                     input="更改"
                                     onClick={() => this.handleChangeTTitle(listChild.listId)}
-                                    value={this.state.TtitleValue}
+                                    value={this.state.TtitleValue || listChild.name}
                                     onChange={this.handleChangeTitleT}
                                     onConcel={() => this.handleTaskListC(listChild.listId)}
                                 />

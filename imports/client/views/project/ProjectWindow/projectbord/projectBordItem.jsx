@@ -48,9 +48,15 @@ class ProjectBordItem extends Component {
         };
     }
     componentWillMount() {
+        this.setState({
+            titleValue: this.props.value,
+        });
     }
 
     componentWillReceiveProps(nextProps) {
+        this.setState({
+            titleValue: this.props.value,
+        });
         const tasks = Task.find({}).fetch();
         console.log('nextProps', nextProps);
         this.setState({
