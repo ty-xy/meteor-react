@@ -54,6 +54,9 @@ export const userIdToInfo = {
         });
         return res;
     },
+    getUsername(users, userId) {
+        return userIdToInfo.getProfile(users, userId).username || '';
+    },
     getName(users, userId) {
         return userIdToInfo.getProfile(users, userId).name || '';
     },
