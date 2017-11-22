@@ -1,0 +1,30 @@
+@import '../../util/util.less';
+.team-members {
+    .ant-table-content .ant-table-thead > tr > th {
+        padding: 0 !important
+    }
+    .team-memebers-info {
+        display: flex;
+        & > p {
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+    }
+    .ant-table-title {
+        padding: 0 !important;
+        .dev-title {
+            border-bottom: 1px solid #e9e9e9;
+            height: 60px;
+            line-height: 60px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            .company {
+                color: @mainColor;
+            }
+            & > i {
+                color:#BBC1D7;
+            }
+        }
+    }
+}

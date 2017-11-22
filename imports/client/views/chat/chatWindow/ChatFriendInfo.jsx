@@ -74,7 +74,7 @@ class ChatFriendInfo extends Component {
         const haveChat = Meteor.user().profile.chatList.find(item => item.userId && item.userId === this.props.friendId);
         if (haveChat) {
             // 已经存在聊天窗口,需要直接跳到对应的聊天窗口
-            this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.friendId);
+            this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.friendId, '', 'message');
             this.props.handleToggle(IdUtil.merge(Meteor.userId(), this.props.friendId));
             this.props.handleFriendInfo();
             return;

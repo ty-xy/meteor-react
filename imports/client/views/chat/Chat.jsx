@@ -19,6 +19,8 @@ import NewFriend from './chatWindow/NewFriend';
 import SearchChat from '../../features/SearchChat';
 // import ProjectNotice from './chatWindow/ProjectNotice';
 
+import TeamMembers from './chatSideLeft/TeamMembers';
+import EmptyChat from '../../components/EmptyChat';
 
 @pureRender
 class Chat extends Component {
@@ -45,9 +47,10 @@ class Chat extends Component {
             chatType: 'message',
         };
     }
-    handleNewFriend = () => {
+    handleChatType = (chatType) => {
+        console.log(2222, chatType);
         this.setState({
-            chatType: 'newFriend',
+            chatType,
         });
     }
     handleClick = (index) => {
@@ -60,6 +63,7 @@ class Chat extends Component {
             selectedLinkMan: index,
         });
     }
+    // 跳转到那个类型: to: 跳到那个, userId: userId/groupId, type: 'userId'/'groupId',chatType: 'message'/'newFriend'/'teamMembers'/'workNotice'/'projectNotice'
     changeTo = (to, userId, type, chatType) => {
         // 有未读消息(有用户所在的群以及发给用户的消息)且不在聊天列表时,创建新的聊天窗口
         if (type && !this.props.chatList.find(item => item[type] === userId)) {
@@ -77,7 +81,22 @@ class Chat extends Component {
             },
         });
     }
+    renderChatType = (chatType) => {
+        console.log(chatType);
+        switch (chatType) {
+        case 'message':
+            console.log('aaa', this);
+            return <ChatWindow to={this.state.to} userId={this.state.userId} changeTo={this.changeTo} handleToggle={this.handleToggle} />;
+        case 'newFriend':
+            return <NewFriend />;
+        case 'teamMembers':
+            return <TeamMembers />;
+        default:
+            return <EmptyChat />;
+        }
+    }
     render() {
+        console.log(111, this.state.chatType);
         return (
             <div className="ejianlian-chat">
                 <div className="left">
@@ -110,7 +129,7 @@ class Chat extends Component {
                                 changeTo={this.changeTo}
                                 handleToggle={this.handleToggle}
                                 selectedChat={this.state.selectedChat}
-                                handleNewFriend={this.handleNewFriend}
+                                handleNewFriend={this.handleChatType}
                             /> : null}
                         {this.state.selected === 2 ?
                             <div className="linkman-nav">
@@ -132,7 +151,7 @@ class Chat extends Component {
                             <FriendsList
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
-                                handleNewFriend={this.handleNewFriend}
+                                handleNewFriend={this.handleChatType}
                             /> : null}
                         {this.state.selectedLinkMan === 2 && this.state.selected === 2 ?
                             <GroupList
@@ -140,21 +159,20 @@ class Chat extends Component {
                                 handleClick={this.handleClick.bind(this, 1)}
                             /> : null}
                         {this.state.selected === 3 ?
-                            <TeamList /> : null}
+                            <TeamList
+                                handleTeamMembers={this.handleChatType}
+                            /> : null}
                     </div>
                     <AddChat
                         changeTo={this.changeTo}
                         handleToggle={this.handleToggle}
                     />
                 </div>
-                {
-                    this.state.chatType === 'newFriend' ?
-                        <NewFriend />
-                        :
-                        <ChatWindow to={this.state.to} userId={this.state.userId} changeTo={this.changeTo} handleToggle={this.handleToggle} />
-                }
-
-
+                <div className="chat-right">
+                    {
+                        this.renderChatType(this.state.chatType)
+                    }
+                </div>
                 {/* <ProjectNotice /> */}
             </div>
         );
