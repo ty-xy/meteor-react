@@ -63,8 +63,12 @@ Company.schema = new SimpleSchema({
     'members.$.userId': {
         type: String,
     },
+    'members.$.username': {
+        type: String,
+    },
     'members.$.code': {
         type: String,
+        optional: true,
     },
     'members.$.entryTime': {
         type: String,
@@ -80,9 +84,11 @@ Company.schema = new SimpleSchema({
     },
     'members.$.pos': {
         type: String,
+        optional: true,
     },
     'members.$.dep': {
         type: String,
+        optional: true,
     },
 });
 

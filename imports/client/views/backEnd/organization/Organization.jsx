@@ -7,15 +7,15 @@ import { Meteor } from 'meteor/meteor';
 import feedback from '../../../../util/feedback';
 import UserUtil from '../../../../util/user';
 import Company from '../../../../../imports/schema/company';
-
-
 import MyModel from './component/AddDep';
+import AddMember from './component/AddMember';
 import RightHeader from './component/RightHeader';
 
 class Organization extends PureComponent {
     static propTypes = {
         company: PropTypes.object,
-        users: PropTypes.Array,
+        users: PropTypes.array,
+        allUsers: PropTypes.array,
     }
     constructor(props) {
         super(props);
@@ -33,9 +33,9 @@ class Organization extends PureComponent {
     showMenu = () => {
         this.setState({ showMenu: !this.state.showMenu });
     }
-    // 添加部门model
-    addDepModel = (bool) => {
-        this.setState({ commentModel: bool });
+    // model 控制
+    modelShowHide = (bool, name) => {
+        this.setState({ [name]: bool });
     }
     // 新增部门提交
     postAddDep = (info) => {
@@ -54,7 +54,6 @@ class Organization extends PureComponent {
                 feedback.successToast('添加成功');
             },
         );
-        console.log(';info', info);
     }
     // handleSetting
     handleSetting = () => {
@@ -66,15 +65,14 @@ class Organization extends PureComponent {
     addDepCompoennt = () => (
         <div className="e-mg-organization-card text-center e-mg-organization-addDep">
             <div>
-                <i className="iconfont icon-Shape" onClick={() => this.addDepModel(true)} />
-                <p onClick={() => this.addDepModel(true)}>新增部门</p>
+                <i className="iconfont icon-Shape" onClick={() => this.modelShowHide(true, 'commentModel')} />
+                <p onClick={() => this.modelShowHide(true, 'commentModel')}>新增部门</p>
             </div>
             <MyModel
                 title="新增部门"
-                handleResult={this.handleResult}
-                addDepModel={this.addDepModel}
+                addDepModel={this.modelShowHide}
                 postAddDep={this.postAddDep}
-                {...this.state}
+                modelDep={this.state.commentModel}
             />
         </div>
     )
@@ -93,7 +91,6 @@ class Organization extends PureComponent {
         deps.forEach((item) => {
             item.num = num[item.name] || 0;
         });
-        console.log('num', deps, user);
         return (
             <div className="e-mg-organization-left-dep margin-top-20">
                 <div className={classnames('e-mg-organization-company', { 'dep-active': depActive === '' })}>
@@ -113,15 +110,65 @@ class Organization extends PureComponent {
         );
     }
     // 操作按钮集合
-    handleBtns = () => {
-        // const { isCompony } = this.state;
-        console.log('handleBtns');
+    handleBtns = () => (
+        <div className="handle-btns clearfix">
+            <Button onClick={() => this.modelShowHide(true, 'modelMember')}>新增员工</Button>
+            <Button>邀请员工</Button>
+            <Button>调整员工</Button>
+        </div>
+    );
+    // 新增提交
+    handleSubmitMember = (res) => {
+        const _id = UserUtil.getCompany();
+        const { allUsers, users } = this.props;
+        let isNot = false;
+        let bool = false;
+        const _this = this;
+        console.log('res', res);
+        users.forEach((item) => {
+            if (item.username === res.phone) {
+                isNot = true;
+            }
+        });
+        if (isNot) {
+            feedback.successToast('该人员已存在公司中， 请注意查看');
+        } else {
+            allUsers.forEach((item) => {
+                if (item.username === res.phone) {
+                    bool = true;
+                    res.userId = item._id;
+                }
+            });
+            if (bool) {
+                Meteor.call(
+                    'addMember',
+                    { ...res, _id },
+                    (err) => {
+                        if (err) {
+                            feedback.dealError('添加失败');
+                            return false;
+                        }
+                        feedback.successToastFb('添加成功', () => {
+                            _this.setState({ modelMember: false });
+                        });
+                    },
+                );
+            } else {
+                _this.setState({ modelMember: false });
+                feedback.dealWarning((<p>该成员尚未注册, <span style={{ color: '#108ee9', cursor: 'pointer' }} onClick={_this.modelShowHide(true, 'inviteMember')}>立即邀请</span></p>));
+            }
+        }
+    }
+    // 新增model
+    addMembers = () => {
+        const { company } = this.props;
         return (
-            <div className="handle-btns clearfix">
-                <Button>新增员工</Button>
-                <Button>邀请员工</Button>
-                <Button>调整员工</Button>
-            </div>
+            <AddMember
+                modelShowHide={this.modelShowHide}
+                handleSubmitMember={this.handleSubmitMember}
+                modelMember={this.state.modelMember}
+                data={company.deps || []}
+            />
         );
     }
     // table列表
@@ -184,6 +231,7 @@ class Organization extends PureComponent {
                         <RightHeader name="中亿集团有限公司" handleSetting={this.handleSetting} />
                         {this.handleBtns()}
                         {this.tableList()}
+                        {this.addMembers()}
                     </Col>
                 </Row>
             </div>
@@ -193,19 +241,21 @@ class Organization extends PureComponent {
 
 export default withTracker(() => {
     Meteor.subscribe('company');
+    Meteor.subscribe('users');
     const companys = Company.find().fetch();
     let users = [];
     let company = {};
     const mainCompany = UserUtil.getCompany();
     for (let i = 0; i < companys.length; i++) {
         if (companys[i]._id === mainCompany) {
-            users = companys[i].members;
+            users = companys[i].members || [];
             company = companys[i];
             break;
         }
     }
     return {
         users,
+        allUsers: Meteor.users.find().fetch(),
         company,
     };
 })(Organization);

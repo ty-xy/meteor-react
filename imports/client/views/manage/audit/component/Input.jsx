@@ -13,7 +13,7 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
-const MyInput = ({ keyword, label, type, required, defaultValue, placeholder, typeErr, requiredErr, width, form, max, onChange }) => (
+const MyInput = ({ keyword, label, type, required, defaultValue, placeholder, typeErr, requiredErr, width, form, max, onChange, reg = /([\w\W]*)/ }) => (
     <FormItem
         {...formItemLayout}
         label={label}
@@ -21,7 +21,7 @@ const MyInput = ({ keyword, label, type, required, defaultValue, placeholder, ty
         {form.getFieldDecorator(keyword, {
             initialValue: defaultValue,
             rules: [{
-                type: type || 'string', message: typeErr,
+                type: type || 'string', message: typeErr, pattern: reg,
             }, {
                 required, message: requiredErr,
             }],
@@ -44,5 +44,6 @@ MyInput.propTypes = {
     defaultValue: PropTypes.string,
     width: PropTypes.string,
     max: PropTypes.number,
+    reg: PropTypes.regexp,
 };
 export default MyInput;

@@ -8,13 +8,13 @@ class MyModel extends PureComponent {
         this.state = { show: false };
     }
     render() {
-        const { title = '请审批', footer, handleCancel, show, animation = '', mask, handleCommentbtn } = this.props;
+        const { title = '请审批', footer, handleCancel, show, animation = '', mask, handleCommentbtn, height } = this.props;
         const classname = show ? `e-mg-model-${animation} e-mg-model-show-${animation}` : `e-mg-model-${animation}`;
         // console.log('MyModel', this.props);
         return (
             <div className={`e-mg-model-mask-${mask}`}>
                 <div className="e-mg-model-mask" onClick={handleCancel} />
-                <div className={classname}>
+                <div className={classname} style={{ height: height || '350px' }}>
                     <div className="e-mg-model-header">
                         <div className="e-mg-model-header-title">
                             {title}
@@ -45,6 +45,7 @@ MyModel.propTypes = {
     show: PropTypes.bool,
     mask: PropTypes.bool,
     animation: PropTypes.string,
+    height: PropTypes.string,
     handleCommentbtn: PropTypes.func,
 };
 
