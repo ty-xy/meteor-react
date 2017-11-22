@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
-import { Card } from 'antd';
+import { Card, Row, Col } from 'antd';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
@@ -58,33 +58,41 @@ class projectOverFile extends Component {
                             {this.props.projects.map((value) => {
                                 if (value.headPortrait.indexOf('icon') === -1) {
                                     return (
-                                        <li className="list-item" key={value._id} >
-                                            <div className="list-img">
+                                        <Row className="list-item" key={value._id} >
+                                            <Col className="list-img" span={4}>
                                                 {<img src={`http://oxldjnom8.bkt.clouddn.com//${value.headPortrait}`} alt="" />}
-                                            </div>
-                                            <div className="list-right">
+                                            </Col>
+                                            <Col className="list-right" span={3}>
                                                 <p>{value.name}</p>
-                                            </div>
-                                            <div className="list-right">{Meteor.user().profile.name}</div>
-                                            <div className="list-right">归档于{format('yyyy-MM-dd hh:mm:ss', value.createTime)}</div>
-                                            <div className="button-borad back-borad" style={{ marginLeft: '400px' }} onClick={() => this.handleClick(value._id)}>还原</div>
-                                            <div className="button-borad use-borad">使用模板</div>
-                                        </li>
+                                            </Col>
+                                            <Col className="list-right" span={3}>{Meteor.user().profile.name}</Col >
+                                            <Col className="list-right" span={8}>归档于{format('yyyy-MM-dd hh:mm:ss', value.createTime)}</Col>
+                                            <Col
+                                                span={3}
+                                                className="button-borad back-borad"
+                                                onClick={() => this.handleClick(value._id)}
+                                            >还原</Col>
+                                            <Col span={3} className="button-borad use-borad">使用模板</Col>
+                                        </Row>
                                     );
                                 }
                                 return (
-                                    <li className="list-item" key={value._id} style={{ display: 'flex' }}>
-                                        <div className="list-img-icon">
-                                            {<Icon icon={`${value.headPortrait} icon`} size="30px" iconColor="#ddd" />}
-                                        </div>
-                                        <div className="list-right">
+                                    <Row className="list-item" key={value._id} >
+                                        <Col className="list-img-icon" span={4}>
+                                            {<Icon icon={`${value.headPortrait} icon`} size={30}iconColor="#ddd" />}
+                                        </Col>
+                                        <Col className="list-right" span={3}>
                                             <p>{value.name}</p>
-                                        </div>
-                                        <div className="list-right">{Meteor.user().profile.name}</div>
-                                        <div className="list-right">归档于{format('yyyy-MM-dd hh:mm:ss', value.createTime)}</div>
-                                        <div className="button-borad back-borad" style={{ marginLeft: '400px' }} onClick={() => this.handleClick(value._id)}>还原</div>
-                                        <div className="button-borad use-borad">使用模板</div>
-                                    </li>
+                                        </Col>
+                                        <Col className="list-right" span={3}>{Meteor.user().profile.name}</Col>
+                                        <Col span={10} className="list-right">归档于{format('yyyy-MM-dd hh:mm:ss', value.createTime)}</Col>
+                                        <Col
+                                            span={2}
+                                            className="button-borad back-borad"
+                                            onClick={() => this.handleClick(value._id)}
+                                        >还原</Col>
+                                        <Col span={2} className="button-borad use-borad">使用模板</Col>
+                                    </Row>
                                 );
                             })}
                         </div>

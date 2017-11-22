@@ -48,9 +48,15 @@ class ProjectBordItem extends Component {
         };
     }
     componentWillMount() {
+        this.setState({
+            titleValue: this.props.value,
+        });
     }
 
     componentWillReceiveProps(nextProps) {
+        this.setState({
+            titleValue: this.props.value,
+        });
         const tasks = Task.find({}).fetch();
         console.log('nextProps', nextProps);
         this.setState({
@@ -151,6 +157,9 @@ class ProjectBordItem extends Component {
         );
     }
     // 删除卡片x
+    handleDeleteTaskL = (item) => {
+        feedback.dealDelete('提示', '确定要删除该卡片吗?', () => this.handleDeleteTask(item));
+    }
     handleDeleteTask = (itemd) => {
         const deleteCard = this.props.fd[0][this.props.tastBoardId];
         const deleteIndex = deleteCard.indexOf(itemd);
@@ -177,7 +186,7 @@ class ProjectBordItem extends Component {
                 },
                 // direction: 'horizontal',
             };
-            console.log(componentBackingInstance);
+            // console.log(componentBackingInstance);
             Dragula([componentBackingInstance], options).on('drag', (el, source) => {
                 console.log(el, source);
             })
@@ -270,7 +279,7 @@ class ProjectBordItem extends Component {
                 ind={index}
                 textId={value.textId}
                 projectId={this.props.projectId}
-                deleteCard={() => this.handleDeleteTask(value.textId)}
+                deleteCard={() => this.handleDeleteTaskL(value.textId)}
             />);
         }
         return null;
@@ -338,8 +347,8 @@ class ProjectBordItem extends Component {
                             <button onClick={this.handleList}>取消</button>
                         </div>
                     </div> :
-                    <div className="list-add list-title" >
-                        <Icon icon="icon-jiahao icon" onClick={this.handleList} />
+                    <div className="list-add list-title" onClick={this.handleList}>
+                        <Icon icon="icon-jiahao icon" />
                         <p>添加卡片</p>
                     </div>
                 }
@@ -362,15 +371,15 @@ export default withTracker((indd) => {
         }).fetch();
         const hash = {};
         const fd = TaskBoard.find({}).fetch().map((value) => {
-            console.log(value._id);
+            // console.log(value._id);
             const ide = value._id;
             const dde = value.sortArray;
             hash[ide] = dde;
             return hash;
         });
         const o = Array.from(new Set(x));
-        console.log(o);
-        console.log(tasks, tasksA, o, taskg, fd);
+        // console.log(o);
+        // console.log(tasks, tasksA, o, taskg, fd);
         return {
             tasks,
             taskg,

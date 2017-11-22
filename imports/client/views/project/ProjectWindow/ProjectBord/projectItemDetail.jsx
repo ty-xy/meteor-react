@@ -20,7 +20,6 @@ import TaskBoard from '../../../../../../imports/schema/taskBoard';
 // import ProjectTag from './ProjectTag';
 
 const { TextArea } = Input;
-const list = [];
 // const confirm = Modal.confirm;
 @pureRender
 class ProjectItemDetail extends Component {
@@ -30,17 +29,13 @@ class ProjectItemDetail extends Component {
         index: PropTypes.string,
         textId: PropTypes.string,
         tasks: PropTypes.arrayOf(PropTypes.object),
-        // decription: PropTypes.string, // 描述的值
         activities: PropTypes.arrayOf(PropTypes.object),
-        // begintime: PropTypes.string,
-        // endtime: PropTypes.string,
         delete: PropTypes.func,
         tasklists: PropTypes.arrayOf(PropTypes.object),
         taskchild: PropTypes.arrayOf(PropTypes.object),
-        // label: PropTypes.string,
         iddd: PropTypes.array,
         cId: PropTypes.array,
-        files: PropTypes.array,
+        files: PropTypes.string,
         projectId: PropTypes.string,
     }
     constructor(...props) {
@@ -77,9 +72,9 @@ class ProjectItemDetail extends Component {
         };
     }
     componentWillMount() {
-        console.log('componentWillMount', this.props.tasklists);
         this.setState({
             uuids: uuid.v4(),
+            titleValue: this.props.item,
         });
     }
     componentDidMount() {
@@ -88,6 +83,7 @@ class ProjectItemDetail extends Component {
     componentWillReceiveProps() {
         this.setState({
             uuids: uuid.v4(),
+            titleValue: this.props.item,
         });
     }
     onPanelChange = (value) => {
@@ -116,6 +112,13 @@ class ProjectItemDetail extends Component {
     onEndChange = (value) => {
         this.onPanellChange(value);
         this.handleEnd();
+    }
+    disabledEndDate = (endValue) => {
+        const startValue = this.props.tasks[0].beginTime;
+        if (!endValue || !startValue) {
+            return false;
+        }
+        return endValue.valueOf() <= startValue.valueOf();
     }
     handleStart =() => {
         this.setState({
@@ -365,6 +368,9 @@ class ProjectItemDetail extends Component {
             },
         );
     }
+    handleRList = (id) => {
+        feedback.dealDelete('提示', '确定要删除该清单吗?', () => this.handleRemoveList(id));
+    }
     handleOrder =(array) => {
         Meteor.call(
             'changeTaskId', this.props.index, array, (err) => {
@@ -382,9 +388,6 @@ class ProjectItemDetail extends Component {
             taskSort.unshift(this.props.textId);
             taskSort.splice(index + 1, 1);
             this.handleOrder(taskSort);
-        } else if (number === '#F3b152') {
-            console.log(list.length.list);
-            console.log(index);
         }
         Meteor.call(
             'changeLabel', this.props.Id.Id, number, (err) => {
@@ -537,7 +540,23 @@ class ProjectItemDetail extends Component {
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
     }
-
+    // 时间函数
+    handleShowColor =() => {
+        const time = Math.ceil((this.props.tasks[0].endTime - new Date()) / 1000 / 3600 / 24);
+        if (time === 0 || time === 1) {
+            const bStyle = {
+                background: '#FFD663' };
+            return bStyle;
+        } else if (time < 0) {
+            const bStyle = {
+                background: '#EF5350' };
+            return bStyle;
+        } else if (time > 1) {
+            const bStyle = {
+                background: '#d8d8d8' };
+            return bStyle;
+        }
+    }
     // 更改父清单的值
     handldeFList =(e) => {
         this.setState({
@@ -575,6 +594,7 @@ class ProjectItemDetail extends Component {
                         {!this.state[`showList${listChild.listId}`] ?
                             <div
                                 style={{ marginLeft: '20px', display: 'flex' }}
+                                onClick={() => this.handleTaskList(listChild.listId)}
                             >
                                 <Checkbox
                                     onClick={e => this.handleClick(e)}
@@ -584,7 +604,7 @@ class ProjectItemDetail extends Component {
                                 />
                                 <p
                                     style={{ marginLeft: '15px' }}
-                                    onClick={() => this.handleTaskList(listChild.listId)}
+
                                 >{listChild.name}</p>
                             </div> :
                             <div style={{ display: 'flex' }}>
@@ -609,6 +629,7 @@ class ProjectItemDetail extends Component {
                         {!this.state[`showList${listChild.listId}`] ?
                             <div
                                 style={{ marginLeft: '20px', display: 'flex' }}
+                                onClick={() => this.handleTaskList(listChild.listId)}
                             >
                                 <Checkbox
                                     onClick={e => this.handleClick(e)}
@@ -618,14 +639,13 @@ class ProjectItemDetail extends Component {
                                 />
                                 <p
                                     style={{ marginLeft: '15px' }}
-                                    onClick={() => this.handleTaskList(listChild.listId)}
                                 >{listChild.name}</p>
                             </div> :
                             <div style={{ display: 'flex' }}>
                                 <ProjectInput
                                     input="更改"
                                     onClick={() => this.handleChangeTTitle(listChild.listId)}
-                                    value={this.state.TtitleValue}
+                                    value={this.state.TtitleValue || listChild.name}
                                     onChange={this.handleChangeTitleT}
                                     onConcel={() => this.handleTaskListC(listChild.listId)}
                                 />
@@ -681,6 +701,10 @@ class ProjectItemDetail extends Component {
 
                         />
                                                  正常
+
+                        { this.props.tasks[0].label === '#d8d8d8' ?
+                            <Icon icon="icon-xuanze icon-right" /> : null}
+
                     </div>
                 </Menu.Item>
                 <Menu.Item key="1" className="tag-li-show">
@@ -695,6 +719,8 @@ class ProjectItemDetail extends Component {
                             onClick={this.handleColor}
                         />
                                                 紧急
+                        { this.props.tasks[0].label === '#F3b152' ?
+                            <Icon icon="icon-xuanze icon-right" /> : null}
                     </div>
                 </Menu.Item>
                 <Menu.Item key="2" className="tag-li-show">
@@ -707,6 +733,8 @@ class ProjectItemDetail extends Component {
                             className="label-circle"
                         />
                                                  非常紧急
+                        { this.props.tasks[0].label === '#ef5350' ?
+                            <Icon icon="icon-xuanze icon-right" /> : null}
                     </div>
                 </Menu.Item>
             </Menu>
@@ -753,7 +781,7 @@ class ProjectItemDetail extends Component {
                                         <p
                                             className="circle-icon-l"
                                             onClick={this.showOk}
-                                            style={{ background: this.props.tasks[0] && this.props.tasks[0].label ? this.props.tasks[0].label : '#7ED321' }}
+                                            style={{ background: this.props.tasks[0] && this.props.tasks[0].label ? this.props.tasks[0].label : '#d8d8d8' }}
                                         />
                                     </Dropdown>
                                 </Tooltip>
@@ -786,14 +814,22 @@ class ProjectItemDetail extends Component {
                             <p >结束</p>
                             {this.props.tasks[0] && this.props.tasks[0].endTime ?
                                 <div onClick={this.handleChangeEnd}>
-                                    <div className="start-time" onClick={this.handleEnd} >
+                                    <div
+                                        className="start-time"
+                                        onClick={this.handleEnd}
+                                        style={this.handleShowColor()}
+                                    >
                                         {format('yyyy年MM月dd日', this.props.tasks[0].endTime)}
                                     </div>
                                     <div className="try" style={{ display: this.state.showEnd ? 'block' : 'none' }} />
                                 </div>
                                 :
                                 <div className="none-time">
-                                    <DatePicker placeholder=" 设置结束时间" onChange={this.onPanellChange} />
+                                    <DatePicker
+                                        placeholder=" 设置结束时间"
+                                        disabledDate={this.disabledEndDate}
+                                        onChange={this.onPanellChange}
+                                    />
                                 </div>}
                         </Col>
                     </Row>
@@ -839,7 +875,7 @@ class ProjectItemDetail extends Component {
                                             <span>/</span>
                                             <span>{this.props.iddd[index]}</span>
                                         </Col>
-                                        <Col span={3} onClick={() => this.handleRemoveList(tasklist.listId)}>
+                                        <Col span={3} onClick={() => this.handleRList(tasklist.listId)}>
                                         删除
                                         </Col>
                                     </Row> : <ProjectInput
@@ -858,8 +894,8 @@ class ProjectItemDetail extends Component {
                                             onChange={this.handldeChangetaskList}
                                             onClick={() => this.handleSendTaskList(tasklist.listId)}
                                         /> :
-                                        <p>
-                                            <Icon icon="icon-tianjia1" onClick={() => this.handldetaskList(tasklist.listId)} />
+                                        <p onClick={() => this.handldetaskList(tasklist.listId)}>
+                                            <Icon icon="icon-tianjia1" />
                                             扩充清单
                                         </p>
                                     }
@@ -868,8 +904,8 @@ class ProjectItemDetail extends Component {
                         ))
                         }
                         {this.state.shownR ?
-                            <p className="ready-task">
-                                <Icon icon="icon-tianjia1" onClick={this.handleChangeR} />
+                            <p className="ready-task" onClick={this.handleChangeR}>
+                                <Icon icon="icon-tianjia1" />
                                 添加待办事项
                             </p> : <ProjectInput
                                 input="添加"
@@ -904,11 +940,13 @@ class ProjectItemDetail extends Component {
                                 this.props.files.map(value => (
                                     <Row key={value._id}>
                                         <Col style={{ display: 'flex' }} span={14} >
-                                            <Row>
-                                                <Col span={2}><Icon icon="icon-wenjiangeshi-jpg" /></Col>
-                                                <Col span={19}><p style={{ marginLeft: '10px' }}>{value.name}</p></Col>
-                                                <Col span={3}><p>{value.size}</p></Col>
-                                            </Row>
+                                            <Col span={2}><Icon icon="icon-wenjiangeshi-jpg" /></Col>
+                                            <Col span={12} style={{ marginLeft: '10px' }}>
+                                                <p >
+                                                    {value.name.slice(0, 8)}
+                                                </p>
+                                            </Col>
+                                            <Col span={7} style={{ textAlign: 'center' }}><p>{value.size}</p></Col>
                                         </Col>
                                         <Col span={3} >下载</Col>
                                         <Col span={3} onClick={() => this.handleRemoveFile(value._id)}>删除</Col>
@@ -958,7 +996,11 @@ class ProjectItemDetail extends Component {
                 </div>
                 {this.state.showEnd ?
                     <div className="clender-setting  clender-setting-more clender-over" >
-                        <Calendar fullscreen={false} onSelect={this.onEndChange} />
+                        <Calendar
+                            fullscreen={false}
+                            onSelect={this.onEndChange}
+                            disabledDate={this.disabledEndDate}
+                        />
                         <button onClick={e => this.handleChangeEnd(e)}>取消</button>
                     </div> : null}
                 {this.state.showCopyCard ?

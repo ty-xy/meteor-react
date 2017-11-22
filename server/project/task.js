@@ -13,7 +13,7 @@ Meteor.methods({
             createTime: new Date(),
             beginTime: null,
             endTime: null,
-            label: '#7ED321',
+            label: '',
             textId,
             fileId: [],
 

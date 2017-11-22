@@ -31,7 +31,7 @@ Meteor.methods({
             projectId: ProjectId,
         });
         Project.remove({
-            _id: ProjectId,
+            uprojectId: ProjectId,
         });
     },
 });

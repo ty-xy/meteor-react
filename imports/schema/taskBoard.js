@@ -13,7 +13,7 @@ TaskBoard.schema = new SimpleSchema({
     // 项目id
     projectId: {
         type: String,
-        regEx: SimpleSchema.RegEx.Id,
+        // regEx: SimpleSchema.RegEx.Id,
     },
     // 创建人id
     // content: {
