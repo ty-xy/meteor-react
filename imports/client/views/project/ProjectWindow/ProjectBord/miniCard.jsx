@@ -139,12 +139,12 @@ class MiniCard extends Component {
                 >
                     <div className="list-title-show">
                         <p>{this.props.value}</p>
-                        {this.props.label ? <p className="label-show" style={{ background: this.props.label }} /> : null}
+                        {this.props.label && this.props.label !== '#d8d8d8' ? <p className="label-show" style={{ background: this.props.label }} /> : null}
                     </div>
                     <div className="try-stop" style={{ display: 'flex' }}>
                         {this.props.begintime ?
                             <div className="time-show" onClick={e => this.handleChangeStart(e)}>
-                                <Icon icon="icon-qingjiaicon" />
+                                {/* <Icon icon="icon-qingjiaicon" /> */}
                                 <p className="time-number">{format('yyyy-MM-dd', this.props.begintime)}</p>
                                 <div className="try" style={{ display: this.state.showStartTime ? 'block' : 'none' }} />
                                 {this.state.showStartTime ?
@@ -163,7 +163,7 @@ class MiniCard extends Component {
                                     style={this.handleShowColor()}
                                     onClick={e => this.handleChangeEnd(e)}
                                 >
-                                    <Icon icon="icon-qingjiaicon" />
+                                    {/* <Icon icon="icon-qingjiaicon" /> */}
                                     <p
                                         className="time-number"
                                     >{format('yyyy-MM-dd', this.props.endtime)}</p>

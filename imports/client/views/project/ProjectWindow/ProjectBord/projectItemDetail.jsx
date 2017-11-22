@@ -603,7 +603,7 @@ class ProjectItemDetail extends Component {
                                     dataId={listChild.fatherId}
                                 />
                                 <p
-                                    style={{ marginLeft: '15px' }}
+                                    style={{ marginLeft: '8px' }}
 
                                 >{listChild.name}</p>
                             </div> :
@@ -638,7 +638,7 @@ class ProjectItemDetail extends Component {
                                     dataId={listChild.fatherId}
                                 />
                                 <p
-                                    style={{ marginLeft: '15px' }}
+                                    style={{ marginLeft: '8px' }}
                                 >{listChild.name}</p>
                             </div> :
                             <div style={{ display: 'flex' }}>
@@ -702,7 +702,7 @@ class ProjectItemDetail extends Component {
                         />
                                                  正常
 
-                        { this.props.tasks[0].label === '#d8d8d8' ?
+                        { this.props.tasks[0].label === '#d8d8d8' || this.props.tasks[0].label === '' ?
                             <Icon icon="icon-xuanze icon-right" /> : null}
 
                     </div>
@@ -868,7 +868,7 @@ class ProjectItemDetail extends Component {
                                             onClick={() => this.handleFlist(tasklist.listId)}
                                         >
                                             <Icon icon="icon-squarecheck" />
-                                            <p>{tasklist.name}</p>
+                                            <p className="qingdan-name">{tasklist.name}</p>
                                         </Col>
                                         <Col span={2}>
                                             <span>{this.props.cId[index]}</span>
