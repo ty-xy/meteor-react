@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Select, Cascader } from 'antd';
+import { Form, Input, Button, Select, Cascader, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 
@@ -8,6 +8,7 @@ import AvatarSelf from '../components/AvatarSelf';
 import Icon from '../components/Icon';
 import feedback from '../../util/feedback';
 // import AddGroup from '../views/chat/chatSideLeft/addChat/AddGroup';
+// import SelectMembers from '../features/SelectMembers';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -44,7 +45,7 @@ class CreateTeam extends Component {
         super();
         this.state = {
             formLayout: 'horizontal',
-            isShowAddGroup: false,
+            showSelect: true,
             teamLogo: 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png',
             industryType: [
                 {
@@ -92,7 +93,12 @@ class CreateTeam extends Component {
     }
     handleAddMembers = () => {
         this.setState({
-            isShowAddGroup: !this.state.isShowAddGroup,
+            showSelect: true,
+        });
+    }
+    closeSelect = () => {
+        this.setState({
+            showSelect: false,
         });
     }
     render() {
@@ -189,11 +195,16 @@ class CreateTeam extends Component {
                         <Button type="primary" htmlType="submit">{this.props.isShowAdd ? '创建' : '保存'}</Button>
                     </FormItem>
                 </Form>
-                {/* <AddGroup
-                    handleAddGroup={this.handleAddMembers}
-                    isShowAddGroup={this.state.isShowAddGroup}
-                    type="createGroup"
-                /> */}
+                <Modal
+                    title="选择人员"
+                    visible={this.state.showSelect}
+                    onCancel={this.closeSelect}
+                    wrapClassName="create-team-mask"
+                    footer={null}
+                >
+                选择人员
+                </Modal>
+                {/* <SelectMembers /> */}
             </div>
         );
     }

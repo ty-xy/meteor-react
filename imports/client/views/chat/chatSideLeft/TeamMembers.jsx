@@ -18,7 +18,7 @@ const data = [{
         avatarColor: '#29b6f6',
         avatar: '',
     },
-    _id: '9A8GrFpDd8TyhCAPs',
+    _id: '9A8GrFpDd8TyhCAty',
 }];
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -76,7 +76,7 @@ class TeamMembers extends Component {
                     columns={this.state.columns}
                     dataSource={data}
                     title={() => this.renderHeader()}
-                    rowKey={record => record.uid}
+                    rowKey={record => record._id}
                 />
                 <Modal
                     title="退出团队"
