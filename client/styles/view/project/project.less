@@ -18,12 +18,28 @@
         }
     }
     .ejianlian-project-window{
-        width:100%;
+        max-width:100%;
+        overflow:auto;
        // position: relative;
-        display: flex;
-        flex-direction: column;
+        // display: flex;
+        // flex-direction: column;
         max-height: 100%;
-        flex: 1;
-        justify-content: stretch;
+         flex: 1;
+         .ant-tabs:not(.ant-tabs-vertical) > .ant-tabs-content {
+            width: 100%;
+            overflow: auto;
+        }
+        .ant-tabs:not(.ant-tabs-vertical) > .ant-tabs-content > .ant-tabs-tabpane {
+            -webkit-flex-shrink: 0;
+            -ms-flex-negative: 0;
+            flex-shrink: 0;
+            /* width: 100%; */
+            width: auto;
+            /* overflow: auto; */
+            -webkit-transition: opacity .45s;
+            transition: opacity .45s;
+            opacity: 1;
+        }
+       // justify-content: stretch;
     }
 }

@@ -13,8 +13,19 @@ Company.schema = new SimpleSchema({
         type: String,
         optional: true,
     },
+    // 团队logo
     logo: {
         type: String,
+        optional: true,
+    },
+    // 行业类型
+    industryType: {
+        type: String,
+        optional: true,
+    },
+    // 所在地区
+    residence: {
+        type: [String],
         optional: true,
     },
     comment: {
@@ -44,6 +55,7 @@ Company.schema = new SimpleSchema({
         type: Boolean,
         optional: true,
     },
+    // 团队成员
     members: {
         type: [Object],
         optional: true,

@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import AvatarSelf from '../../components/AvatarSelf';
 
 // import Notice from './Notice';
-import eventUtil from '../../../util/eventUtil';
 
 
 @pureRender
@@ -31,7 +30,7 @@ class Header extends Component {
         this.setState({
             isShowAccount: !this.state.isShowAccount,
         });
-        eventUtil.addEvent(document, 'click', this.closeMenu);
+        document.addEventListener('click', this.closeMenu);
     }
     clickTab = (path) => {
         this.context.history.push(path);
@@ -46,8 +45,8 @@ class Header extends Component {
         this.setState({
             isShowAccount: false,
         });
-        eventUtil.stopProPagation(e);
-        eventUtil.removeEvent(document, 'click', this.closeMenu);
+        e.stopProPagation();
+        document.removeEventListener('click', this.closeMenu);
     }
     render() {
         return (
@@ -96,7 +95,7 @@ class Header extends Component {
                     <ul className="account-setting" style={{ display: this.state.isShowAccount ? 'block' : 'none' }}>
                         <div className="triangle-up" />
                         <li className="account-message" onClick={this.clickTab.bind(this, '/adminInfo')}>个人资料</li>
-                        <li>下载应用</li>
+                        {/* <li>下载应用</li> */}
                         <li>使用帮助</li>
                         <li onClick={this.handleLogin}>退出登录</li>
                     </ul>
