@@ -7,7 +7,13 @@ const { TextArea } = Input;
 export default function Icom({ Twidth, onClick, input, value, onChange, onConcel }) {
     return (
         <div>
-            <TextArea autosize={{ minRows: 1, maxRows: 6 }} style={{ width: Twidth }} value={value} onChange={onChange} />
+            <TextArea
+                autosize={{ minRows: 1, maxRows: 6 }}
+                autoFocus
+                style={{ width: Twidth }}
+                value={value}
+                onChange={onChange}
+            />
             <button
                 className="input-button"
                 onClick={onClick}

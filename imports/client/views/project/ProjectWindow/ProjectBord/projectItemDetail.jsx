@@ -580,9 +580,16 @@ class ProjectItemDetail extends Component {
         this.setState({
             [`fatherList${id}`]: false,
         });
+        console.log(1111);
     }
     handleDeleteC =(id) => {
         this.handleRemoveList(id);
+    }
+    handleRTaskList =(id) => {
+        this.setState({
+            [`shownT${id}`]: false,
+        });
+        console.log('dededfeded');
     }
     // 渲染子清单
     renderTasks = (id) => {
@@ -702,7 +709,7 @@ class ProjectItemDetail extends Component {
                         />
                                                  正常
 
-                        { this.props.tasks[0].label === '#d8d8d8' || this.props.tasks[0].label === '' ?
+                        {(this.props.tasks[0] && this.props.tasks[0].label === '#d8d8d8') || (this.props.tasks[0] && this.props.tasks[0].label) === '' ?
                             <Icon icon="icon-xuanze icon-right" /> : null}
 
                     </div>
@@ -719,7 +726,7 @@ class ProjectItemDetail extends Component {
                             onClick={this.handleColor}
                         />
                                                 紧急
-                        { this.props.tasks[0].label === '#F3b152' ?
+                        { this.props.tasks[0] && this.props.tasks[0].label === '#F3b152' ?
                             <Icon icon="icon-xuanze icon-right" /> : null}
                     </div>
                 </Menu.Item>
@@ -733,7 +740,7 @@ class ProjectItemDetail extends Component {
                             className="label-circle"
                         />
                                                  非常紧急
-                        { this.props.tasks[0].label === '#ef5350' ?
+                        { this.props.tasks[0] && this.props.tasks[0].label === '#ef5350' ?
                             <Icon icon="icon-xuanze icon-right" /> : null}
                     </div>
                 </Menu.Item>
@@ -893,6 +900,7 @@ class ProjectItemDetail extends Component {
                                             value={this.state.listValue}
                                             onChange={this.handldeChangetaskList}
                                             onClick={() => this.handleSendTaskList(tasklist.listId)}
+                                            onConcel={() => this.handleRTaskList(tasklist.listId)}
                                         /> :
                                         <p onClick={() => this.handldetaskList(tasklist.listId)}>
                                             <Icon icon="icon-tianjia1" />

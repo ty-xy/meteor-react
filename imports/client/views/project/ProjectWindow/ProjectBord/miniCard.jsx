@@ -8,6 +8,7 @@ import format from 'date-format';
 import pureRender from 'pure-render-decorator';
 import TaskList from '../../../../../../imports/schema/taskList';
 import ProjectItemDetail from './projectItemDetail';
+import AvatarSelf from '../../../../components/AvatarSelf';
 import Task from '../../../../../../imports/schema/task';
 import Active from '../../../../../../imports/schema/active';
 import Icon from '../../../../components/Icon';
@@ -138,7 +139,7 @@ class MiniCard extends Component {
                     onClick={this.showModal}
                 >
                     <div className="list-title-show">
-                        <p>{this.props.value}</p>
+                        <p className="task-title">{this.props.value}</p>
                         {this.props.label && this.props.label !== '#d8d8d8' ? <p className="label-show" style={{ background: this.props.label }} /> : null}
                     </div>
                     <div className="try-stop" style={{ display: 'flex' }}>
@@ -182,35 +183,40 @@ class MiniCard extends Component {
                         }
                     </div>
                     <div style={{ display: 'flex' }}>
-                        {this.props.activeL ?
-                            <div className="talk-show">
-                                <Icon icon="icon-xiaoxi1" />
-                                <p className="talk-number">{this.props.activeL} </p>
-                            </div> : null
-                        }
-                        {this.props.TaskLength ?
-                            <div >
-                                {this.props.taskOver < this.props.TaskLength ?
-                                    <div className="talk-show list-show">
-                                        <Icon icon="icon-squarecheck" />
-                                        <div className="talk-number" style={{ display: 'flex' }}>
-                                            <p>{this.props.taskOver}</p>
-                                            <p>/</p>
-                                            <p >{this.props.TaskLength} </p>
-                                        </div>
-                                    </div> : <div className="talk-show list-show list-color">
-                                        <Icon icon="icon-squarecheck icon" />
-                                        <div className="talk-number" style={{ display: 'flex' }}>
-                                            <p>{this.props.taskOver}</p>
-                                            <p>/</p>
-                                            <p >{this.props.TaskLength} </p>
-                                        </div>
-                                    </div>}
-                            </div> : null}
-                        {this.props.files.length > 0 ?
-                            <div className="talk-show list-show">
-                                <Icon icon="icon-fujian1" />
-                            </div> : null}
+                        <div style={{ display: 'flex', width: '172px' }}>
+                            {this.props.activeL ?
+                                <div className="talk-show">
+                                    <Icon icon="icon-xiaoxi1" iconColor="#bdbdbd" size={17} />
+                                    <p className="talk-number">{this.props.activeL} </p>
+                                </div> : null
+                            }
+                            {this.props.TaskLength ?
+                                <div >
+                                    {this.props.taskOver < this.props.TaskLength ?
+                                        <div className="talk-show list-show">
+                                            <Icon icon="icon-squarecheck" iconColor="#bdbdbd" size={20} />
+                                            <div className="talk-number" style={{ display: 'flex' }}>
+                                                <p>{this.props.taskOver}</p>
+                                                <p>/</p>
+                                                <p >{this.props.TaskLength} </p>
+                                            </div>
+                                        </div> : <div className="talk-show list-show list-color">
+                                            <Icon icon="icon-squarecheck icon" size={20} />
+                                            <div className="talk-number" style={{ display: 'flex' }}>
+                                                <p>{this.props.taskOver}</p>
+                                                <p>/</p>
+                                                <p >{this.props.TaskLength} </p>
+                                            </div>
+                                        </div>}
+                                </div> : null}
+                            {this.props.files.length > 0 ?
+                                <div className="talk-show list-show" style={{ marginLeft: '46px' }}>
+                                    <Icon icon="icon-fujian1" iconColor="#bdbdbd" size={20} />
+                                </div> : null}
+                        </div>
+                        <div style={{ width: '42px', height: '42px', borderRadius: '50%' }}>
+                            <AvatarSelf />
+                        </div>
                     </div>
                     <Modal
                         visible={this.state.visible}
