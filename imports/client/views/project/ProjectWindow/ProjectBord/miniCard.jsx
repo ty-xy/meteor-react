@@ -28,6 +28,7 @@ class MiniCard extends Component {
         projectId: PropTypes.string,
         TaskLength: PropTypes.number,
         taskOver: PropTypes.number,
+        files: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
@@ -69,6 +70,13 @@ class MiniCard extends Component {
             showOverTime: !this.state.showOverTime,
         });
     }
+    disabledEndDate = (endValue) => {
+        const startValue = this.props.begintime;
+        if (!endValue || !startValue) {
+            return false;
+        }
+        return endValue.valueOf() <= startValue.valueOf();
+    }
     handlePop =(e) => {
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
@@ -96,6 +104,23 @@ class MiniCard extends Component {
         this.setState({
             showOverTime: !this.state.showOverTime,
         });
+    }
+    // 处理时间背景的函数
+    handleShowColor =() => {
+        const time = Math.ceil((this.props.endtime - new Date()) / 1000 / 3600 / 24);
+        if (time === 0 || time === 1) {
+            const bStyle = {
+                background: '#FFD663' };
+            return bStyle;
+        } else if (time < 0) {
+            const bStyle = {
+                background: '#EF5350' };
+            return bStyle;
+        } else if (time > 1) {
+            const bStyle = {
+                background: '#d8d8d8' };
+            return bStyle;
+        }
     }
     render() {
         console.error('循环到', this.props.value);
@@ -133,13 +158,23 @@ class MiniCard extends Component {
                         }
                         {this.props.endtime ?
                             <div>
-                                <div className="time-show" onClick={e => this.handleChangeEnd(e)}>
+                                <div
+                                    className="time-show"
+                                    style={this.handleShowColor()}
+                                    onClick={e => this.handleChangeEnd(e)}
+                                >
                                     <Icon icon="icon-qingjiaicon" />
-                                    <p className="time-number">{format('yyyy-MM-dd', this.props.endtime)}</p>
+                                    <p
+                                        className="time-number"
+                                    >{format('yyyy-MM-dd', this.props.endtime)}</p>
                                     <div className="try" style={{ display: this.state.showOverTime ? 'block' : 'none' }} />
                                     {this.state.showOverTime ?
                                         <div className="clender-setting" onClick={e => this.handlePop(e)}>
-                                            <Calendar fullscreen={false} onSelect={this.onPanellChange} />
+                                            <Calendar
+                                                fullscreen={false}
+                                                onSelect={this.onPanellChange}
+                                                disabledDate={this.disabledEndDate}
+                                            />
                                             <button onClick={e => this.handleChangeEnd(e)}>取消</button>
                                         </div> : null}
                                 </div>
@@ -171,6 +206,10 @@ class MiniCard extends Component {
                                             <p >{this.props.TaskLength} </p>
                                         </div>
                                     </div>}
+                            </div> : null}
+                        {this.props.files.length > 0 ?
+                            <div className="talk-show list-show">
+                                <Icon icon="icon-fujian1" />
                             </div> : null}
                     </div>
                     <Modal
@@ -211,6 +250,7 @@ export default withTracker((taskid) => {
         const begintime = tasks[0].beginTime;
         const endtime = tasks[0].endTime;
         const label = tasks[0].label;
+        const files = tasks[0].fileId;
         return {
             begintime,
             activeL,
@@ -218,6 +258,7 @@ export default withTracker((taskid) => {
             label,
             TaskLength,
             taskOver,
+            files,
         };
     }
 })(MiniCard);

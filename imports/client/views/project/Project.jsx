@@ -7,11 +7,12 @@ import Mange from './router';
 @pureRender
 class Project extends Component {
     render() {
+        console.log('overLIST', this.props);
         return (
             <div className="ejianlian-project">
                 <div className="left">
                     <div className="ejianlian-project-nav">
-                        <OverProject />
+                        <OverProject {...this.props} />
                         <ProjectList />
                     </div>
                 </div>

@@ -27,6 +27,7 @@ export default class OverProject extends Component {
         });
     }
     render() {
+        console.log('over', this.props);
         return (
             <div style={{ height: '140px' }}>
                 <Modal
@@ -36,7 +37,7 @@ export default class OverProject extends Component {
                     onOk={this.hideModal}
                     width={450}
                 >
-                    <ProjectAdd click={this.hideModal} />
+                    <ProjectAdd click={this.hideModal} {...this.props} />
                 </Modal>
                 <div className="ejianlian-add-project">
                     <div className="user-avatar project-notice project-icon-plus">

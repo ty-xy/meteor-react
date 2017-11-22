@@ -20,6 +20,7 @@ class ProjectSet extends Component {
     static propTypes = {
         projects: PropTypes.arrayOf(PropTypes.object),
         setId: PropTypes.string,
+        ProjectId: PropTypes.string,
     }
     constructor(props) {
         super(props);
@@ -53,7 +54,7 @@ class ProjectSet extends Component {
     }
     handleProject=() => {
         Meteor.call(
-            'deleteProject', this.props.setId,
+            'deleteProject', this.props.ProjectId,
             (err) => {
                 console.log(err);
             },

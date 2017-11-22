@@ -104,7 +104,7 @@ class ProjectWindow extends Component {
                                     bodyStyle={{ padding: 0 }}
                                     width={450}
                                 >
-                                    <ProjectSet setId={project._id} />
+                                    <ProjectSet setId={project._id} ProjectId={project.uprojectId} />
                                 </Modal>
                             </Col>
                         </Row>
@@ -125,7 +125,7 @@ class ProjectWindow extends Component {
                                 ))
 
                             }
-                            <ProjectBordAdd style={{ marginLeft: '30px' }} pId={this.state.id} />
+                            <ProjectBordAdd pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="日历" key="2">
                             <ProjectLender />
@@ -150,7 +150,7 @@ export default withTracker((projectd) => {
     Meteor.subscribe('project');
     const taskF = TaskBoard.find({ projectId: projectd.match.params.id }).fetch();
     const taskL = taskF.length;
-    const projectL = Project.find({ _id: projectd.match.params.id }).fetch();
+    const projectL = Project.find({ uprojectId: projectd.match.params.id }).fetch();
     // const projectId1 = Project.find({ name: this.state.minchen })._id;
     const project = projectL[0];
     console.log(project, projectL, projectd, taskF);

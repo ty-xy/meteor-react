@@ -6,16 +6,15 @@ import { Input, Select, Tooltip, Form } from 'antd';
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
+import uuid from 'uuid';
 
 import MyIcon from '../../../components/Icon';
 import Company from '../../../../schema/company';
 import ImgUpload from '../../manage/component/ImgUpload';
 import AvatarSelf from '../../../components/AvatarSelf';
 import ChoosePeopleModel from '../../../components/ChoosePeopleModel';
-// import Project from '../../../../../imports/schema/project';
-// import UserUtil from '../../../../util/user';
 import PeopleList from '../../manage/audit/component/PeopleList';
-// import AddProject from './Addproject';
+
 
 const Option = Select.Option;
 const text = <span>点击切换头像</span>;
@@ -53,6 +52,19 @@ class ProjectAdd extends Component {
             copy: [],
         };
     }
+    componentWillMount() {
+        this.setState({
+            uuids: uuid.v4(),
+        });
+    }
+    componentDidMount() {
+        console.log(this.state.uuids);
+    }
+    componentWillReceiveProps() {
+        this.setState({
+            uuids: uuid.v4(),
+        });
+    }
 
     handleChange(name, e) {
         const newState = {};
@@ -61,14 +73,9 @@ class ProjectAdd extends Component {
     }
     handleChangeT = (value) => {
         this.setState({ affiliation: `${value}` });
-        // alert(`${value}`);
     }
     handleMessage = () => {
         this.createProject();
-        // const id = Project.findOne({ intro: this.state.intro });
-        // console.log(Project.findOne({ intro: this.state.intro }));
-        // const pathName = `/project/task/${id}`;
-        // this.props.history.push(pathName);
     }
     changeUpdateTitle = () => {
         this.setState({
@@ -76,7 +83,9 @@ class ProjectAdd extends Component {
         });
     }
     createProject = () => {
-        console.log(this.state.affiliation);
+        const _this = this;
+        console.log('createProject', _this);
+
         Meteor.call(
             'createGroup1',
             {
@@ -85,9 +94,15 @@ class ProjectAdd extends Component {
                 affiliation: this.state.affiliation,
                 headPortrait: this.state.showImage ? this.state.icon[j] : this.state.img[0],
                 members: this.state.copy,
+                uprojectId: this.state.uuids,
             },
             (err) => {
-                console.log(err);
+                if (err) {
+                    console.log(err);
+                    return false;
+                }
+                const pathname = `/project/task/${_this.state.uuids}`;
+                _this.props.history.push({ pathname });
             },
         );
     }
