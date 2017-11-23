@@ -63,29 +63,36 @@ Company.schema = new SimpleSchema({
         type: [Object],
         optional: true,
     },
+    // 成员Id
     'members.$.userId': {
         type: String,
     },
+    // 员工号
     'members.$.code': {
         type: String,
         optional: true,
     },
+    // 入职时间
     'members.$.entryTime': {
         type: String,
         optional: true,
     },
+    // 办公地点
     'members.$.location': {
         type: String,
         optional: true,
     },
+    // 备注
     'members.$.comment': {
         type: String,
         optional: true,
     },
+    // 职位
     'members.$.pos': {
         type: String,
         optional: true,
     },
+    // 所属部门
     'members.$.dep': {
         type: String,
         optional: true,

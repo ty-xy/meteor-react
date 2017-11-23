@@ -12,6 +12,7 @@ import MyModel from './component/AddDep';
 import AddMember from './component/AddMember';
 import RightHeader from './component/RightHeader';
 import SettingModel from './component/SettingModel';
+import BatchSetDep from './component/BatchSetDep';
 
 class Organization extends PureComponent {
     static propTypes = {
@@ -36,23 +37,10 @@ class Organization extends PureComponent {
             this.setState({ users: nextProps.users });
         }
     }
-    settingModel = () => {
-        const { deps = [] } = this.props.company;
-        const visitedDep = deps.filter(item => (item.id === this.state.depActive));
-        return (
-            <SettingModel
-                modelShowHide={this.modelShowHide}
-                handleSubmitMember={this.handleDepSetting}
-                modelMember={this.state.settingModel}
-                data={visitedDep.length ? visitedDep[0] : {}}
-                handleDepDel={this.handleDepDel}
-            />
-        );
-    }
     // 部门设置model
     handleSetting = () => {
         this.setState({
-            settingModel: true,
+            depsettingModel: true,
         });
     }
     // 修改部门
@@ -71,27 +59,42 @@ class Organization extends PureComponent {
                     return false;
                 }
                 feedback.successToastFb('修改成功', () => {
-                    _this.setState({ settingModel: false });
+                    _this.setState({ depsettingModel: false });
                 });
             },
         );
     }
     // 删除部门
-    handleDepDel = (name) => {
+    handleDepDel = (id) => {
         const companyId = UserUtil.getCompany();
-        feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该部门吗？', () => {
-            Meteor.call(
-                'delCompanyDep',
-                { companyId, name },
-                (err) => {
-                    if (err) {
-                        feedback.dealError('删除失败');
-                        return false;
-                    }
-                    feedback.successToast('删除成功');
-                },
-            );
+        const { users } = this.props;
+        const _this = this;
+        let isDelete = true;
+        users.forEach((item) => {
+            if (item.id === id) {
+                isDelete = false;
+            }
         });
+        if (isDelete) {
+            feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该部门吗？', () => {
+                Meteor.call(
+                    'delCompanyDep',
+                    { companyId, id },
+                    (err) => {
+                        if (err) {
+                            feedback.dealError('删除失败');
+                            return false;
+                        }
+                        feedback.successToastFb('删除成功', () => {
+                            _this.setState({ depsettingModel: false });
+                        });
+                    },
+                );
+            });
+        } else {
+            feedback.dealWarning('该部门存在人员， 无法删除，请先移除或删除该部门人员');
+            this.setState({ depsettingModel: false });
+        }
     }
     // 左侧dep切换
     handleTabDep = (e, depActive) => {
@@ -185,7 +188,7 @@ class Organization extends PureComponent {
         <div className="handle-btns clearfix">
             <Button onClick={() => this.modelShowHide(true, 'modelMember')}>新增员工</Button>
             <Button>邀请员工</Button>
-            <Button>调整部门</Button>
+            <Button onClick={this.depsetBatchDepModel}>调整部门</Button>
         </div>
     );
     // 新增人员提交
@@ -210,7 +213,7 @@ class Organization extends PureComponent {
                         return false;
                     }
                     feedback.successToastFb('编辑成功', () => {
-                        _this.setState({ modelMember: false });
+                        _this.setState({ modelMember: false, editMember: {} });
                     });
                 },
             );
@@ -243,9 +246,51 @@ class Organization extends PureComponent {
             }
         }
     }
+    // 批量修改提交
+    handleSubmitBatchDep = (fields) => {
+        const { selectedRowKeys } = this.state;
+        const { users } = this.props;
+        const companyId = UserUtil.getCompany();
+        const _users = [];
+        users.forEach((item) => {
+            if (selectedRowKeys.indexOf(item.userId) > -1) {
+                item.dep = fields.dep;
+                _users.push(item);
+            }
+        });
+        const _this = this;
+        console.log('_users', _users, fields, selectedRowKeys);
+        Meteor.call(
+            'batchSetDep',
+            { companyId, _users },
+            (err) => {
+                if (err) {
+                    feedback.dealError('批量设置失败');
+                    return false;
+                }
+                feedback.successToastFb('批量设置成功', () => {
+                    _this.setState({ modelBatchDep: false });
+                });
+            },
+        );
+    }
+    // 部门设置model
+    depsettingModel = () => {
+        const { deps = [] } = this.props.company;
+        const visitedDep = deps.filter(item => (item.id === this.state.depActive));
+        return (
+            <SettingModel
+                modelShowHide={this.modelShowHide}
+                handleSubmitMember={this.handleDepSetting}
+                modelMember={this.state.depsettingModel}
+                data={visitedDep.length ? visitedDep[0] : {}}
+                handleDepDel={this.handleDepDel}
+            />
+        );
+    }
     // 新增成员renmodel
     addMembersModel = () => {
-        const { company } = this.props;
+        const { company, allUsers } = this.props;
         const { editMemberInfo = {} } = this.state;
         return (
             <AddMember
@@ -254,6 +299,7 @@ class Organization extends PureComponent {
                 modelMember={this.state.modelMember}
                 data={company.deps || []}
                 editMemberInfo={editMemberInfo}
+                allUsers={allUsers}
             />
         );
     }
@@ -324,25 +370,39 @@ class Organization extends PureComponent {
         ];
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
                 this.setState({ selectedRows, selectedRowKeys });
             },
         };
         return (
-            <Table rowKey={record => record.dep} columns={columns} rowSelection={rowSelection} dataSource={users} pagination={false} />
+            <Table rowKey={record => record.userId} columns={columns} rowSelection={rowSelection} dataSource={users} pagination={false} />
         );
     }
-    // 人员部门切换model
+    // 批量切换部门
     memberBelongModel = () => {
-        console.log('memberBelongModel');
+        console.log('object');
+        const { allUsers } = this.props;
+        const { deps = [] } = this.props.company;
         return (
-            <div />
+            <BatchSetDep
+                modelShowHide={this.modelShowHide}
+                handleSubmitBatchDep={this.handleSubmitBatchDep}
+                modelMember={this.state.modelBatchDep}
+                data={deps}
+                allUsers={allUsers}
+            />
         );
+    }
+    // 打开批量设置model
+    depsetBatchDepModel = () => {
+        if (this.state.selectedRowKeys.length) {
+            this.modelShowHide(true, 'modelBatchDep');
+        } else {
+            feedback.dealWarning('至少选择一个成员');
+        }
     }
     render() {
         const { deps = [] } = this.props.company;
-        const { depActive } = this.state;
-        const data = this.props.users.filter(item => (item.dep === depActive));
+        const data = this.props.users.filter(item => (item.dep === this.state.depActive));
         console.log('render', this.props, this.state, data);
         return (
             <div className="e-mg-organization">
@@ -357,7 +417,7 @@ class Organization extends PureComponent {
                         {this.tableList(data)}
                         {this.addMembersModel()}
                         {this.memberBelongModel()}
-                        {this.settingModel()}
+                        {this.depsettingModel()}
                     </Col>
                 </Row>
             </div>

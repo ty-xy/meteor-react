@@ -92,8 +92,28 @@ Meteor.methods({
             },
         );
     },
+    // delCompanyDep 删除部门
+    delCompanyDep({ companyId, id }) {
+        Company.update(
+            { _id: companyId },
+            {
+                $pull: { deps: { id } },
+            },
+        );
+    },
+    // 批量设置部门人员
+    batchSetDep({ companyId, _users }) {
+        _users.forEach((item) => {
+            Company.update(
+                { _id: companyId, 'members.userId': item.userId },
+                {
+                    $set: { 'members.$': item },
+                },
+            );
+        });
+    },
     // 公司添加人员
-    addMember({ companyId, userId, name, dep, pos }) {
+    addMember({ companyId, userId, name, dep = '', pos }) {
         const member = {
             userId,
             dep,
