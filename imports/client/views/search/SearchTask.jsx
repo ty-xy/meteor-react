@@ -13,7 +13,7 @@ import format from 'date-format';
 
 @pureRender
 class SearchTask extends Component {
-    static PropTypes = {
+    static propTypes = {
         tasks: PropTypes.array,
     }
     constructor(...args) {
@@ -39,7 +39,7 @@ class SearchTask extends Component {
         };
     }
     render() {
-        const data = this.props.tasks; // eslint-disable-line
+        const data = this.props.tasks;
         return (
             <Table columns={this.state.columns} dataSource={data} />
         );

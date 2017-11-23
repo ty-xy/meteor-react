@@ -62,7 +62,7 @@ class GroupList extends Component {
                                             className="friend-list-item"
                                             onClick={() => {
                                                 this.props.handleClick();
-                                                this.props.changeTo(item._id, item._id, 'groupId');
+                                                this.props.changeTo(item._id, item._id, 'groupId', 'message');
                                             }}
                                         >
                                             <p>
