@@ -64,6 +64,11 @@ Company.schema = new SimpleSchema({
         type: Boolean,
         optional: true,
     },
+    // 创建群聊Id
+    'deps.$.groupId': {
+        type: String,
+        optional: true,
+    },
     // 团队成员
     members: {
         type: [Object],
