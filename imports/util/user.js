@@ -35,7 +35,7 @@ const UserUtil = {
     getChatList() {
         return UserUtil.getProfile().chatList || [];
     },
-    getCompany() {
+    getMainCompany() {
         return UserUtil.getProfile().mainCompany || '';
     },
     getCompanyList() {

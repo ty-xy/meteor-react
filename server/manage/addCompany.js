@@ -60,8 +60,9 @@ Meteor.methods({
         );
     },
     // 增加部门
-    addDepartment({ _id, name, isAutoChat, admin = '', avatar = '' }) {
+    addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '' }) {
         const newCompany = {
+            id,
             name,
             isAutoChat,
             admin,
@@ -76,24 +77,43 @@ Meteor.methods({
         );
     },
     // 更新部门
-    updateDepartment({ deparment, _id }) {
-        const departments = Company.findOne({ _id }).department || [];
-        departments.push(deparment);
-        const newCompany = {
-            createdAt: new Date(),
-            department: departments,
-            name: Company.findOne({ _id }).name,
+    editCompanyDep({ companyId, name, id, isAutoChat, admin = '', avatar = '' }) {
+        const dep = {
+            name,
+            isAutoChat,
+            admin,
+            avatar,
+            id,
         };
-        Company.schema.validate(newCompany);
         Company.update(
-            { _id },
+            { _id: companyId, 'deps.id': id },
             {
-                $set: newCompany,
+                $set: { 'deps.$': dep },
             },
         );
     },
+    // delCompanyDep 删除部门
+    delCompanyDep({ companyId, id }) {
+        Company.update(
+            { _id: companyId },
+            {
+                $pull: { deps: { id } },
+            },
+        );
+    },
+    // 批量设置部门人员
+    batchSetDep({ companyId, _users }) {
+        _users.forEach((item) => {
+            Company.update(
+                { _id: companyId, 'members.userId': item.userId },
+                {
+                    $set: { 'members.$': item },
+                },
+            );
+        });
+    },
     // 公司添加人员
-    addMember({ companyId, userId, name, dep, pos }) {
+    addMember({ companyId, userId, name, dep = '', pos }) {
         const member = {
             userId,
             dep,
@@ -108,8 +128,7 @@ Meteor.methods({
         );
     },
     // 修改人员
-    editMember({ companyId, userId, name, dep, pos }) {
-        console.log('object', companyId, userId, name, dep, pos);
+    editMember({ companyId, userId, name, dep = '', pos }) {
         const member = {
             userId,
             dep,
