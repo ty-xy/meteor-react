@@ -48,12 +48,12 @@ class AddMembers extends PureComponent {
     // 编辑部门
     handleDepSetting = (e) => {
         e.preventDefault();
-        const { form, handleSubmitMember } = this.props;
+        const { form, handleSubmitMember, data } = this.props;
         form.validateFields((err, fields) => {
             if (err) {
                 return false;
             }
-            handleSubmitMember(fields);
+            handleSubmitMember(fields, data.name);
         });
     }
 

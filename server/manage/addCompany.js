@@ -60,8 +60,9 @@ Meteor.methods({
         );
     },
     // 增加部门
-    addDepartment({ _id, name, isAutoChat, admin = '', avatar = '' }) {
+    addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '' }) {
         const newCompany = {
+            id,
             name,
             isAutoChat,
             admin,
@@ -76,19 +77,14 @@ Meteor.methods({
         );
     },
     // 更新部门
-    updateDepartment({ deparment, _id }) {
-        const departments = Company.findOne({ _id }).department || [];
-        departments.push(deparment);
-        const newCompany = {
-            createdAt: new Date(),
-            department: departments,
-            name: Company.findOne({ _id }).name,
-        };
-        Company.schema.validate(newCompany);
+    editCompanyDep({ companyId, name, id }) {
+        // const dep = {
+        //     name,
+        // };
         Company.update(
-            { _id },
+            { _id: companyId, 'deps.id': id },
             {
-                $set: newCompany,
+                $set: { name },
             },
         );
     },
@@ -109,7 +105,6 @@ Meteor.methods({
     },
     // 修改人员
     editMember({ companyId, userId, name, dep, pos }) {
-        console.log('object', companyId, userId, name, dep, pos);
         const member = {
             userId,
             dep,

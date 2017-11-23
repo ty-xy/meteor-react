@@ -40,6 +40,9 @@ Company.schema = new SimpleSchema({
         type: [Object],
         optional: true,
     },
+    'deps.$.id': {
+        type: String,
+    },
     'deps.$.name': {
         type: String,
     },

@@ -3,6 +3,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Col, Row, Button, Table, Icon } from 'antd';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import uuid from 'uuid/v1';
 import { Meteor } from 'meteor/meteor';
 import feedback from '../../../../util/feedback';
 import UserUtil, { userIdToInfo } from '../../../../util/user';
@@ -26,6 +27,7 @@ class Organization extends PureComponent {
             selectedRows: [],
             selectedRowKeys: [],
             users: [],
+            showMenu: true,
         };
     }
     componentWillReceiveProps(nextProps) {
@@ -55,14 +57,12 @@ class Organization extends PureComponent {
         });
     }
     // 修改部门
-    handleDepSetting = (fields) => {
-        console.log('fields', fields);
-        const { deps = [] } = this.props.company;
-        const visitedDep = deps.filter(item => (item.name === this.state.depActive));
+    handleDepSetting = ({ name }, oldname) => {
         const companyId = UserUtil.getCompany();
+        console.log('fields', name, oldname, companyId);
         Meteor.call(
             'editCompanyDep',
-            { companyId, name, oldName: visitedDep[0] && visitedDep[0].name },
+            { companyId, name, oldname },
             (err) => {
                 if (err) {
                     feedback.dealError('修改失败');
@@ -95,11 +95,7 @@ class Organization extends PureComponent {
         const { users } = this.props;
         let res = [];
         console.log('depActive', depActive);
-        if (depActive) {
-            res = users.filter(item => (item.dep === depActive));
-        } else {
-            res = users;
-        }
+        res = users.filter(item => (item.dep === depActive));
         this.setState({ depActive, users: res });
     }
     // 公司部门收起
@@ -120,9 +116,10 @@ class Organization extends PureComponent {
             commentModel: false,
         });
         const _id = UserUtil.getCompany();
+        const id = uuid();
         Meteor.call(
             'addDepartment',
-            { ...info, _id },
+            { ...info, _id, id },
             (err) => {
                 if (err) {
                     feedback.dealError('添加失败');
@@ -172,7 +169,7 @@ class Organization extends PureComponent {
                 {
                     <div className={classnames('dep', { 'dep-hide': showMenu })}>
                         {
-                            deps.map(item => (<a href="" key={item.name} className={classnames('dep-a', { 'dep-active': depActive === item.name })} onClick={e => this.handleTabDep(e, item.name)}>{item.name} <span>{item.num || 0}</span></a>))
+                            deps.map(item => (<a href="" key={item.id} className={classnames('dep-a', { 'dep-active': depActive === item.id })} onClick={e => this.handleTabDep(e, item.id)}>{item.name} <span>{item.num || 0}</span></a>))
                         }
                     </div>
                 }
@@ -330,7 +327,8 @@ class Organization extends PureComponent {
     render() {
         console.log('this.props', this.props, this.state);
         const { deps = [] } = this.props.company;
-        const { users } = this.state;
+        const { users, depActive } = this.state;
+        const data = users.filter(item => (item.id === depActive));
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">
@@ -341,7 +339,7 @@ class Organization extends PureComponent {
                     <Col span={18} className="e-mg-organization-card e-mg-organization-right clearfix">
                         <RightHeader name="中亿集团有限公司" handleSetting={this.handleSetting} {...this.state} />
                         {this.handleBtns()}
-                        {this.tableList(users)}
+                        {this.tableList(data)}
                         {this.addMembersModel()}
                         {this.memberBelongModel()}
                         {this.settingModel()}
