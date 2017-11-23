@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 // import format from 'date-format';
 import uuid from 'uuid';
 import format from 'date-format';
+import moment from 'moment';
 import pureRender from 'pure-render-decorator';
 import AvatarSelf from '../../../../components/AvatarSelf';
 import Icon from '../../../../components/Icon';
@@ -87,7 +88,7 @@ class ProjectItemDetail extends Component {
         });
     }
     onPanelChange = (value) => {
-        console.log(value, value._d);
+        console.log(value);
         Meteor.call(
             'changeTime', this.props.Id.Id, value._d,
             (err) => {
@@ -96,6 +97,7 @@ class ProjectItemDetail extends Component {
         );
     }
     onPanellChange = (value) => {
+        console.log(value.format('MMMM Do YYYY, h:mm:ss a'));
         Meteor.call(
             'changeEndTime', this.props.Id.Id, value._d,
             (err) => {
@@ -499,6 +501,7 @@ class ProjectItemDetail extends Component {
             }
             return null;
         });
+        this.handleCopys();
     }
     handleCopys=() => {
         this.setState({
@@ -670,6 +673,7 @@ class ProjectItemDetail extends Component {
     }
     // 开始渲染
     render() {
+        // console.log(this.props.tasks[0].endTime._d.getTime());
         const menu = (
             <Menu >
                 <Menu.Item key="1">
@@ -1006,6 +1010,7 @@ class ProjectItemDetail extends Component {
                     <div className="clender-setting  clender-setting-more clender-over" >
                         <Calendar
                             fullscreen={false}
+                            defaultValue={moment(this.props.tasks[0].endTime, 'YYYY-MM-DD')}
                             onSelect={this.onEndChange}
                             disabledDate={this.disabledEndDate}
                         />
