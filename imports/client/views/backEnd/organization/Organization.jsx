@@ -45,7 +45,7 @@ class Organization extends PureComponent {
     }
     // 修改部门
     handleDepSetting = ({ name }, id) => {
-        const companyId = UserUtil.getCompany();
+        const companyId = UserUtil.getMainCompany();
         const { deps } = this.props.company;
         const _this = this;
         const visitedDep = deps.filter(item => (item.id === this.state.depActive));
@@ -66,7 +66,7 @@ class Organization extends PureComponent {
     }
     // 删除部门
     handleDepDel = (id) => {
-        const companyId = UserUtil.getCompany();
+        const companyId = UserUtil.getMainCompany();
         const { users } = this.props;
         const _this = this;
         let isDelete = true;
@@ -122,7 +122,7 @@ class Organization extends PureComponent {
         this.setState({
             commentModel: false,
         });
-        const _id = UserUtil.getCompany();
+        const _id = UserUtil.getMainCompany();
         const id = uuid();
         Meteor.call(
             'addDepartment',
@@ -193,7 +193,7 @@ class Organization extends PureComponent {
     );
     // 新增人员提交
     handleSubmitMember = (res, editMemberInfo) => {
-        const companyId = UserUtil.getCompany();
+        const companyId = UserUtil.getMainCompany();
         const { allUsers, users } = this.props;
         let isNot = false;
         let bool = false;
@@ -250,7 +250,7 @@ class Organization extends PureComponent {
     handleSubmitBatchDep = (fields) => {
         const { selectedRowKeys } = this.state;
         const { users } = this.props;
-        const companyId = UserUtil.getCompany();
+        const companyId = UserUtil.getMainCompany();
         const _users = [];
         users.forEach((item) => {
             if (selectedRowKeys.indexOf(item.userId) > -1) {
@@ -314,7 +314,7 @@ class Organization extends PureComponent {
     // 删除成员
     delCompanyMember = (userId) => {
         feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
-            const companyId = UserUtil.getCompany();
+            const companyId = UserUtil.getMainCompany();
             Meteor.call(
                 'delCompanyMember',
                 { companyId, userId },
@@ -431,7 +431,7 @@ export default withTracker(() => {
     const companys = Company.find().fetch();
     let users = [];
     let company = {};
-    const mainCompany = UserUtil.getCompany();
+    const mainCompany = UserUtil.getMainCompany();
     for (let i = 0; i < companys.length; i++) {
         if (companys[i]._id === mainCompany) {
             users = companys[i].members || [];

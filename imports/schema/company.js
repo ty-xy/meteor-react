@@ -36,24 +36,30 @@ Company.schema = new SimpleSchema({
         type: String,
         optional: true,
     },
+    // 部门信息
     deps: {
         type: [Object],
         optional: true,
     },
+    // 部门id
     'deps.$.id': {
         type: String,
     },
+    // 部门名称
     'deps.$.name': {
         type: String,
     },
+    // 部门创创建者
     'deps.$.admin': {
         type: String,
         optional: true,
     },
+    // 部门头像
     'deps.$.avatar': {
         type: String,
         optional: true,
     },
+    // 是否创建群聊
     'deps.$.isAutoChat': {
         type: Boolean,
         optional: true,
