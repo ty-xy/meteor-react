@@ -39,9 +39,9 @@ export default class OverProject extends Component {
                 >
                     <ProjectAdd click={this.hideModal} {...this.props} />
                 </Modal>
-                <div className="ejianlian-add-project">
+                <div className="ejianlian-add-project" onClick={this.showModal}>
                     <div className="user-avatar project-notice project-icon-plus">
-                        <Icon icon="icon-jiahao icon" onClick={this.showModal} />
+                        <Icon icon="icon-jiahao icon" />
                     </div>
                     <p className="over-project">创建项目</p>
                 </div>

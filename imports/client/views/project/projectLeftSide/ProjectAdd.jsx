@@ -103,6 +103,12 @@ class ProjectAdd extends Component {
                 }
                 const pathname = `/project/task/${_this.state.uuids}`;
                 _this.props.history.push({ pathname });
+                _this.setState({
+                    temperature: '',
+                    intro: '',
+                    affiliation: '',
+                    headPortrait: '',
+                });
             },
         );
     }
@@ -195,7 +201,7 @@ class ProjectAdd extends Component {
                     <div className="common-type">
                         <label htmlFor="name-third" >项目归属：</label>
                         <Select
-                            Value={this.state.affiliation}
+                            value={this.state.affiliation}
                             style={{ width: '292px' }}
                             onChange={this.handleChangeT}
                             id="name-third"
