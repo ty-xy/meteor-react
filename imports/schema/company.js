@@ -63,9 +63,6 @@ Company.schema = new SimpleSchema({
     'members.$.userId': {
         type: String,
     },
-    'members.$.username': {
-        type: String,
-    },
     'members.$.code': {
         type: String,
         optional: true,

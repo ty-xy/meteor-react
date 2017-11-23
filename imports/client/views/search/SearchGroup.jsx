@@ -18,7 +18,7 @@ import Avatar from '../../components/Avatar';
 
 @pureRender
 class SearchGroup extends Component {
-    static PropTypes = {
+    static propTypes = {
         groups: PropTypes.array,
     }
     constructor(...args) {
@@ -44,7 +44,7 @@ class SearchGroup extends Component {
         };
     }
     render() {
-        const data = this.props.groups; // eslint-disable-line
+        const data = this.props.groups;
         return (
             <Table columns={this.state.columns} dataSource={data} />
         );

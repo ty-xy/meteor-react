@@ -48,7 +48,7 @@ class Chat extends Component {
         };
     }
     handleChatType = (chatType) => {
-        console.log(2222, chatType);
+        // console.log(2222, chatType);
         this.setState({
             chatType,
         });
@@ -82,10 +82,10 @@ class Chat extends Component {
         });
     }
     renderChatType = (chatType) => {
-        console.log(chatType);
+        // console.log(chatType);
         switch (chatType) {
         case 'message':
-            console.log('aaa', this);
+            // console.log('aaa', this);
             return <ChatWindow to={this.state.to} userId={this.state.userId} changeTo={this.changeTo} handleToggle={this.handleToggle} />;
         case 'newFriend':
             return <NewFriend />;
@@ -96,7 +96,7 @@ class Chat extends Component {
         }
     }
     render() {
-        console.log(111, this.state.chatType);
+        // console.log(111, this.state.chatType);
         return (
             <div className="ejianlian-chat">
                 <div className="left">

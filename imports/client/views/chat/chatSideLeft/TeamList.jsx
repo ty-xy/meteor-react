@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import CreateTeam from '../../../features/CreateTeam';
 import Avatar from '../../../components/Avatar';
-import SelectMembers from '../../../features/SelectMembers';
+// import SelectMembers from '../../../features/SelectMembers';
 
 const SubMenu = Menu.SubMenu;
 class TeamList extends Component {
@@ -45,17 +45,7 @@ class TeamList extends Component {
                     wrapClassName="create-team-mask"
                     footer={null}
                 >
-                    <CreateTeam isShowAdd />
-                </Modal>
-                <Modal
-                    title="选择人员"
-                    visible
-                    onCancel={this.closeSelect}
-                    width={430}
-                    wrapClassName="create-team-mask"
-                    footer={null}
-                >
-                    <SelectMembers />
+                    <CreateTeam isShowAdd handleCancel={this.handleCancel} />
                 </Modal>
                 <div className="team-organization">
                     <Menu
