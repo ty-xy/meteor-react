@@ -128,7 +128,7 @@ Meteor.methods({
         );
     },
     // 修改人员
-    editMember({ companyId, userId, name, dep, pos }) {
+    editMember({ companyId, userId, name, dep = '', pos }) {
         const member = {
             userId,
             dep,
