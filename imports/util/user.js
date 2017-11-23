@@ -38,6 +38,9 @@ const UserUtil = {
     getCompany() {
         return UserUtil.getProfile().mainCompany || '';
     },
+    getCompanyList() {
+        return UserUtil.getProfile().company || [];
+    },
 };
 
 export const userIdToInfo = {

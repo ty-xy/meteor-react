@@ -41,11 +41,10 @@ class Header extends Component {
     handleBackEnd = () => {
         this.context.history.push('/companySetting');
     }
-    closeMenu = (e) => {
+    closeMenu = () => {
         this.setState({
             isShowAccount: false,
         });
-        e.stopProPagation();
         document.removeEventListener('click', this.closeMenu);
     }
     render() {
@@ -95,7 +94,7 @@ class Header extends Component {
                     <ul className="account-setting" style={{ display: this.state.isShowAccount ? 'block' : 'none' }}>
                         <div className="triangle-up" />
                         <li className="account-message" onClick={this.clickTab.bind(this, '/adminInfo')}>个人资料</li>
-                        {/* <li>下载应用</li> */}
+                        <li>下载应用</li>
                         <li>使用帮助</li>
                         <li onClick={this.handleLogin}>退出登录</li>
                     </ul>

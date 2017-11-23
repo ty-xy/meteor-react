@@ -19,7 +19,7 @@ Meteor.methods({
         // 创建爱完成后,需自动创建,需要在chatList里添加
         members.map((user =>
             Meteor.users.update(
-                { _id: user },
+                { _id: user.userId },
                 {
                     $push: {
                         'profile.company': companyId,
@@ -32,7 +32,7 @@ Meteor.methods({
                 },
             )
         ));
-        return members;
+        return companyId;
     },
     // 修改公司/团队信息
     changeCompanyInfo(companyId, { name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png' }) {
