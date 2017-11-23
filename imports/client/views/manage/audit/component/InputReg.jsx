@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Input, InputNumber, Form } from 'antd';
+import { Input, Form } from 'antd';
 
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -13,7 +13,7 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
-const MyInput = ({ keyword, label, type, required, defaultValue, placeholder, typeErr, requiredErr, width, form, max, disabled, onChange }) => (
+const InputReg = ({ keyword, label, required, defaultValue, placeholder, typeErr, requiredErr, width, form, onChange, disabled, regs = /([\w\W]*)/ }) => (
     <FormItem
         {...formItemLayout}
         label={label}
@@ -21,21 +21,20 @@ const MyInput = ({ keyword, label, type, required, defaultValue, placeholder, ty
         {form.getFieldDecorator(keyword, {
             initialValue: defaultValue,
             rules: [{
-                type: type || 'string', message: typeErr,
+                message: typeErr, pattern: regs,
             }, {
                 required, message: requiredErr,
             }],
         })(
-            type === 'number' ? (<InputNumber onChange={onChange} max={max} min={0} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }} />)
-                : (<Input disabled={disabled} placeholder={placeholder} onChange={onChange} style={{ width: width ? `${width}px` : '100%' }} />),
+            <Input disabled={disabled} placeholder={placeholder} onChange={onChange} style={{ width: width ? `${width}px` : '100%' }} />,
         )}
     </FormItem>
 );
-MyInput.propTypes = {
+
+InputReg.propTypes = {
     onChange: PropTypes.func,
     form: PropTypes.object,
     keyword: PropTypes.string,
-    type: PropTypes.string,
     typeErr: PropTypes.string,
     requiredErr: PropTypes.string,
     required: PropTypes.bool,
@@ -44,6 +43,7 @@ MyInput.propTypes = {
     defaultValue: PropTypes.string,
     width: PropTypes.string,
     max: PropTypes.number,
+    regs: PropTypes.regexp,
     disabled: PropTypes.bool,
 };
-export default MyInput;
+export default InputReg;

@@ -93,40 +93,42 @@ Meteor.methods({
         );
     },
     // 公司添加人员
-    addMember({ _id, userId, name, dep, pos, phone }) {
+    addMember({ companyId, userId, name, dep, pos }) {
         const member = {
             userId,
-            username: phone,
             dep,
             pos,
             name,
         };
         Company.update(
-            { _id },
+            { _id: companyId },
             {
                 $push: { members: member },
             },
         );
     },
-    // 公司部门添加人员
-    updateMemberDep({ _id, member, department }) {
-        const members = Company.findOne({ _id }).members || [];
-        members.forEach((item) => {
-            if (item.userId === member) {
-                item.department.push(department);
-            }
-        });
-        console.log('members', members);
-        const newCompany = {
-            createdAt: new Date(),
-            members,
-            name: Company.findOne({ _id }).name,
+    // 修改人员
+    editMember({ companyId, userId, name, dep, pos }) {
+        console.log('object', companyId, userId, name, dep, pos);
+        const member = {
+            userId,
+            dep,
+            pos,
+            name,
         };
-        Company.schema.validate(newCompany);
         Company.update(
-            { _id },
+            { _id: companyId, 'members.userId': userId },
             {
-                $set: newCompany,
+                $set: { 'members.$': member },
+            },
+        );
+    },
+    // 删除人员
+    delCompanyMember({ companyId, userId }) {
+        Company.update(
+            { _id: companyId },
+            {
+                $pull: { members: { userId } },
             },
         );
     },

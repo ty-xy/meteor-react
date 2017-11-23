@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 import MyModel from '../../../manage/audit/component/MyModel';
+import feedback from '../../../../../util/feedback';
 
 
 class AddDep extends PureComponent {
@@ -11,6 +12,7 @@ class AddDep extends PureComponent {
         addDepModel: PropTypes.func,
         postAddDep: PropTypes.func,
         modelDep: PropTypes.bool,
+        deps: PropTypes.array,
     }
     constructor(props) {
         super(props);
@@ -33,18 +35,29 @@ class AddDep extends PureComponent {
     // 新增部门提交
     handleCommentbtn = () => {
         const { name, isAutoChat = false } = this.state;
+        const { deps } = this.props;
         if (!name) {
             this.setState({ required: true });
         } else {
+            let isHas = false;
+            for (let i = 0; i < deps.length; i++) {
+                if (deps[i].name === name) {
+                    isHas = true;
+                }
+            }
+            if (!isHas) {
+                this.props.postAddDep({ name, isAutoChat });
+            } else {
+                feedback.dealWarning('该部门已经存在， 请注意查看');
+                this.props.addDepModel(false, 'commentModel');
+            }
             this.setState({ name: '', isAutoChat: false });
-            this.props.postAddDep({ name, isAutoChat });
         }
     }
 
     render() {
         const { required, name, isAutoChat } = this.state;
         const { modelDep } = this.props;
-        console.log('adddep', this.props, this.state);
         return (
             <MyModel
                 handleCancel={this.handleCancel}
