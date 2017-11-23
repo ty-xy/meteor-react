@@ -53,7 +53,7 @@ class AddMembers extends PureComponent {
             if (err) {
                 return false;
             }
-            handleSubmitMember(fields, data.name);
+            handleSubmitMember(fields, data.id);
         });
     }
 

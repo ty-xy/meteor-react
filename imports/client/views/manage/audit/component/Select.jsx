@@ -14,7 +14,7 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
-const MySelect = ({ keyword, label, required, defaultValue, onChange, placeholder, requiredErr, form, width, data = [] }) => (
+const MySelect = ({ keyword, label, userId, required, defaultValue, onChange, placeholder, requiredErr, form, width, data = [] }) => (
     <FormItem
         {...formItemLayout}
         label={label}
@@ -27,7 +27,7 @@ const MySelect = ({ keyword, label, required, defaultValue, onChange, placeholde
         })(
             <Select allowClear onChange={onChange} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }}>
                 {
-                    data.map(item => (<Option key={item} value={item}>{item}</Option>))
+                    data.map(item => (<Option key={item} value={userId ? item.id : item.name}>{item.name}</Option>))
                 }
             </Select>,
         )}
@@ -38,6 +38,7 @@ MySelect.propTypes = {
     keyword: PropTypes.string,
     requiredErr: PropTypes.string,
     required: PropTypes.bool,
+    userId: PropTypes.bool,
     label: PropTypes.string,
     placeholder: PropTypes.string,
     defaultValue: PropTypes.string,

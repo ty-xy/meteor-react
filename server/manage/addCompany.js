@@ -77,14 +77,18 @@ Meteor.methods({
         );
     },
     // 更新部门
-    editCompanyDep({ companyId, name, id }) {
-        // const dep = {
-        //     name,
-        // };
+    editCompanyDep({ companyId, name, id, isAutoChat, admin = '', avatar = '' }) {
+        const dep = {
+            name,
+            isAutoChat,
+            admin,
+            avatar,
+            id,
+        };
         Company.update(
             { _id: companyId, 'deps.id': id },
             {
-                $set: { name },
+                $set: { 'deps.$': dep },
             },
         );
     },

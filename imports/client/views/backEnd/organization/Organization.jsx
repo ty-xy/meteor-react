@@ -37,9 +37,8 @@ class Organization extends PureComponent {
         }
     }
     settingModel = () => {
-        console.log('settingModel');
         const { deps = [] } = this.props.company;
-        const visitedDep = deps.filter(item => (item.name === this.state.depActive));
+        const visitedDep = deps.filter(item => (item.id === this.state.depActive));
         return (
             <SettingModel
                 modelShowHide={this.modelShowHide}
@@ -57,18 +56,23 @@ class Organization extends PureComponent {
         });
     }
     // 修改部门
-    handleDepSetting = ({ name }, oldname) => {
+    handleDepSetting = ({ name }, id) => {
         const companyId = UserUtil.getCompany();
-        console.log('fields', name, oldname, companyId);
+        const { deps } = this.props.company;
+        const _this = this;
+        const visitedDep = deps.filter(item => (item.id === this.state.depActive));
+        console.log('fields', name, id, companyId);
         Meteor.call(
             'editCompanyDep',
-            { companyId, name, oldname },
+            { companyId, ...visitedDep, id, name },
             (err) => {
                 if (err) {
                     feedback.dealError('修改失败');
                     return false;
                 }
-                feedback.successToast('修改成功');
+                feedback.successToastFb('修改成功', () => {
+                    _this.setState({ settingModel: false });
+                });
             },
         );
     }
@@ -94,7 +98,7 @@ class Organization extends PureComponent {
         e.preventDefault();
         const { users } = this.props;
         let res = [];
-        console.log('depActive', depActive);
+        console.log('depActive', depActive, users);
         res = users.filter(item => (item.dep === depActive));
         this.setState({ depActive, users: res });
     }
@@ -158,7 +162,7 @@ class Organization extends PureComponent {
             }
         });
         deps.forEach((item) => {
-            item.num = num[item.name] || 0;
+            item.num = num[item.id] || 0;
         });
         return (
             <div className="e-mg-organization-left-dep margin-top-20">
@@ -184,7 +188,7 @@ class Organization extends PureComponent {
             <Button>调整部门</Button>
         </div>
     );
-    // 新增提交
+    // 新增人员提交
     handleSubmitMember = (res, editMemberInfo) => {
         const companyId = UserUtil.getCompany();
         const { allUsers, users } = this.props;
@@ -192,7 +196,7 @@ class Organization extends PureComponent {
         let bool = false;
         const _this = this;
         users.forEach((item) => {
-            if (item.username === res.phone) {
+            if (userIdToInfo.getUsername(allUsers, item.userId) === res.phone) {
                 isNot = true;
             }
         });
@@ -281,6 +285,7 @@ class Organization extends PureComponent {
     // table列表
     tableList = (users) => {
         const { allUsers } = this.props;
+        const { deps = [] } = this.props.company;
         const columns = [
             {
                 title: '姓名',
@@ -292,6 +297,16 @@ class Organization extends PureComponent {
             }, {
                 title: '部门',
                 dataIndex: 'dep',
+                render: (dep) => {
+                    let name = '';
+                    for (let i = 0; i < deps.length; i++) {
+                        if (deps[i].id === dep) {
+                            name = deps[i].name;
+                            break;
+                        }
+                    }
+                    return name;
+                },
             }, {
                 title: '手机号',
                 dataIndex: '',
@@ -314,7 +329,7 @@ class Organization extends PureComponent {
             },
         };
         return (
-            <Table rowKey={record => record.userId} columns={columns} rowSelection={rowSelection} dataSource={users} pagination={false} />
+            <Table rowKey={record => record.dep} columns={columns} rowSelection={rowSelection} dataSource={users} pagination={false} />
         );
     }
     // 人员部门切换model
@@ -325,10 +340,10 @@ class Organization extends PureComponent {
         );
     }
     render() {
-        console.log('this.props', this.props, this.state);
         const { deps = [] } = this.props.company;
-        const { users, depActive } = this.state;
-        const data = users.filter(item => (item.id === depActive));
+        const { depActive } = this.state;
+        const data = this.props.users.filter(item => (item.dep === depActive));
+        console.log('render', this.props, this.state, data);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">

@@ -20,5 +20,3 @@ yarn.lock
 
 # eslint cache
 .eslintcache
-
-imports/client/views/Index.jsx
