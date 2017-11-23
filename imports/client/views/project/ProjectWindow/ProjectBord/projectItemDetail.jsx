@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 // import format from 'date-format';
 import uuid from 'uuid';
 import format from 'date-format';
+import moment from 'moment';
 import pureRender from 'pure-render-decorator';
 import AvatarSelf from '../../../../components/AvatarSelf';
 import Icon from '../../../../components/Icon';
@@ -87,7 +88,7 @@ class ProjectItemDetail extends Component {
         });
     }
     onPanelChange = (value) => {
-        console.log(value, value._d);
+        console.log(value);
         Meteor.call(
             'changeTime', this.props.Id.Id, value._d,
             (err) => {
@@ -96,6 +97,7 @@ class ProjectItemDetail extends Component {
         );
     }
     onPanellChange = (value) => {
+        console.log(value.format('MMMM Do YYYY, h:mm:ss a'));
         Meteor.call(
             'changeEndTime', this.props.Id.Id, value._d,
             (err) => {
@@ -499,6 +501,7 @@ class ProjectItemDetail extends Component {
             }
             return null;
         });
+        this.handleCopys();
     }
     handleCopys=() => {
         this.setState({
@@ -580,9 +583,16 @@ class ProjectItemDetail extends Component {
         this.setState({
             [`fatherList${id}`]: false,
         });
+        console.log(1111);
     }
     handleDeleteC =(id) => {
         this.handleRemoveList(id);
+    }
+    handleRTaskList =(id) => {
+        this.setState({
+            [`shownT${id}`]: false,
+        });
+        console.log('dededfeded');
     }
     // 渲染子清单
     renderTasks = (id) => {
@@ -603,7 +613,7 @@ class ProjectItemDetail extends Component {
                                     dataId={listChild.fatherId}
                                 />
                                 <p
-                                    style={{ marginLeft: '15px' }}
+                                    style={{ marginLeft: '8px' }}
 
                                 >{listChild.name}</p>
                             </div> :
@@ -638,7 +648,7 @@ class ProjectItemDetail extends Component {
                                     dataId={listChild.fatherId}
                                 />
                                 <p
-                                    style={{ marginLeft: '15px' }}
+                                    style={{ marginLeft: '8px' }}
                                 >{listChild.name}</p>
                             </div> :
                             <div style={{ display: 'flex' }}>
@@ -663,6 +673,7 @@ class ProjectItemDetail extends Component {
     }
     // 开始渲染
     render() {
+        // console.log(this.props.tasks[0].endTime._d.getTime());
         const menu = (
             <Menu >
                 <Menu.Item key="1">
@@ -702,7 +713,7 @@ class ProjectItemDetail extends Component {
                         />
                                                  正常
 
-                        { this.props.tasks[0].label === '#d8d8d8' ?
+                        {(this.props.tasks[0] && this.props.tasks[0].label === '#d8d8d8') || (this.props.tasks[0] && this.props.tasks[0].label) === '' ?
                             <Icon icon="icon-xuanze icon-right" /> : null}
 
                     </div>
@@ -719,7 +730,7 @@ class ProjectItemDetail extends Component {
                             onClick={this.handleColor}
                         />
                                                 紧急
-                        { this.props.tasks[0].label === '#F3b152' ?
+                        { this.props.tasks[0] && this.props.tasks[0].label === '#F3b152' ?
                             <Icon icon="icon-xuanze icon-right" /> : null}
                     </div>
                 </Menu.Item>
@@ -733,7 +744,7 @@ class ProjectItemDetail extends Component {
                             className="label-circle"
                         />
                                                  非常紧急
-                        { this.props.tasks[0].label === '#ef5350' ?
+                        { this.props.tasks[0] && this.props.tasks[0].label === '#ef5350' ?
                             <Icon icon="icon-xuanze icon-right" /> : null}
                     </div>
                 </Menu.Item>
@@ -868,7 +879,7 @@ class ProjectItemDetail extends Component {
                                             onClick={() => this.handleFlist(tasklist.listId)}
                                         >
                                             <Icon icon="icon-squarecheck" />
-                                            <p>{tasklist.name}</p>
+                                            <p className="qingdan-name">{tasklist.name}</p>
                                         </Col>
                                         <Col span={2}>
                                             <span>{this.props.cId[index]}</span>
@@ -893,6 +904,7 @@ class ProjectItemDetail extends Component {
                                             value={this.state.listValue}
                                             onChange={this.handldeChangetaskList}
                                             onClick={() => this.handleSendTaskList(tasklist.listId)}
+                                            onConcel={() => this.handleRTaskList(tasklist.listId)}
                                         /> :
                                         <p onClick={() => this.handldetaskList(tasklist.listId)}>
                                             <Icon icon="icon-tianjia1" />
@@ -998,6 +1010,7 @@ class ProjectItemDetail extends Component {
                     <div className="clender-setting  clender-setting-more clender-over" >
                         <Calendar
                             fullscreen={false}
+                            defaultValue={moment(this.props.tasks[0].endTime, 'YYYY-MM-DD')}
                             onSelect={this.onEndChange}
                             disabledDate={this.disabledEndDate}
                         />

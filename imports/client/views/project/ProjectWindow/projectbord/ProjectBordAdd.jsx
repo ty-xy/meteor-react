@@ -68,6 +68,7 @@ class ProjectBordList extends Component {
                                 placeholder="任务版名称"
                                 value={this.state.minchen}
                                 onChange={this.handleChange}
+                                autoFocus
                             />
                         </div>
                         <div className="project-button">

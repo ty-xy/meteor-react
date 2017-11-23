@@ -304,7 +304,7 @@ class ProjectBordItem extends Component {
             <div className="ejianlian-project-item-list">
                 <div className="list-title">
                     <Row>
-                        <Col span={19} style={{ display: 'flex' }}>
+                        <Col span={21} style={{ display: 'flex' }}>
                             {this.state.showTaskBoardTitle ?
                                 <p onClick={this.handlechangeTitle}>{this.props.value}</p> :
                                 <ProjectInput
@@ -317,10 +317,10 @@ class ProjectBordItem extends Component {
                             {this.state.concern ?
                                 <Icon icon="icon-guanzhu icon icon-eye" /> : null}
                         </Col>
-                        <Col span={3} style={{ textAlign: 'center' }}>
+                        {/* <Col span={3} style={{ textAlign: 'center' }}>
                             <Icon icon="icon-jiahao icon" />
-                        </Col>
-                        <Col span={2} style={{ textAlign: 'center' }}>
+                        </Col> */}
+                        <Col span={3} style={{ textAlign: 'center' }}>
                             <Dropdown overlay={menu} trigger={['click']}>
                                 <Icon icon="icon-gengduo1 icon" />
                             </Dropdown>
