@@ -1,53 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Select, Tree } from 'antd';
+import { Select, Tree, Button } from 'antd';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+
+import UserUtil from '../../util/user';
 
 import Avatar from '../components/Avatar';
 
 const Option = Select.Option;
 const TreeNode = Tree.TreeNode;
 
-const treeData = [{
-    title: <span className="team-tree-title">商务部(12)</span>,
-    key: '0-0',
-    children: [{
-        title: <div className="team-node user-info">
-            <Avatar avatarColor="red" name="亚星" avatar="" />
-            <p>王亚星</p>
-        </div>,
-        key: '0-0-0',
-    }, {
-        title: <div className="team-node user-info">
-            <Avatar avatarColor="red" name="亚星" avatar="" />
-            <p>王亚星</p>
-        </div>,
-        key: '0-0-1',
-    }, {
-        title: <div className="team-node user-info">
-            <Avatar avatarColor="red" name="亚星" avatar="" />
-            <p>王亚星</p>
-        </div>,
-        key: '0-0-2',
-    }],
-}, {
-    title: <span className="team-tree-title">人事部(12)</span>,
-    key: '0-1',
-    children: [
-        { title: '0-1-0-0', key: '0-1-0-0' },
-        { title: '0-1-0-1', key: '0-1-0-1' },
-        { title: '0-1-0-2', key: '0-1-0-2' },
-    ],
-}, {
-    title: <div className="team-node user-info">
-        <Avatar avatarColor="red" name="亚星" avatar="" />
-        <p>王亚星</p>
-    </div>,
-    key: '0-2',
-}];
 class SelectMembers extends Component {
-    static PropTypes = {
-        select: PropTypes.array,
-        closeSelect: PropTypes.func.isRequired,
+    static propTypes = {
+        chooseUsers: PropTypes.array.isRequired, // 需要选择的人员
+        confirmSelected: PropTypes.func.isRequired, // 选择完成后的函数,函数的参数为选中的人员ID
     }
     constructor(...args) {
         super(...args);
@@ -55,12 +22,10 @@ class SelectMembers extends Component {
             visible: false,
             expandedKeys: ['0-0-0', '0-0-1'],
             autoExpandParent: true,
-            checkedKeys: ['0-0-0'],
+            checkedKeys: [],
             selectedKeys: [],
         };
     }
-
-
     onExpand = (expandedKeys) => {
         console.log('onExpand', arguments);
         // if not set autoExpandParent to false, if children expanded, parent can not collapse.
@@ -87,18 +52,29 @@ class SelectMembers extends Component {
     handleFocus = () => {
         console.log('focus');
     }
-
+    toggleKeyToUsers = () => this.state.checkedKeys.map((selectId) => {
+        const user = this.props.chooseUsers.find(x => x._id === selectId);
+        return user;
+    })
+    renderUserTitle = profile => (
+        <div className="team-node user-info">
+            <Avatar avatarColor={profile.avatarColor} name={profile.name} avatar={profile.avatar} />
+            <p>{profile.name}</p>
+        </div>
+    )
+    renderDevTitle = () => <span className="team-tree-title">商务部(12)</span>
     renderTreeNodes = data => data.map((item) => {
-        if (item.children) {
+        if (item.company) {
             return (
                 <TreeNode title={item.title} key={item.key} dataRef={item}>
                     {this.renderTreeNodes(item.children)}
                 </TreeNode>
             );
         }
-        return <TreeNode {...item} />;
+        return <TreeNode title={this.renderUserTitle(item.profile)} key={item._id} />;
     })
     render() {
+        const selectedUsers = this.toggleKeyToUsers();
         return (
             <div className="select-members">
                 <Select
@@ -112,27 +88,42 @@ class SelectMembers extends Component {
                     onBlur={this.handleBlur}
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
-                    <Option value="jack">e建联好友</Option>
-                    <Option value="lucy">中艺装饰</Option>
-                    <Option value="tom">中艺装饰设计部</Option>
+                    <Option value="friends">e建联好友</Option>
                 </Select>
                 <div>
                     <Tree
                         checkable
-                        onExpand={this.onExpand}
-                        expandedKeys={this.state.expandedKeys}
-                        autoExpandParent={this.state.autoExpandParent}
                         onCheck={this.onCheck}
                         checkedKeys={this.state.checkedKeys}
-                        onSelect={this.onSelect}
-                        selectedKeys={this.state.selectedKeys}
                     >
-                        {this.renderTreeNodes(treeData)}
+                        {this.renderTreeNodes(this.props.chooseUsers)}
                     </Tree>
+                    <div className="selected-avatar">
+                        {
+                            selectedUsers[0] && selectedUsers.map(user => (
+                                user ?
+                                    <Avatar key={user._id} avatarColor={user.profile && user.profile.avatarColor} name={user.profile && user.profile.name} avatar={user.profile && user.profile.avatar} />
+                                    :
+                                    null
+                            ))
+                        }
+                    </div>
+                    <div className="btn-wrap">
+                        <Button onClick={() => this.props.confirmSelected(this.state.checkedKeys)} type="primary">确定({this.state.checkedKeys.length})</Button>
+                    </div>
                 </div>
             </div>
         );
     }
 }
 
-export default SelectMembers;
+// export default SelectMembers;
+
+export default withTracker(() => {
+    Meteor.subscribe('users');
+    const friendIds = UserUtil.getFriends();
+    const chooseUsers = friendIds.map(_id => Meteor.users.findOne({ _id }));
+    return {
+        chooseUsers,
+    };
+})(SelectMembers);

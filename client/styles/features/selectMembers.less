@@ -1,3 +1,4 @@
+@import '../view/util/util.less';
 .select-members {
     .user-info {
         display: flex !important;
@@ -11,6 +12,30 @@
         & > p {
             margin-top: 3px;
             margin-left: 5px;
+        }
+    }
+    .selected-avatar {
+        width: 100%;
+        overflow: hidden;
+        margin-top: 10px;
+        .avatar {
+            float: left;
+            margin-right: 10px;
+        }
+        & > .avatar {
+            height: 40px !important;
+            line-height: 40px;
+            width: 40px !important;
+            font-size: 12px;
+        }
+
+    }
+    .btn-wrap {
+        height: 50px;
+        .ant-btn-primary {
+            background-color: @mainColor !important;
+            float: right;
+            border-color: @mainColor !important;
         }
     }
 }
