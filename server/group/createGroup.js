@@ -3,7 +3,8 @@ import { Meteor } from 'meteor/meteor';
 import Group from '../../imports/schema/group';
 
 Meteor.methods({
-    createGroup({ name, members }) {
+    // name: 群聊/团队名称, members: 群聊成员, type: group/team 区分是个人群聊和团队群聊
+    createGroup({ name, members, type = 'group' }) {
         const newGroup = {
             createdAt: new Date(),
             name,
@@ -17,6 +18,7 @@ Meteor.methods({
                 value: false,
                 createdAt: new Date(),
             },
+            type,
         };
         Group.schema.validate(newGroup);
         const groupId = Group.insert(newGroup);
