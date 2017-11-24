@@ -76,7 +76,7 @@ class AddDep extends PureComponent {
                         <div className="ant-col-14 ant-form-item-control-wrapper">
                             <div className={classnames('ant-form-item-control', { 'has-error': required })}>
                                 <Input value={name} onChange={this.handleInput} placeholder="请填写部门名称（必填）" ref={i => this.depname = i} />
-                                {required ? <div className="ant-form-explain">请填写部门名称</div> : null}
+                                {required ? <div className="ant-form-explain text-left">请填写部门名称</div> : null}
                             </div>
                         </div>
                     </div>
