@@ -35,14 +35,23 @@ const UserUtil = {
     getChatList() {
         return UserUtil.getProfile().chatList || [];
     },
+    // 获取管理的当前公司列表
     getCompany() {
         return UserUtil.getProfile().mainCompany || '';
     },
+    // 获取所在的公司列表
     getCompanyList() {
         return UserUtil.getProfile().company || [];
     },
+    // 获取我创建的公司列表
+    getCreatedCompany() {
+        return UserUtil.getProfile().createdCompany || [];
+    },
+    // 获取后台当前的公司
+    getCurrentBackendCompany() {
+        return UserUtil.getProfile().currentBackendCompany || '';
+    },
 };
-
 export const userIdToInfo = {
     getProfile(users = [], userId) {
         let res = {};

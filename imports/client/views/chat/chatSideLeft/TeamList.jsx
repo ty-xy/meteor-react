@@ -39,6 +39,7 @@ class TeamList extends Component {
             visible: false,
         });
     }
+    // renderSubMenu =
     renderTeamTitle = (name, logo, membersLength) => <div className="team-title"><Avatar name="企业" avatarColor="red" avatar={logo} /><p>{name}({membersLength})</p></div>
     render() {
         console.log(this.props.companyList);
@@ -91,7 +92,6 @@ export default withTracker(() => {
     Meteor.subscribe('users');
     Meteor.subscribe('company');
     const companyIds = UserUtil.getCompanyList();
-    console.log(companyIds);
     const companyList = companyIds.map(_id =>
         Company.findOne({ _id }),
     );
