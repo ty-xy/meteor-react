@@ -27,7 +27,7 @@ export default class OverProject extends Component {
         });
     }
     render() {
-        console.log('over', this.props);
+        // console.table(this.props);
         return (
             <div style={{ height: '140px' }}>
                 <Modal
@@ -36,6 +36,7 @@ export default class OverProject extends Component {
                     onCancel={this.hideModal}
                     onOk={this.hideModal}
                     width={450}
+                    key={new Date()}
                 >
                     <ProjectAdd click={this.hideModal} {...this.props} />
                 </Modal>

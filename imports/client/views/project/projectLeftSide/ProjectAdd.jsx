@@ -65,7 +65,6 @@ class ProjectAdd extends Component {
             uuids: uuid.v4(),
         });
     }
-
     handleChange(name, e) {
         const newState = {};
         newState[name] = e.target.value;
@@ -201,7 +200,7 @@ class ProjectAdd extends Component {
                     <div className="common-type">
                         <label htmlFor="name-third" >项目归属：</label>
                         <Select
-                            value={this.state.affiliation}
+                            value={this.state.affiliation || '1'}
                             style={{ width: '292px' }}
                             onChange={this.handleChangeT}
                             id="name-third"
@@ -254,7 +253,10 @@ class ProjectAdd extends Component {
                             </FormItem>
                         </ChoosePeopleModel>
                     </div>
-                    <div className="ejianlian-add-projectf" onClick={this.props.click}>
+                    <div
+                        className="ejianlian-add-projectf"
+                        onClick={this.props.click}
+                    >
                         <div className="add-button add-button-create" onClick={this.handleMessage}>
                             {/* <input type="button" value="创建项目" >' */}
                             创建

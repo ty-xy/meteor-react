@@ -108,6 +108,7 @@ class ProjectBordItem extends Component {
     handleList = () => {
         this.setState({
             IsShowList: !this.state.IsShowList,
+            cardInput: '',
             uuids: uuid.v4(),
         });
     }

@@ -20,13 +20,17 @@ class ProjectBordAdd extends Component {
             minchen: '',
         };
     }
+    componentDidUpdate() {
+        console.log(this.$message);
+        // this.$message.addEventListener('keydown', this.handleSendMessage);
+    }
     handleClick = () => {
         if (this.props.pId) {
             this.setState({
                 IsShowAdd: !this.state.IsShowAdd,
+                minchen: '',
             });
         }
-        console.log(this.props.pId);
     }
     handleTitle = () => {
         this.createTaskBord();
@@ -52,6 +56,12 @@ class ProjectBordAdd extends Component {
             minchen: e.target.value,
         });
     }
+    handleSendMessage = (e) => {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            this.createTaskBord();
+        }
+    }
 
     render() {
         return (
@@ -69,6 +79,8 @@ class ProjectBordAdd extends Component {
                                 value={this.state.minchen}
                                 onChange={this.handleChange}
                                 autoFocus
+                                onKeyDown={this.handleSendMessage}
+                                ref={i => this.$message = i}
                             />
                         </div>
                         <div className="project-button">
