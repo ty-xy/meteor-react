@@ -38,6 +38,12 @@ Group.schema = new SimpleSchema({
     'stickTop.createdAt': {
         type: Date,
     },
+    type: {
+        type: String,
+    },
+    superiorId: {
+        type: String,
+    },
 });
 
 export default Group;

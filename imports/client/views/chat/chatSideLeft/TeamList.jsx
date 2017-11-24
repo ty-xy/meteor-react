@@ -1,24 +1,32 @@
 import React, { Component } from 'react';
 import { Modal, Menu } from 'antd';
 import PropTypes from 'prop-types';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
 
 import CreateTeam from '../../../features/CreateTeam';
 import Avatar from '../../../components/Avatar';
-// import SelectMembers from '../../../features/SelectMembers';
+import UserUtil from '../../../../util/user';
+import Company from '../../../../schema/company';
 
 const SubMenu = Menu.SubMenu;
 class TeamList extends Component {
     static propTypes = {
         handleTeamMembers: PropTypes.func,
+        companyList: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
         this.state = {
             visible: false,
+            currentKey: '',
         };
     }
     handleClick = (e) => {
         console.log('click ', e);
+        this.setState({
+            currentKey: e.key,
+        });
     }
     showModal = () => {
         this.setState({
@@ -31,7 +39,9 @@ class TeamList extends Component {
             visible: false,
         });
     }
+    renderTeamTitle = (name, logo, membersLength) => <div className="team-title"><Avatar name="企业" avatarColor="red" avatar={logo} /><p>{name}({membersLength})</p></div>
     render() {
+        console.log(this.props.companyList);
         return (
             <div className="team-list">
                 <div className="create-team-btn">
@@ -51,20 +61,18 @@ class TeamList extends Component {
                     <Menu
                         onClick={this.handleClick}
                         style={{ width: 240 }}
-                        defaultSelectedKeys={['1']}
-                        defaultOpenKeys={['sub1']}
                         mode="inline"
                         className="team-menu"
                     >
-                        <SubMenu
-                            onTitleClick={this.props.handleTeamMembers('teamMembers')}
-                            title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>}
-                            key="sub1"
-                        >
-                            <Menu.Item key="1">总裁办</Menu.Item>
-                            <Menu.Item key="2">财务部</Menu.Item>
-                            <Menu.Item key="3">人力资源</Menu.Item>
-                        </SubMenu>
+                        {
+                            this.props.companyList[0] && this.props.companyList.map(company =>
+                                (<SubMenu
+                                    onTitleClick={() => this.props.handleTeamMembers('teamMembers', company._id)}
+                                    title={this.renderTeamTitle(company.name, company.logo, company.members.length)}
+                                    key={company._id}
+                                />),
+                            )
+                        }
                         <SubMenu key="sub2" title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>} />
                         <SubMenu key="sub4" title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>}>
                             <Menu.Item key="9">Option 9</Menu.Item>
@@ -79,4 +87,15 @@ class TeamList extends Component {
     }
 }
 
-export default TeamList;
+export default withTracker(() => {
+    Meteor.subscribe('users');
+    Meteor.subscribe('company');
+    const companyIds = UserUtil.getCompanyList();
+    console.log(companyIds);
+    const companyList = companyIds.map(_id =>
+        Company.findOne({ _id }),
+    );
+    return {
+        companyList,
+    };
+})(TeamList);
