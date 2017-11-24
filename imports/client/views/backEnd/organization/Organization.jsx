@@ -127,7 +127,8 @@ class Organization extends PureComponent {
         Meteor.call(
             'addDepartment',
             { ...info, _id, id },
-            (err) => {
+            (err, result) => {
+                console.log('postAddDep', result);
                 if (err) {
                     feedback.dealError('添加失败');
                     return false;

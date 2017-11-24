@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
+// import CreateGroup from '../../imports/schema/group';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
@@ -64,15 +65,39 @@ Meteor.methods({
         const newCompany = {
             id,
             name,
-            isAutoChat,
+            isAutoChat, // 是否自动创建部门群聊
             admin,
             avatar,
         };
-        // isAutoChat 是否自动创建部门群聊
+        let groupId = '';
         Company.update(
             { _id },
             {
                 $push: { deps: newCompany },
+            },
+            (error, res) => {
+                if (res && isAutoChat) {
+                    Meteor.call(
+                        'createGroup',
+                        { name, members: [] },
+                        (err, groupid) => {
+                            if (err) {
+                                return false;
+                            }
+                            groupId = groupid;
+                            newCompany.groupId = groupId;
+                            Company.update(
+                                { _id, 'deps.id': id },
+                                {
+                                    $set: { 'deps.$': newCompany },
+                                },
+                                (e, r) => {
+                                    console.log('更新穷里奥', e, r);
+                                },
+                            );
+                        },
+                    );
+                }
             },
         );
     },
