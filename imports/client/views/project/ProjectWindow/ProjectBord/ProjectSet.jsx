@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 // import AvatarSelf from '../../../../components/AvatarSelf';
 import MyIcon from '../../../../components/Icon';
-import ImgUpload from '../../../manage/component/ImgUpload';
+import ImgUp from './component/imgUp';
 import Project from '../../../../../../imports/schema/project';
 
 // import GroupSelect from '../../../manage/audit/component/GroupSelect';
@@ -128,7 +128,7 @@ class ProjectSet extends Component {
                     <span>项目头像：</span >
                     <Tooltip placement="right" title={text}>
                         {this.handleTitle(this.state.headPortrait)}
-                        <ImgUpload
+                        <ImgUp
                             keyword="img"
                             className="img-title"
                             fileList={[]}
