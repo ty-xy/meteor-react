@@ -66,7 +66,7 @@ class Organization extends PureComponent {
         );
     }
     // 删除部门
-    handleDepDel = (id, groupId) => {
+    handleDepDel = (id, groupId, isAutoChat) => {
         const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
         const { users } = this.props;
         const _this = this;
@@ -81,7 +81,7 @@ class Organization extends PureComponent {
             feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该部门吗？', () => {
                 Meteor.call(
                     'delCompanyDep',
-                    { companyId, id, groupId },
+                    { companyId, id, groupId, isAutoChat },
                     (err) => {
                         if (err) {
                             feedback.dealError('删除失败');
@@ -197,28 +197,40 @@ class Organization extends PureComponent {
         </div>
     );
     // 新增人员提交
-    handleSubmitMember = (res, editMemberInfo) => {
+    handleSubmitMember = (res, editMemberInfo, oldgroup) => {
         const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
-        const { allUsers, users } = this.props;
+        const { allUsers, users, company } = this.props;
         let isNot = false;
         let bool = false;
+        let groupId = '';
         const _this = this;
         users.forEach((item) => {
             if (userIdToInfo.getUsername(allUsers, item.userId) === res.phone) {
                 isNot = true;
             }
         });
+        company.deps.forEach((item) => {
+            if (item.id === res.dep) {
+                groupId = item.groupId;
+            }
+        });
+        company.deps.forEach((item) => {
+            if (item.id === oldgroup) {
+                oldgroup = item.groupId;
+            }
+        });
+        // console.log('13614376223', company.deps, res, groupId, oldgroup);
         if (editMemberInfo) {
             Meteor.call(
                 'editMember',
-                { ...res, userId: editMemberInfo, companyId },
+                { ...res, userId: editMemberInfo, companyId, groupId, oldgroup },
                 (err) => {
                     if (err) {
                         feedback.dealError('编辑失败');
                         return false;
                     }
                     feedback.successToastFb('编辑成功', () => {
-                        _this.setState({ modelMember: false, editMember: {} });
+                        _this.setState({ modelMember: false, editMember: {}, editMemberInfo: {} });
                     });
                 },
             );
@@ -234,7 +246,7 @@ class Organization extends PureComponent {
             if (bool) {
                 Meteor.call(
                     'addMember',
-                    { ...res, companyId },
+                    { ...res, companyId, groupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('添加失败');
@@ -297,6 +309,18 @@ class Organization extends PureComponent {
     addMembersModel = () => {
         const { company, allUsers } = this.props;
         const { editMemberInfo = {} } = this.state;
+        if (editMemberInfo.userId) {
+            return (
+                <AddMember
+                    modelShowHide={this.modelShowHide}
+                    handleSubmitMember={this.handleSubmitMember}
+                    modelMember={this.state.modelMember}
+                    data={company.deps || []}
+                    editMemberInfo={editMemberInfo}
+                    allUsers={allUsers}
+                />
+            );
+        }
         return (
             <AddMember
                 modelShowHide={this.modelShowHide}
@@ -305,6 +329,7 @@ class Organization extends PureComponent {
                 data={company.deps || []}
                 editMemberInfo={editMemberInfo}
                 allUsers={allUsers}
+                key={12}
             />
         );
     }

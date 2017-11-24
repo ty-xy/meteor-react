@@ -59,7 +59,7 @@ Meteor.methods({
             },
         );
     },
-    // 增加部门
+    // 创建部门且创建群聊
     addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '' }) {
         const newCompany = {
             id,
@@ -106,7 +106,7 @@ Meteor.methods({
             },
         );
     },
-    // 更新部门
+    // 更新部门名称
     editCompanyDep({ companyId, name, id, isAutoChat, admin = '', groupId, avatar = '' }) {
         const dep = {
             name,
@@ -125,7 +125,7 @@ Meteor.methods({
                 if (err) {
                     return false;
                 }
-                if (result) {
+                if (result && isAutoChat) {
                     Meteor.call(
                         'changeGroupName',
                         groupId, name,
@@ -135,7 +135,7 @@ Meteor.methods({
         );
     },
     // delCompanyDep 删除部门， 且删除群聊
-    delCompanyDep({ companyId, id, groupId }) {
+    delCompanyDep({ companyId, id, groupId, isAutoChat }) {
         Company.update(
             { _id: companyId },
             {
@@ -145,7 +145,7 @@ Meteor.methods({
                 if (err) {
                     return false;
                 }
-                if (res) {
+                if (res && isAutoChat) {
                     Meteor.call(
                         'deleteGroup',
                         groupId,
@@ -166,7 +166,7 @@ Meteor.methods({
         });
     },
     // 公司添加人员
-    addMember({ companyId, userId, name, dep = '', pos }) {
+    addMember({ companyId, userId, name, dep = '', groupId, pos }) {
         const member = {
             userId,
             dep,
@@ -178,10 +178,21 @@ Meteor.methods({
             {
                 $push: { members: member },
             },
+            (err, res) => {
+                if (res && dep) {
+                    Meteor.call(
+                        'addGroupMembers',
+                        {
+                            groupId,
+                            newMembers: [userId],
+                        },
+                    );
+                }
+            },
         );
     },
     // 修改人员
-    editMember({ companyId, userId, name, dep = '', pos }) {
+    editMember({ companyId, userId, name, dep = '', groupId, oldgroup, pos }) {
         const member = {
             userId,
             dep,
@@ -193,6 +204,21 @@ Meteor.methods({
             { _id: companyId, 'members.userId': userId },
             {
                 $set: { 'members.$': member },
+            },
+            (err, res) => {
+                if (res && dep) {
+                    Meteor.call(
+                        'deleteMember',
+                        oldgroup, userId,
+                    );
+                    Meteor.call(
+                        'addGroupMembers',
+                        {
+                            groupId,
+                            newMembers: [userId],
+                        },
+                    );
+                }
             },
         );
     },
