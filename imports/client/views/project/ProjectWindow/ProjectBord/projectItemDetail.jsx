@@ -3,7 +3,6 @@ import { Row, Col, Input, Calendar, Menu, Dropdown, Checkbox, Tooltip, Tag, Date
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
-// import format from 'date-format';
 import uuid from 'uuid';
 import format from 'date-format';
 import moment from 'moment';
@@ -18,10 +17,8 @@ import Active from '../../../../../../imports/schema/active';
 import feedback from '../../../../../util/feedback';
 import ProjectCopy from './ProjectCopy';
 import TaskBoard from '../../../../../../imports/schema/taskBoard';
-// import ProjectTag from './ProjectTag';
 
 const { TextArea } = Input;
-// const confirm = Modal.confirm;
 @pureRender
 class ProjectItemDetail extends Component {
     static propTypes = {
@@ -159,16 +156,6 @@ class ProjectItemDetail extends Component {
         this.handleClose();
     }
     // 评论框变化获得值
-    handleChangeTT = (e) => {
-        this.setState({
-            commentMark: e.target.value,
-        });
-    }
-    handleChangeMark = (e) => {
-        this.setState({
-            changeMark: e.target.value,
-        });
-    }
     handleChangeR = () => {
         this.setState({
             shownR: !this.state.shownR,
@@ -243,11 +230,6 @@ class ProjectItemDetail extends Component {
     handleTitle = () => {
         this.setState({
             titleShow: !this.state.titleShow,
-        });
-    }
-    handleChangeTitle = (e) => {
-        this.setState({
-            titleValue: e.target.value,
         });
     }
     handleChangeTitleQ = () => {
@@ -975,7 +957,11 @@ class ProjectItemDetail extends Component {
                                 <div className="person-size">
                                     <AvatarSelf />
                                 </div>
-                                <TextArea type="text" value={this.state.commentMark} onChange={this.handleChangeTT} />
+                                <TextArea
+                                    type="text"
+                                    value={this.state.commentMark}
+                                    onChange={e => this.handleChangeTry('commentMark', e)}
+                                />
                             </div>
                             <button className="comment-button" onClick={this.handleMark}>评论</button>
                         </div>
@@ -1008,7 +994,7 @@ class ProjectItemDetail extends Component {
                                                     type="text"
                                                     value={this.state.changeMark}
                                                     autoFocus
-                                                    onChange={this.handleChangeMark}
+                                                    onChange={e => this.handleChangeTry('changeMark', e)}
                                                 />
                                                 <button onClick={() => this.handleCreadite(MarkValue._id, MarkValue.content)}>编辑</button>
                                             </div>
