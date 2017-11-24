@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { Form, Input, Button, Select, Cascader, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import Avatar from '../components/Avatar';
 import AvatarSelf from '../components/AvatarSelf';
 import Icon from '../components/Icon';
-import feedback from '../../util/feedback';
+// import feedback from '../../util/feedback';
 // import AddGroup from '../views/chat/chatSideLeft/addChat/AddGroup';
 import SelectMembers from '../features/SelectMembers';
+import Company from '../../schema/company';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -39,8 +41,9 @@ const residences = [{
 class CreateTeam extends Component {
     static propTypes = {
         form: PropTypes.object,
-        isShowAdd: PropTypes.bool,
-        handleCancel: PropTypes.func,
+        isShowAdd: PropTypes.bool, // 是否显示添加人员
+        handleSubmit: PropTypes.func.isRequired, // 点击确定的回调函数
+        currentCompany: PropTypes.object, // 如果是修改信息部分,为前所选公司信息
     }
     constructor() {
         super();
@@ -57,16 +60,12 @@ class CreateTeam extends Component {
         this.props.form.validateFieldsAndScroll(async (err, formValues) => {
             if (!err) {
                 formValues.logo = this.state.teamLogo;
-                formValues.members = [Meteor.userId(), ...this.state.selectMembersId].map(x => ({
-                    userId: x,
-                }));
-                Meteor.call('createCompany', formValues, (error, result) => {
-                    feedback.dealError(error);
-                    if (result) {
-                        feedback.dealSuccess('创建成功');
-                        this.props.handleCancel();
-                    }
-                });
+                if (this.props.isShowAdd) {
+                    formValues.members = [Meteor.userId(), ...this.state.selectMembersId].map(x => ({
+                        userId: x,
+                    }));
+                }
+                this.props.handleSubmit(formValues);
             }
         });
     }
@@ -122,13 +121,14 @@ class CreateTeam extends Component {
             wrapperCol: { span: 14, offset: 4 },
         } : null;
         const { getFieldDecorator } = this.props.form;
+        const { name = '', logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', industryType = '', residence = [] } = this.props.currentCompany || {};
         return (
             <div>
                 <Form layout={formLayout} onSubmit={this.handleSubmit}>
                     <FormItem>
 
                         <div className="upload-team-avatar">
-                            <Avatar avatar={this.state.teamLogo} name="团队" />
+                            <Avatar avatar={logo} name="团队" />
                             <p className="edit-avatar">修改头像
                                 <input type="file" id="avatar" onChange={this.handleUploadImg} ref={i => this.fileInput = i} />
                             </p>
@@ -143,8 +143,11 @@ class CreateTeam extends Component {
                                 type: 'string', message: '类型为string!',
                             }, {
                                 required: true, message: '团队名称!',
+                            }, {
+                                initialValue: name,
                             }],
                         })(
+
                             <Input placeholder="团队名称" />,
                         )}
                     </FormItem>
@@ -157,9 +160,11 @@ class CreateTeam extends Component {
                                 type: 'string', message: '类型为string!',
                             }, {
                                 required: true, message: '请选择行业类型!',
+                            }, {
+                                initialValue: industryType,
                             }],
                         })(
-                            <Select placeholder="行业类型">
+                            <Select placeholder="行业类型" >
                                 <Option value="建筑设计">建筑设计</Option>
                                 <Option value="土木工程">土木工程</Option>
                                 <Option value="装饰装潢">装饰装潢</Option>
@@ -175,7 +180,7 @@ class CreateTeam extends Component {
                         label="所在地区"
                     >
                         {getFieldDecorator('residence', {
-                            initialValue: ['zhejiang', 'hangzhou', 'xihu'],
+                            initialValue: residence,
                             rules: [{ type: 'array' }],
                         })(
                             <Cascader options={residences} />,
@@ -236,4 +241,12 @@ class CreateTeam extends Component {
     }
 }
 
-export default Form.create({})(CreateTeam);
+export default Form.create({})(
+    withTracker(({ currentCompanyId }) => {
+        Meteor.subscribe('company');
+        const currentCompany = Company.findOne({ _id: currentCompanyId });
+        return {
+            currentCompany,
+        };
+    })(CreateTeam),
+);
