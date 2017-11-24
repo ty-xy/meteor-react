@@ -18,7 +18,7 @@ import Avatar from '../../components/Avatar';
 
 @pureRender
 class SearchUser extends Component {
-    static PropTypes = {
+    static propTypes = {
         friends: PropTypes.array,
     }
     constructor(...args) {
@@ -44,7 +44,7 @@ class SearchUser extends Component {
         };
     }
     render() {
-        const data = this.props.friends; // eslint-disable-line
+        const data = this.props.friends;
         return (
             <Table columns={this.state.columns} dataSource={data} />
         );

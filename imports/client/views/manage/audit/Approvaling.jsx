@@ -268,6 +268,7 @@ class Approvaling extends Component {
                     footer={footer()}
                     title={`${userIdToInfo.getName(allUsers, modelData.userId)}的${modelData.type}审批`}
                     mask={showAuditCard}
+                    height="100%"
                 >
                     <div>
                         <div className="border-bottom-eee e-mg-model-body-avatar clearfix">
@@ -328,6 +329,7 @@ class Approvaling extends Component {
                     animation="vertical"
                     mask={commentModel}
                     handleCommentbtn={this.handleCommentbtn}
+                    height="269px"
                 >
                     <div className="clearfix e-mg-model-comment">
                         <Col span={24} className="">审批意见：{auditIdea}</Col>

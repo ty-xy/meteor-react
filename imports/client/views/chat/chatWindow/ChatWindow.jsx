@@ -79,9 +79,6 @@ class ChatWindow extends Component {
             });
         }
     }
-    // componentWillUnmount() {
-    //     this.$message.removeEventListener('keydown', this.handleSendMessage);
-    // }
     // 图片初始高度是0, 图片加载完成后, 把消息撑了起来, 这时候scrollIntoView已经执行完了,所以会出现看到聊天窗口的时候最后一条消息被挡上了,需要滚动一下才能看到
     // 表情, 写死高度.  图片消息, 等图片onLoad的时候, 再执行一次最后一条消息的 scrollIntoView
     imageLoad = () => {

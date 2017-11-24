@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
-import { Modal } from 'antd';
-import CreateTeam from '../../../features/CreateTeam';
+import { Modal, Menu } from 'antd';
+import PropTypes from 'prop-types';
 
+import CreateTeam from '../../../features/CreateTeam';
+import Avatar from '../../../components/Avatar';
+// import SelectMembers from '../../../features/SelectMembers';
+
+const SubMenu = Menu.SubMenu;
 class TeamList extends Component {
+    static propTypes = {
+        handleTeamMembers: PropTypes.func,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
             visible: false,
         };
+    }
+    handleClick = (e) => {
+        console.log('click ', e);
     }
     showModal = () => {
         this.setState({
@@ -34,8 +45,35 @@ class TeamList extends Component {
                     wrapClassName="create-team-mask"
                     footer={null}
                 >
-                    <CreateTeam isShowAdd />
+                    <CreateTeam isShowAdd handleCancel={this.handleCancel} />
                 </Modal>
+                <div className="team-organization">
+                    <Menu
+                        onClick={this.handleClick}
+                        style={{ width: 240 }}
+                        defaultSelectedKeys={['1']}
+                        defaultOpenKeys={['sub1']}
+                        mode="inline"
+                        className="team-menu"
+                    >
+                        <SubMenu
+                            onTitleClick={this.props.handleTeamMembers('teamMembers')}
+                            title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>}
+                            key="sub1"
+                        >
+                            <Menu.Item key="1">总裁办</Menu.Item>
+                            <Menu.Item key="2">财务部</Menu.Item>
+                            <Menu.Item key="3">人力资源</Menu.Item>
+                        </SubMenu>
+                        <SubMenu key="sub2" title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>} />
+                        <SubMenu key="sub4" title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>}>
+                            <Menu.Item key="9">Option 9</Menu.Item>
+                            <Menu.Item key="10">Option 10</Menu.Item>
+                            <Menu.Item key="11">Option 11</Menu.Item>
+                            <Menu.Item key="12">Option 12</Menu.Item>
+                        </SubMenu>
+                    </Menu>
+                </div>
             </div>
         );
     }

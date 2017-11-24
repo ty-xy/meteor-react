@@ -19,7 +19,7 @@ Meteor.methods({
         // 创建爱完成后,需自动创建,需要在chatList里添加
         members.map((user =>
             Meteor.users.update(
-                { _id: user },
+                { _id: user.userId },
                 {
                     $push: {
                         'profile.company': companyId,
@@ -32,7 +32,7 @@ Meteor.methods({
                 },
             )
         ));
-        return members;
+        return companyId;
     },
     // 修改公司/团队信息
     changeCompanyInfo(companyId, { name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png' }) {
@@ -60,8 +60,9 @@ Meteor.methods({
         );
     },
     // 增加部门
-    addDepartment({ _id, name, isAutoChat, admin = '', avatar = '' }) {
+    addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '' }) {
         const newCompany = {
+            id,
             name,
             isAutoChat,
             admin,
@@ -76,63 +77,77 @@ Meteor.methods({
         );
     },
     // 更新部门
-    updateDepartment({ deparment, _id }) {
-        const departments = Company.findOne({ _id }).department || [];
-        departments.push(deparment);
-        const newCompany = {
-            createdAt: new Date(),
-            department: departments,
-            name: Company.findOne({ _id }).name,
+    editCompanyDep({ companyId, name, id, isAutoChat, admin = '', avatar = '' }) {
+        const dep = {
+            name,
+            isAutoChat,
+            admin,
+            avatar,
+            id,
         };
-        Company.schema.validate(newCompany);
         Company.update(
-            { _id },
+            { _id: companyId, 'deps.id': id },
             {
-                $set: newCompany,
+                $set: { 'deps.$': dep },
             },
         );
+    },
+    // delCompanyDep 删除部门
+    delCompanyDep({ companyId, id }) {
+        Company.update(
+            { _id: companyId },
+            {
+                $pull: { deps: { id } },
+            },
+        );
+    },
+    // 批量设置部门人员
+    batchSetDep({ companyId, _users }) {
+        _users.forEach((item) => {
+            Company.update(
+                { _id: companyId, 'members.userId': item.userId },
+                {
+                    $set: { 'members.$': item },
+                },
+            );
+        });
     },
     // 公司添加人员
-    updateMember({ _id, member }) {
-        const members = Company.findOne({ _id }).members || [];
-        members.push({
-            userId: member,
-            position: [],
-            department: [],
-        });
-        console.log('members', members);
-        const newCompany = {
-            createdAt: new Date(),
-            members,
-            name: Company.findOne({ _id }).name,
+    addMember({ companyId, userId, name, dep = '', pos }) {
+        const member = {
+            userId,
+            dep,
+            pos,
+            name,
         };
-        Company.schema.validate(newCompany);
         Company.update(
-            { _id },
+            { _id: companyId },
             {
-                $set: newCompany,
+                $push: { members: member },
             },
         );
     },
-    // 公司部门添加人员
-    updateMemberDep({ _id, member, department }) {
-        const members = Company.findOne({ _id }).members || [];
-        members.forEach((item) => {
-            if (item.userId === member) {
-                item.department.push(department);
-            }
-        });
-        console.log('members', members);
-        const newCompany = {
-            createdAt: new Date(),
-            members,
-            name: Company.findOne({ _id }).name,
+    // 修改人员
+    editMember({ companyId, userId, name, dep = '', pos }) {
+        const member = {
+            userId,
+            dep,
+            pos,
+            name,
         };
-        Company.schema.validate(newCompany);
         Company.update(
-            { _id },
+            { _id: companyId, 'members.userId': userId },
             {
-                $set: newCompany,
+                $set: { 'members.$': member },
+            },
+        );
+    },
+    // 删除人员
+    delCompanyMember({ companyId, userId }) {
+        Company.update(
+            { _id: companyId },
+            {
+                $pull: { members: { userId } },
             },
         );
     },

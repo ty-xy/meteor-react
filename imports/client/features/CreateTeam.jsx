@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Select, Cascader } from 'antd';
+import { Form, Input, Button, Select, Cascader, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 
@@ -8,6 +8,7 @@ import AvatarSelf from '../components/AvatarSelf';
 import Icon from '../components/Icon';
 import feedback from '../../util/feedback';
 // import AddGroup from '../views/chat/chatSideLeft/addChat/AddGroup';
+import SelectMembers from '../features/SelectMembers';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -39,18 +40,16 @@ class CreateTeam extends Component {
     static propTypes = {
         form: PropTypes.object,
         isShowAdd: PropTypes.bool,
+        handleCancel: PropTypes.func,
     }
     constructor() {
         super();
         this.state = {
             formLayout: 'horizontal',
-            isShowAddGroup: false,
+            showSelect: false,
             teamLogo: 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png',
-            industryType: [
-                {
-
-                },
-            ],
+            selectMembers: [],
+            selectMembersId: [],
         };
     }
     handleSubmit = (e) => {
@@ -58,10 +57,14 @@ class CreateTeam extends Component {
         this.props.form.validateFieldsAndScroll(async (err, formValues) => {
             if (!err) {
                 formValues.logo = this.state.teamLogo;
-                console.log(formValues);
+                formValues.members = [Meteor.userId(), ...this.state.selectMembersId].map(x => ({
+                    userId: x,
+                }));
                 Meteor.call('createCompany', formValues, (error, result) => {
+                    feedback.dealError(error);
                     if (result) {
                         feedback.dealSuccess('创建成功');
+                        this.props.handleCancel();
                     }
                 });
             }
@@ -92,7 +95,21 @@ class CreateTeam extends Component {
     }
     handleAddMembers = () => {
         this.setState({
-            isShowAddGroup: !this.state.isShowAddGroup,
+            showSelect: true,
+        });
+    }
+    closeSelect = () => {
+        this.setState({
+            showSelect: false,
+        });
+    }
+    confirmSelected = (members) => {
+        // console.log('选择加入的人员', members);
+        const selectMembers = members;
+        this.setState({
+            selectMembersId: members,
+            selectMembers: selectMembers.map(_id => Meteor.users.findOne({ _id })),
+            showSelect: false,
         });
     }
     render() {
@@ -174,7 +191,14 @@ class CreateTeam extends Component {
                                 <div className="members-avatar">
                                     <div className="avatar-wrap">
                                         <AvatarSelf />
-                                        <Avatar name="哈哈" avatarColor="red" avatar="" />
+                                        {
+                                            !this.state.showSelect && this.state.selectMembers.map(user => (
+                                                user ?
+                                                    <Avatar key={user._id} avatarColor={user.profile && user.profile.avatarColor} name={user.profile && user.profile.name} avatar={user.profile && user.profile.avatar} />
+                                                    :
+                                                    null
+                                            ))
+                                        }
                                     </div>
                                     <div className="add-members" onClick={this.handleAddMembers}>
                                         <Icon icon="icon-tianjia3 icon" size={35} />
@@ -189,11 +213,24 @@ class CreateTeam extends Component {
                         <Button type="primary" htmlType="submit">{this.props.isShowAdd ? '创建' : '保存'}</Button>
                     </FormItem>
                 </Form>
-                {/* <AddGroup
-                    handleAddGroup={this.handleAddMembers}
-                    isShowAddGroup={this.state.isShowAddGroup}
-                    type="createGroup"
-                /> */}
+                {
+                    this.state.showSelect ?
+                        <Modal
+                            title="选择人员"
+                            visible
+                            onCancel={this.closeSelect}
+                            width={430}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <SelectMembers
+                                confirmSelected={this.confirmSelected}
+                            />
+                        </Modal>
+                        :
+                        null
+
+                }
             </div>
         );
     }

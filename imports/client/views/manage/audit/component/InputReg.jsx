@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select, Form } from 'antd';
+import { Input, Form } from 'antd';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -14,7 +13,7 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
-const MySelect = ({ keyword, label, userId, required, defaultValue, onChange, placeholder, requiredErr, form, width, data = [] }) => (
+const InputReg = ({ keyword, label, required, defaultValue, placeholder, typeErr, requiredErr, width, form, onChange, disabled, regs = /([\w\W]*)/ }) => (
     <FormItem
         {...formItemLayout}
         label={label}
@@ -22,28 +21,29 @@ const MySelect = ({ keyword, label, userId, required, defaultValue, onChange, pl
         {form.getFieldDecorator(keyword, {
             initialValue: defaultValue,
             rules: [{
+                message: typeErr, pattern: regs,
+            }, {
                 required, message: requiredErr,
             }],
         })(
-            <Select allowClear onChange={onChange} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }}>
-                {
-                    data.map(item => (<Option key={item} value={userId ? item.id : item.name}>{item.name}</Option>))
-                }
-            </Select>,
+            <Input disabled={disabled} placeholder={placeholder} onChange={onChange} style={{ width: width ? `${width}px` : '100%' }} />,
         )}
     </FormItem>
 );
-MySelect.propTypes = {
+
+InputReg.propTypes = {
+    onChange: PropTypes.func,
     form: PropTypes.object,
     keyword: PropTypes.string,
+    typeErr: PropTypes.string,
     requiredErr: PropTypes.string,
     required: PropTypes.bool,
-    userId: PropTypes.bool,
     label: PropTypes.string,
     placeholder: PropTypes.string,
     defaultValue: PropTypes.string,
     width: PropTypes.string,
-    data: PropTypes.array,
-    onChange: PropTypes.func,
+    max: PropTypes.number,
+    regs: PropTypes.regexp,
+    disabled: PropTypes.bool,
 };
-export default MySelect;
+export default InputReg;

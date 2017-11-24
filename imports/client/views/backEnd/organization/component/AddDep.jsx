@@ -4,13 +4,15 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 import MyModel from '../../../manage/audit/component/MyModel';
+import feedback from '../../../../../util/feedback';
 
 
 class AddDep extends PureComponent {
     static propTypes = {
         addDepModel: PropTypes.func,
         postAddDep: PropTypes.func,
-        commentModel: PropTypes.bool,
+        modelDep: PropTypes.bool,
+        deps: PropTypes.array,
     }
     constructor(props) {
         super(props);
@@ -20,7 +22,7 @@ class AddDep extends PureComponent {
     // 取消
     handleCancel = () => {
         this.setState({ isAutoChat: false, name: '', required: false }, () => {
-            this.props.addDepModel(false);
+            this.props.addDepModel(false, 'commentModel');
         });
     }
     handleInput = (e, name) => {
@@ -33,26 +35,38 @@ class AddDep extends PureComponent {
     // 新增部门提交
     handleCommentbtn = () => {
         const { name, isAutoChat = false } = this.state;
+        const { deps } = this.props;
         if (!name) {
             this.setState({ required: true });
         } else {
+            let isHas = false;
+            for (let i = 0; i < deps.length; i++) {
+                if (deps[i].name === name) {
+                    isHas = true;
+                }
+            }
+            if (!isHas) {
+                this.props.postAddDep({ name, isAutoChat });
+            } else {
+                feedback.dealWarning('该部门已经存在， 请注意查看');
+                this.props.addDepModel(false, 'commentModel');
+            }
             this.setState({ name: '', isAutoChat: false });
-            this.props.postAddDep({ name, isAutoChat });
         }
     }
 
     render() {
         const { required, name, isAutoChat } = this.state;
-        const { commentModel } = this.props;
-        console.log('adddep', this.props, this.state);
+        const { modelDep } = this.props;
         return (
             <MyModel
                 handleCancel={this.handleCancel}
-                show={commentModel}
+                show={modelDep}
                 title="新增部门"
                 animation="vertical"
-                mask={commentModel}
+                mask={modelDep}
                 handleCommentbtn={this.handleCommentbtn}
+                height="269px"
             >
                 <div className="clearfix e-mg-model-comment">
                     <div className="ant-row ant-form-item ant-form-item-with-help">

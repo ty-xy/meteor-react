@@ -64,6 +64,20 @@ publishComposite('message', {
         },
     }],
 });
+// 公司
+// publishComposite('company', {
+//     find() {
+//         return Company.find({});
+//     },
+//     children: [{
+//         find(company) {
+//             company.members = company.members.map(item => Meteor.users.findOne(
+//                 { _id: item.userId },
+//                 { fields: fields.user },
+//             ));
+//         },
+//     }],
+// });
 
 Meteor.publish('users', () => Meteor.users.find(
     {},
