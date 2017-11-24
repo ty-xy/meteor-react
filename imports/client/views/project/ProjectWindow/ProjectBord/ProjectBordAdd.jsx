@@ -8,7 +8,7 @@ import MyIcon from '../../../../components/Icon';
 import Project from '../../../../../../imports/schema/project';
 
 @pureRender
-class ProjectBordList extends Component {
+class ProjectBordAdd extends Component {
     static propTypes = {
         // projectId: PropTypes.arrayOf(PropTypes.object),
         pId: PropTypes.string,
@@ -88,4 +88,4 @@ export default withTracker(() => {
     return {
         projectId,
     };
-})(ProjectBordList);
+})(ProjectBordAdd);
