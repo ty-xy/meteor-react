@@ -2,32 +2,38 @@ import React, { Component } from 'react';
 import { Table, Modal, Form, Input, Button, Radio } from 'antd';
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
+
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
+import Company from '../../../../schema/company';
+import fields from '../../../../util/fields';
 
-const data = [{
-    profile: {
-        name: '星星',
-        avatarColor: '#29b6f6',
-        avatar: '',
-    },
-    _id: '9A8GrFpDd8TyhCAPs',
-}, {
-    profile: {
-        name: '星星',
-        avatarColor: '#29b6f6',
-        avatar: '',
-    },
-    _id: '9A8GrFpDd8TyhCAty',
-}];
+// const data = [{
+//     profile: {
+//         name: '星星',
+//         avatarColor: '#29b6f6',
+//         avatar: '',
+//     },
+//     _id: '9A8GrFpDd8TyhCAPs',
+// }, {
+//     profile: {
+//         name: '星星',
+//         avatarColor: '#29b6f6',
+//         avatar: '',
+//     },
+//     _id: '9A8GrFpDd8TyhCAty',
+// }];
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 @pureRender
 class TeamMembers extends Component {
-    static PropTypes = {
+    static propTypes = {
         form: PropTypes.object,
-        friends: PropTypes.array,
+        teamId: PropTypes.array,
+        currentMembers: PropTypes.array || [],
     }
     constructor(...args) {
         super(...args);
@@ -69,12 +75,12 @@ class TeamMembers extends Component {
         const buttonItemLayout = formLayout === 'horizontal' ? {
             wrapperCol: { span: 14, offset: 4 },
         } : null;
-        const { getFieldDecorator } = this.props.form; // eslint-disable-line
+        const { getFieldDecorator } = this.props.form;
         return (
             <div className="team-members">
                 <Table
                     columns={this.state.columns}
-                    dataSource={data}
+                    dataSource={this.props.currentMembers}
                     title={() => this.renderHeader()}
                     rowKey={record => record._id}
                 />
@@ -131,4 +137,18 @@ class TeamMembers extends Component {
     }
 }
 
-export default Form.create({})(TeamMembers);
+export default Form.create({})(
+    withTracker(({ teamId }) => {
+        Meteor.subscribe('users');
+        Meteor.subscribe('company');
+        const currentCompany = Company.findOne({ _id: teamId });
+        const currentMembers = currentCompany.members || [];
+        currentMembers.forEach((x) => {
+            x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;
+        });
+        return {
+            currentMembers,
+            teamId,
+        };
+    })(TeamMembers),
+);

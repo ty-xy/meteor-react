@@ -45,12 +45,20 @@ class Chat extends Component {
             userId: '',
             selectedChat: {},
             chatType: 'message',
+            currentKey: '',
         };
     }
     handleChatType = (chatType) => {
         // console.log(2222, chatType);
         this.setState({
             chatType,
+        });
+    }
+    handleTeamMembers = (chatType, currentKey) => {
+        console.log(777, currentKey);
+        this.handleChatType(chatType);
+        this.setState({
+            currentKey,
         });
     }
     handleClick = (index) => {
@@ -81,6 +89,7 @@ class Chat extends Component {
             },
         });
     }
+    renderTeamMembers = teamId => <TeamMembers teamId={teamId} />
     renderChatType = (chatType) => {
         // console.log(chatType);
         switch (chatType) {
@@ -90,7 +99,7 @@ class Chat extends Component {
         case 'newFriend':
             return <NewFriend />;
         case 'teamMembers':
-            return <TeamMembers />;
+            return this.renderTeamMembers(this.state.currentKey);
         default:
             return <EmptyChat />;
         }
@@ -160,7 +169,7 @@ class Chat extends Component {
                             /> : null}
                         {this.state.selected === 3 ?
                             <TeamList
-                                handleTeamMembers={this.handleChatType}
+                                handleTeamMembers={this.handleTeamMembers}
                             /> : null}
                     </div>
                     <AddChat
@@ -173,7 +182,6 @@ class Chat extends Component {
                         this.renderChatType(this.state.chatType)
                     }
                 </div>
-                {/* <ProjectNotice /> */}
             </div>
         );
     }
