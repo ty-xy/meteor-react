@@ -45,14 +45,15 @@ class Organization extends PureComponent {
     }
     // 修改部门
     handleDepSetting = ({ name }, id) => {
-        const companyId = UserUtil.getMainCompany();
+        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
         const { deps } = this.props.company;
         const _this = this;
         const visitedDep = deps.filter(item => (item.id === this.state.depActive));
-        console.log('fields', name, id, companyId);
+        console.log('fields', { companyId, ...visitedDep, id, name });
+        const DEV = visitedDep.length ? visitedDep[0] : {};
         Meteor.call(
             'editCompanyDep',
-            { companyId, ...visitedDep, id, name },
+            { companyId, ...DEV, id, name },
             (err) => {
                 if (err) {
                     feedback.dealError('修改失败');
@@ -65,21 +66,22 @@ class Organization extends PureComponent {
         );
     }
     // 删除部门
-    handleDepDel = (id) => {
-        const companyId = UserUtil.getMainCompany();
+    handleDepDel = (id, groupId) => {
+        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
         const { users } = this.props;
         const _this = this;
         let isDelete = true;
         users.forEach((item) => {
-            if (item.id === id) {
+            if (item.dep === id) {
                 isDelete = false;
             }
         });
+        console.log('groupId', groupId);
         if (isDelete) {
             feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该部门吗？', () => {
                 Meteor.call(
                     'delCompanyDep',
-                    { companyId, id },
+                    { companyId, id, groupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('删除失败');
@@ -122,7 +124,8 @@ class Organization extends PureComponent {
         this.setState({
             commentModel: false,
         });
-        const _id = UserUtil.getMainCompany();
+        // const _id = UserUtil.getMainCompany();
+        const _id = 'ar9bP7gagx9vNqSRu';
         const id = uuid();
         Meteor.call(
             'addDepartment',
@@ -156,6 +159,7 @@ class Organization extends PureComponent {
     // 左侧部门列表
     depList = (deps, user) => {
         const { depActive, showMenu } = this.state;
+        const { company } = this.props;
         const num = {};
         user.forEach((item) => {
             if (num[item.dep]) {
@@ -171,7 +175,7 @@ class Organization extends PureComponent {
         return (
             <div className="e-mg-organization-left-dep margin-top-20">
                 <div className={classnames('e-mg-organization-company', { 'dep-active': depActive === '' })}>
-                    <a href="" onClick={e => this.handleTabDep(e, '')}><img src="http://oxldjnom8.bkt.clouddn.com/avatar_DQn6qYhEH3PejeDJf_1510912617360.png" alt="" />中亿集团有限公司 （{user.length || 0}）</a>
+                    <a href="" onClick={e => this.handleTabDep(e, '')}><img src={company.logo} alt="" />{company.name} （{user.length || 0}）</a>
                     <i className={classnames('iconfont icon-jiantou-copy', { arrowDown: showMenu })} onClick={this.showMenu} />
                 </div>
                 {
@@ -194,7 +198,7 @@ class Organization extends PureComponent {
     );
     // 新增人员提交
     handleSubmitMember = (res, editMemberInfo) => {
-        const companyId = UserUtil.getMainCompany();
+        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
         const { allUsers, users } = this.props;
         let isNot = false;
         let bool = false;
@@ -251,7 +255,7 @@ class Organization extends PureComponent {
     handleSubmitBatchDep = (fields) => {
         const { selectedRowKeys } = this.state;
         const { users } = this.props;
-        const companyId = UserUtil.getMainCompany();
+        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
         const _users = [];
         users.forEach((item) => {
             if (selectedRowKeys.indexOf(item.userId) > -1) {
@@ -315,7 +319,7 @@ class Organization extends PureComponent {
     // 删除成员
     delCompanyMember = (userId) => {
         feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
-            const companyId = UserUtil.getMainCompany();
+            const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
             Meteor.call(
                 'delCompanyMember',
                 { companyId, userId },
@@ -380,7 +384,6 @@ class Organization extends PureComponent {
     }
     // 批量切换部门
     memberBelongModel = () => {
-        console.log('object');
         const { allUsers } = this.props;
         const { deps = [] } = this.props.company;
         return (
@@ -403,8 +406,15 @@ class Organization extends PureComponent {
     }
     render() {
         const { deps = [] } = this.props.company;
-        const data = this.props.users.filter(item => (item.dep === this.state.depActive));
-        console.log('render', this.props, this.state, data);
+        const { users } = this.props;
+        const { depActive } = this.state;
+        let data = [];
+        if (depActive) {
+            data = users.filter(item => (item.dep === this.state.depActive));
+        } else {
+            data = users.filter(item => (!item.dep));
+        }
+        // console.log('render', this.props, this.state, data);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">
@@ -432,7 +442,7 @@ export default withTracker(() => {
     const companys = Company.find().fetch();
     let users = [];
     let company = {};
-    const mainCompany = UserUtil.getMainCompany();
+    const mainCompany = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
     for (let i = 0; i < companys.length; i++) {
         if (companys[i]._id === mainCompany) {
             users = companys[i].members || [];

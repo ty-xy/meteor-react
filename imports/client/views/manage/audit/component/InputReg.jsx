@@ -43,7 +43,7 @@ InputReg.propTypes = {
     defaultValue: PropTypes.string,
     width: PropTypes.string,
     max: PropTypes.number,
-    regs: PropTypes.regexp,
+    regs: PropTypes.any,
     disabled: PropTypes.bool,
 };
 export default InputReg;

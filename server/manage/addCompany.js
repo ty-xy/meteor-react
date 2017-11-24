@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
-// import CreateGroup from '../../imports/schema/group';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
@@ -79,11 +78,12 @@ Meteor.methods({
                 if (res && isAutoChat) {
                     Meteor.call(
                         'createGroup',
-                        { name, members: [] },
+                        { name, members: [], type: 'team' },
                         (err, groupid) => {
                             if (err) {
                                 return false;
                             }
+                            console.log('groupid', groupid);
                             groupId = groupid;
                             newCompany.groupId = groupId;
                             Company.update(
@@ -92,7 +92,12 @@ Meteor.methods({
                                     $set: { 'deps.$': newCompany },
                                 },
                                 (e, r) => {
-                                    console.log('更新穷里奥', e, r);
+                                    if (error) {
+                                        console.log('e', e);
+                                    }
+                                    if (r) {
+                                        console.log('将群聊更新进部门信息', groupid);
+                                    }
                                 },
                             );
                         },
@@ -102,27 +107,50 @@ Meteor.methods({
         );
     },
     // 更新部门
-    editCompanyDep({ companyId, name, id, isAutoChat, admin = '', avatar = '' }) {
+    editCompanyDep({ companyId, name, id, isAutoChat, admin = '', groupId, avatar = '' }) {
         const dep = {
             name,
             isAutoChat,
             admin,
             avatar,
             id,
+            groupId,
         };
         Company.update(
             { _id: companyId, 'deps.id': id },
             {
                 $set: { 'deps.$': dep },
             },
+            (err, result) => {
+                if (err) {
+                    return false;
+                }
+                if (result) {
+                    Meteor.call(
+                        'changeGroupName',
+                        groupId, name,
+                    );
+                }
+            },
         );
     },
-    // delCompanyDep 删除部门
-    delCompanyDep({ companyId, id }) {
+    // delCompanyDep 删除部门， 且删除群聊
+    delCompanyDep({ companyId, id, groupId }) {
         Company.update(
             { _id: companyId },
             {
                 $pull: { deps: { id } },
+            },
+            (err, res) => {
+                if (err) {
+                    return false;
+                }
+                if (res) {
+                    Meteor.call(
+                        'deleteGroup',
+                        groupId,
+                    );
+                }
             },
         );
     },
@@ -160,6 +188,7 @@ Meteor.methods({
             pos,
             name,
         };
+        // console.log('editMember', companyId, member);
         Company.update(
             { _id: companyId, 'members.userId': userId },
             {
