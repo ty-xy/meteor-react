@@ -35,8 +35,11 @@ const UserUtil = {
     getChatList() {
         return UserUtil.getProfile().chatList || [];
     },
-    getCompany() {
+    getMainCompany() {
         return UserUtil.getProfile().mainCompany || '';
+    },
+    getCompanyList() {
+        return UserUtil.getProfile().company || [];
     },
 };
 
@@ -53,6 +56,9 @@ export const userIdToInfo = {
             }
         });
         return res;
+    },
+    getUsername(users, userId) {
+        return userIdToInfo.getProfile(users, userId).username || '';
     },
     getName(users, userId) {
         return userIdToInfo.getProfile(users, userId).name || '';

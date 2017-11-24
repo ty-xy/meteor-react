@@ -13,7 +13,7 @@ const formItemLayout = {
         sm: { span: 14 },
     },
 };
-const MyInput = ({ keyword, label, type, required, defaultValue, placeholder, typeErr, requiredErr, width, form, max, onChange }) => (
+const MyInput = ({ keyword, label, type, required, defaultValue, placeholder, typeErr, requiredErr, width, form, max, disabled, onChange }) => (
     <FormItem
         {...formItemLayout}
         label={label}
@@ -27,7 +27,7 @@ const MyInput = ({ keyword, label, type, required, defaultValue, placeholder, ty
             }],
         })(
             type === 'number' ? (<InputNumber onChange={onChange} max={max} min={0} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }} />)
-                : (<Input placeholder={placeholder} onChange={onChange} style={{ width: width ? `${width}px` : '100%' }} />),
+                : (<Input disabled={disabled} placeholder={placeholder} onChange={onChange} style={{ width: width ? `${width}px` : '100%' }} />),
         )}
     </FormItem>
 );
@@ -44,5 +44,6 @@ MyInput.propTypes = {
     defaultValue: PropTypes.string,
     width: PropTypes.string,
     max: PropTypes.number,
+    disabled: PropTypes.bool,
 };
 export default MyInput;

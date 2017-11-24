@@ -3,49 +3,130 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Col, Row, Button, Table, Icon } from 'antd';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import uuid from 'uuid/v1';
 import { Meteor } from 'meteor/meteor';
 import feedback from '../../../../util/feedback';
-import UserUtil from '../../../../util/user';
+import UserUtil, { userIdToInfo } from '../../../../util/user';
 import Company from '../../../../../imports/schema/company';
-
-
 import MyModel from './component/AddDep';
+import AddMember from './component/AddMember';
 import RightHeader from './component/RightHeader';
+import SettingModel from './component/SettingModel';
+import BatchSetDep from './component/BatchSetDep';
 
 class Organization extends PureComponent {
     static propTypes = {
         company: PropTypes.object,
-        users: PropTypes.Array,
+        users: PropTypes.array,
+        allUsers: PropTypes.array,
     }
     constructor(props) {
         super(props);
         this.state = {
             depActive: '',
             commentModel: false,
+            selectedRows: [],
+            selectedRowKeys: [],
+            users: [],
+            showMenu: true,
         };
     }
+    componentWillReceiveProps(nextProps) {
+        if (!this.state.depActive) {
+            console.log('componentWillReceiveProps');
+            this.setState({ users: nextProps.users });
+        }
+    }
+    // 部门设置model
+    handleSetting = () => {
+        this.setState({
+            depsettingModel: true,
+        });
+    }
+    // 修改部门
+    handleDepSetting = ({ name }, id) => {
+        const companyId = UserUtil.getMainCompany();
+        const { deps } = this.props.company;
+        const _this = this;
+        const visitedDep = deps.filter(item => (item.id === this.state.depActive));
+        console.log('fields', name, id, companyId);
+        Meteor.call(
+            'editCompanyDep',
+            { companyId, ...visitedDep, id, name },
+            (err) => {
+                if (err) {
+                    feedback.dealError('修改失败');
+                    return false;
+                }
+                feedback.successToastFb('修改成功', () => {
+                    _this.setState({ depsettingModel: false });
+                });
+            },
+        );
+    }
+    // 删除部门
+    handleDepDel = (id) => {
+        const companyId = UserUtil.getMainCompany();
+        const { users } = this.props;
+        const _this = this;
+        let isDelete = true;
+        users.forEach((item) => {
+            if (item.id === id) {
+                isDelete = false;
+            }
+        });
+        if (isDelete) {
+            feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该部门吗？', () => {
+                Meteor.call(
+                    'delCompanyDep',
+                    { companyId, id },
+                    (err) => {
+                        if (err) {
+                            feedback.dealError('删除失败');
+                            return false;
+                        }
+                        feedback.successToastFb('删除成功', () => {
+                            _this.setState({ depsettingModel: false });
+                        });
+                    },
+                );
+            });
+        } else {
+            feedback.dealWarning('该部门存在人员， 无法删除，请先移除或删除该部门人员');
+            this.setState({ depsettingModel: false });
+        }
+    }
+    // 左侧dep切换
     handleTabDep = (e, depActive) => {
-        console.log('handleTabDep');
         e.preventDefault();
-        this.setState({ depActive });
+        const { users } = this.props;
+        let res = [];
+        console.log('depActive', depActive, users);
+        res = users.filter(item => (item.dep === depActive));
+        this.setState({ depActive, users: res });
     }
     // 公司部门收起
     showMenu = () => {
         this.setState({ showMenu: !this.state.showMenu });
     }
-    // 添加部门model
-    addDepModel = (bool) => {
-        this.setState({ commentModel: bool });
+    // model 控制
+    modelShowHide = (bool, name, editMemberInfo) => {
+        if (editMemberInfo) {
+            this.setState({ [name]: bool, editMemberInfo: {} });
+        } else {
+            this.setState({ [name]: bool });
+        }
     }
     // 新增部门提交
     postAddDep = (info) => {
         this.setState({
             commentModel: false,
         });
-        const _id = UserUtil.getCompany();
+        const _id = UserUtil.getMainCompany();
+        const id = uuid();
         Meteor.call(
             'addDepartment',
-            { ...info, _id },
+            { ...info, _id, id },
             (err) => {
                 if (err) {
                     feedback.dealError('添加失败');
@@ -54,32 +135,25 @@ class Organization extends PureComponent {
                 feedback.successToast('添加成功');
             },
         );
-        console.log(';info', info);
-    }
-    // handleSetting
-    handleSetting = () => {
-        this.setState({
-            handleSetting: true,
-        });
     }
     // 左侧新增部门
-    addDepCompoennt = () => (
+    addDepModel = () => (
         <div className="e-mg-organization-card text-center e-mg-organization-addDep">
             <div>
-                <i className="iconfont icon-Shape" onClick={() => this.addDepModel(true)} />
-                <p onClick={() => this.addDepModel(true)}>新增部门</p>
+                <i className="iconfont icon-Shape" onClick={() => this.modelShowHide(true, 'commentModel')} />
+                <p onClick={() => this.modelShowHide(true, 'commentModel')}>新增部门</p>
             </div>
             <MyModel
                 title="新增部门"
-                handleResult={this.handleResult}
-                addDepModel={this.addDepModel}
+                addDepModel={this.modelShowHide}
                 postAddDep={this.postAddDep}
-                {...this.state}
+                modelDep={this.state.commentModel}
+                deps={this.props.company.deps || []}
             />
         </div>
     )
-    // 左侧部门选择
-    organizationLeft = (deps, user) => {
+    // 左侧部门列表
+    depList = (deps, user) => {
         const { depActive, showMenu } = this.state;
         const num = {};
         user.forEach((item) => {
@@ -91,9 +165,8 @@ class Organization extends PureComponent {
             }
         });
         deps.forEach((item) => {
-            item.num = num[item.name] || 0;
+            item.num = num[item.id] || 0;
         });
-        console.log('num', deps, user);
         return (
             <div className="e-mg-organization-left-dep margin-top-20">
                 <div className={classnames('e-mg-organization-company', { 'dep-active': depActive === '' })}>
@@ -101,89 +174,250 @@ class Organization extends PureComponent {
                     <i className={classnames('iconfont icon-jiantou-copy', { arrowDown: showMenu })} onClick={this.showMenu} />
                 </div>
                 {
-                    showMenu ? (
-                        <div className="dep">
-                            {
-                                deps.map(item => (<a href="" key={item.name} className={classnames('dep-a', { 'dep-active': depActive === item.name })} onClick={e => this.handleTabDep(e, item.name)}>{item.name} <span>{item.num || 0}</span></a>))
-                            }
-                        </div>
-                    ) : null
+                    <div className={classnames('dep', { 'dep-hide': showMenu })}>
+                        {
+                            deps.map(item => (<a href="" key={item.id} className={classnames('dep-a', { 'dep-active': depActive === item.id })} onClick={e => this.handleTabDep(e, item.id)}>{item.name} <span>{item.num || 0}</span></a>))
+                        }
+                    </div>
                 }
             </div>
         );
     }
     // 操作按钮集合
-    handleBtns = () => {
-        // const { isCompony } = this.state;
-        console.log('handleBtns');
-        return (
-            <div className="handle-btns clearfix">
-                <Button>新增员工</Button>
-                <Button>邀请员工</Button>
-                <Button>调整员工</Button>
-            </div>
+    handleBtns = () => (
+        <div className="handle-btns clearfix">
+            <Button onClick={() => this.modelShowHide(true, 'modelMember')}>新增员工</Button>
+            <Button>邀请员工</Button>
+            <Button onClick={this.depsetBatchDepModel}>调整部门</Button>
+        </div>
+    );
+    // 新增人员提交
+    handleSubmitMember = (res, editMemberInfo) => {
+        const companyId = UserUtil.getMainCompany();
+        const { allUsers, users } = this.props;
+        let isNot = false;
+        let bool = false;
+        const _this = this;
+        users.forEach((item) => {
+            if (userIdToInfo.getUsername(allUsers, item.userId) === res.phone) {
+                isNot = true;
+            }
+        });
+        if (editMemberInfo) {
+            Meteor.call(
+                'editMember',
+                { ...res, userId: editMemberInfo, companyId },
+                (err) => {
+                    if (err) {
+                        feedback.dealError('编辑失败');
+                        return false;
+                    }
+                    feedback.successToastFb('编辑成功', () => {
+                        _this.setState({ modelMember: false, editMember: {} });
+                    });
+                },
+            );
+        } else if (isNot) {
+            feedback.dealWarning('该人员已存在公司中， 请注意查看');
+        } else {
+            allUsers.forEach((item) => {
+                if (item.username === res.phone) {
+                    bool = true;
+                    res.userId = item._id;
+                }
+            });
+            if (bool) {
+                Meteor.call(
+                    'addMember',
+                    { ...res, companyId },
+                    (err) => {
+                        if (err) {
+                            feedback.dealError('添加失败');
+                            return false;
+                        }
+                        feedback.successToastFb('添加成功', () => {
+                            _this.setState({ modelMember: false });
+                        });
+                    },
+                );
+            } else {
+                _this.setState({ modelMember: false });
+                feedback.dealWarning((<p>该成员尚未注册, <span style={{ color: '#108ee9', cursor: 'pointer' }} onClick={_this.modelShowHide(true, 'inviteMember')}>立即邀请</span></p>));
+            }
+        }
+    }
+    // 批量修改提交
+    handleSubmitBatchDep = (fields) => {
+        const { selectedRowKeys } = this.state;
+        const { users } = this.props;
+        const companyId = UserUtil.getMainCompany();
+        const _users = [];
+        users.forEach((item) => {
+            if (selectedRowKeys.indexOf(item.userId) > -1) {
+                item.dep = fields.dep;
+                _users.push(item);
+            }
+        });
+        const _this = this;
+        console.log('_users', _users, fields, selectedRowKeys);
+        Meteor.call(
+            'batchSetDep',
+            { companyId, _users },
+            (err) => {
+                if (err) {
+                    feedback.dealError('批量设置失败');
+                    return false;
+                }
+                feedback.successToastFb('批量设置成功', () => {
+                    _this.setState({ modelBatchDep: false });
+                });
+            },
         );
     }
+    // 部门设置model
+    depsettingModel = () => {
+        const { deps = [] } = this.props.company;
+        const visitedDep = deps.filter(item => (item.id === this.state.depActive));
+        return (
+            <SettingModel
+                modelShowHide={this.modelShowHide}
+                handleSubmitMember={this.handleDepSetting}
+                modelMember={this.state.depsettingModel}
+                data={visitedDep.length ? visitedDep[0] : {}}
+                handleDepDel={this.handleDepDel}
+            />
+        );
+    }
+    // 新增成员renmodel
+    addMembersModel = () => {
+        const { company, allUsers } = this.props;
+        const { editMemberInfo = {} } = this.state;
+        return (
+            <AddMember
+                modelShowHide={this.modelShowHide}
+                handleSubmitMember={this.handleSubmitMember}
+                modelMember={this.state.modelMember}
+                data={company.deps || []}
+                editMemberInfo={editMemberInfo}
+                allUsers={allUsers}
+            />
+        );
+    }
+    // 编辑成员信息
+    editMember = (editMemberInfo) => {
+        editMemberInfo.username = userIdToInfo.getUsername(this.props.allUsers, editMemberInfo.userId);
+        editMemberInfo.name = userIdToInfo.getName(this.props.allUsers, editMemberInfo.userId);
+        this.setState({ editMemberInfo }, () => {
+            this.modelShowHide(true, 'modelMember');
+        });
+    }
+    // 删除成员
+    delCompanyMember = (userId) => {
+        feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
+            const companyId = UserUtil.getMainCompany();
+            Meteor.call(
+                'delCompanyMember',
+                { companyId, userId },
+                (err) => {
+                    if (err) {
+                        feedback.dealError('删除失败');
+                        return false;
+                    }
+                    feedback.successToast('删除成功');
+                },
+            );
+        });
+    }
     // table列表
-    tableList = () => {
-        // const {} = this.state;
-        const columns = [{
-            title: '姓名',
-            dataIndex: 'name',
-        }, {
-            title: '性别',
-            dataIndex: 'sex',
-        }, {
-            title: '职务',
-            dataIndex: 'pos',
-        }, {
-            title: '部门',
-            dataIndex: 'dep',
-        }, {
-            title: '手机号',
-            dataIndex: 'phone',
-        }, {
-            title: '操作',
-            dataIndex: '',
-            render: () => (
-                <span className="">
-                    <i className="iconfont icon-bianji1 margin-right-20" title="编辑" />
-                    <Icon type="close" title="删除" />
-                </span>
-            ),
-        }];
-        const data = [{
-            key: '1',
-            name: 'John Brown',
-            sex: '男',
-            pos: '主管',
-            dep: '财务部',
-            phone: '13478237283',
-        }];
+    tableList = (users) => {
+        const { allUsers } = this.props;
+        const { deps = [] } = this.props.company;
+        const columns = [
+            {
+                title: '姓名',
+                dataIndex: '',
+                render: record => (userIdToInfo.getName(allUsers, record.userId)),
+            }, {
+                title: '职务',
+                dataIndex: 'pos',
+            }, {
+                title: '部门',
+                dataIndex: 'dep',
+                render: (dep) => {
+                    let name = '';
+                    for (let i = 0; i < deps.length; i++) {
+                        if (deps[i].id === dep) {
+                            name = deps[i].name;
+                            break;
+                        }
+                    }
+                    return name;
+                },
+            }, {
+                title: '手机号',
+                dataIndex: '',
+                render: record => (userIdToInfo.getUsername(allUsers, record.userId)),
+            }, {
+                title: '操作',
+                dataIndex: '',
+                render: record => (
+                    <span className="">
+                        <i className="iconfont icon-bianji1 margin-right-20" onClick={() => this.editMember(record)} title="编辑" />
+                        <Icon type="close" title="删除" onClick={() => this.delCompanyMember(record.userId)} />
+                    </span>
+                ),
+            },
+        ];
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                this.setState({ selectedRows, selectedRowKeys });
             },
         };
         return (
-            <Table columns={columns} rowSelection={rowSelection} dataSource={data} pagination={false} />
+            <Table rowKey={record => record.userId} columns={columns} rowSelection={rowSelection} dataSource={users} pagination={false} />
         );
     }
-    render() {
-        console.log('this.props', this.props);
+    // 批量切换部门
+    memberBelongModel = () => {
+        console.log('object');
+        const { allUsers } = this.props;
         const { deps = [] } = this.props.company;
-        const { users = [] } = this.props;
+        return (
+            <BatchSetDep
+                modelShowHide={this.modelShowHide}
+                handleSubmitBatchDep={this.handleSubmitBatchDep}
+                modelMember={this.state.modelBatchDep}
+                data={deps}
+                allUsers={allUsers}
+            />
+        );
+    }
+    // 打开批量设置model
+    depsetBatchDepModel = () => {
+        if (this.state.selectedRowKeys.length) {
+            this.modelShowHide(true, 'modelBatchDep');
+        } else {
+            feedback.dealWarning('至少选择一个成员');
+        }
+    }
+    render() {
+        const { deps = [] } = this.props.company;
+        const data = this.props.users.filter(item => (item.dep === this.state.depActive));
+        console.log('render', this.props, this.state, data);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">
                     <Col span={6} className="e-mg-organization-left">
-                        {this.addDepCompoennt()}
-                        {this.organizationLeft(deps, users)}
+                        {this.addDepModel()}
+                        {this.depList(deps, this.props.users)}
                     </Col>
                     <Col span={18} className="e-mg-organization-card e-mg-organization-right clearfix">
-                        <RightHeader name="中亿集团有限公司" handleSetting={this.handleSetting} />
+                        <RightHeader name="中亿集团有限公司" handleSetting={this.handleSetting} {...this.state} />
                         {this.handleBtns()}
-                        {this.tableList()}
+                        {this.tableList(data)}
+                        {this.addMembersModel()}
+                        {this.memberBelongModel()}
+                        {this.depsettingModel()}
                     </Col>
                 </Row>
             </div>
@@ -193,19 +427,21 @@ class Organization extends PureComponent {
 
 export default withTracker(() => {
     Meteor.subscribe('company');
+    Meteor.subscribe('users');
     const companys = Company.find().fetch();
     let users = [];
     let company = {};
-    const mainCompany = UserUtil.getCompany();
+    const mainCompany = UserUtil.getMainCompany();
     for (let i = 0; i < companys.length; i++) {
         if (companys[i]._id === mainCompany) {
-            users = companys[i].members;
+            users = companys[i].members || [];
             company = companys[i];
             break;
         }
     }
     return {
         users,
+        allUsers: Meteor.users.find().fetch(),
         company,
     };
 })(Organization);

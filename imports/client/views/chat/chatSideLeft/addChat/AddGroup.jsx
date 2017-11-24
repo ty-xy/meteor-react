@@ -67,7 +67,7 @@ class AddGroup extends Component {
             },
             (err, result) => {
                 if (result) {
-                    this.props.changeTo(result, result);
+                    this.props.changeTo(result, result, '', 'message');
                     this.props.handleToggle(result);
                     feedback.dealSuccess('成功创建群聊');
                     this.props.handleAddGroup();

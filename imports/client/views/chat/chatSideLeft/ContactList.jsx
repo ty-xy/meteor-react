@@ -80,7 +80,7 @@ class ContactList extends Component {
             key={index}
             onClick={() => {
                 this.props.handleToggle(notice._id);
-                this.props.handleNewFriend();
+                this.props.handleNewFriend('newFriend');
             }}
         >
             {/* <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} /> */}
@@ -102,7 +102,7 @@ class ContactList extends Component {
             key={index}
             onClick={() => {
                 this.props.handleToggle(user._id);
-                this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id);
+                this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id, '', 'message');
             }}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
@@ -132,7 +132,7 @@ class ContactList extends Component {
     renderGroup = (group, lastMessage, time, type, i, unreadMessage) => (
         <div
             onClick={() => {
-                this.props.changeTo(group._id, group._id);
+                this.props.changeTo(group._id, group._id, '', 'message');
             }}
             key={i}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[group._id] })}

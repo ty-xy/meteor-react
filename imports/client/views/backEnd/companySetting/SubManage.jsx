@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import EditableTable from './EditableTable';
 
-
 class SubManage extends Component {
     render() {
         return (

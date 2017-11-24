@@ -83,7 +83,7 @@ class SearchChat extends Component {
                                                             className="user-item-card"
                                                             key={friend._id}
                                                             onClick={() => {
-                                                                this.props.changeTo(IdUtil.merge(Meteor.userId(), friend._id), friend._id);
+                                                                this.props.changeTo(IdUtil.merge(Meteor.userId(), friend._id), friend._id, '', 'message');
                                                             }}
                                                         >
                                                             <Avatar name={friend.profile.name} avatarColor={friend.profile.avatarColor} avatar={friend.profile.avatar} />
@@ -103,7 +103,7 @@ class SearchChat extends Component {
                                                             className="user-item-card"
                                                             key={group._id}
                                                             onClick={() => {
-                                                                this.props.changeTo(group._id, group._id);
+                                                                this.props.changeTo(group._id, group._id, '', 'message');
                                                             }}
                                                         >
                                                             <Avatar name={group.name} avatar={group.avatar} />
