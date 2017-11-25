@@ -5,11 +5,12 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import AvatarSelf from '../../components/AvatarSelf';
 import SelectBackendTeam from '../../features/SelectBackendTeam';
 import feedback from '../../../util/feedback';
-
+import UserUtil from '../../../util/user';
 
 // import Notice from './Notice';
 
@@ -18,6 +19,9 @@ class Header extends Component {
     static contextTypes = {
         history: PropTypes.object,
         location: PropTypes.object,
+    }
+    static propTypes = {
+        currentCompanyId: PropTypes.string,
     }
     constructor(...args) {
         super(...args);
@@ -52,9 +56,14 @@ class Header extends Component {
         document.removeEventListener('click', this.closeMenu);
     }
     showModal = () => {
-        this.setState({
-            isShowBackend: true,
-        });
+        console.log(333, this.props.currentCompanyId);
+        if (!this.props.currentCompanyId) {
+            this.setState({
+                isShowBackend: true,
+            });
+            return;
+        }
+        this.context.history.push('/companySetting');
     }
     handleCancel = (e) => {
         console.log(e);
@@ -139,4 +148,11 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default withTracker(() => {
+    Meteor.subscribe('company');
+    const currentCompanyId = UserUtil.getCurrentBackendCompany();
+    return {
+        currentCompanyId,
+    };
+})(Header);
+

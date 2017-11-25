@@ -49,7 +49,7 @@ class CompanySetting extends Component {
         }
     }
     render() {
-        const { name, logo, members, deps } = this.props.currentCompany;
+        const { name = '', logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [], deps = [] } = this.props.currentCompany || {};
         return (
             <div className="company-setting">
                 <div className="company-main-page">
