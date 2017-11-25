@@ -143,9 +143,8 @@ class CreateTeam extends Component {
                                 type: 'string', message: '类型为string!',
                             }, {
                                 required: true, message: '团队名称!',
-                            }, {
-                                initialValue: name,
                             }],
+                            initialValue: name,
                         })(
 
                             <Input placeholder="团队名称" />,
@@ -160,9 +159,8 @@ class CreateTeam extends Component {
                                 type: 'string', message: '类型为string!',
                             }, {
                                 required: true, message: '请选择行业类型!',
-                            }, {
-                                initialValue: industryType,
                             }],
+                            initialValue: industryType,
                         })(
                             <Select placeholder="行业类型" >
                                 <Option value="建筑设计">建筑设计</Option>
