@@ -81,7 +81,6 @@ class ProjectBordItem extends Component {
     }
     handleDelete = () => {
         const exsist = this.props.fd[0][this.props.tastBoardId];
-        console.log(exsist);
         if (exsist.length === 0) {
             Meteor.call(
                 'deleteaTaskBoard', this.props.tastBoardId, (err) => {
@@ -186,7 +185,7 @@ class ProjectBordItem extends Component {
                 },
                 // direction: 'horizontal',
             };
-            // console.log(componentBackingInstance);
+            console.log(componentBackingInstance);
             Dragula([componentBackingInstance], options).on('drag', (el, source) => {
                 console.log(el, source);
             })
@@ -232,23 +231,25 @@ class ProjectBordItem extends Component {
                         }
                     } else if (target !== source) {
                         // console.log(sibling.parentNode);
-                        if (el.parentNode === target && sibling !== null) {
+                        if (el.parentNode === target && sibling !== null && sibling.parentNode === target) {
+                            console.log(sibling);
                             current = list[0][target.getAttribute('data-bid')];
                             next = sibling.getAttribute('data-textId');
-
+                            console.trace(sibling);
                             // 获得它INDEX 值
                             nextId = current.indexOf(next);
                             current.splice(nextId, 0, el.getAttribute('data-textId'));
 
                             current = Array.from(new Set(current));
                             console.log(current);
+                            console.log(el.previousSbiling);
                             Meteor.call(
                                 'changeTaskId', target.getAttribute('data-bid'), current,
                                 (err) => {
                                     console.log(err);
                                 },
                             );
-                        } else if (sibling === null && el.parentNode === target) {
+                        } else if (sibling === null && el.parentNode === target && el.previousSbiling.parentNode === target) {
                             current = list[0][target.getAttribute('data-bid')];
                             current.push(el.getAttribute('data-textId'));
                         }
@@ -270,7 +271,7 @@ class ProjectBordItem extends Component {
     }
     renderTasks = () => this.props.o.map((item, index) => this.props.taskg.map((value) => {
         if (value.textId === item) {
-            console.log(item);
+            console.log(item, value.textId);
             return (<MiniCard
                 value={value.name}
                 key={value._id}
@@ -284,14 +285,28 @@ class ProjectBordItem extends Component {
         }
         return null;
     }))
+    // renderTasks = () => {
+    //     this.props.o.map((item, index) => this.props.taskg.map((value) => {
+    //         if (value.textId === item) {
+    //             console.log(item, value.textId);
+    //             return (<MiniCard
+    //                 value={value.name}
+    //                 key={value._id}
+    //                 idIndex={value._id}
+    //                 index={value.taskBoardId}
+    //                 ind={index}
+    //                 textId={value.textId}
+    //                 projectId={this.props.projectId}
+    //                 deleteCard={() => this.handleDeleteTaskL(value.textId)}
+    //             />);
+    //         }
+    //         return null;
+    //     }));
+    // }
     render() {
         const menu = (
             <Menu>
                 <Menu.Item key="0">
-                    {/* {this.state.concern ?
-                        <a onClick={this.handleConcern}>取消关注</a> :
-                        <a onClick={this.handleConcern}>关注</a>
-                    } */}
                     <p onClick={this.handlechangeTitle}>编辑名称</p>
                 </Menu.Item>
                 <Menu.Divider />
@@ -317,9 +332,6 @@ class ProjectBordItem extends Component {
                             {this.state.concern ?
                                 <Icon icon="icon-guanzhu icon icon-eye" /> : null}
                         </Col>
-                        {/* <Col span={3} style={{ textAlign: 'center' }}>
-                            <Icon icon="icon-jiahao icon" />
-                        </Col> */}
                         <Col span={3} style={{ textAlign: 'center' }}>
                             <Dropdown overlay={menu} trigger={['click']}>
                                 <Icon icon="icon-gengduo1 icon" />
@@ -329,7 +341,8 @@ class ProjectBordItem extends Component {
                 </div>
 
                 <div className="container" ref={this.dragulaDecorator} key="7" data-bid={this.props.tastBoardId}>
-                    {this.props.tasksA.length > 0 && this.props.tasksA[0].sortArray ? this.renderTasks() : null}
+                    {this.props.tasksA.length > 0 && this.props.tasksA[0].sortArray ?
+                        this.renderTasks() : null}
                 </div>
 
                 {this.state.IsShowList ?
