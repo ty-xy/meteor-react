@@ -59,33 +59,39 @@ class SelectMembers extends Component {
         console.log('focus');
     }
     toggleKeyToUsers = () => this.state.checkedKeys.map((selectId) => {
-        const user = this.state.chooseUsers.find(x => x._id === selectId);
+        const user = Meteor.users.findOne({ _id: selectId }, { fields: fields.searchAllUser });
         return user;
     })
     dealSelectedData = (value) => {
         const selectedOption = this.props.team.filter(x => x.name === value)[0];
         // 如果是存在部门
-        if (selectedOption.department) {
-            const currentDepartment = selectedOption.department;
-            currentDepartment.forEach((x) => {
-                x.user = x.members.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
-            });
-            const currentDepartments = currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={item.name} dataRef={item}>
-                {this.renderTreeNodes(item.user)}
-            </TreeNode>));
-            const currentMembers = selectedOption.members;
-            const chooseUsers = currentMembers.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
-            const notDepartmentMembers = this.renderTreeNodes(chooseUsers);
-            return [...currentDepartments, ...notDepartmentMembers];
+        if (selectedOption.department.length) {
+            if (selectedOption.members.length) {
+                return [
+                    this.renderDepartments(selectedOption.department),
+                    this.renderUsers(selectedOption.members),
+                ];
+            }
+            return this.renderDepartments(selectedOption.department);
         }
         // 没有部门的情况
         if (selectedOption && selectedOption.members && selectedOption.members.length > 0) {
-            const currentMembers = selectedOption.members;
-            const chooseUsers = currentMembers.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
-            return this.renderTreeNodes(chooseUsers);
+            return this.renderUsers(selectedOption.members);
         }
         // 部门和没有部门的情况都存在
         console.log('该分组没有好友');
+    }
+    renderUsers = (currentMembers) => {
+        const chooseUsers = currentMembers.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+        return this.renderTreeNodes(chooseUsers);
+    }
+    renderDepartments = (currentDepartment) => {
+        currentDepartment.forEach((x) => {
+            x.user = x.members.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+        });
+        return currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={item.name} dataRef={item}>
+            {this.renderTreeNodes(item.user)}
+        </TreeNode>));
     }
     renderUserTitle = profile => (
         <div className="team-node user-info">
@@ -129,7 +135,7 @@ class SelectMembers extends Component {
                     <div className="selected-avatar">
                         {
                             selectedUsers[0] && selectedUsers.map(user => (
-                                user ?
+                                user && user.profile ?
                                     <Avatar key={user._id} avatarColor={user.profile && user.profile.avatarColor} name={user.profile && user.profile.name} avatar={user.profile && user.profile.avatar} />
                                     :
                                     null

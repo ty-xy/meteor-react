@@ -253,6 +253,7 @@ export default Form.create({})(
             {
                 name: 'e建联好友',
                 members: friendIds,
+                department: [],
             },
             {
                 name: '知工网络科技有限公司',
