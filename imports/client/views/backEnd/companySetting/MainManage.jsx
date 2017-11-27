@@ -69,10 +69,16 @@ class MainManage extends Component {
                             label="主管理员"
                             {...formItemLayout}
                         >
-                            <div className="upload-team-avatar">
-                                <Avatar avatar={adminInfo && adminInfo.avatar} name={adminInfo && adminInfo.name} avatarColor={adminInfo && adminInfo.avatarColor} />
-                                <p className="edit-avatar" onClick={this.showModal}>更改</p>
-                            </div>
+                            {
+                                adminInfo && adminInfo.name ?
+                                    <div className="upload-team-avatar">
+                                        <Avatar avatar={adminInfo && adminInfo.avatar} name={adminInfo && adminInfo.name} avatarColor={adminInfo && adminInfo.avatarColor} />
+                                        <p className="edit-avatar" onClick={this.showModal}>更改</p>
+                                    </div>
+                                    :
+                                    null
+                            }
+
                         </FormItem>
                         <FormItem
                             label="手机号"
@@ -137,7 +143,8 @@ export default Form.create({})(
         Meteor.subscribe('users');
         const currentCompanyId = UserUtil.getCurrentBackendCompany();
         const currentCompany = Company.findOne({ _id: currentCompanyId });
-        currentCompany.adminInfo = Meteor.users.findOne({ _id: currentCompany.admin }, { fields: fields.searchAllUser }).profile || {};
+        const currentAdmin = Meteor.users.findOne({ _id: currentCompany.admin }, { fields: fields.searchAllUser });
+        currentCompany.adminInfo = currentAdmin ? currentAdmin.profile : {};
         const members = [];
         for (const value of Object.values(currentCompany.members)) {
             members.push(value.userId);
