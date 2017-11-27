@@ -255,8 +255,24 @@ export default Form.create({})(
                 members: friendIds,
             },
             {
-                name: '测试',
-                members: [],
+                name: '知工网络科技有限公司',
+                members: ['9A8GrFpDd8TyhCAPs'],
+                department: [
+                    {
+                        name: '技术部',
+                        members: [
+                            // 成员
+                            'kfFea3wBriB48DPpM',
+                        ],
+                    },
+                    {
+                        name: '产品部',
+                        members: [
+                            // 成员
+                            'Agvq9dmbsXNFtBcwi',
+                        ],
+                    },
+                ],
             },
         ];
         return {

@@ -26,6 +26,7 @@ class SelectMembers extends Component {
             checkedKeys: [],
             selectedKeys: [],
             chooseUsers: [],
+            selectedTitle: this.props.team[0].name || '',
         };
     }
     onExpand = (expandedKeys) => {
@@ -47,17 +48,9 @@ class SelectMembers extends Component {
     }
     handleChange = (value) => {
         console.log(`selected ${value}`);
-        // Meteor.subscribe('users');
-        const selectedOption = this.props.team.filter(x => x.name === value)[0];
-        if (selectedOption && selectedOption.members && selectedOption.members.length > 0) {
-            const currentMembers = selectedOption.members;
-            const chooseUsers = currentMembers.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
-            this.setState({
-                chooseUsers,
-            });
-        } else {
-            console.log('该分组没有好友');
-        }
+        this.setState({
+            selectedTitle: value,
+        });
     }
     handleBlur = () => {
         console.log('blur');
@@ -69,6 +62,40 @@ class SelectMembers extends Component {
         const user = this.state.chooseUsers.find(x => x._id === selectId);
         return user;
     })
+    dealSelectedData = (value) => {
+        const selectedOption = this.props.team.filter(x => x.name === value)[0];
+        // 如果是部门
+        if (selectedOption.department) {
+            const currentDepartment = selectedOption.department;
+            currentDepartment.forEach((x) => {
+                x.user = x.members.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+            });
+
+            // if (selectedOption.members) {
+            //     const currentMembers = selectedOption.members;
+            //     const chooseUsers = currentMembers.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+            //     return (<div>
+            //         {
+            //             currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={item.name} dataRef={item}>
+            //                 {this.renderTreeNodes(item.user)}
+            //             </TreeNode>))
+            //         }
+            //         {this.renderTreeNodes(chooseUsers)}
+            //     </div>);
+            // }
+            return currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={item.name} dataRef={item}>
+                {this.renderTreeNodes(item.user)}
+            </TreeNode>));
+        }
+        // 没有部门的情况
+        if (selectedOption && selectedOption.members && selectedOption.members.length > 0) {
+            const currentMembers = selectedOption.members;
+            const chooseUsers = currentMembers.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+            return this.renderTreeNodes(chooseUsers);
+        }
+        // 部门和没有部门的情况都存在
+        console.log('该分组没有好友');
+    }
     renderUserTitle = profile => (
         <div className="team-node user-info">
             <Avatar avatarColor={profile.avatarColor} name={profile.name} avatar={profile.avatar} />
@@ -76,16 +103,9 @@ class SelectMembers extends Component {
         </div>
     )
     renderDevTitle = () => <span className="team-tree-title">商务部(12)</span>
-    renderTreeNodes = data => data.map((item) => {
-        if (item && item.company) {
-            return (
-                <TreeNode title={item.title} key={item.key} dataRef={item}>
-                    {this.renderTreeNodes(item.children)}
-                </TreeNode>
-            );
-        }
-        return <TreeNode title={this.renderUserTitle(item.profile)} key={item._id} />;
-    },
+    renderTreeNodes = data => data.map(item =>
+        <TreeNode title={this.renderUserTitle(item.profile)} key={item._id} />
+        ,
     )
     render() {
         const selectedUsers = this.toggleKeyToUsers();
@@ -94,7 +114,7 @@ class SelectMembers extends Component {
                 <Select
                     showSearch
                     style={{ width: 400 }}
-                    // defaultValue="e建联好友"
+                    defaultValue={this.props.team[0].name}
                     placeholder="Select a person"
                     optionFilterProp="children"
                     onChange={this.handleChange}
@@ -115,7 +135,7 @@ class SelectMembers extends Component {
                         onCheck={this.onCheck}
                         checkedKeys={this.state.checkedKeys}
                     >
-                        {this.renderTreeNodes(this.state.chooseUsers)}
+                        {this.dealSelectedData(this.state.selectedTitle)}
                     </Tree>
                     <div className="selected-avatar">
                         {
