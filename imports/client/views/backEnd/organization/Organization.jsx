@@ -352,21 +352,32 @@ class Organization extends PureComponent {
         });
     }
     // 删除成员
-    delCompanyMember = (userId) => {
-        feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
-            const companyId = UserUtil.getCurrentBackendCompany();
-            Meteor.call(
-                'delCompanyMember',
-                { companyId, userId },
-                (err) => {
-                    if (err) {
-                        feedback.dealError('删除失败');
-                        return false;
-                    }
-                    feedback.successToast('删除成功');
-                },
-            );
+    delCompanyMember = (userId, record) => {
+        const { deps = [] } = this.props.company;
+        let groupId = '';
+        deps.forEach((item) => {
+            if (item.id === record.dep) {
+                groupId = item.groupId;
+            }
         });
+        if (userId === Meteor.user()._id) {
+            feedback.dealWarning('无法删除自己');
+        } else {
+            feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
+                const companyId = UserUtil.getCurrentBackendCompany();
+                Meteor.call(
+                    'delCompanyMember',
+                    { companyId, userId, groupId },
+                    (err) => {
+                        if (err) {
+                            feedback.dealError('删除失败');
+                            return false;
+                        }
+                        feedback.successToast('删除成功');
+                    },
+                );
+            });
+        }
     }
     // table列表
     tableList = (users) => {
@@ -403,7 +414,7 @@ class Organization extends PureComponent {
                 render: record => (
                     <span className="">
                         <i className="iconfont icon-bianji1 margin-right-20" onClick={() => this.editMember(record)} title="编辑" />
-                        <Icon type="close" title="删除" onClick={() => this.delCompanyMember(record.userId)} />
+                        <Icon type="close" title="删除" onClick={() => this.delCompanyMember(record.userId, record)} />
                     </span>
                 ),
             },

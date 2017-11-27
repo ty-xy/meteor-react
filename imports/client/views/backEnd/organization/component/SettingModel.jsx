@@ -36,7 +36,7 @@ class AddMembers extends PureComponent {
     // 取消
     handleCancel = () => {
         this.props.form.resetFields();
-        this.props.modelShowHide(false, 'settingModel');
+        this.props.modelShowHide(false, 'depsettingModel');
     }
     handleInput = (e, name) => {
         if (name === 'checkout') {

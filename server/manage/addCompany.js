@@ -250,11 +250,19 @@ Meteor.methods({
         );
     },
     // 删除人员
-    delCompanyMember({ companyId, userId }) {
+    delCompanyMember({ companyId, userId, groupId }) {
         Company.update(
             { _id: companyId },
             {
                 $pull: { members: { userId } },
+            },
+            (err, res) => {
+                if (res) {
+                    Meteor.call(
+                        'deleteMember',
+                        groupId, userId,
+                    );
+                }
             },
         );
     },
