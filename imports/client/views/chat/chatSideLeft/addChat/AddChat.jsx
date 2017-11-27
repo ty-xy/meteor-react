@@ -30,11 +30,11 @@ class AddChat extends Component {
         });
         document.addEventListener('click', this.closeMenu);
     }
-    closeMenu = (e) => {
+    closeMenu = () => {
         this.setState({
             isShowAddTooltip: false,
         });
-        e.stopProPagation();
+        // e.stopProPagation();
         document.removeEventListener('click', this.closeMenu);
     }
     handleAddFriend = () => {
