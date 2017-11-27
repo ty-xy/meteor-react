@@ -265,7 +265,7 @@ class Organization extends PureComponent {
     }
     // 批量修改提交
     handleSubmitBatchDep = (fields) => {
-        const { selectedRowKeys } = this.state;
+        const { selectedRowKeys, depActive } = this.state;
         const { users } = this.props;
         const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
         const _users = [];
@@ -276,7 +276,7 @@ class Organization extends PureComponent {
             }
         });
         const _this = this;
-        console.log('_users', _users, fields, selectedRowKeys);
+        console.log('_users', _users, fields, selectedRowKeys, depActive);
         Meteor.call(
             'batchSetDep',
             { companyId, _users },
