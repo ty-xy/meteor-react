@@ -13,6 +13,13 @@ const TreeNode = Tree.TreeNode;
 
 class SelectMembers extends Component {
     static propTypes = {
+        // teams: [
+        //     {
+        //         name: '', // 团队的名称
+        //         members: [], // 该团队下的人员
+        //     },
+        // ],
+        // isRadio: 单选还是多选
         chooseUsers: PropTypes.array.isRequired, // 需要选择的人员
         confirmSelected: PropTypes.func.isRequired, // 选择完成后的函数,函数的参数为选中的人员ID
     }
