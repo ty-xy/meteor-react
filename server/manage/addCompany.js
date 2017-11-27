@@ -68,6 +68,26 @@ Meteor.methods({
             },
         );
     },
+    // 添加子管理员
+    addSubAdmin(companyId, subManageId) {
+        Company.update(
+            { _id: companyId },
+            {
+                $push: {
+                    subAdmin: subManageId,
+                },
+            },
+        );
+    },
+    // 删除子管理员
+    deleteSubAdmin(companyId, subManageId) {
+        Company.update(
+            { _id: companyId },
+            {
+                $pull: { subAdmin: { subManageId } },
+            },
+        );
+    },
     // 创建部门且创建群聊
     addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '' }) {
         const newCompany = {

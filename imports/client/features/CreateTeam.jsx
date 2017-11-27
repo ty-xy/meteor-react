@@ -11,6 +11,7 @@ import Icon from '../components/Icon';
 // import AddGroup from '../views/chat/chatSideLeft/addChat/AddGroup';
 import SelectMembers from '../features/SelectMembers';
 import Company from '../../schema/company';
+import UserUtil from '../../util/user';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -44,6 +45,7 @@ class CreateTeam extends Component {
         isShowAdd: PropTypes.bool, // 是否显示添加人员
         handleSubmit: PropTypes.func.isRequired, // 点击确定的回调函数
         currentCompany: PropTypes.object, // 如果是修改信息部分,为前所选公司信息
+        team: PropTypes.array,
     }
     constructor() {
         super();
@@ -228,6 +230,8 @@ class CreateTeam extends Component {
                         >
                             <SelectMembers
                                 confirmSelected={this.confirmSelected}
+                                team={this.props.team}
+
                             />
                         </Modal>
                         :
@@ -242,9 +246,22 @@ class CreateTeam extends Component {
 export default Form.create({})(
     withTracker(({ currentCompanyId }) => {
         Meteor.subscribe('company');
+        Meteor.subscribe('users');
         const currentCompany = Company.findOne({ _id: currentCompanyId });
+        const friendIds = UserUtil.getFriends();
+        const team = [
+            {
+                name: 'e建联好友',
+                members: friendIds,
+            },
+            {
+                name: '测试',
+                members: [],
+            },
+        ];
         return {
             currentCompany,
+            team,
         };
     })(CreateTeam),
 );

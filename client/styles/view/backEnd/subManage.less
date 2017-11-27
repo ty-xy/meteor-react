@@ -1,0 +1,38 @@
+@import '../util/util.less';
+.company-sub-manage-set {
+    .sub-manage-table {
+        .sub-manage-table-title {
+            padding: 20px;
+            .ant-btn {
+                background-color: @mainColor !important;
+                border-color: @mainColor !important;
+                color: #fff;
+            }
+        }
+        th, td{
+            // justify-content: space-between;
+            text-align: center;
+            width: 50%;
+            .search-all-user {
+                margin: 0 auto;
+                width: 20%;
+                display: flex;
+                // & > .avatar {
+                //     width: 32px;
+                //     height: 32px;
+                //     line-height: 32px;
+                //     font-size: 10px;
+                // }
+                .icon {
+                    font-size: 25px !important;
+                    margin-top: 8px;
+                    display: block;
+                }
+                & > p {
+                    margin-top: 15px;
+                    margin-left: 10px;
+                }
+            }
+        }
+    }
+}
