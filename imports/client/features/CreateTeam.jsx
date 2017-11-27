@@ -257,7 +257,7 @@ export default Form.create({})(
             },
             {
                 name: '知工网络科技有限公司',
-                members: ['9A8GrFpDd8TyhCAPs'],
+                members: ['9A8GrFpDd8TyhCAPs', 'kfFea3wBriB48DPpM', 'Agvq9dmbsXNFtBcwi'],
                 department: [
                     {
                         name: '技术部',

@@ -25,6 +25,7 @@ class SelectMembers extends Component {
             autoExpandParent: true,
             checkedKeys: [],
             selectedKeys: [],
+            allKeys: {}, // 不能有同名群组
             chooseUsers: [],
             selectedTitle: this.props.team[0].name || '',
         };
@@ -40,23 +41,62 @@ class SelectMembers extends Component {
     }
     onCheck = (checkedKeys) => {
         console.log('onCheck', checkedKeys);
-        this.setState({ checkedKeys });
-    }
-    onSelect = (selectedKeys, info) => {
-        console.log('onSelect', info);
-        this.setState({ selectedKeys });
+        const newAllKeys = JSON.parse(JSON.stringify(this.state.allKeys));
+        const oldSlectedTitleCheckedKeys = newAllKeys[this.state.selectedTitle] || [];
+        const addedKeys = [];
+        const deletedKeys = [];
+        for (const key of oldSlectedTitleCheckedKeys) {
+            if (!checkedKeys.includes(key)) {
+                deletedKeys.push(key);
+            }
+        }
+        for (const key of checkedKeys) {
+            if (!/^\$\$/.test(key) && !oldSlectedTitleCheckedKeys.includes(key)) {
+                addedKeys.push(key);
+            }
+        }
+        for (const key of addedKeys) {
+            for (const team of this.props.team) {
+                if (team.name === this.state.selectedTitle) {
+                    newAllKeys[team.name] = newAllKeys[team.name] || [];
+                    newAllKeys[team.name].push(key);
+                } else if (team.name !== this.state.selectedTitle && team.members.includes(key)) {
+                    newAllKeys[team.name] = newAllKeys[team.name] || [];
+                    newAllKeys[team.name].push(key);
+                }
+            }
+        }
+        for (const key of deletedKeys) {
+            for (const team of this.props.team) {
+                if (team.name === this.state.selectedKeys) {
+                    newAllKeys[team.name] = newAllKeys[team.name] || [];
+                    const index = newAllKeys[team.name].indexOf(key);
+                    if (index !== -1) {
+                        newAllKeys[team.name].splice(index, 1);
+                    }
+                } else if (team.name !== this.state.selectedKeys && team.members.includes(key)) {
+                    newAllKeys[team.name] = newAllKeys[team.name] || [];
+                    const index = newAllKeys[team.name].indexOf(key);
+                    if (index !== -1) {
+                        newAllKeys[team.name].splice(index, 1);
+                    }
+                }
+            }
+        }
+        let keys = [];
+        for (const title of Object.keys(newAllKeys)) {
+            keys.push(...newAllKeys[title]);
+        }
+        keys = keys.filter((x, i) => keys.indexOf(x) === i); // 去重
+        this.setState({ checkedKeys: keys, allKeys: newAllKeys });
     }
     handleChange = (value) => {
         console.log(`selected ${value}`);
+        const newCheckedKeys = JSON.parse(JSON.stringify(this.state.checkedKeys));
         this.setState({
             selectedTitle: value,
+            checkedKeys: newCheckedKeys,
         });
-    }
-    handleBlur = () => {
-        console.log('blur');
-    }
-    handleFocus = () => {
-        console.log('focus');
     }
     toggleKeyToUsers = () => this.state.checkedKeys.map((selectId) => {
         const user = Meteor.users.findOne({ _id: selectId }, { fields: fields.searchAllUser });
@@ -67,9 +107,15 @@ class SelectMembers extends Component {
         // 如果是存在部门
         if (selectedOption.department.length) {
             if (selectedOption.members.length) {
+                const members = [];
+                for (const department of selectedOption.department) {
+                    for (const member of department.members) {
+                        members.push(member);
+                    }
+                }
                 return [
                     this.renderDepartments(selectedOption.department),
-                    this.renderUsers(selectedOption.members),
+                    this.renderUsers(selectedOption.members.filter(x => members.indexOf(x) === -1)),
                 ];
             }
             return this.renderDepartments(selectedOption.department);
@@ -89,7 +135,7 @@ class SelectMembers extends Component {
         currentDepartment.forEach((x) => {
             x.user = x.members.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
         });
-        return currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={item.name} dataRef={item}>
+        return currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={`$$${item.name}`} dataRef={item}>
             {this.renderTreeNodes(item.user)}
         </TreeNode>));
     }
@@ -103,6 +149,7 @@ class SelectMembers extends Component {
         <TreeNode title={this.renderUserTitle(item.profile)} key={item._id} />,
     )
     render() {
+        console.log(this.state.checkedKeys, this.state.allKeys);
         const selectedUsers = this.toggleKeyToUsers();
         return (
             <div className="select-members">
