@@ -3,10 +3,16 @@ import classnames from 'classnames';
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { Modal } from 'antd';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+
 import AvatarSelf from '../../components/AvatarSelf';
+import SelectBackendTeam from '../../features/SelectBackendTeam';
+import feedback from '../../../util/feedback';
+import UserUtil from '../../../util/user';
 
 // import Notice from './Notice';
-
 
 @pureRender
 class Header extends Component {
@@ -14,11 +20,16 @@ class Header extends Component {
         history: PropTypes.object,
         location: PropTypes.object,
     }
+    static propTypes = {
+        currentCompanyId: PropTypes.string,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
             isShowNotice: false,
             isShowAccount: false,
+            isShowBackend: false,
+            value: 1,
         };
     }
     handleClick = () => {
@@ -38,14 +49,36 @@ class Header extends Component {
     handleLogin = () => {
         this.context.history.push('/login');
     }
-    handleBackEnd = () => {
-        this.context.history.push('/companySetting');
-    }
     closeMenu = () => {
         this.setState({
             isShowAccount: false,
         });
         document.removeEventListener('click', this.closeMenu);
+    }
+    showModal = () => {
+        console.log(333, this.props.currentCompanyId);
+        if (!this.props.currentCompanyId) {
+            this.setState({
+                isShowBackend: true,
+            });
+            return;
+        }
+        this.context.history.push('/companySetting');
+    }
+    handleCancel = (e) => {
+        console.log(e);
+        this.setState({
+            isShowBackend: false,
+        });
+    }
+    selectBackendTeam = (companyId) => {
+        Meteor.call('selectBackendTeam', companyId, (error) => {
+            if (error) {
+                feedback.dealError(error);
+            }
+            feedback.successToast('选择成功');
+            this.context.history.push('/companySetting');
+        });
     }
     render() {
         return (
@@ -82,7 +115,7 @@ class Header extends Component {
                             <p className="icon-notice-redDot" />
                             <i className="iconfont icon-ejianlain-notice icon-tongzhi" />
                         </li>
-                        <li onClick={this.handleBackEnd}>
+                        <li onClick={this.showModal}>
                             <i className="iconfont icon-ejianlain-pc icon-diannao" />
                         </li>
                         <li className="admin-account" onClick={this.handleShowAccount}>
@@ -99,10 +132,27 @@ class Header extends Component {
                         <li onClick={this.handleLogin}>退出登录</li>
                     </ul>
                 </div>
+                <Modal
+                    title="选择团队"
+                    visible={this.state.isShowBackend}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                    wrapClassName="create-team-mask"
+                    footer={null}
+                >
+                    <SelectBackendTeam selectBackendTeam={this.selectBackendTeam} />
+                </Modal>
                 {/* <Notice style={{ display: this.state.isShowNotice ? 'block' : 'none' }} handleNotice={this.handleClick} /> */}
             </div>
         );
     }
 }
 
-export default Header;
+export default withTracker(() => {
+    Meteor.subscribe('company');
+    const currentCompanyId = UserUtil.getCurrentBackendCompany();
+    return {
+        currentCompanyId,
+    };
+})(Header);
+
