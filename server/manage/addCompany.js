@@ -69,7 +69,7 @@ Meteor.methods({
         );
     },
     // 创建部门且创建群聊
-    addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '' }) {
+    addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '', members }) {
         const newCompany = {
             id,
             name,
@@ -87,12 +87,11 @@ Meteor.methods({
                 if (res && isAutoChat) {
                     Meteor.call(
                         'createGroup',
-                        { name, members: [], type: 'team' },
+                        { name, members, type: 'team' },
                         (err, groupid) => {
                             if (err) {
                                 return false;
                             }
-                            console.log('groupid', groupid);
                             groupId = groupid;
                             newCompany.groupId = groupId;
                             Company.update(

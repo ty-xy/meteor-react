@@ -49,7 +49,6 @@ class Organization extends PureComponent {
         const { deps } = this.props.company;
         const _this = this;
         const visitedDep = deps.filter(item => (item.id === this.state.depActive));
-        console.log('fields', { companyId, ...visitedDep, id, name });
         const DEV = visitedDep.length ? visitedDep[0] : {};
         Meteor.call(
             'editCompanyDep',
@@ -119,17 +118,18 @@ class Organization extends PureComponent {
             this.setState({ [name]: bool });
         }
     }
-    // 新增部门提交
+    // 创建部门提交
     postAddDep = (info) => {
         this.setState({
             commentModel: false,
         });
-        // const _id = UserUtil.getMainCompany();
-        const _id = 'ar9bP7gagx9vNqSRu';
+        const _id = UserUtil.getCurrentBackendCompany();
+        const members = [];
+        members.push(Meteor.user()._id);
         const id = uuid();
         Meteor.call(
             'addDepartment',
-            { ...info, _id, id },
+            { ...info, _id, id, members },
             (err, result) => {
                 console.log('postAddDep', result);
                 if (err) {
