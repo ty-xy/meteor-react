@@ -45,7 +45,7 @@ class Organization extends PureComponent {
     }
     // 修改部门
     handleDepSetting = ({ name }, id) => {
-        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+        const companyId = UserUtil.getCurrentBackendCompany();
         const { deps } = this.props.company;
         const _this = this;
         const visitedDep = deps.filter(item => (item.id === this.state.depActive));
@@ -67,7 +67,7 @@ class Organization extends PureComponent {
     }
     // 删除部门
     handleDepDel = (id, groupId, isAutoChat) => {
-        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+        const companyId = UserUtil.getCurrentBackendCompany();
         const { users } = this.props;
         const _this = this;
         let isDelete = true;
@@ -198,7 +198,7 @@ class Organization extends PureComponent {
     );
     // 新增人员提交
     handleSubmitMember = (res, editMemberInfo, oldgroup) => {
-        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+        const companyId = UserUtil.getCurrentBackendCompany();
         const { allUsers, users, company } = this.props;
         let isNot = false;
         let bool = false;
@@ -265,10 +265,20 @@ class Organization extends PureComponent {
     }
     // 批量修改提交
     handleSubmitBatchDep = (fields) => {
-        const { selectedRowKeys, depActive } = this.state;
-        const { users } = this.props;
-        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+        const { selectedRowKeys } = this.state;
+        const { users, company } = this.props;
+        const companyId = UserUtil.getCurrentBackendCompany();
         const _users = [];
+        let oldgroup = '';
+        let groupId = '';
+        company.deps.forEach((item) => {
+            if (item.id === users[0].dep) {
+                oldgroup = item.groupId;
+            }
+            if (item.id === fields.dep) {
+                groupId = item.groupId;
+            }
+        });
         users.forEach((item) => {
             if (selectedRowKeys.indexOf(item.userId) > -1) {
                 item.dep = fields.dep;
@@ -276,10 +286,10 @@ class Organization extends PureComponent {
             }
         });
         const _this = this;
-        console.log('_users', _users, fields, selectedRowKeys, depActive);
+        console.log('_users', _users, fields, selectedRowKeys, groupId, oldgroup);
         Meteor.call(
             'batchSetDep',
-            { companyId, _users },
+            { companyId, _users, groupId, oldgroup },
             (err) => {
                 if (err) {
                     feedback.dealError('批量设置失败');
@@ -344,7 +354,7 @@ class Organization extends PureComponent {
     // 删除成员
     delCompanyMember = (userId) => {
         feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
-            const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+            const companyId = UserUtil.getCurrentBackendCompany();
             Meteor.call(
                 'delCompanyMember',
                 { companyId, userId },
@@ -467,7 +477,7 @@ export default withTracker(() => {
     const companys = Company.find().fetch();
     let users = [];
     let company = {};
-    const mainCompany = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+    const mainCompany = UserUtil.getCurrentBackendCompany();
     for (let i = 0; i < companys.length; i++) {
         if (companys[i]._id === mainCompany) {
             users = companys[i].members || [];

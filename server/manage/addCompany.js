@@ -164,12 +164,31 @@ Meteor.methods({
         );
     },
     // 批量设置部门人员
-    batchSetDep({ companyId, _users }) {
+    batchSetDep({ companyId, _users, groupId, oldgroup }) {
         _users.forEach((item) => {
             Company.update(
                 { _id: companyId, 'members.userId': item.userId },
                 {
                     $set: { 'members.$': item },
+                },
+                (err, res) => {
+                    if (res && item.dep) {
+                        Meteor.call(
+                            'deleteMember',
+                            oldgroup, item.userId,
+                            (e) => {
+                                if (!e) {
+                                    Meteor.call(
+                                        'addGroupMembers',
+                                        {
+                                            groupId,
+                                            newMembers: [item.userId],
+                                        },
+                                    );
+                                }
+                            },
+                        );
+                    }
                 },
             );
         });
