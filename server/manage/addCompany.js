@@ -24,7 +24,7 @@ Meteor.methods({
                     $push: {
                         'profile.company': companyId,
                         'profile.chatList': {
-                            type: 'team',
+                            type: 'group',
                             companyId,
                             time: new Date(),
                         },
@@ -32,6 +32,15 @@ Meteor.methods({
                 },
             )
         ));
+        // 是我创建的需要在createdCompany里添加
+        Meteor.users.update(
+            { _id: Meteor.userId() },
+            {
+                $push: {
+                    'profile.createdCompany': companyId,
+                },
+            },
+        );
         return companyId;
     },
     // 修改公司/团队信息
@@ -249,11 +258,42 @@ Meteor.methods({
 
             })
         ));
+        // 在公司列表中删除
         Company.remove({
             _id: companyId,
         });
+        Meteor.users.update(
+            { _id: Meteor.userId() },
+            {
+                $pull: {
+                    'profile.createdCompany': companyId,
+                },
+            },
+        );
         // Messages.remove({
         //     to: groupId,
         // });
+    },
+    // 选择后台的当前公司
+    selectBackendTeam(companyId) {
+        Meteor.users.update(
+            { _id: Meteor.userId() },
+            {
+                $set: {
+                    'profile.currentBackendCompany': companyId,
+                },
+            },
+        );
+    },
+    // 安全退出后台
+    quitBackendTeam() {
+        Meteor.users.update(
+            { _id: Meteor.userId() },
+            {
+                $set: {
+                    'profile.currentBackendCompany': '',
+                },
+            },
+        );
     },
 });

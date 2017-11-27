@@ -8,6 +8,7 @@ import CreateTeam from '../../../features/CreateTeam';
 import Avatar from '../../../components/Avatar';
 import UserUtil from '../../../../util/user';
 import Company from '../../../../schema/company';
+import feedback from '../../../../util/feedback';
 
 const SubMenu = Menu.SubMenu;
 class TeamList extends Component {
@@ -39,6 +40,16 @@ class TeamList extends Component {
             visible: false,
         });
     }
+    handleCreateTeam = (formValues) => {
+        Meteor.call('createCompany', formValues, (error, result) => {
+            feedback.dealError(error);
+            if (result) {
+                feedback.dealSuccess('创建成功');
+                this.handleCancel();
+            }
+        });
+    }
+    // renderSubMenu =
     renderTeamTitle = (name, logo, membersLength) => <div className="team-title"><Avatar name="企业" avatarColor="red" avatar={logo} /><p>{name}({membersLength})</p></div>
     render() {
         console.log(this.props.companyList);
@@ -55,7 +66,10 @@ class TeamList extends Component {
                     wrapClassName="create-team-mask"
                     footer={null}
                 >
-                    <CreateTeam isShowAdd handleCancel={this.handleCancel} />
+                    <CreateTeam
+                        isShowAdd
+                        handleSubmit={this.handleCreateTeam}
+                    />
                 </Modal>
                 <div className="team-organization">
                     <Menu
@@ -88,10 +102,8 @@ class TeamList extends Component {
 }
 
 export default withTracker(() => {
-    Meteor.subscribe('users');
     Meteor.subscribe('company');
     const companyIds = UserUtil.getCompanyList();
-    console.log(companyIds);
     const companyList = companyIds.map(_id =>
         Company.findOne({ _id }),
     );

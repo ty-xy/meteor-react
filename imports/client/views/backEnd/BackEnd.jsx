@@ -4,6 +4,9 @@ import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Button, Tooltip, Icon } from 'antd';
+import { Meteor } from 'meteor/meteor';
+
+import feedback from '../../../util/feedback';
 
 const text = <span>帮助</span>;
 
@@ -16,8 +19,15 @@ class BackEnd extends Component {
     clickTab = (path) => {
         this.context.history.push(path);
     }
-    handleBackEnd = () => {
-        this.context.history.back();
+    // 退出当前后台
+    quitBackend = () => {
+        this.context.history.push('/chat');
+        Meteor.call('quitBackendTeam', (error, result) => {
+            feedback.dealError(error);
+            if (result) {
+                feedback.dealSuccess('退出成功');
+            }
+        });
     }
     render() {
         return (
@@ -59,7 +69,7 @@ class BackEnd extends Component {
                             </Tooltip>
                         </li>
                         <li >
-                            <Button>安全退出</Button>
+                            <Button onClick={this.quitBackend}>安全退出</Button>
                         </li>
                     </ul>
                 </div>
