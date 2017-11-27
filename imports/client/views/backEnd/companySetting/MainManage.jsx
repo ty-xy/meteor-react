@@ -57,7 +57,7 @@ class MainManage extends Component {
             wrapperCol: { span: 14, offset: 4 },
         } : null;
         const { getFieldDecorator } = this.props.form;
-        const { adminInfo = {} } = this.props.currentCompany || {};
+        const { adminInfo = {} } = this.props.currentCompany;
         return (
             <div className="company-main-manage-set company-set-arae">
                 <div className="set-title">
@@ -70,7 +70,7 @@ class MainManage extends Component {
                             {...formItemLayout}
                         >
                             <div className="upload-team-avatar">
-                                <Avatar avatar={adminInfo.avatar} name={adminInfo.name} avatarColor={adminInfo.avatarColor} />
+                                <Avatar avatar={adminInfo && adminInfo.avatar} name={adminInfo && adminInfo.name} avatarColor={adminInfo && adminInfo.avatarColor} />
                                 <p className="edit-avatar" onClick={this.showModal}>更改</p>
                             </div>
                         </FormItem>
@@ -134,10 +134,10 @@ class MainManage extends Component {
 export default Form.create({})(
     withTracker(() => {
         Meteor.subscribe('company');
+        Meteor.subscribe('users');
         const currentCompanyId = UserUtil.getCurrentBackendCompany();
         const currentCompany = Company.findOne({ _id: currentCompanyId });
-        const admin = Meteor.users.findOne({ _id: currentCompany.admin }, { fields: fields.searchAllUser });
-        currentCompany.adminInfo = admin ? admin.profile : {};
+        currentCompany.adminInfo = Meteor.users.findOne({ _id: currentCompany.admin }, { fields: fields.searchAllUser }).profile || {};
         const members = [];
         for (const value of Object.values(currentCompany.members)) {
             members.push(value.userId);

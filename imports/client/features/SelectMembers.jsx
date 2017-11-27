@@ -4,33 +4,28 @@ import { Select, Tree, Button } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 
-import UserUtil from '../../util/user';
+// import UserUtil from '../../util/user';
 
 import Avatar from '../components/Avatar';
+import fields from '../../util/fields';
 
 const Option = Select.Option;
 const TreeNode = Tree.TreeNode;
 
 class SelectMembers extends Component {
     static propTypes = {
-        // teams: [
-        //     {
-        //         name: '', // 团队的名称
-        //         members: [], // 该团队下的人员
-        //     },
-        // ],
         // isRadio: 单选还是多选
-        chooseUsers: PropTypes.array.isRequired, // 需要选择的人员
+        team: PropTypes.array.isRequired, // 需要选择的人员
         confirmSelected: PropTypes.func.isRequired, // 选择完成后的函数,函数的参数为选中的人员ID
     }
     constructor(...args) {
         super(...args);
         this.state = {
             visible: false,
-            expandedKeys: ['0-0-0', '0-0-1'],
             autoExpandParent: true,
             checkedKeys: [],
             selectedKeys: [],
+            chooseUsers: [],
         };
     }
     onExpand = (expandedKeys) => {
@@ -52,6 +47,17 @@ class SelectMembers extends Component {
     }
     handleChange = (value) => {
         console.log(`selected ${value}`);
+        // Meteor.subscribe('users');
+        const selectedOption = this.props.team.filter(x => x.name === value)[0];
+        if (selectedOption && selectedOption.members && selectedOption.members.length > 0) {
+            const currentMembers = selectedOption.members;
+            const chooseUsers = currentMembers.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+            this.setState({
+                chooseUsers,
+            });
+        } else {
+            console.log('该分组没有好友');
+        }
     }
     handleBlur = () => {
         console.log('blur');
@@ -60,7 +66,7 @@ class SelectMembers extends Component {
         console.log('focus');
     }
     toggleKeyToUsers = () => this.state.checkedKeys.map((selectId) => {
-        const user = this.props.chooseUsers.find(x => x._id === selectId);
+        const user = this.state.chooseUsers.find(x => x._id === selectId);
         return user;
     })
     renderUserTitle = profile => (
@@ -71,7 +77,7 @@ class SelectMembers extends Component {
     )
     renderDevTitle = () => <span className="team-tree-title">商务部(12)</span>
     renderTreeNodes = data => data.map((item) => {
-        if (item.company) {
+        if (item && item.company) {
             return (
                 <TreeNode title={item.title} key={item.key} dataRef={item}>
                     {this.renderTreeNodes(item.children)}
@@ -79,7 +85,8 @@ class SelectMembers extends Component {
             );
         }
         return <TreeNode title={this.renderUserTitle(item.profile)} key={item._id} />;
-    })
+    },
+    )
     render() {
         const selectedUsers = this.toggleKeyToUsers();
         return (
@@ -87,7 +94,7 @@ class SelectMembers extends Component {
                 <Select
                     showSearch
                     style={{ width: 400 }}
-                    defaultValue="e建联好友"
+                    // defaultValue="e建联好友"
                     placeholder="Select a person"
                     optionFilterProp="children"
                     onChange={this.handleChange}
@@ -95,7 +102,12 @@ class SelectMembers extends Component {
                     onBlur={this.handleBlur}
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
-                    <Option value="friends">e建联好友</Option>
+                    {
+                        this.props.team.map(item => (
+                            <Option value={item.name} key={item.name}>{item.name}</Option>
+                        ))
+                    }
+
                 </Select>
                 <div>
                     <Tree
@@ -103,7 +115,7 @@ class SelectMembers extends Component {
                         onCheck={this.onCheck}
                         checkedKeys={this.state.checkedKeys}
                     >
-                        {this.renderTreeNodes(this.props.chooseUsers)}
+                        {this.renderTreeNodes(this.state.chooseUsers)}
                     </Tree>
                     <div className="selected-avatar">
                         {
@@ -124,13 +136,7 @@ class SelectMembers extends Component {
     }
 }
 
-// export default SelectMembers;
-
 export default withTracker(() => {
     Meteor.subscribe('users');
-    const friendIds = UserUtil.getFriends();
-    const chooseUsers = friendIds.map(_id => Meteor.users.findOne({ _id }));
-    return {
-        chooseUsers,
-    };
+    return {};
 })(SelectMembers);
