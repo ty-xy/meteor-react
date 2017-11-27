@@ -44,7 +44,7 @@ const feedback = {
     },
     // 成功后执行回调
     successToastFb(conetnt, fb) {
-        message.success(conetnt, 1, fb);
+        message.success(conetnt, 0.3, fb);
     },
 };
 

@@ -16,6 +16,7 @@ class AddMembers extends PureComponent {
         modelMember: PropTypes.bool,
         form: PropTypes.object,
         data: PropTypes.array,
+        allUsers: PropTypes.array,
         handleSubmitMember: PropTypes.func,
         editMemberInfo: PropTypes.object,
     }
@@ -23,6 +24,19 @@ class AddMembers extends PureComponent {
         super(props);
         this.state = {
         };
+    }
+    // 拉去人员name
+    onChange = (e) => {
+        let name = '';
+        const { form, allUsers } = this.props;
+        if (e.target.value.length === 11) {
+            allUsers.forEach((item) => {
+                if (item.username === e.target.value) {
+                    name = item.profile.name;
+                }
+            });
+        }
+        form.setFieldsValue({ name });
     }
     // 取消
     handleCancel = () => {
@@ -47,11 +61,9 @@ class AddMembers extends PureComponent {
             handleSubmitMember(fields, editMemberInfo.userId);
         });
     }
-
     render() {
         // const {  } = this.state;
         const { modelMember, data, editMemberInfo } = this.props;
-        const deps = data.map(item => (item.name));
         const reg = new RegExp(/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/, 'g');
         return (
             <MyModel
@@ -64,9 +76,9 @@ class AddMembers extends PureComponent {
                 height="370px"
             >
                 <Form onSubmit={this.handleCommentbtn}>
-                    <MyInput disabled={!!editMemberInfo.userId} keyword="name" defaultValue={editMemberInfo.name} required label="姓名" placeholder="请输入姓名" {...this.props} requiredErr="姓名必填" />
-                    <InputReg disabled={!!editMemberInfo.userId} keyword="phone" defaultValue={editMemberInfo.username} required label="手机" placeholder="请输入手机" {...this.props} regs={reg} typeErr="请填写正确的手机号" requiredErr="手机号必填" />
-                    <Select keyword="dep" label="部门" defaultValue={editMemberInfo.dep} placeholder="请选择部门" {...this.props} data={deps} />
+                    <InputReg onChange={this.onChange} disabled={!!editMemberInfo.userId} keyword="phone" defaultValue={editMemberInfo.username} required label="手机" placeholder="请输入手机" {...this.props} regs={reg} typeErr="请填写正确的手机号" requiredErr="手机号必填" />
+                    <MyInput disabled keyword="name" defaultValue={editMemberInfo.name} label="姓名" placeholder="请输入姓名" {...this.props} requiredErr="姓名必填" />
+                    <Select keyword="dep" userId label="部门" defaultValue={editMemberInfo.dep} placeholder="请选择部门" {...this.props} data={data} />
                     <MyInput keyword="pos" label="职务" defaultValue={editMemberInfo.pos} placeholder="请输入职务" {...this.props} />
                     <div className="text-center form-buttom">
                         <Button type="primary" htmlType="submit">确定</Button>

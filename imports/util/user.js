@@ -35,8 +35,7 @@ const UserUtil = {
     getChatList() {
         return UserUtil.getProfile().chatList || [];
     },
-    // 获取管理的当前公司列表
-    getCompany() {
+    getMainCompany() {
         return UserUtil.getProfile().mainCompany || '';
     },
     // 获取所在的公司列表
