@@ -34,7 +34,7 @@ class BatchSetDep extends PureComponent {
         const { modelMember, data, modelShowHide } = this.props;
         return (
             <MyModel
-                handleCancel={this.handleCancel}
+                handleCancel={() => modelShowHide(false, 'modelBatchDep')}
                 show={modelMember}
                 title="调整员工所属部门"
                 animation="vertical"
