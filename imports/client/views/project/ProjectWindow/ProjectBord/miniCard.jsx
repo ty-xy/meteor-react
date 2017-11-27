@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import format from 'date-format';
+import moment from 'moment';
 
 import pureRender from 'pure-render-decorator';
 import TaskList from '../../../../../../imports/schema/taskList';
@@ -140,17 +141,21 @@ class MiniCard extends Component {
                 >
                     <div className="list-title-show">
                         <p className="task-title">{this.props.value}</p>
-                        {this.props.label && this.props.label !== '#d8d8d8' ? <p className="label-show" style={{ background: this.props.label }} /> : null}
+                        {this.props.label && this.props.label !== '#d8d8d8' ?
+                            <p className="label-show" style={{ background: this.props.label }} /> : null}
                     </div>
                     <div className="try-stop" style={{ display: 'flex' }}>
                         {this.props.begintime ?
                             <div className="time-show" onClick={e => this.handleChangeStart(e)}>
-                                {/* <Icon icon="icon-qingjiaicon" /> */}
                                 <p className="time-number">{format('yyyy-MM-dd', this.props.begintime)}</p>
                                 <div className="try" style={{ display: this.state.showStartTime ? 'block' : 'none' }} />
                                 {this.state.showStartTime ?
                                     <div className="clender-setting" onClick={e => this.handlePop(e)}>
-                                        <Calendar fullscreen={false} onSelect={this.onPanelChange} />
+                                        <Calendar
+                                            fullscreen={false}
+                                            onSelect={this.onPanelChange}
+                                            defaultValue={moment(this.props.begintime, 'YYYY-MM-DD')}
+                                        />
                                         <button onClick={e => this.handleChangeStart(e)}>取消</button>
                                     </div>
                                     : null}
@@ -164,7 +169,6 @@ class MiniCard extends Component {
                                     style={this.handleShowColor()}
                                     onClick={e => this.handleChangeEnd(e)}
                                 >
-                                    {/* <Icon icon="icon-qingjiaicon" /> */}
                                     <p
                                         className="time-number"
                                     >{format('yyyy-MM-dd', this.props.endtime)}</p>
@@ -173,6 +177,7 @@ class MiniCard extends Component {
                                         <div className="clender-setting" onClick={e => this.handlePop(e)}>
                                             <Calendar
                                                 fullscreen={false}
+                                                defaultValue={moment(this.props.endtime, 'YYYY-MM-DD')}
                                                 onSelect={this.onPanellChange}
                                                 disabledDate={this.disabledEndDate}
                                             />

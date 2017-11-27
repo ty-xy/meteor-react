@@ -6,7 +6,7 @@ import Icon from '../../../../components/Icon';
 const { TextArea } = Input;
 export default function Icom({ Twidth, onClick, input, value, onChange, onConcel }) {
     return (
-        <div>
+        <div style={{ zIndex: 2000, position: 'relative' }}>
             <TextArea
                 autosize={{ minRows: 1, maxRows: 6 }}
                 autoFocus
