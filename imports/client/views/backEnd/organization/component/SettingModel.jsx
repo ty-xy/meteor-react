@@ -80,7 +80,7 @@ class AddMembers extends PureComponent {
                     </FormItem>
                     <div className="text-center form-buttom">
                         <div><Button className="margin-top-20" style={{ width: '150px' }} type="primary" htmlType="submit">保存</Button></div>
-                        <div className="margin-top-20"><Button type="danger" style={{ width: '150px', background: '#EF5350', color: '#fff', borderColor: '#EF5350' }} onClick={() => handleDepDel(data.id)}>删除</Button></div>
+                        <div className="margin-top-20"><Button type="danger" style={{ width: '150px', background: '#EF5350', color: '#fff', borderColor: '#EF5350' }} onClick={() => handleDepDel(data.id, data.groupId, data.isAutoChat)}>删除</Button></div>
                     </div>
                 </Form>
             </MyModel>
