@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
+// import CreateGroup from '../../imports/schema/group';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
@@ -69,40 +70,84 @@ Meteor.methods({
         );
     },
     // 增加部门
-    addDepartment({ _id, name, isAutoChat, admin = '', avatar = '' }) {
+    addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '' }) {
         const newCompany = {
+            id,
             name,
-            isAutoChat,
+            isAutoChat, // 是否自动创建部门群聊
             admin,
             avatar,
         };
-        // isAutoChat 是否自动创建部门群聊
+        let groupId = '';
         Company.update(
             { _id },
             {
                 $push: { deps: newCompany },
             },
-        );
-    },
-    // 更新部门
-    updateDepartment({ deparment, _id }) {
-        const departments = Company.findOne({ _id }).department || [];
-        departments.push(deparment);
-        const newCompany = {
-            createdAt: new Date(),
-            department: departments,
-            name: Company.findOne({ _id }).name,
-        };
-        Company.schema.validate(newCompany);
-        Company.update(
-            { _id },
-            {
-                $set: newCompany,
+            (error, res) => {
+                if (res && isAutoChat) {
+                    Meteor.call(
+                        'createGroup',
+                        { name, members: [] },
+                        (err, groupid) => {
+                            if (err) {
+                                return false;
+                            }
+                            groupId = groupid;
+                            newCompany.groupId = groupId;
+                            Company.update(
+                                { _id, 'deps.id': id },
+                                {
+                                    $set: { 'deps.$': newCompany },
+                                },
+                                (e, r) => {
+                                    console.log('更新穷里奥', e, r);
+                                },
+                            );
+                        },
+                    );
+                }
             },
         );
     },
+    // 更新部门
+    editCompanyDep({ companyId, name, id, isAutoChat, admin = '', avatar = '' }) {
+        const dep = {
+            name,
+            isAutoChat,
+            admin,
+            avatar,
+            id,
+        };
+        Company.update(
+            { _id: companyId, 'deps.id': id },
+            {
+                $set: { 'deps.$': dep },
+            },
+        );
+    },
+    // delCompanyDep 删除部门
+    delCompanyDep({ companyId, id }) {
+        Company.update(
+            { _id: companyId },
+            {
+                $pull: { deps: { id } },
+            },
+        );
+    },
+    // 批量设置部门人员
+    batchSetDep({ companyId, _users }) {
+        _users.forEach((item) => {
+            Company.update(
+                { _id: companyId, 'members.userId': item.userId },
+                {
+                    $set: { 'members.$': item },
+                },
+            );
+        });
+    },
     // 公司添加人员
-    addMember({ companyId, userId, name, dep, pos }) {
+    addMember({ companyId, userId, name, dep = '', pos }) {
         const member = {
             userId,
             dep,
@@ -117,8 +162,7 @@ Meteor.methods({
         );
     },
     // 修改人员
-    editMember({ companyId, userId, name, dep, pos }) {
-        console.log('object', companyId, userId, name, dep, pos);
+    editMember({ companyId, userId, name, dep = '', pos }) {
         const member = {
             userId,
             dep,

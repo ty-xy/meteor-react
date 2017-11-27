@@ -53,12 +53,11 @@ class ProjectBordItem extends Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps() {
         this.setState({
             titleValue: this.props.value,
         });
         const tasks = Task.find({}).fetch();
-        console.log('nextProps', nextProps);
         this.setState({
             task: tasks,
         });
@@ -338,6 +337,7 @@ class ProjectBordItem extends Component {
                             type="text"
                             className="Input-text"
                             placeholder="请输入卡片内容"
+                            autoFocus
                             autosize={{ minRows: 1, maxRows: 6 }}
                             value={this.state.cardInput}
                             onChange={this.handleChange}
@@ -361,6 +361,7 @@ export default withTracker((indd) => {
     Meteor.subscribe('taskboard');
     Meteor.subscribe('company');
     const tasks = Task.find({}).fetch();
+    console.table(tasks);
     const tasksA = TaskBoard.find({ _id: indd.tastBoardId }).fetch();
     if (tasksA.length !== 0) {
         const x = tasksA[0].sortArray;
@@ -378,8 +379,6 @@ export default withTracker((indd) => {
             return hash;
         });
         const o = Array.from(new Set(x));
-        // console.log(o);
-        // console.log(tasks, tasksA, o, taskg, fd);
         return {
             tasks,
             taskg,

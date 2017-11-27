@@ -10,7 +10,7 @@ import uuid from 'uuid';
 
 import MyIcon from '../../../components/Icon';
 import Company from '../../../../schema/company';
-import ImgUpload from '../../manage/component/ImgUpload';
+import ImgUp from '../ProjectWindow/ProjectBord/component/imgUp';
 import AvatarSelf from '../../../components/AvatarSelf';
 import ChoosePeopleModel from '../../../components/ChoosePeopleModel';
 import PeopleList from '../../manage/audit/component/PeopleList';
@@ -172,7 +172,7 @@ class ProjectAdd extends Component {
                                 <p className="icon-person" style={divStyle} onClick={this.changeUpdateTitle}>
                                     <MyIcon icon={this.state.icon[j]} size={30} iconColor="#fff" />
                                 </p> :
-                                <ImgUpload keyword="img" className="img-title" fileList={[]} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload}{...this.props} />}
+                                <ImgUp keyword="img" className="img-title" fileList={[]} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload}{...this.props} />}
                         </Tooltip>
                     </div>
                     <div className="common-type">
