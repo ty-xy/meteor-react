@@ -64,28 +64,19 @@ class SelectMembers extends Component {
     })
     dealSelectedData = (value) => {
         const selectedOption = this.props.team.filter(x => x.name === value)[0];
-        // 如果是部门
+        // 如果是存在部门
         if (selectedOption.department) {
             const currentDepartment = selectedOption.department;
             currentDepartment.forEach((x) => {
                 x.user = x.members.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
             });
-
-            // if (selectedOption.members) {
-            //     const currentMembers = selectedOption.members;
-            //     const chooseUsers = currentMembers.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
-            //     return (<div>
-            //         {
-            //             currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={item.name} dataRef={item}>
-            //                 {this.renderTreeNodes(item.user)}
-            //             </TreeNode>))
-            //         }
-            //         {this.renderTreeNodes(chooseUsers)}
-            //     </div>);
-            // }
-            return currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={item.name} dataRef={item}>
+            const currentDepartments = currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={item.name} dataRef={item}>
                 {this.renderTreeNodes(item.user)}
             </TreeNode>));
+            const currentMembers = selectedOption.members;
+            const chooseUsers = currentMembers.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+            const notDepartmentMembers = this.renderTreeNodes(chooseUsers);
+            return [...currentDepartments, ...notDepartmentMembers];
         }
         // 没有部门的情况
         if (selectedOption && selectedOption.members && selectedOption.members.length > 0) {
@@ -102,10 +93,8 @@ class SelectMembers extends Component {
             <p>{profile.name}</p>
         </div>
     )
-    renderDevTitle = () => <span className="team-tree-title">商务部(12)</span>
     renderTreeNodes = data => data.map(item =>
-        <TreeNode title={this.renderUserTitle(item.profile)} key={item._id} />
-        ,
+        <TreeNode title={this.renderUserTitle(item.profile)} key={item._id} />,
     )
     render() {
         const selectedUsers = this.toggleKeyToUsers();
