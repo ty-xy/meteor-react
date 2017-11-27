@@ -1,11 +1,11 @@
 import React, { Component, PureComponent } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { Upload, Modal } from 'antd';
-import MyIcon from '../../../components/Icon';
-import feedback from '../../../../util/feedback';
+import MyIcon from '../../../../../components/Icon';
+import feedback from '../../../../../../util/feedback';
 
 
-class ImgUpload extends (PureComponent || Component) {
+class ImgUp extends (PureComponent || Component) {
     constructor(props) {
         super(props);
 
@@ -32,25 +32,6 @@ class ImgUpload extends (PureComponent || Component) {
                 }
             },
         );
-    }
-    componentWillReceiveProps() {
-        // const { fileList } = this.props;
-        // const _fileList = [];
-        // if (!this.state.upload) {
-        //     (fileList || []).forEach((_id) => {
-        //         // const querys = fileLists.filter((i) => (item === i._id));
-        //         console.log('---', files.findOne({ _id }), files.find());
-        //         const querys = files.findOne({ _id }) || [];
-        //         console.log('query', querys, _id);
-        //         if (querys._id) {
-        //             querys.uid = querys._id;
-        //             _fileList.push(querys);
-        //         }
-        //     });
-        //     if (fileList && fileList.length) {
-        //         this.setState({ _fileList });
-        //     }
-        // }
     }
     handleCancel = () => this.setState({ previewVisible: false })
 
@@ -142,7 +123,7 @@ class ImgUpload extends (PureComponent || Component) {
                 <Upload
                     {...props}
                 >
-                    { uploadButton }
+                    {this.imgs.length === 0 ? uploadButton : null}
                 </Upload>
                 <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
                     <img alt="example" style={{ width: '100%' }} src={previewImage} />
@@ -152,5 +133,4 @@ class ImgUpload extends (PureComponent || Component) {
     }
 }
 
-export default ImgUpload;
-
+export default ImgUp;

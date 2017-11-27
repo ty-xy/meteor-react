@@ -151,10 +151,8 @@ export default withTracker((projectd) => {
     const taskF = TaskBoard.find({ projectId: projectd.match.params.id }).fetch();
     const taskL = taskF.length;
     const projectL = Project.find({ uprojectId: projectd.match.params.id }).fetch();
-    // const projectId1 = Project.find({ name: this.state.minchen })._id;
     const project = projectL[0];
     console.log(project, projectL, projectd, taskF);
-    // console.log(projectd.match.params.id);
     return {
         taskF,
         taskL,
