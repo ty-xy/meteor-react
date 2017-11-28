@@ -69,14 +69,16 @@ Meteor.methods({
         );
     },
     // 添加子管理员
-    addSubAdmin(companyId, subManageId) {
-        Company.update(
-            { _id: companyId },
-            {
-                $push: {
-                    subAdmin: subManageId,
+    addSubAdmin(companyId, subManageIds) {
+        subManageIds.map(subManageId =>
+            Company.update(
+                { _id: companyId },
+                {
+                    $push: {
+                        subAdmin: subManageId,
+                    },
                 },
-            },
+            ),
         );
     },
     // 删除子管理员

@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
-import { Table, Button, Popconfirm } from 'antd';
+import { Table, Button, Popconfirm, Modal } from 'antd';
+import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import Avatar from '../../../components/Avatar';
+import SelectMembers from '../../../features/SelectMembers';
+import UserUtil from '../../../../util/user';
+import feedback from '../../../../util/feedback';
+import Company from '../../../../schema/company';
 
 class EditableTable extends Component {
+    static propTypes = {
+        team: PropTypes.array,
+        currentCompanyId: PropTypes.string,
+    }
     constructor(props) {
         super(props);
         this.state = {
+            showSelect: false,
             columns: [{
                 title: '名称',
                 dataIndex: 'profile',
@@ -51,19 +63,27 @@ class EditableTable extends Component {
         const dataSource = [...this.state.dataSource];
         this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
     }
-    // handleAdd = () => {
-    //     const { count, dataSource } = this.state;
-    //     const newData = {
-    //         key: count,
-    //         name: `Edward King ${count}`,
-    //         age: 32,
-    //         address: `London, Park Lane no. ${count}`,
-    //     };
-    //     this.setState({
-    //         dataSource: [...dataSource, newData],
-    //         count: count + 1,
-    //     });
-    // }
+    closeSelect = () => {
+        this.setState({
+            showSelect: false,
+        });
+    }
+    confirmSelected = (members) => {
+        this.setState({
+            showSelect: false,
+        });
+        Meteor.call('addSubAdmin', this.props.currentCompanyId, members, (err) => {
+            if (err) {
+                console.error(err);
+            }
+            feedback.dealSuccess('添加成功');
+        });
+    }
+    handleAdd = () => {
+        this.setState({
+            showSelect: true,
+        });
+    }
     render() {
         const { dataSource, columns } = this.state;
         return (
@@ -72,11 +92,49 @@ class EditableTable extends Component {
                     <span>设置子管理员</span> &nbsp;
                     <Button className="editable-add-btn" onClick={this.handleAdd}>添加</Button>
                 </div>
-
                 <Table dataSource={dataSource} columns={columns} />
+                {
+                    this.state.showSelect ?
+                        <Modal
+                            title="选择人员"
+                            visible
+                            onCancel={this.closeSelect}
+                            width={430}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <SelectMembers
+                                confirmSelected={this.confirmSelected}
+                                team={this.props.team}
+                            />
+                        </Modal>
+                        :
+                        <div>{this.state.showSelect}</div>
+
+                }
             </div>
         );
     }
 }
-export default EditableTable;
 
+export default withTracker(() => {
+    Meteor.subscribe('company');
+    Meteor.subscribe('users');
+    const currentCompanyId = UserUtil.getCurrentBackendCompany();
+    const currentCompany = Company.findOne({ _id: currentCompanyId });
+    const members = [];
+    for (const value of Object.values(currentCompany.members)) {
+        members.push(value.userId);
+    }
+    const team = [
+        {
+            name: currentCompany.name,
+            members,
+            department: [], // 不存在的时候需要传一个空数组
+        },
+    ];
+    return {
+        team,
+        currentCompanyId,
+    };
+})(EditableTable);
