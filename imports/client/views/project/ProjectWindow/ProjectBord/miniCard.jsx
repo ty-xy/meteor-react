@@ -38,6 +38,12 @@ const source = {
                 Meteor.call('deleteArray', item.index, item._id, (err) => {
                     console.log(err);
                 });
+            } else if (item.index === dropResult.listName) {
+                Meteor.call('deleteArray2', dropResult.listName, item._id, dropResult.y, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
             }
         }
     },
@@ -78,10 +84,6 @@ class MiniCard extends Component {
             showOverTime: false,
         };
     }
-
-    // componentWillReceiveProps(nextProps) {
-    //     // console.log('nextProps', nextProps);
-    // }
     onPanelChange=(value) => {
         console.log(value.format('L'));
         Meteor.call(
