@@ -36,7 +36,7 @@ class AddMembers extends PureComponent {
     // 取消
     handleCancel = () => {
         this.props.form.resetFields();
-        this.props.modelShowHide(false, 'settingModel');
+        this.props.modelShowHide(false, 'depsettingModel');
     }
     handleInput = (e, name) => {
         if (name === 'checkout') {
@@ -79,8 +79,8 @@ class AddMembers extends PureComponent {
                         {data.num || 0}
                     </FormItem>
                     <div className="text-center form-buttom">
-                        <div><Button className="margin-top-20" style={{ width: '150px' }} type="primary" htmlType="submit">保存</Button></div>
-                        <div className="margin-top-20"><Button type="danger" style={{ width: '150px', background: '#EF5350', color: '#fff', borderColor: '#EF5350' }} onClick={() => handleDepDel(data.id)}>删除</Button></div>
+                        <div><Button className="margin-top-20 e-mg-button" style={{ width: '150px' }} type="primary" htmlType="submit">保存</Button></div>
+                        <div className="margin-top-20"><Button type="danger" style={{ width: '150px', background: '#EF5350', color: '#fff', borderColor: '#EF5350' }} onClick={() => handleDepDel(data.id, data.groupId, data.isAutoChat)}>删除</Button></div>
                     </div>
                 </Form>
             </MyModel>

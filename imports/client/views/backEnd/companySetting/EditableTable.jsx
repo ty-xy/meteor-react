@@ -1,83 +1,133 @@
 import React, { Component } from 'react';
-import { Table, Button, Popconfirm } from 'antd';
+import { Table, Button, Popconfirm, Modal } from 'antd';
+import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 
-import EditableCell from './EditableCell';
-
+import Avatar from '../../../components/Avatar';
+import SelectMembers from '../../../features/SelectMembers';
+import UserUtil from '../../../../util/user';
+import feedback from '../../../../util/feedback';
+import Company from '../../../../schema/company';
+import fields from '../../../../util/fields';
 
 class EditableTable extends Component {
+    static propTypes = {
+        team: PropTypes.array,
+        currentCompanyId: PropTypes.string,
+        subManages: PropTypes.array,
+    }
     constructor(props) {
         super(props);
-        this.columns = [{
-            title: '名称',
-            dataIndex: 'name',
-            width: '30%',
-            render: (text, record) => (
-                <EditableCell
-                    value={text}
-                    onChange={this.onCellChange(record.key, 'name')}
-                />
-            ),
-        }, {
-            title: '操作',
-            dataIndex: 'operation',
-            render: (text, record) => (
-                this.state.dataSource.length > 1 ?
-                    (
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.key)}>
-                            <p>删除</p>
-                        </Popconfirm>
-                    ) : null
-            ),
-        }];
-
         this.state = {
-            dataSource: [{
-                key: '0',
-                name: 'Edward King 0',
+            showSelect: false,
+            columns: [{
+                title: '名称',
+                dataIndex: 'profile',
+                render: profile => (
+                    <div className="search-all-user">
+                        <Avatar name={profile.name} avatarColor={profile.avatarColor} avatar={profile.avatar} />
+                        <p>{profile.name}</p>
+                    </div>),
             }, {
-                key: '1',
-                name: 'Edward King 1',
-                age: '32',
-                address: 'London, Park Lane no. 1',
+                title: '操作',
+                dataIndex: '_id',
+                render: _id => (
+                    <Popconfirm title="确定要删除该子管理员么?" onConfirm={() => this.onDelete(_id)}>
+                        <p>删除</p>
+                    </Popconfirm>
+                ),
             }],
-            count: 2,
         };
-    }
-    onCellChange = (key, dataIndex) => (value) => {
-        const dataSource = [...this.state.dataSource];
-        const target = dataSource.find(item => item.key === key);
-        if (target) {
-            target[dataIndex] = value;
-            this.setState({ dataSource });
-        }
     }
     onDelete = (key) => {
-        const dataSource = [...this.state.dataSource];
-        this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+        Meteor.call('deleteSubAdmin', this.props.currentCompanyId, key, (err) => {
+            if (err) {
+                console.error(err);
+            }
+            feedback.dealSuccess('删除成功');
+        });
+    }
+    closeSelect = () => {
+        this.setState({
+            showSelect: false,
+        });
+    }
+    confirmSelected = (members) => {
+        this.setState({
+            showSelect: false,
+        });
+        Meteor.call('addSubAdmin', this.props.currentCompanyId, members, (err) => {
+            if (err) {
+                console.error(err);
+            }
+            feedback.dealSuccess('添加成功');
+        });
     }
     handleAdd = () => {
-        const { count, dataSource } = this.state;
-        const newData = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: 32,
-            address: `London, Park Lane no. ${count}`,
-        };
         this.setState({
-            dataSource: [...dataSource, newData],
-            count: count + 1,
+            showSelect: true,
         });
     }
     render() {
-        const { dataSource } = this.state;
-        const columns = this.columns;
+        const { columns } = this.state;
         return (
-            <div>
-                <Button className="editable-add-btn" onClick={this.handleAdd}>添加</Button>
-                <Table bordered dataSource={dataSource} columns={columns} />
+            <div className="sub-manage-table">
+                <div className="sub-manage-table-title">
+                    <span>设置子管理员</span> &nbsp;
+                    <Button className="editable-add-btn" onClick={this.handleAdd}>添加</Button>
+                </div>
+                <Table dataSource={this.props.subManages} columns={columns} />
+                {
+                    this.state.showSelect ?
+                        <Modal
+                            title="选择人员"
+                            visible
+                            onCancel={this.closeSelect}
+                            width={430}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <SelectMembers
+                                confirmSelected={this.confirmSelected}
+                                team={this.props.team}
+                            />
+                        </Modal>
+                        :
+                        <div>{this.state.showSelect}</div>
+
+                }
             </div>
         );
     }
 }
-export default EditableTable;
 
+export default withTracker(() => {
+    Meteor.subscribe('company');
+    Meteor.subscribe('users');
+    const currentCompanyId = UserUtil.getCurrentBackendCompany();
+    const currentCompany = Company.findOne({ _id: currentCompanyId });
+    const subManageIds = currentCompany.subAdmin || [];
+    const subManages = subManageIds.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser })) || [];
+    subManages.forEach((x) => {
+        x.key = x._id;
+    });
+    const members = [];
+    for (const value of Object.values(currentCompany.members)) {
+        members.push(value.userId);
+    }
+    const restUsers = members.filter(x => !subManageIds.find(y => y === x));
+    const team = [
+        {
+            name: currentCompany.name,
+            members: restUsers,
+            department: [], // 不存在的时候需要传一个空数组
+        },
+    ];
+
+    return {
+        team,
+        currentCompanyId,
+        subManages,
+    };
+})(EditableTable);

@@ -26,7 +26,7 @@ class MyModel extends PureComponent {
                         !footer ?
                             <div className="e-mg-model-footer">
                                 <div className="text-center">
-                                    <Button type="primary" onClick={handleCommentbtn}>确定</Button>
+                                    <Button className="e-mg-button" onClick={handleCommentbtn}>确定</Button>
                                     <Button className="margin-left-20" onClick={handleCancel}>取消</Button>
                                 </div>
                             </div>

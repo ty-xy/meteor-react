@@ -2,18 +2,33 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Row, Col } from 'antd';
 import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
+
+import feedback from '../../../../util/feedback';
+import UserUtil from '../../../../util/user';
 
 
 const FormItem = Form.Item;
 class DissolveTeam extends Component {
     static propTypes = {
         form: PropTypes.object,
+        currentCompanyId: PropTypes.string,
     }
     constructor() {
         super();
         this.state = {
             formLayout: 'horizontal',
         };
+    }
+    handleSubmit = () => {
+        console.log('解散团队', this.props.currentCompanyId);
+        Meteor.call('deleteSubAdmin', this.props.currentCompanyId, (err) => {
+            if (err) {
+                console.error(err);
+            }
+            feedback.dealSuccess('解散团队成功');
+        });
     }
     render() {
         const { formLayout } = this.state;
@@ -79,5 +94,13 @@ class DissolveTeam extends Component {
     }
 }
 
-export default Form.create({})(DissolveTeam);
+export default Form.create({})(
+    withTracker(() => {
+        Meteor.subscribe('company');
+        const currentCompanyId = UserUtil.getCurrentBackendCompany();
+        return {
+            currentCompanyId,
+        };
+    })(DissolveTeam),
+);
 

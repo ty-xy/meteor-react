@@ -58,13 +58,15 @@ class AddMembers extends PureComponent {
             if (err) {
                 return false;
             }
-            handleSubmitMember(fields, editMemberInfo.userId);
+            console.log('新增人员提交', editMemberInfo);
+            handleSubmitMember(fields, editMemberInfo.userId, editMemberInfo.dep);
         });
     }
     render() {
         // const {  } = this.state;
         const { modelMember, data, editMemberInfo } = this.props;
         const reg = new RegExp(/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/, 'g');
+        console.log('新增人员', editMemberInfo);
         return (
             <MyModel
                 handleCancel={this.handleCancel}
@@ -81,7 +83,7 @@ class AddMembers extends PureComponent {
                     <Select keyword="dep" userId label="部门" defaultValue={editMemberInfo.dep} placeholder="请选择部门" {...this.props} data={data} />
                     <MyInput keyword="pos" label="职务" defaultValue={editMemberInfo.pos} placeholder="请输入职务" {...this.props} />
                     <div className="text-center form-buttom">
-                        <Button type="primary" htmlType="submit">确定</Button>
+                        <Button className="e-mg-button" htmlType="submit">确定</Button>
                         <Button className="margin-left-20" onClick={this.handleCancel}>取消</Button>
                     </div>
                 </Form>

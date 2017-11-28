@@ -13,6 +13,7 @@ import AddMember from './component/AddMember';
 import RightHeader from './component/RightHeader';
 import SettingModel from './component/SettingModel';
 import BatchSetDep from './component/BatchSetDep';
+import Invite from './component/Invite';
 
 class Organization extends PureComponent {
     static propTypes = {
@@ -45,14 +46,14 @@ class Organization extends PureComponent {
     }
     // 修改部门
     handleDepSetting = ({ name }, id) => {
-        const companyId = UserUtil.getMainCompany();
+        const companyId = UserUtil.getCurrentBackendCompany();
         const { deps } = this.props.company;
         const _this = this;
         const visitedDep = deps.filter(item => (item.id === this.state.depActive));
-        console.log('fields', name, id, companyId);
+        const DEV = visitedDep.length ? visitedDep[0] : {};
         Meteor.call(
             'editCompanyDep',
-            { companyId, ...visitedDep, id, name },
+            { companyId, ...DEV, id, name },
             (err) => {
                 if (err) {
                     feedback.dealError('修改失败');
@@ -65,21 +66,22 @@ class Organization extends PureComponent {
         );
     }
     // 删除部门
-    handleDepDel = (id) => {
-        const companyId = UserUtil.getMainCompany();
+    handleDepDel = (id, groupId, isAutoChat) => {
+        const companyId = UserUtil.getCurrentBackendCompany();
         const { users } = this.props;
         const _this = this;
         let isDelete = true;
         users.forEach((item) => {
-            if (item.id === id) {
+            if (item.dep === id) {
                 isDelete = false;
             }
         });
+        console.log('groupId', groupId);
         if (isDelete) {
             feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该部门吗？', () => {
                 Meteor.call(
                     'delCompanyDep',
-                    { companyId, id },
+                    { companyId, id, groupId, isAutoChat },
                     (err) => {
                         if (err) {
                             feedback.dealError('删除失败');
@@ -117,16 +119,18 @@ class Organization extends PureComponent {
             this.setState({ [name]: bool });
         }
     }
-    // 新增部门提交
+    // 创建部门提交
     postAddDep = (info) => {
         this.setState({
             commentModel: false,
         });
-        const _id = UserUtil.getMainCompany();
+        const _id = UserUtil.getCurrentBackendCompany();
+        const members = [];
+        members.push(Meteor.user()._id);
         const id = uuid();
         Meteor.call(
             'addDepartment',
-            { ...info, _id, id },
+            { ...info, _id, id, members },
             (err, result) => {
                 console.log('postAddDep', result);
                 if (err) {
@@ -156,6 +160,7 @@ class Organization extends PureComponent {
     // 左侧部门列表
     depList = (deps, user) => {
         const { depActive, showMenu } = this.state;
+        const { company } = this.props;
         const num = {};
         user.forEach((item) => {
             if (num[item.dep]) {
@@ -171,7 +176,7 @@ class Organization extends PureComponent {
         return (
             <div className="e-mg-organization-left-dep margin-top-20">
                 <div className={classnames('e-mg-organization-company', { 'dep-active': depActive === '' })}>
-                    <a href="" onClick={e => this.handleTabDep(e, '')}><img src="http://oxldjnom8.bkt.clouddn.com/avatar_DQn6qYhEH3PejeDJf_1510912617360.png" alt="" />中亿集团有限公司 （{user.length || 0}）</a>
+                    <a href="" onClick={e => this.handleTabDep(e, '')}><img src={company.logo} alt="" />{company.name} （{user.length || 0}）</a>
                     <i className={classnames('iconfont icon-jiantou-copy', { arrowDown: showMenu })} onClick={this.showMenu} />
                 </div>
                 {
@@ -188,33 +193,45 @@ class Organization extends PureComponent {
     handleBtns = () => (
         <div className="handle-btns clearfix">
             <Button onClick={() => this.modelShowHide(true, 'modelMember')}>新增员工</Button>
-            <Button>邀请员工</Button>
+            <Button onClick={() => this.modelShowHide(true, 'inviteModel')}>邀请员工</Button>
             <Button onClick={this.depsetBatchDepModel}>调整部门</Button>
         </div>
     );
     // 新增人员提交
-    handleSubmitMember = (res, editMemberInfo) => {
-        const companyId = UserUtil.getMainCompany();
-        const { allUsers, users } = this.props;
+    handleSubmitMember = (res, editMemberInfo, oldgroup) => {
+        const companyId = UserUtil.getCurrentBackendCompany();
+        const { allUsers, users, company } = this.props;
         let isNot = false;
         let bool = false;
+        let groupId = '';
         const _this = this;
         users.forEach((item) => {
             if (userIdToInfo.getUsername(allUsers, item.userId) === res.phone) {
                 isNot = true;
             }
         });
+        company.deps.forEach((item) => {
+            if (item.id === res.dep) {
+                groupId = item.groupId;
+            }
+        });
+        company.deps.forEach((item) => {
+            if (item.id === oldgroup) {
+                oldgroup = item.groupId;
+            }
+        });
+        // console.log('13614376223', company.deps, res, groupId, oldgroup);
         if (editMemberInfo) {
             Meteor.call(
                 'editMember',
-                { ...res, userId: editMemberInfo, companyId },
+                { ...res, userId: editMemberInfo, companyId, groupId, oldgroup },
                 (err) => {
                     if (err) {
                         feedback.dealError('编辑失败');
                         return false;
                     }
                     feedback.successToastFb('编辑成功', () => {
-                        _this.setState({ modelMember: false, editMember: {} });
+                        _this.setState({ modelMember: false, editMember: {}, editMemberInfo: {} });
                     });
                 },
             );
@@ -230,7 +247,7 @@ class Organization extends PureComponent {
             if (bool) {
                 Meteor.call(
                     'addMember',
-                    { ...res, companyId },
+                    { ...res, companyId, groupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('添加失败');
@@ -243,16 +260,26 @@ class Organization extends PureComponent {
                 );
             } else {
                 _this.setState({ modelMember: false });
-                feedback.dealWarning((<p>该成员尚未注册, <span style={{ color: '#108ee9', cursor: 'pointer' }} onClick={_this.modelShowHide(true, 'inviteMember')}>立即邀请</span></p>));
+                feedback.dealWarning((<p>该成员尚未注册, <span style={{ color: '#108ee9', cursor: 'pointer' }} onClick={_this.modelShowHide(true, 'inviteModel')}>立即邀请</span></p>));
             }
         }
     }
     // 批量修改提交
     handleSubmitBatchDep = (fields) => {
         const { selectedRowKeys } = this.state;
-        const { users } = this.props;
-        const companyId = UserUtil.getMainCompany();
+        const { users, company } = this.props;
+        const companyId = UserUtil.getCurrentBackendCompany();
         const _users = [];
+        let oldgroup = '';
+        let groupId = '';
+        company.deps.forEach((item) => {
+            if (item.id === users[0].dep) {
+                oldgroup = item.groupId;
+            }
+            if (item.id === fields.dep) {
+                groupId = item.groupId;
+            }
+        });
         users.forEach((item) => {
             if (selectedRowKeys.indexOf(item.userId) > -1) {
                 item.dep = fields.dep;
@@ -260,10 +287,10 @@ class Organization extends PureComponent {
             }
         });
         const _this = this;
-        console.log('_users', _users, fields, selectedRowKeys);
+        console.log('_users', _users, fields, selectedRowKeys, groupId, oldgroup);
         Meteor.call(
             'batchSetDep',
-            { companyId, _users },
+            { companyId, _users, groupId, oldgroup },
             (err) => {
                 if (err) {
                     feedback.dealError('批量设置失败');
@@ -293,6 +320,18 @@ class Organization extends PureComponent {
     addMembersModel = () => {
         const { company, allUsers } = this.props;
         const { editMemberInfo = {} } = this.state;
+        if (editMemberInfo.userId) {
+            return (
+                <AddMember
+                    modelShowHide={this.modelShowHide}
+                    handleSubmitMember={this.handleSubmitMember}
+                    modelMember={this.state.modelMember}
+                    data={company.deps || []}
+                    editMemberInfo={editMemberInfo}
+                    allUsers={allUsers}
+                />
+            );
+        }
         return (
             <AddMember
                 modelShowHide={this.modelShowHide}
@@ -301,6 +340,7 @@ class Organization extends PureComponent {
                 data={company.deps || []}
                 editMemberInfo={editMemberInfo}
                 allUsers={allUsers}
+                key={12}
             />
         );
     }
@@ -313,21 +353,32 @@ class Organization extends PureComponent {
         });
     }
     // 删除成员
-    delCompanyMember = (userId) => {
-        feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
-            const companyId = UserUtil.getMainCompany();
-            Meteor.call(
-                'delCompanyMember',
-                { companyId, userId },
-                (err) => {
-                    if (err) {
-                        feedback.dealError('删除失败');
-                        return false;
-                    }
-                    feedback.successToast('删除成功');
-                },
-            );
+    delCompanyMember = (userId, record) => {
+        const { deps = [] } = this.props.company;
+        let groupId = '';
+        deps.forEach((item) => {
+            if (item.id === record.dep) {
+                groupId = item.groupId;
+            }
         });
+        if (userId === Meteor.user()._id) {
+            feedback.dealWarning('无法删除自己');
+        } else {
+            feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
+                const companyId = UserUtil.getCurrentBackendCompany();
+                Meteor.call(
+                    'delCompanyMember',
+                    { companyId, userId, groupId },
+                    (err) => {
+                        if (err) {
+                            feedback.dealError('删除失败');
+                            return false;
+                        }
+                        feedback.successToast('删除成功');
+                    },
+                );
+            });
+        }
     }
     // table列表
     tableList = (users) => {
@@ -364,7 +415,7 @@ class Organization extends PureComponent {
                 render: record => (
                     <span className="">
                         <i className="iconfont icon-bianji1 margin-right-20" onClick={() => this.editMember(record)} title="编辑" />
-                        <Icon type="close" title="删除" onClick={() => this.delCompanyMember(record.userId)} />
+                        <Icon type="close" title="删除" onClick={() => this.delCompanyMember(record.userId, record)} />
                     </span>
                 ),
             },
@@ -380,7 +431,6 @@ class Organization extends PureComponent {
     }
     // 批量切换部门
     memberBelongModel = () => {
-        console.log('object');
         const { allUsers } = this.props;
         const { deps = [] } = this.props.company;
         return (
@@ -401,10 +451,30 @@ class Organization extends PureComponent {
             feedback.dealWarning('至少选择一个成员');
         }
     }
+    // ---- 邀请员工 ----
+    pleaseInvite = () => {
+        const { members } = this.props.company;
+        return (
+            <Invite
+                title="新增部门"
+                addDepModel={this.modelShowHide}
+                postAddDep={this.postAddDep}
+                modelDep={this.state.inviteModel}
+                deps={members || []}
+            />
+        );
+    }
     render() {
         const { deps = [] } = this.props.company;
-        const data = this.props.users.filter(item => (item.dep === this.state.depActive));
-        console.log('render', this.props, this.state, data);
+        const { users } = this.props;
+        const { depActive } = this.state;
+        let data = [];
+        if (depActive) {
+            data = users.filter(item => (item.dep === this.state.depActive));
+        } else {
+            data = users.filter(item => (!item.dep));
+        }
+        // console.log('render', this.props, this.state, data);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">
@@ -419,6 +489,7 @@ class Organization extends PureComponent {
                         {this.addMembersModel()}
                         {this.memberBelongModel()}
                         {this.depsettingModel()}
+                        {this.pleaseInvite()}
                     </Col>
                 </Row>
             </div>
@@ -432,7 +503,7 @@ export default withTracker(() => {
     const companys = Company.find().fetch();
     let users = [];
     let company = {};
-    const mainCompany = UserUtil.getMainCompany();
+    const mainCompany = UserUtil.getCurrentBackendCompany();
     for (let i = 0; i < companys.length; i++) {
         if (companys[i]._id === mainCompany) {
             users = companys[i].members || [];

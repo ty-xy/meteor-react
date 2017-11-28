@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import { Menu } from 'antd';
+import pureRender from 'pure-render-decorator';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
+import PropTypes from 'prop-types';
+
 
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
@@ -9,7 +14,15 @@ import SubManage from './SubManage';
 import DissolveTeam from './DissolveTeam';
 import EmptyChat from '../../../components/EmptyChat';
 
+import UserUtil from '../../../../util/user';
+import Company from '../../../../schema/company';
+// import fields from '../../../../util/fields';
+
+@pureRender
 class CompanySetting extends Component {
+    static propTypes = {
+        currentCompany: PropTypes.object,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
@@ -36,23 +49,34 @@ class CompanySetting extends Component {
         }
     }
     render() {
+        const { name = '', logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [], deps = [] } = this.props.currentCompany || {};
         return (
             <div className="company-setting">
                 <div className="company-main-page">
                     <div className="logo-info">
                         <div className="logo-mark">
-                            <p>中艺装饰</p>
-                            <Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" />
+                            <p>{name}</p>
+                            <Avatar name={name} avatarColor="red" avatar={logo} />
                         </div>
 
                     </div>
                     <div className="company-base-info">
                         <div className="base-info">
-                            <p className="base-count">87</p>
+                            {
+                                members && members.length ?
+                                    <p className="base-count">{members.length }</p>
+                                    :
+                                    <p className="base-count">0</p>
+                            }
                             <p>企业人数</p>
                         </div>
                         <div className="base-info">
-                            <p className="base-count">7</p>
+                            {
+                                deps && deps.length ?
+                                    <p className="base-count">{deps.length }</p>
+                                    :
+                                    <p className="base-count">0</p>
+                            }
                             <p>部门数</p>
                         </div>
                     </div>
@@ -101,4 +125,11 @@ class CompanySetting extends Component {
     }
 }
 
-export default CompanySetting;
+export default withTracker(() => {
+    Meteor.subscribe('company');
+    const currentCompanyId = UserUtil.getCurrentBackendCompany();
+    const currentCompany = Company.findOne({ _id: currentCompanyId });
+    return {
+        currentCompany,
+    };
+})(CompanySetting);

@@ -15,6 +15,8 @@ class GroupList extends Component {
         groups: PropTypes.array,
         changeTo: PropTypes.func,
         handleClick: PropTypes.func,
+        selfGroups: PropTypes.array,
+        teamGroups: PropTypes.array,
     };
     constructor(...args) {
         super(...args);
@@ -44,7 +46,7 @@ class GroupList extends Component {
                                 <Icon icon="icon-qunzu icon" />
                             </p>
                             <p className="friend-name" style={{ borderWidth: this.state.isShowMyGroup ? '0px' : this.props.groups.length > 0 ? '1px' : '0px' }}>
-                                我的群聊
+                                团队群聊
                                 {
                                     this.state.isShowMyGroup ?
                                         <Icon icon="icon-xiangshangjiantou-copy-copy-copy icon" onClick={this.handleShowMyGroup} />
@@ -55,7 +57,7 @@ class GroupList extends Component {
                         </div>
                         <div style={{ display: this.state.isShowMyGroup ? 'none' : 'block' }}>
                             {
-                                this.props.groups.map((item, index) => (
+                                this.props.teamGroups.map((item, index) => (
                                     item ?
                                         <div
                                             key={index}
@@ -68,7 +70,47 @@ class GroupList extends Component {
                                             <p>
                                                 <Avatar name={item.name} avatar={item.avatar ? item.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} />
                                             </p>
-                                            <p className={this.props.groups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}</p>
+                                            <p className={this.props.teamGroups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}</p>
+                                        </div>
+                                        :
+                                        null
+                                ),
+                                )
+                            }
+                        </div>
+                    </div>
+                    <div className="friend-pannel-type" />
+                    <div className="friend-pannel-list">
+                        <div className="friend-list-item">
+                            <p className="my-chat-group">
+                                <Icon icon="icon-qunzu icon" />
+                            </p>
+                            <p className="friend-name" style={{ borderWidth: this.state.isShowMyGroup ? '0px' : this.props.groups.length > 0 ? '1px' : '0px' }}>
+                                我的群聊
+                                {
+                                    this.state.isShowMyGroup ?
+                                        <Icon icon="icon-xiangshangjiantou-copy-copy-copy icon" onClick={this.handleShowMyGroup} />
+                                        :
+                                        <Icon icon="icon-jiantou-copy icon" onClick={this.handleShowMyGroup} />
+                                }
+                            </p>
+                        </div>
+                        <div style={{ display: this.state.isShowMyGroup ? 'none' : 'block' }}>
+                            {
+                                this.props.selfGroups.map((item, index) => (
+                                    item ?
+                                        <div
+                                            key={index}
+                                            className="friend-list-item"
+                                            onClick={() => {
+                                                this.props.handleClick();
+                                                this.props.changeTo(item._id, item._id, 'groupId', 'message');
+                                            }}
+                                        >
+                                            <p>
+                                                <Avatar name={item.name} avatar={item.avatar ? item.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} />
+                                            </p>
+                                            <p className={this.props.selfGroups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}</p>
                                         </div>
                                         :
                                         null
@@ -86,9 +128,12 @@ class GroupList extends Component {
 export default withTracker(() => {
     Meteor.subscribe('group');
     const groupIds = UserUtil.getGroups();
-
     const groups = groupIds.map(_id => Group.findOne({ _id }));
+    const selfGroups = groups.filter(x => x.type === 'group' || x.type === undefined); // 之后数据库重新更新后,要删掉对undefined的判断
+    const teamGroups = groups.filter(x => x.type === 'team');
     return {
         groups,
+        selfGroups,
+        teamGroups,
     };
 })(GroupList);

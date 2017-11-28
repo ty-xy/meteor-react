@@ -41,4 +41,8 @@ export default {
         from: 1,
         url: 1,
     },
+    createdcompany: {
+        name: 1,
+        logo: 1,
+    },
 };
