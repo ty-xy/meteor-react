@@ -202,3 +202,43 @@ Meteor.users.update(
 );
 ```
 [mongodb的操作方法](https://docs.mongodb.com/manual/reference/operator/update/pull/)
+
+## SelectMembers组件接收的props及具体含义(目前还不支持单选)
+
+```js
+ team: PropTypes.array.isRequired, // 需要选择的人员
+ confirmSelected: PropTypes.func.isRequired, // 选择完成后的函数,函数的参数为选中的人员ID
+```
+具体的参数类型
+
+```js
+const friendIds = UserUtil.getFriends();
+const team = [
+    {
+        name: 'e建联好友',
+        members: friendIds,
+        department: [], // 不存在的时候需要传一个空数组
+    },
+    {
+        name: '知工网络科技有限公司',
+        members: ['9A8GrFpDd8TyhCAPs', 'kfFea3wBriB48DPpM', 'Agvq9dmbsXNFtBcwi'],
+        department: [
+            {
+                name: '技术部',
+                members: [
+                    // 成员
+                    'kfFea3wBriB48DPpM',
+                ],
+            },
+            {
+                name: '产品部',
+                members: [
+                    // 成员
+                    'Agvq9dmbsXNFtBcwi',
+                ],
+            },
+        ],
+    },
+];
+```
+> 可参考在CreateTeam组件中的使用

@@ -149,7 +149,7 @@ class SelectMembers extends Component {
         <TreeNode title={this.renderUserTitle(item.profile)} key={item._id} />,
     )
     render() {
-        console.log(this.state.checkedKeys, this.state.allKeys);
+        // console.log(this.state.checkedKeys, this.state.allKeys);
         const selectedUsers = this.toggleKeyToUsers();
         return (
             <div className="select-members">
