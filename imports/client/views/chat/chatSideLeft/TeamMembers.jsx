@@ -20,6 +20,7 @@ class TeamMembers extends Component {
         teamId: PropTypes.string,
         currentMembers: PropTypes.array || [],
         currentCompany: PropTypes.object,
+        depsName: PropTypes.string,
     }
     constructor(...args) {
         super(...args);
@@ -47,8 +48,16 @@ class TeamMembers extends Component {
             visible: false,
         });
     }
-    renderHeader = (name, deps) => (<div className="dev-title">
-        <p><span className="company">{name}</span> &gt; {deps.name}</p>
+    renderHeader = (name, depsName) => (<div className="dev-title">
+        <p>
+            <span className="company">{name}</span>
+            {
+                depsName ?
+                    <span>&gt;{depsName}</span>
+                    :
+                    null
+            }
+        </p>
         <Icon icon="icon-tuichu" onClick={this.quitTeam} />
     </div>)
 
@@ -62,13 +71,13 @@ class TeamMembers extends Component {
             wrapperCol: { span: 14, offset: 4 },
         } : null;
         const { getFieldDecorator } = this.props.form;
-        const { name = '', deps = [] } = this.props.currentCompany;
+        const { name = '' } = this.props.currentCompany;
         return (
             <div className="team-members">
                 <Table
                     columns={this.state.columns}
                     dataSource={this.props.currentMembers}
-                    title={() => this.renderHeader(name, deps)}
+                    title={() => this.renderHeader(name, this.props.depsName)}
                     rowKey={record => record._id}
                 />
                 <Modal
@@ -130,8 +139,10 @@ export default Form.create({})(
         Meteor.subscribe('company');
         const currentCompany = Company.findOne({ _id: teamId });
         let currentMembers = [];
+        let depsName = '';
         if (deps === 'deps') {
             currentMembers = currentCompany.members.filter(x => x.dep === depsId);
+            depsName = currentCompany.deps.find(x => x.id === depsId).name;
             currentMembers.forEach((x) => {
                 x.key = x.userId;
                 x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;
@@ -148,6 +159,7 @@ export default Form.create({})(
             currentMembers,
             teamId,
             currentCompany,
+            depsName,
         };
     })(TeamMembers),
 );

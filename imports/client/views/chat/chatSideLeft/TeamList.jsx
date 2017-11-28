@@ -29,7 +29,6 @@ class TeamList extends Component {
         });
     }
     handleClick = (e) => {
-        console.log('click ', e);
         this.props.handleTeamMembers('teamMembers', this.state.currentTeamId, e.key, 'deps');
     }
     showModal = () => {
@@ -105,13 +104,6 @@ class TeamList extends Component {
                                 ),
                             )
                         }
-                        <SubMenu key="sub2" title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>} />
-                        <SubMenu key="sub4" title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>}>
-                            <Menu.Item key="9">Option 9</Menu.Item>
-                            <Menu.Item key="10">Option 10</Menu.Item>
-                            <Menu.Item key="11">Option 11</Menu.Item>
-                            <Menu.Item key="12">Option 12</Menu.Item>
-                        </SubMenu>
                     </Menu>
                 </div>
             </div>
