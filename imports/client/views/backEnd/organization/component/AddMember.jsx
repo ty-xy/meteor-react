@@ -83,7 +83,7 @@ class AddMembers extends PureComponent {
                     <Select keyword="dep" userId label="部门" defaultValue={editMemberInfo.dep} placeholder="请选择部门" {...this.props} data={data} />
                     <MyInput keyword="pos" label="职务" defaultValue={editMemberInfo.pos} placeholder="请输入职务" {...this.props} />
                     <div className="text-center form-buttom">
-                        <Button type="primary" htmlType="submit">确定</Button>
+                        <Button className="e-mg-button" htmlType="submit">确定</Button>
                         <Button className="margin-left-20" onClick={this.handleCancel}>取消</Button>
                     </div>
                 </Form>
