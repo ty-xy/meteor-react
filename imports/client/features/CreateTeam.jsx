@@ -80,6 +80,7 @@ class CreateTeam extends Component {
         const changeAvatar = this.changeAvatar;
         reader.onloadend = function () {
             Meteor.call('uploadImg', this.result, (err, result) => {
+                console.log(101010, result);
                 changeAvatar(result);
                 if (err) {
                     return console.error(err.reason);
@@ -123,7 +124,7 @@ class CreateTeam extends Component {
             wrapperCol: { span: 14, offset: 4 },
         } : null;
         const { getFieldDecorator } = this.props.form;
-        const { name = '', logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', industryType = '', residence = [] } = this.props.currentCompany || {};
+        const { name = '', logo = this.state.teamLogo, industryType = '', residence = [] } = this.props.currentCompany || {};
         return (
             <div>
                 <Form layout={formLayout} onSubmit={this.handleSubmit}>

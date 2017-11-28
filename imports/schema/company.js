@@ -52,6 +52,11 @@ Company.schema = new SimpleSchema({
         type: [Object],
         optional: true,
     },
+    // 公司群聊Id
+    groupId: {
+        type: String,
+        optional: true,
+    },
     // 部门id
     'deps.$.id': {
         type: String,
