@@ -108,7 +108,7 @@ export default withTracker(() => {
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
     const currentCompany = Company.findOne({ _id: currentCompanyId });
     const subManageIds = currentCompany.subAdmin || [];
-    const subManages = subManageIds.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+    const subManages = subManageIds.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser })) || [];
     subManages.forEach((x) => {
         x.key = x._id;
     });

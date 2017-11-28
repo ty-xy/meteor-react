@@ -301,9 +301,13 @@ Meteor.methods({
             }, {
                 $pull: {
                     'profile.company': companyId,
+                    'profile.createdCompany': companyId,
                     'profile.chatList': {
                         companyId,
                     },
+                },
+                $set: {
+                    'profile.currentBackendCompany': '',
                 },
 
             })
