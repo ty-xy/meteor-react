@@ -46,6 +46,8 @@ class Chat extends Component {
             selectedChat: {},
             chatType: 'message',
             currentKey: '',
+            currentDeps: '',
+            deps: '',
         };
     }
     handleChatType = (chatType) => {
@@ -54,12 +56,13 @@ class Chat extends Component {
             chatType,
         });
     }
-    handleTeamMembers = (chatType, currentKey) => {
-        console.log(777, currentKey);
-        this.handleChatType(chatType);
+    handleTeamMembers = (chatType, currentKey, currentDeps = '', deps = '') => {
         this.setState({
             currentKey,
+            currentDeps,
+            deps,
         });
+        this.handleChatType(chatType);
     }
     handleClick = (index) => {
         this.setState({
@@ -89,7 +92,10 @@ class Chat extends Component {
             },
         });
     }
-    renderTeamMembers = teamId => <TeamMembers teamId={teamId} />
+    renderTeamMembers = (teamId, currentDeps, deps) => {
+        console.log(currentDeps);
+        return <TeamMembers teamId={teamId} depsId={currentDeps} deps={deps} />;
+    }
     renderChatType = (chatType) => {
         // console.log(chatType);
         switch (chatType) {
@@ -99,7 +105,8 @@ class Chat extends Component {
         case 'newFriend':
             return <NewFriend />;
         case 'teamMembers':
-            return this.renderTeamMembers(this.state.currentKey);
+            console.log(this.state.currentDeps);
+            return this.renderTeamMembers(this.state.currentKey, this.state.currentDeps, this.state.deps);
         default:
             return <EmptyChat />;
         }

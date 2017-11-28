@@ -20,14 +20,16 @@ class TeamList extends Component {
         super(...args);
         this.state = {
             visible: false,
-            currentKey: '',
+            currentTeamId: '',
         };
     }
-    handleClick = (e) => {
-        console.log('click ', e);
+    setCurrentTeamId = (currentTeamId) => {
         this.setState({
-            currentKey: e.key,
+            currentTeamId,
         });
+    }
+    handleClick = (e) => {
+        this.props.handleTeamMembers('teamMembers', this.state.currentTeamId, e.key, 'deps');
     }
     showModal = () => {
         this.setState({
@@ -49,7 +51,13 @@ class TeamList extends Component {
             }
         });
     }
-    // renderSubMenu =
+    renderSubMenu = (departments) => {
+        if (departments && departments.length) {
+            return departments.map(dev =>
+                <Menu.Item key={dev.id}>{dev.name}</Menu.Item>,
+            );
+        }
+    }
     renderTeamTitle = (name, logo, membersLength) => <div className="team-title"><Avatar name="企业" avatarColor="red" avatar={logo} /><p>{name}({membersLength})</p></div>
     render() {
         console.log(this.props.companyList);
@@ -81,19 +89,21 @@ class TeamList extends Component {
                         {
                             this.props.companyList[0] && this.props.companyList.map(company =>
                                 (<SubMenu
-                                    onTitleClick={() => this.props.handleTeamMembers('teamMembers', company._id)}
+                                    onTitleClick={() => {
+                                        this.props.handleTeamMembers('teamMembers', company._id);
+                                        this.setCurrentTeamId(company._id);
+                                    }
+                                    }
                                     title={this.renderTeamTitle(company.name, company.logo, company.members.length)}
                                     key={company._id}
-                                />),
+                                >
+                                    {
+                                        this.renderSubMenu(company.deps)
+                                    }
+                                </SubMenu>
+                                ),
                             )
                         }
-                        <SubMenu key="sub2" title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>} />
-                        <SubMenu key="sub4" title={<div className="team-title"><Avatar name="企业" avatarColor="red" avatar="http://oxldjnom8.bkt.clouddn.com/companyLogo.png" /><p>知工网络科技有限公司(0)</p></div>}>
-                            <Menu.Item key="9">Option 9</Menu.Item>
-                            <Menu.Item key="10">Option 10</Menu.Item>
-                            <Menu.Item key="11">Option 11</Menu.Item>
-                            <Menu.Item key="12">Option 12</Menu.Item>
-                        </SubMenu>
                     </Menu>
                 </div>
             </div>

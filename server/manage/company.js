@@ -4,7 +4,9 @@ import Company from '../../imports/schema/company';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
-    createCompany({ name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [] }) {
+    async createCompany({ name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [] }) {
+        // 创建完团队,自动创建公司的群聊
+
         const newCompany = {
             createdAt: new Date(),
             name,
@@ -15,32 +17,30 @@ Meteor.methods({
             members,
         };
         Company.schema.validate(newCompany);
-        const companyId = Company.insert(newCompany);
-        // 创建爱完成后,需自动创建,需要在chatList里添加
-        members.map((user =>
-            Meteor.users.update(
-                { _id: user.userId },
-                {
-                    $push: {
-                        'profile.company': companyId,
-                        'profile.chatList': {
-                            type: 'group',
-                            companyId,
-                            time: new Date(),
-                        },
-                    },
-                },
-            )
-        ));
-        // 是我创建的需要在createdCompany里添加
+        const companyId = await Company.insert(newCompany);
+        // 是我创建的需要在createdCompany和company里添加
         Meteor.users.update(
             { _id: Meteor.userId() },
             {
                 $push: {
                     'profile.createdCompany': companyId,
+                    'profile.company': companyId,
                 },
             },
         );
+        Meteor.call('createGroup', { name, members, type: 'team' }, (err, res) => {
+            if (err) {
+                return false;
+            }
+            Company.update(
+                { _id: companyId },
+                {
+                    $set: {
+                        groupId: res,
+                    },
+                },
+            );
+        });
         return companyId;
     },
     // 修改公司/团队信息
@@ -69,14 +69,16 @@ Meteor.methods({
         );
     },
     // 添加子管理员
-    addSubAdmin(companyId, subManageId) {
-        Company.update(
-            { _id: companyId },
-            {
-                $push: {
-                    subAdmin: subManageId,
+    addSubAdmin(companyId, subManageIds) {
+        subManageIds.map(subManageId =>
+            Company.update(
+                { _id: companyId },
+                {
+                    $push: {
+                        subAdmin: subManageId,
+                    },
                 },
-            },
+            ),
         );
     },
     // 删除子管理员
@@ -84,7 +86,9 @@ Meteor.methods({
         Company.update(
             { _id: companyId },
             {
-                $pull: { subAdmin: { subManageId } },
+                $pull: {
+                    subAdmin: subManageId,
+                },
             },
         );
     },
@@ -107,7 +111,7 @@ Meteor.methods({
                 if (res && isAutoChat) {
                     Meteor.call(
                         'createGroup',
-                        { name, members, type: 'team' },
+                        { name, members, type: 'team', superiorId: _id },
                         (err, groupid) => {
                             if (err) {
                                 return false;
@@ -297,9 +301,13 @@ Meteor.methods({
             }, {
                 $pull: {
                     'profile.company': companyId,
+                    'profile.createdCompany': companyId,
                     'profile.chatList': {
                         companyId,
                     },
+                },
+                $set: {
+                    'profile.currentBackendCompany': '',
                 },
 
             })

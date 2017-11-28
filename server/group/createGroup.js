@@ -4,12 +4,24 @@ import Group from '../../imports/schema/group';
 
 Meteor.methods({
     // name: 群聊/团队名称, members: 群聊成员, type: group/team 区分是个人群聊和团队群聊, superiorId: 团队里面的部门所属的公司ID
-    createGroup({ name, members, type = 'group', superiorId = '' }) {
+    createGroup({ name, members, type = 'group', superiorId = '', avatar = 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png' }) {
+        let groupMembers = [];
+        if (type === 'team') {
+            if (members[0] && members[0].userId) {
+                for (const value of Object.values(members)) {
+                    groupMembers.push(value.userId);
+                }
+            } else {
+                groupMembers = members.concat();
+            }
+        } else {
+            groupMembers = members.concat();
+        }
         const newGroup = {
             createdAt: new Date(),
             name,
-            avatar: 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png',
-            members,
+            avatar,
+            members: groupMembers,
             admin: Meteor.userId(),
             notice: '',
             noticeTime: new Date(),

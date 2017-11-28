@@ -10,21 +10,6 @@ import Icon from '../../../components/Icon';
 import Company from '../../../../schema/company';
 import fields from '../../../../util/fields';
 
-// const data = [{
-//     profile: {
-//         name: '星星',
-//         avatarColor: '#29b6f6',
-//         avatar: '',
-//     },
-//     _id: '9A8GrFpDd8TyhCAPs',
-// }, {
-//     profile: {
-//         name: '星星',
-//         avatarColor: '#29b6f6',
-//         avatar: '',
-//     },
-//     _id: '9A8GrFpDd8TyhCAty',
-// }];
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
@@ -32,8 +17,10 @@ const { TextArea } = Input;
 class TeamMembers extends Component {
     static propTypes = {
         form: PropTypes.object,
-        teamId: PropTypes.array,
+        teamId: PropTypes.string,
         currentMembers: PropTypes.array || [],
+        currentCompany: PropTypes.object,
+        depsName: PropTypes.string,
     }
     constructor(...args) {
         super(...args);
@@ -61,8 +48,16 @@ class TeamMembers extends Component {
             visible: false,
         });
     }
-    renderHeader = () => (<div className="dev-title">
-        <p><span className="company">知工网络科技有限公司</span> &gt; 人力资源</p>
+    renderHeader = (name, depsName) => (<div className="dev-title">
+        <p>
+            <span className="company">{name}</span>
+            {
+                depsName ?
+                    <span>&gt;{depsName}</span>
+                    :
+                    null
+            }
+        </p>
         <Icon icon="icon-tuichu" onClick={this.quitTeam} />
     </div>)
 
@@ -76,12 +71,13 @@ class TeamMembers extends Component {
             wrapperCol: { span: 14, offset: 4 },
         } : null;
         const { getFieldDecorator } = this.props.form;
+        const { name = '' } = this.props.currentCompany;
         return (
             <div className="team-members">
                 <Table
                     columns={this.state.columns}
                     dataSource={this.props.currentMembers}
-                    title={() => this.renderHeader()}
+                    title={() => this.renderHeader(name, this.props.depsName)}
                     rowKey={record => record._id}
                 />
                 <Modal
@@ -138,17 +134,32 @@ class TeamMembers extends Component {
 }
 
 export default Form.create({})(
-    withTracker(({ teamId }) => {
+    withTracker(({ teamId, depsId, deps }) => {
         Meteor.subscribe('users');
         Meteor.subscribe('company');
         const currentCompany = Company.findOne({ _id: teamId });
-        const currentMembers = currentCompany.members || [];
-        currentMembers.forEach((x) => {
-            x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;
-        });
+        let currentMembers = [];
+        let depsName = '';
+        if (deps === 'deps') {
+            currentMembers = currentCompany.members.filter(x => x.dep === depsId);
+            depsName = currentCompany.deps.find(x => x.id === depsId).name;
+            currentMembers.forEach((x) => {
+                x.key = x.userId;
+                x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;
+            });
+        } else {
+            currentMembers = currentCompany.members || [];
+            currentMembers.forEach((x) => {
+                x.key = x.userId;
+                x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;
+            });
+        }
+
         return {
             currentMembers,
             teamId,
+            currentCompany,
+            depsName,
         };
     })(TeamMembers),
 );
