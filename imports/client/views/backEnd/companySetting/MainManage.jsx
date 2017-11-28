@@ -2,16 +2,22 @@ import React, { Component } from 'react';
 import { Form, Input, Button, Row, Col, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 
 import Avatar from '../../../components/Avatar';
-import SelectOne from '../../../features/SelectOne';
+import SelectMembers from '../../../features/SelectMembers';
 import feedback from '../../../../util/feedback';
+import UserUtil from '../../../../util/user';
+import Company from '../../../../schema/company';
+import fields from '../../../../util/fields';
+
 
 const FormItem = Form.Item;
 class MainManage extends Component {
     static propTypes = {
         form: PropTypes.object,
-        companyId: PropTypes.string,
+        currentCompany: PropTypes.object,
+        team: PropTypes.array,
     }
     constructor() {
         super();
@@ -32,11 +38,13 @@ class MainManage extends Component {
         });
     }
     confirmChange = (selectedId) => {
-        Meteor.call('changeMainManage', this.props.companyId, selectedId, (err) => {
+        const companyId = this.props.currentCompany._id;
+        Meteor.call('changeMainManage', companyId, selectedId[0], (err) => {
             if (err) {
                 console.error(err.reason);
             }
             feedback.dealSuccess('设置成功');
+            this.handleCancel();
         });
     }
     render() {
@@ -49,6 +57,7 @@ class MainManage extends Component {
             wrapperCol: { span: 14, offset: 4 },
         } : null;
         const { getFieldDecorator } = this.props.form;
+        const { adminInfo = {} } = this.props.currentCompany;
         return (
             <div className="company-main-manage-set company-set-arae">
                 <div className="set-title">
@@ -60,10 +69,16 @@ class MainManage extends Component {
                             label="主管理员"
                             {...formItemLayout}
                         >
-                            <div className="upload-team-avatar">
-                                <Avatar avatar="http://oxldjnom8.bkt.clouddn.com/groupAvatar.png" name="团队" />
-                                <p className="edit-avatar" onClick={this.showModal}>更改</p>
-                            </div>
+                            {
+                                adminInfo && adminInfo.name ?
+                                    <div className="upload-team-avatar">
+                                        <Avatar avatar={adminInfo && adminInfo.avatar} name={adminInfo && adminInfo.name} avatarColor={adminInfo && adminInfo.avatarColor} />
+                                        <p className="edit-avatar" onClick={this.showModal}>更改</p>
+                                    </div>
+                                    :
+                                    null
+                            }
+
                         </FormItem>
                         <FormItem
                             label="手机号"
@@ -112,11 +127,37 @@ class MainManage extends Component {
                     wrapClassName="create-team-mask"
                     footer={null}
                 >
-                    <SelectOne />
+                    <SelectMembers
+                        team={this.props.team}
+                        confirmSelected={this.confirmChange}
+                    />
                 </Modal>
             </div>
         );
     }
 }
 
-export default Form.create({})(MainManage);
+export default Form.create({})(
+    withTracker(() => {
+        Meteor.subscribe('company');
+        Meteor.subscribe('users');
+        const currentCompanyId = UserUtil.getCurrentBackendCompany();
+        const currentCompany = Company.findOne({ _id: currentCompanyId });
+        const currentAdmin = Meteor.users.findOne({ _id: currentCompany.admin }, { fields: fields.searchAllUser });
+        currentCompany.adminInfo = currentAdmin ? currentAdmin.profile : {};
+        const members = [];
+        for (const value of Object.values(currentCompany.members)) {
+            members.push(value.userId);
+        }
+        const team = [
+            {
+                name: currentCompany.name,
+                members,
+            },
+        ];
+        return {
+            currentCompany,
+            team,
+        };
+    })(MainManage),
+);
