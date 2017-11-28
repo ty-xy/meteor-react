@@ -5,11 +5,11 @@ changelogfile="changelogs.txt"
 echo "开始构建壹建联......" 
 
 # Step 1 清理
-# rm -f $FILE
+rm -f $FILE
 
 # Step 2 下载最新代码
-#git reset --hard HEAD
-#git pull
+git reset --hard HEAD
+git pull
 
 # Step 3 从 buildnumber 文件中读取上次 build 的时间和 build number
 read -d $"\x04" builddatenum < "$buildnumberfile" 
@@ -20,9 +20,9 @@ echo "上次build的编号： $buildnum"
 
 # Step 4 真正的创建 build
 startbuild=$( date "+%Y-%m-%d %H:%M:%S" )
-#meteor npm install --save bcrypt
-#meteor npm install
-#meteor build ../build --architecture os.linux.x86_64
+meteor npm install --save bcrypt
+meteor npm install
+meteor build ../build --architecture os.linux.x86_64
 
 # Step 5 将创建成功的文件拷贝到远程
 if [ -f $FILE ]; then
@@ -41,9 +41,6 @@ if [ -f $FILE ]; then
    git checkout -b $branchname
 
    # Step 8 保存变化到文件
-   # write the new buildnum
-   # echo $newbuilddate,$newbuildnum > "$buildnumberfile"
-
    echo "----------------------------------" >> "$changelogfile"
    echo  >> "$changelogfile"
    echo "$newbuilddate,   build $newbuildnum" >> "$changelogfile"
