@@ -45,11 +45,10 @@ class Organization extends PureComponent {
     }
     // 修改部门
     handleDepSetting = ({ name }, id) => {
-        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+        const companyId = UserUtil.getCurrentBackendCompany();
         const { deps } = this.props.company;
         const _this = this;
         const visitedDep = deps.filter(item => (item.id === this.state.depActive));
-        console.log('fields', { companyId, ...visitedDep, id, name });
         const DEV = visitedDep.length ? visitedDep[0] : {};
         Meteor.call(
             'editCompanyDep',
@@ -67,7 +66,7 @@ class Organization extends PureComponent {
     }
     // 删除部门
     handleDepDel = (id, groupId, isAutoChat) => {
-        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+        const companyId = UserUtil.getCurrentBackendCompany();
         const { users } = this.props;
         const _this = this;
         let isDelete = true;
@@ -119,17 +118,18 @@ class Organization extends PureComponent {
             this.setState({ [name]: bool });
         }
     }
-    // 新增部门提交
+    // 创建部门提交
     postAddDep = (info) => {
         this.setState({
             commentModel: false,
         });
-        // const _id = UserUtil.getMainCompany();
-        const _id = 'ar9bP7gagx9vNqSRu';
+        const _id = UserUtil.getCurrentBackendCompany();
+        const members = [];
+        members.push(Meteor.user()._id);
         const id = uuid();
         Meteor.call(
             'addDepartment',
-            { ...info, _id, id },
+            { ...info, _id, id, members },
             (err, result) => {
                 console.log('postAddDep', result);
                 if (err) {
@@ -198,7 +198,7 @@ class Organization extends PureComponent {
     );
     // 新增人员提交
     handleSubmitMember = (res, editMemberInfo, oldgroup) => {
-        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+        const companyId = UserUtil.getCurrentBackendCompany();
         const { allUsers, users, company } = this.props;
         let isNot = false;
         let bool = false;
@@ -266,9 +266,19 @@ class Organization extends PureComponent {
     // 批量修改提交
     handleSubmitBatchDep = (fields) => {
         const { selectedRowKeys } = this.state;
-        const { users } = this.props;
-        const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+        const { users, company } = this.props;
+        const companyId = UserUtil.getCurrentBackendCompany();
         const _users = [];
+        let oldgroup = '';
+        let groupId = '';
+        company.deps.forEach((item) => {
+            if (item.id === users[0].dep) {
+                oldgroup = item.groupId;
+            }
+            if (item.id === fields.dep) {
+                groupId = item.groupId;
+            }
+        });
         users.forEach((item) => {
             if (selectedRowKeys.indexOf(item.userId) > -1) {
                 item.dep = fields.dep;
@@ -276,10 +286,10 @@ class Organization extends PureComponent {
             }
         });
         const _this = this;
-        console.log('_users', _users, fields, selectedRowKeys);
+        console.log('_users', _users, fields, selectedRowKeys, groupId, oldgroup);
         Meteor.call(
             'batchSetDep',
-            { companyId, _users },
+            { companyId, _users, groupId, oldgroup },
             (err) => {
                 if (err) {
                     feedback.dealError('批量设置失败');
@@ -342,21 +352,32 @@ class Organization extends PureComponent {
         });
     }
     // 删除成员
-    delCompanyMember = (userId) => {
-        feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
-            const companyId = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
-            Meteor.call(
-                'delCompanyMember',
-                { companyId, userId },
-                (err) => {
-                    if (err) {
-                        feedback.dealError('删除失败');
-                        return false;
-                    }
-                    feedback.successToast('删除成功');
-                },
-            );
+    delCompanyMember = (userId, record) => {
+        const { deps = [] } = this.props.company;
+        let groupId = '';
+        deps.forEach((item) => {
+            if (item.id === record.dep) {
+                groupId = item.groupId;
+            }
         });
+        if (userId === Meteor.user()._id) {
+            feedback.dealWarning('无法删除自己');
+        } else {
+            feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
+                const companyId = UserUtil.getCurrentBackendCompany();
+                Meteor.call(
+                    'delCompanyMember',
+                    { companyId, userId, groupId },
+                    (err) => {
+                        if (err) {
+                            feedback.dealError('删除失败');
+                            return false;
+                        }
+                        feedback.successToast('删除成功');
+                    },
+                );
+            });
+        }
     }
     // table列表
     tableList = (users) => {
@@ -393,7 +414,7 @@ class Organization extends PureComponent {
                 render: record => (
                     <span className="">
                         <i className="iconfont icon-bianji1 margin-right-20" onClick={() => this.editMember(record)} title="编辑" />
-                        <Icon type="close" title="删除" onClick={() => this.delCompanyMember(record.userId)} />
+                        <Icon type="close" title="删除" onClick={() => this.delCompanyMember(record.userId, record)} />
                     </span>
                 ),
             },
@@ -467,7 +488,7 @@ export default withTracker(() => {
     const companys = Company.find().fetch();
     let users = [];
     let company = {};
-    const mainCompany = 'ar9bP7gagx9vNqSRu' || UserUtil.getMainCompany();
+    const mainCompany = UserUtil.getCurrentBackendCompany();
     for (let i = 0; i < companys.length; i++) {
         if (companys[i]._id === mainCompany) {
             users = companys[i].members || [];
