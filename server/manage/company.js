@@ -86,7 +86,9 @@ Meteor.methods({
         Company.update(
             { _id: companyId },
             {
-                $pull: { subAdmin: { subManageId } },
+                $pull: {
+                    subAdmin: subManageId,
+                },
             },
         );
     },

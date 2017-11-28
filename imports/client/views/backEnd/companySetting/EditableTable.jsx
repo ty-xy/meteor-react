@@ -9,11 +9,13 @@ import SelectMembers from '../../../features/SelectMembers';
 import UserUtil from '../../../../util/user';
 import feedback from '../../../../util/feedback';
 import Company from '../../../../schema/company';
+import fields from '../../../../util/fields';
 
 class EditableTable extends Component {
     static propTypes = {
         team: PropTypes.array,
         currentCompanyId: PropTypes.string,
+        SubManages: PropTypes.array,
     }
     constructor(props) {
         super(props);
@@ -29,39 +31,22 @@ class EditableTable extends Component {
                     </div>),
             }, {
                 title: '操作',
-                dataIndex: 'operation',
-                render: record => (
-                    this.state.dataSource.length >= 1 ?
-                        (
-                            <Popconfirm title="确定要删除该子管理员么?" onConfirm={() => this.onDelete(record.key)}>
-                                <p>删除</p>
-                            </Popconfirm>
-                        ) : null
+                dataIndex: '_id',
+                render: _id => (
+                    <Popconfirm title="确定要删除该子管理员么?" onConfirm={() => this.onDelete(_id)}>
+                        <p>删除</p>
+                    </Popconfirm>
                 ),
-            }],
-            dataSource: [{
-                createdAt: 'Tue Nov 07 2017 15:09:34 GMT+0800 (CST)',
-                profile: {
-                    name: '星星',
-                    avatarColor: '#29b6f6',
-                    avatar: '',
-                },
-                _id: '9A8GrFpDd8TyhCAPs',
-                key: '9A8GrFpDd8TyhCAPs',
             }],
         };
     }
-    onCellChange = (key, dataIndex) => (value) => {
-        const dataSource = [...this.state.dataSource];
-        const target = dataSource.find(item => item.key === key);
-        if (target) {
-            target[dataIndex] = value;
-            this.setState({ dataSource });
-        }
-    }
     onDelete = (key) => {
-        const dataSource = [...this.state.dataSource];
-        this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+        Meteor.call('deleteSubAdmin', this.props.currentCompanyId, key, (err) => {
+            if (err) {
+                console.error(err);
+            }
+            feedback.dealSuccess('删除成功');
+        });
     }
     closeSelect = () => {
         this.setState({
@@ -85,14 +70,14 @@ class EditableTable extends Component {
         });
     }
     render() {
-        const { dataSource, columns } = this.state;
+        const { columns } = this.state;
         return (
             <div className="sub-manage-table">
                 <div className="sub-manage-table-title">
                     <span>设置子管理员</span> &nbsp;
                     <Button className="editable-add-btn" onClick={this.handleAdd}>添加</Button>
                 </div>
-                <Table dataSource={dataSource} columns={columns} />
+                <Table dataSource={this.props.SubManages} columns={columns} />
                 {
                     this.state.showSelect ?
                         <Modal
@@ -122,19 +107,24 @@ export default withTracker(() => {
     Meteor.subscribe('users');
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
     const currentCompany = Company.findOne({ _id: currentCompanyId });
+    const SubManageIds = currentCompany.subAdmin || [];
+    const SubManages = SubManageIds.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
     const members = [];
     for (const value of Object.values(currentCompany.members)) {
         members.push(value.userId);
     }
+    const restUsers = members.filter(x => !SubManageIds.find(y => y === x));
     const team = [
         {
             name: currentCompany.name,
-            members,
+            members: restUsers,
             department: [], // 不存在的时候需要传一个空数组
         },
     ];
+
     return {
         team,
         currentCompanyId,
+        SubManages,
     };
 })(EditableTable);
