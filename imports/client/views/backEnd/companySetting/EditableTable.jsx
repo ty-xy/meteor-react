@@ -15,7 +15,7 @@ class EditableTable extends Component {
     static propTypes = {
         team: PropTypes.array,
         currentCompanyId: PropTypes.string,
-        SubManages: PropTypes.array,
+        subManages: PropTypes.array,
     }
     constructor(props) {
         super(props);
@@ -77,7 +77,7 @@ class EditableTable extends Component {
                     <span>设置子管理员</span> &nbsp;
                     <Button className="editable-add-btn" onClick={this.handleAdd}>添加</Button>
                 </div>
-                <Table dataSource={this.props.SubManages} columns={columns} />
+                <Table dataSource={this.props.subManages} columns={columns} />
                 {
                     this.state.showSelect ?
                         <Modal
@@ -107,13 +107,16 @@ export default withTracker(() => {
     Meteor.subscribe('users');
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
     const currentCompany = Company.findOne({ _id: currentCompanyId });
-    const SubManageIds = currentCompany.subAdmin || [];
-    const SubManages = SubManageIds.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+    const subManageIds = currentCompany.subAdmin || [];
+    const subManages = subManageIds.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
+    subManages.forEach((x) => {
+        x.key = x._id;
+    });
     const members = [];
     for (const value of Object.values(currentCompany.members)) {
         members.push(value.userId);
     }
-    const restUsers = members.filter(x => !SubManageIds.find(y => y === x));
+    const restUsers = members.filter(x => !subManageIds.find(y => y === x));
     const team = [
         {
             name: currentCompany.name,
@@ -125,6 +128,6 @@ export default withTracker(() => {
     return {
         team,
         currentCompanyId,
-        SubManages,
+        subManages,
     };
 })(EditableTable);
