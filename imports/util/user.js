@@ -50,6 +50,10 @@ const UserUtil = {
     getCurrentBackendCompany() {
         return UserUtil.getProfile().currentBackendCompany || '';
     },
+    // 获取公司groupId
+    getCompanyGrounpId() {
+        return UserUtil.getProfile().groupId || '';
+    },
 };
 export const userIdToInfo = {
     getProfile(users = [], userId) {

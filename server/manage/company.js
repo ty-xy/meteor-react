@@ -221,8 +221,8 @@ Meteor.methods({
             name,
         };
         if (invite) {
-            const company = Company.findOne({ _id: companyId });
-            const { members = [] } = company || {};
+            const company = Company.findOne({ _id: companyId }) || {};
+            const { members = [] } = company;
             let res = '';
             (members || []).forEach((item) => {
                 if (item.userId === userId) {

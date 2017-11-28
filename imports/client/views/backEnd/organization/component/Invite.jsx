@@ -12,6 +12,8 @@ class Invite extends PureComponent {
         postInvite: PropTypes.func,
         modelDep: PropTypes.bool,
         companyId: PropTypes.string,
+        dep: PropTypes.string,
+        groupId: PropTypes.string,
     }
     constructor(props) {
         super(props);
@@ -77,9 +79,27 @@ class Invite extends PureComponent {
         newNums.splice(pos, 1);
         this.setState({ nums: newNums, [`phone${item}`]: '', radom: Math.random() });
     }
+    copyText = () => {
+        this.yourForm.focus();
+        this.yourForm.select();
+    }
+    // urls
+    urls = () => {
+        const { companyId, dep, groupId } = this.props;
+        if (companyId && dep && groupId) {
+            return `http://localhost:3000/login?companyId=${companyId}&dep=${dep}&groupId=${groupId}`;
+        } else if (companyId && groupId) {
+            return `http://localhost:3000/login?companyId=${companyId}&groupId=${groupId}`;
+        } else if (companyId) {
+            return `http://localhost:3000/login?companyId=${companyId}`;
+        } else if (companyId && dep) {
+            return `http://localhost:3000/login?companyId=${companyId}&dep=${dep}`;
+        }
+    }
     render() {
         const { nums } = this.state;
-        const { modelDep, companyId } = this.props;
+        const { modelDep } = this.props;
+        console.log('props', this.props, this.urls());
         return (
             <MyModel
                 handleCancel={this.handleCancel}
@@ -112,9 +132,11 @@ class Invite extends PureComponent {
                         <Col offset={6} span={14} className="text-center"><Button className="e-invite-button" onClick={this.addPhoneInput}>添加更多</Button></Col>
                         <Col offset={6} span={14} className="text-center margin-top-20"><Button className="e-mg-button e-invite-button" onClick={this.handleCommentbtn}>确认邀请</Button></Col>
                         <Col span={24} className="text-center margin-top-20">通过下方链接邀请</Col>
-                        <Col span={24} className="text-center margin-top-20">{`http://localhost:3000/login?companyId=${companyId}`}</Col>
                         <Col span={24} className="text-center margin-top-20">
-                            <Button className="e-mg-button">复制链接</Button>
+                            <textarea name="yourForm" readOnly value={this.urls()} ref={i => this.yourForm = i} style={{ width: '100%', textAlign: 'center', minHeight: '50px', lineHeight: '1.3' }} />
+                        </Col>
+                        <Col span={24} className="text-center margin-top-20">
+                            <Button className="e-mg-button" onClick={this.copyText}>复制链接</Button>
                         </Col>
                     </Row>
                 </div>
