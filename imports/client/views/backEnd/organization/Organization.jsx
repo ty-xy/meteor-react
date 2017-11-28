@@ -34,7 +34,6 @@ class Organization extends PureComponent {
     }
     componentWillReceiveProps(nextProps) {
         if (!this.state.depActive) {
-            console.log('componentWillReceiveProps');
             this.setState({ users: nextProps.users });
         }
     }
