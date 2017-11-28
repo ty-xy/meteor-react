@@ -43,6 +43,7 @@ class ProjectAdd extends Component {
             temperature: '',
             intro: '',
             affiliation: '',
+            moudle: '',
             icon: ['icon-dingweichengshi', 'icon-scenery', 'icon-shandong', 'icon-jingdian-simiao'],
             color: ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'],
             showImage: true,
@@ -74,6 +75,9 @@ class ProjectAdd extends Component {
     }
     handleChangeT = (value) => {
         this.setState({ affiliation: `${value}` });
+    }
+    handleChangeTt = (value) => {
+        this.setState({ moudle: `${value}` });
     }
     handleMessage = () => {
         if (this.state.temperature !== '' && this.state.intro !== '') {
@@ -243,7 +247,7 @@ class ProjectAdd extends Component {
                     </div>
                     <div className="common-type">
                         <label htmlFor="name-third" >项目归属：</label>
-                        <Select defaultValue="不使用" style={{ width: '292px' }} onChange={this.handleChangeT} id="name-third">
+                        <Select defaultValue="不使用" style={{ width: '292px' }} onChange={this.handleChangeTt} id="name-third">
                             <Option value="不使用">不使用</Option>
                             <Option value="企业">使用模板 </Option>
                         </Select>

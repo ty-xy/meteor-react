@@ -98,6 +98,7 @@ class ProjectWindow extends Component {
                                     visible={this.state.visible}
                                     footer={null}
                                     onOk={this.hideModal}
+                                    key={project._id}
                                     onCancel={this.hideModal}
                                     bodyStyle={{ padding: 0 }}
                                     width={450}
