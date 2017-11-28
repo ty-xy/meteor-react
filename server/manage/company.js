@@ -222,9 +222,9 @@ Meteor.methods({
         };
         if (invite) {
             const company = Company.findOne({ _id: companyId });
-            const { members = [] } = company;
+            const { members = [] } = company || {};
             let res = '';
-            members.forEach((item) => {
+            (members || []).forEach((item) => {
                 if (item.userId === userId) {
                     res = '你已存在该团队中';
                 }

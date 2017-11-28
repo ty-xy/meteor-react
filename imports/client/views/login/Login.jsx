@@ -63,13 +63,12 @@ class Login extends Component {
         );
     }
     gotoRegister = () => {
-        this.props.history.push('/register');
+        this.props.history.push({ pathname: '/register', search: this.props.location.search, state: this.props.location.search && 'invite' });
     }
     gotoForgetPassword = () => {
         this.props.history.push('/forgetPassword');
     }
     render() {
-        console.log('companys', this.props);
         return (
             <div className="ejianlian-login ejianlian-form-wrap">
                 <div className="login-content container-middle form-content-wrap">
