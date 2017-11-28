@@ -13,6 +13,7 @@ import AddMember from './component/AddMember';
 import RightHeader from './component/RightHeader';
 import SettingModel from './component/SettingModel';
 import BatchSetDep from './component/BatchSetDep';
+import Invite from './component/Invite';
 
 class Organization extends PureComponent {
     static propTypes = {
@@ -192,7 +193,7 @@ class Organization extends PureComponent {
     handleBtns = () => (
         <div className="handle-btns clearfix">
             <Button onClick={() => this.modelShowHide(true, 'modelMember')}>新增员工</Button>
-            <Button>邀请员工</Button>
+            <Button onClick={() => this.modelShowHide(true, 'inviteModel')}>邀请员工</Button>
             <Button onClick={this.depsetBatchDepModel}>调整部门</Button>
         </div>
     );
@@ -259,7 +260,7 @@ class Organization extends PureComponent {
                 );
             } else {
                 _this.setState({ modelMember: false });
-                feedback.dealWarning((<p>该成员尚未注册, <span style={{ color: '#108ee9', cursor: 'pointer' }} onClick={_this.modelShowHide(true, 'inviteMember')}>立即邀请</span></p>));
+                feedback.dealWarning((<p>该成员尚未注册, <span style={{ color: '#108ee9', cursor: 'pointer' }} onClick={_this.modelShowHide(true, 'inviteModel')}>立即邀请</span></p>));
             }
         }
     }
@@ -450,6 +451,19 @@ class Organization extends PureComponent {
             feedback.dealWarning('至少选择一个成员');
         }
     }
+    // ---- 邀请员工 ----
+    pleaseInvite = () => {
+        const { members } = this.props.company;
+        return (
+            <Invite
+                title="新增部门"
+                addDepModel={this.modelShowHide}
+                postAddDep={this.postAddDep}
+                modelDep={this.state.inviteModel}
+                deps={members || []}
+            />
+        );
+    }
     render() {
         const { deps = [] } = this.props.company;
         const { users } = this.props;
@@ -475,6 +489,7 @@ class Organization extends PureComponent {
                         {this.addMembersModel()}
                         {this.memberBelongModel()}
                         {this.depsettingModel()}
+                        {this.pleaseInvite()}
                     </Col>
                 </Row>
             </div>
