@@ -80,7 +80,7 @@ class CheckBill extends Component {
                 userId: Meteor.user()._id,
                 status: '待审核',
                 type: '报销',
-                company: UserUtil.getCompany(),
+                company: UserUtil.getMainCompany(),
                 copy,
                 approvers,
                 img,

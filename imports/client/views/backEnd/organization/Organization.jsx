@@ -456,13 +456,18 @@ class Organization extends PureComponent {
         const { members } = this.props.company;
         return (
             <Invite
-                title="新增部门"
                 addDepModel={this.modelShowHide}
-                postAddDep={this.postAddDep}
+                postInvite={this.postInvite}
                 modelDep={this.state.inviteModel}
                 deps={members || []}
+                companyId={UserUtil.getCurrentBackendCompany()}
             />
         );
+    }
+    // 邀请员工发送短信
+    postInvite = (bool, name, fields) => {
+        console.log('fields', fields);
+        this.setState({ [name]: bool });
     }
     render() {
         const { deps = [] } = this.props.company;

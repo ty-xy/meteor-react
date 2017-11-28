@@ -67,7 +67,7 @@ class CommonAudit extends Component {
                 userId: Meteor.user()._id,
                 status: '待审核',
                 type: '通用审批',
-                company: UserUtil.getCompany(),
+                company: UserUtil.getMainCompany(),
             };
             console.log('res', res);
             Meteor.call(

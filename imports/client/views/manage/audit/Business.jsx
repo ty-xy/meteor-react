@@ -82,7 +82,7 @@ class Business extends Component {
                 userId: Meteor.user()._id,
                 status: '待审核',
                 type: '出差',
-                company: UserUtil.getCompany(),
+                company: UserUtil.getMainCompany(),
                 copy,
                 approvers,
                 img,

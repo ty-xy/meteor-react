@@ -65,7 +65,7 @@ class Leave extends PureComponent {
                 ...fieldsValue,
                 img,
                 status: '待审核',
-                company: UserUtil.getCompany(),
+                company: UserUtil.getMainCompany(),
             };
             delete res.datepicker;
             Meteor.call(

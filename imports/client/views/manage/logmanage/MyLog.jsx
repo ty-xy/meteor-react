@@ -140,7 +140,7 @@ export default withTracker(() => {
     const userId = Meteor.user() && Meteor.user()._id;
     return {
         users: Meteor.user() || {},
-        AllLogs: Log.find({ userId, company: UserUtil.getCompany(), cache: false }).fetch(),
+        AllLogs: Log.find({ userId, company: UserUtil.getMainCompany(), cache: false }).fetch(),
     };
 })(Form.create()(MyLog));
 
