@@ -56,7 +56,6 @@ class Header extends Component {
         document.removeEventListener('click', this.closeMenu);
     }
     showModal = () => {
-        console.log(333, this.props.currentCompanyId);
         if (!this.props.currentCompanyId) {
             this.setState({
                 isShowBackend: true,

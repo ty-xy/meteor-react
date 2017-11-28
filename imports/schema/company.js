@@ -9,8 +9,14 @@ Company.schema = new SimpleSchema({
     name: {
         type: String,
     },
+    // 主管理员
     admin: {
         type: String,
+        optional: true,
+    },
+    // 子管理员
+    subAdmin: {
+        type: [String],
         optional: true,
     },
     // 团队logo
@@ -26,6 +32,11 @@ Company.schema = new SimpleSchema({
     // 所在地区
     residence: {
         type: [String],
+        optional: true,
+    },
+    // 团队成员
+    members: {
+        type: [Object],
         optional: true,
     },
     comment: {
@@ -67,11 +78,6 @@ Company.schema = new SimpleSchema({
     // 创建群聊Id
     'deps.$.groupId': {
         type: String,
-        optional: true,
-    },
-    // 团队成员
-    members: {
-        type: [Object],
         optional: true,
     },
     // 成员Id

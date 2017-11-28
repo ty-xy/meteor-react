@@ -1,46 +1,42 @@
 import React, { Component } from 'react';
 import { Table, Button, Popconfirm } from 'antd';
 
-import EditableCell from './EditableCell';
-
+import Avatar from '../../../components/Avatar';
 
 class EditableTable extends Component {
     constructor(props) {
         super(props);
-        this.columns = [{
-            title: '名称',
-            dataIndex: 'name',
-            width: '30%',
-            render: (text, record) => (
-                <EditableCell
-                    value={text}
-                    onChange={this.onCellChange(record.key, 'name')}
-                />
-            ),
-        }, {
-            title: '操作',
-            dataIndex: 'operation',
-            render: (text, record) => (
-                this.state.dataSource.length > 1 ?
-                    (
-                        <Popconfirm title="Sure to delete?" onConfirm={() => this.onDelete(record.key)}>
-                            <p>删除</p>
-                        </Popconfirm>
-                    ) : null
-            ),
-        }];
-
         this.state = {
-            dataSource: [{
-                key: '0',
-                name: 'Edward King 0',
+            columns: [{
+                title: '名称',
+                dataIndex: 'profile',
+                render: profile => (
+                    <div className="search-all-user">
+                        <Avatar name={profile.name} avatarColor={profile.avatarColor} avatar={profile.avatar} />
+                        <p>{profile.name}</p>
+                    </div>),
             }, {
-                key: '1',
-                name: 'Edward King 1',
-                age: '32',
-                address: 'London, Park Lane no. 1',
+                title: '操作',
+                dataIndex: 'operation',
+                render: record => (
+                    this.state.dataSource.length >= 1 ?
+                        (
+                            <Popconfirm title="确定要删除该子管理员么?" onConfirm={() => this.onDelete(record.key)}>
+                                <p>删除</p>
+                            </Popconfirm>
+                        ) : null
+                ),
             }],
-            count: 2,
+            dataSource: [{
+                createdAt: 'Tue Nov 07 2017 15:09:34 GMT+0800 (CST)',
+                profile: {
+                    name: '星星',
+                    avatarColor: '#29b6f6',
+                    avatar: '',
+                },
+                _id: '9A8GrFpDd8TyhCAPs',
+                key: '9A8GrFpDd8TyhCAPs',
+            }],
         };
     }
     onCellChange = (key, dataIndex) => (value) => {
@@ -55,26 +51,29 @@ class EditableTable extends Component {
         const dataSource = [...this.state.dataSource];
         this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
     }
-    handleAdd = () => {
-        const { count, dataSource } = this.state;
-        const newData = {
-            key: count,
-            name: `Edward King ${count}`,
-            age: 32,
-            address: `London, Park Lane no. ${count}`,
-        };
-        this.setState({
-            dataSource: [...dataSource, newData],
-            count: count + 1,
-        });
-    }
+    // handleAdd = () => {
+    //     const { count, dataSource } = this.state;
+    //     const newData = {
+    //         key: count,
+    //         name: `Edward King ${count}`,
+    //         age: 32,
+    //         address: `London, Park Lane no. ${count}`,
+    //     };
+    //     this.setState({
+    //         dataSource: [...dataSource, newData],
+    //         count: count + 1,
+    //     });
+    // }
     render() {
-        const { dataSource } = this.state;
-        const columns = this.columns;
+        const { dataSource, columns } = this.state;
         return (
-            <div>
-                <Button className="editable-add-btn" onClick={this.handleAdd}>添加</Button>
-                <Table bordered dataSource={dataSource} columns={columns} />
+            <div className="sub-manage-table">
+                <div className="sub-manage-table-title">
+                    <span>设置子管理员</span> &nbsp;
+                    <Button className="editable-add-btn" onClick={this.handleAdd}>添加</Button>
+                </div>
+
+                <Table dataSource={dataSource} columns={columns} />
             </div>
         );
     }
