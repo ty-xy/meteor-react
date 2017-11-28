@@ -16,7 +16,6 @@ Meteor.methods({
             label: '',
             textId,
             fileId: [],
-
         };
         Task.schema.validate(newTask);
         Task.insert(newTask);

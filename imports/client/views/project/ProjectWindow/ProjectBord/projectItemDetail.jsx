@@ -224,6 +224,12 @@ class ProjectItemDetail extends Component {
             titleShow: !this.state.titleShow,
         });
     }
+    handleTitleT = () => {
+        this.handleTitle();
+        this.setState({
+            titleValue: this.props.item,
+        });
+    }
     handleChangeTitleQ = () => {
         Meteor.call(
             'changeName', this.props.Id.Id, this.state.titleValue,
@@ -692,9 +698,10 @@ class ProjectItemDetail extends Component {
                                         onClick={this.handleChangeTitleQ}
                                         onPop={e => this.handleClick(e)}
                                         onKeyDown={e => this.handleSendMessage(e, this.handleChangeTitleQ)}
+                                        defaultvalue={this.props.item}
                                         value={this.state.titleValue}
                                         onChange={e => this.handleChangeTry('titleValue', e)}
-                                        onConcel={this.handleTitle}
+                                        onConcel={this.handleTitleT}
                                     />
                                 </div>}
                         </Col>

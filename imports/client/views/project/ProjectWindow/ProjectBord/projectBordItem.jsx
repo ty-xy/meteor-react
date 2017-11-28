@@ -6,7 +6,9 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import uuid from 'uuid';
 import pureRender from 'pure-render-decorator';
-import Dragula from 'react-dragula';
+import { DropTarget } from 'react-dnd';
+// import { findDOMNode, ReactDOM } from 'react-dom';
+// import Dragula from 'react-dragula';
 
 import Icon from '../../../../components/Icon';
 import MiniCard from './miniCard';
@@ -17,15 +19,38 @@ import TaskBoard from '../../../../../../imports/schema/taskBoard';
 import feedback from '../../../../../util/feedback';
 // import Active from '../../../../../../imports/schema/active';
 const { TextArea } = Input;
+const ItemTypes = {
+    CARD: 'card',
+};
+const target = {
+    drop(props, monitor) {
+        console.log(props.tastBoardId, Math.floor((monitor.getSourceClientOffset().y - 250) / 90));
+        return { listName: props.tastBoardId, y: Math.ceil((monitor.getSourceClientOffset().y - 290) / 90) };
+    },
+    // hover(props, monitor) {
+    //     // console.log(props, monitor);
+    //     // console.log(component);
+    // },
+};
+
+function collect(connect, monitor) {
+    return {
+        connectDropTarget: connect.dropTarget(),
+        hovered: monitor.isOver({ shallow: true }),
+        highlighted: monitor.canDrop(),
+    };
+}
+
 @pureRender
 class ProjectBordItem extends Component {
     static propTypes = {
+        connectDropTarget: PropTypes.func.isRequired,
         value: PropTypes.string,
         tastBoardId: PropTypes.string,
         taskg: PropTypes.arrayOf(PropTypes.object),
         tasks: PropTypes.arrayOf(PropTypes.object),
         tasksA: PropTypes.array,
-        o: PropTypes.array,
+        x: PropTypes.array,
         projectId: PropTypes.string,
         // changeTitle: PropTypes.func,
         fd: PropTypes.arrayOf(PropTypes.object),
@@ -40,27 +65,36 @@ class ProjectBordItem extends Component {
             visible: false,
             concern: false,
             task: [],
-            delClickFlag: true,
             uuid: '',
-            error: null,
             showTaskBoardTitle: true,
             titleValue: '',
+            array: '',
+            taskList: '',
+            tasksA: '',
         };
     }
     componentWillMount() {
         this.setState({
             titleValue: this.props.value,
+            array: this.props.x,
+            taskList: this.props.taskg,
+            tasksA: this.props.tasksA,
         });
+        console.log(this.state);
     }
-
-    componentWillReceiveProps() {
+    componentDidMount() {
+        console.log(this.state);
+    }
+    componentWillReceiveProps(nextProps) {
+        //  console.log('componentWillReceiveProps', nextProps, this.props.taskg, this.props.x);
         this.setState({
             titleValue: this.props.value,
+            array: this.props.x,
+            taskList: nextProps.taskg,
+            tasksA: this.props.tasksA,
+            fd: nextProps.fd,
         });
-        const tasks = Task.find({}).fetch();
-        this.setState({
-            task: tasks,
-        });
+        //  const tasks = Task.find({}).fetch();
     }
     handleConcern = () => {
         this.setState({
@@ -169,112 +203,18 @@ class ProjectBordItem extends Component {
             },
         );
     }
-    dragulaDecorator = (componentBackingInstance) => {
-        let list = [];
-        let prev = [];
-        let next = '';
-        let nextId = '';
-        let oldId = '';
-        let oldIndex = '';
-        let current = [];
-        let newList = [];
-        if (componentBackingInstance) {
-            const options = {
-                isContainer(el) {
-                    return el.classList.contains('container');
-                },
-                // direction: 'horizontal',
-            };
-            console.log(componentBackingInstance);
-            Dragula([componentBackingInstance], options).on('drag', (el, source) => {
-                console.log(el, source);
-            })
-                .on('drop', (el, target, source, sibling) => {
-                    console.error('--====drop=====', el, el.parentNode, sibling, target, source);
-                    list = this.props.fd;
-                    if (target === source) {
-                        newList = list[0][target.getAttribute('data-bid')];
-                        oldId = el.getAttribute('data-textId');
-                        oldIndex = newList.indexOf(oldId);
-                        if (sibling !== null) {
-                            next = sibling.getAttribute('data-textId');
-                            nextId = newList.indexOf(next);
-                            console.log(oldIndex);
-                            if (nextId < oldIndex) {
-                                newList.splice(oldIndex, 1);
-                                newList.splice(nextId, 0, el.getAttribute('data-textId'));
-                                Meteor.call(
-                                    'changeTaskId', target.getAttribute('data-bid'), newList,
-                                    (err) => {
-                                        console.log(err);
-                                    },
-                                );
-                            } else if (nextId > oldIndex) {
-                                newList.splice(oldIndex, 1);
-                                newList.splice(nextId - 1, 0, el.getAttribute('data-textId'));
-                                Meteor.call(
-                                    'changeTaskId', target.getAttribute('data-bid'), newList,
-                                    (err) => {
-                                        console.log(err);
-                                    },
-                                );
-                            }
-                        } else {
-                            newList.splice(oldIndex, 1);
-                            newList.push(oldId);
-                            Meteor.call(
-                                'changeTaskId', target.getAttribute('data-bid'), newList,
-                                (err) => {
-                                    console.log(err);
-                                },
-                            );
-                        }
-                    } else if (target !== source) {
-                        // console.log(sibling.parentNode);
-                        if (el.parentNode === target && sibling !== null && sibling.parentNode === target) {
-                            console.log(sibling);
-                            current = list[0][target.getAttribute('data-bid')];
-                            next = sibling.getAttribute('data-textId');
-                            console.trace(sibling);
-                            // 获得它INDEX 值
-                            nextId = current.indexOf(next);
-                            current.splice(nextId, 0, el.getAttribute('data-textId'));
 
-                            current = Array.from(new Set(current));
-                            console.log(current);
-                            console.log(el.previousSbiling);
-                            Meteor.call(
-                                'changeTaskId', target.getAttribute('data-bid'), current,
-                                (err) => {
-                                    console.log(err);
-                                },
-                            );
-                        } else if (sibling === null && el.parentNode === target && el.previousSbiling.parentNode === target) {
-                            current = list[0][target.getAttribute('data-bid')];
-                            current.push(el.getAttribute('data-textId'));
-                        }
-                        if (sibling !== null && sibling.parentNode === source && sibling.parentNode !== target) {
-                            prev = list[0][source.getAttribute('data-bid')];
-                            oldId = el.getAttribute('data-textId');
-                            oldIndex = prev.indexOf(oldId);
-                            prev.splice(oldIndex, 1);
-                            console.log(prev, sibling.parentNode, source);
-                            Meteor.call('changeTaskId', source.getAttribute('data-bid'), prev, (err) => {
-                                console.log(err);
-                            },
-                            );
-                        }
-                        // alert(current, prev, nextId, next);
-                    }
-                });
+    handleSendMessage = (e) => {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            this.handleClick();
         }
     }
-    renderTasks = () => this.props.o.map((item, index) => this.props.taskg.map((value) => {
+    renderTasks = () => this.props.x.map((item, index) => this.props.taskg.map((value) => {
         if (value.textId === item) {
-            console.log(item, value.textId);
             return (<MiniCard
                 value={value.name}
-                key={value._id}
+                key={value.textId}
                 idIndex={value._id}
                 index={value.taskBoardId}
                 ind={index}
@@ -285,24 +225,6 @@ class ProjectBordItem extends Component {
         }
         return null;
     }))
-    // renderTasks = () => {
-    //     this.props.o.map((item, index) => this.props.taskg.map((value) => {
-    //         if (value.textId === item) {
-    //             console.log(item, value.textId);
-    //             return (<MiniCard
-    //                 value={value.name}
-    //                 key={value._id}
-    //                 idIndex={value._id}
-    //                 index={value.taskBoardId}
-    //                 ind={index}
-    //                 textId={value.textId}
-    //                 projectId={this.props.projectId}
-    //                 deleteCard={() => this.handleDeleteTaskL(value.textId)}
-    //             />);
-    //         }
-    //         return null;
-    //     }));
-    // }
     render() {
         const menu = (
             <Menu>
@@ -315,7 +237,10 @@ class ProjectBordItem extends Component {
                 </Menu.Item>
             </Menu>
         );
-        return (
+        const {
+            connectDropTarget,
+        } = this.props;
+        return connectDropTarget(
             <div className="ejianlian-project-item-list">
                 <div className="list-title">
                     <Row>
@@ -339,12 +264,8 @@ class ProjectBordItem extends Component {
                         </Col>
                     </Row>
                 </div>
-
-                <div className="container" ref={this.dragulaDecorator} key="7" data-bid={this.props.tastBoardId}>
-                    {this.props.tasksA.length > 0 && this.props.tasksA[0].sortArray ?
-                        this.renderTasks() : null}
-                </div>
-
+                {this.state.tasksA.length > 0 && this.state.tasksA[0].sortArray ?
+                    this.renderTasks() : null}
                 {this.state.IsShowList ?
                     <div className="list-input">
                         <TextArea
@@ -355,6 +276,7 @@ class ProjectBordItem extends Component {
                             autosize={{ minRows: 1, maxRows: 6 }}
                             value={this.state.cardInput}
                             onChange={this.handleChange}
+                            onKeyDown={this.handleSendMessage}
                         />
                         <div className="list-button">
                             <Button onClick={this.handleClick}>确认</Button>
@@ -366,16 +288,15 @@ class ProjectBordItem extends Component {
                         <p>添加卡片</p>
                     </div>
                 }
-            </div >
+            </div >,
         );
     }
 }
-export default withTracker((indd) => {
+export default DropTarget(ItemTypes.CARD, target, collect)(withTracker((indd) => {
     Meteor.subscribe('task');
     Meteor.subscribe('taskboard');
     Meteor.subscribe('company');
     const tasks = Task.find({}).fetch();
-    console.table(tasks);
     const tasksA = TaskBoard.find({ _id: indd.tastBoardId }).fetch();
     if (tasksA.length !== 0) {
         const x = tasksA[0].sortArray;
@@ -392,11 +313,11 @@ export default withTracker((indd) => {
             hash[ide] = dde;
             return hash;
         });
-        const o = Array.from(new Set(x));
+        // console.log(TaskBoard.findOne({ _id: indd.tastBoardId }));
         return {
             tasks,
             taskg,
-            o,
+            x,
             fd,
             tasksA,
         };
@@ -404,4 +325,4 @@ export default withTracker((indd) => {
     return {
         tasksA,
     };
-})(ProjectBordItem);
+})(ProjectBordItem));

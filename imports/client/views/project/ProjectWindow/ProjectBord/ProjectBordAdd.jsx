@@ -60,6 +60,7 @@ class ProjectBordAdd extends Component {
         if (e.keyCode === 13) {
             e.preventDefault();
             this.createTaskBord();
+            this.handleClick();
         }
     }
 
