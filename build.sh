@@ -51,7 +51,7 @@ if [ -f $FILE ]; then
 
    # Step 9 提交
    git add buildnumber changelogs.txt
-   git commit -m "build results on build on build $newbuildnum"
+   git commit -m "build results on build $newbuildnum"
    # push
    git checkout master
    git merge $branchname
