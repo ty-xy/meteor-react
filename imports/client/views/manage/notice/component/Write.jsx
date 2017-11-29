@@ -42,17 +42,21 @@ class Write extends PureComponent {
     getGroup = (keyword, data) => {
         this.setState({ [keyword]: data, requireGroupNotice: false });
     }
+    // switch
+    handleSwitch = (e) => {
+        this.setState({ isSecrecy: e });
+    }
     // 公告提交、编辑
     formSubmit = (e) => {
         e.preventDefault();
         const { form, location } = this.props;
-        const { img, file, group, groupRequire } = this.state;
+        const { img, file, group, groupRequire, isSecrecy } = this.state;
         form.validateFields((err, fields) => {
             if (err) {
                 return false;
             }
             fields.username = Meteor.user().username;
-            fields.isSecrecy = fields.isSecrecy || false;
+            fields.isSecrecy = isSecrecy || false;
             fields.up = (location.state && location.state.editData.up) || false;
             fields.img = img;
             fields.file = file;
@@ -196,7 +200,7 @@ class Write extends PureComponent {
                 <InputArea title="正文：" required requiredErr="请填写公告正文" className="margin-bottom-20" defaultValue={content} keyword="content" {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                 <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
-                <MyRadio title="设为保密公告" subtitle="接收人只能查看，消息不可转发；公告详情页有接收人真实姓名水印，防止截图发送" keyword="isSecrecy" editData={editData} {...this.props} />
+                <MyRadio title="设为保密公告" subtitle="接收人只能查看，消息不可转发；公告详情页有接收人真实姓名水印，防止截图发送" keyword="isSecrecy" handleSwitch={this.handleSwitch} editData={editData} {...this.props} />
                 <Col span={24} className="margin-top-20">
                     <Button htmlType="submit" className="e-mg-button-primary margin-right-20">保存</Button>
                     <Button className="e-mg-button-default" onClick={() => this.handlePreviewCancel(true)}>预览</Button>

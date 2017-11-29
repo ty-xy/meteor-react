@@ -46,7 +46,7 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
             }
             <span className="e-mg-audit-seleted-img">
                 <MyIcon icon="icon-tianjia3" size={35} onClick={e => showModal(e, keyword)} />
-                <p>{iconTitle}</p>
+                <p style={{ marginTop: '8px' }}>{iconTitle}</p>
                 {required ?
                     <span
                         style={{ position: 'absolute',

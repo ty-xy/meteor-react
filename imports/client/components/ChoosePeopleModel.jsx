@@ -355,7 +355,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                                         <span className="margin-left-20">部门：</span>
                                         <Select allowClear style={{ width: '80%', marginLeft: '5px' }} placeholder="选择部门搜索" onChange={this.onSecondDepChange}>
                                             {
-                                                deps.map(item => <Option key={item.name} value={item.name}>{item.name}</Option>)
+                                                deps.map(item => <Option key={item.name} value={item.id}>{item.name}</Option>)
                                             }
                                         </Select>
                                     </div>

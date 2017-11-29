@@ -30,7 +30,7 @@ import InviteModel from '../manage/audit/component/MyModel';
 class Chat extends Component {
     static propTypes = {
         chatList: PropTypes.array,
-        history: PropTypes.func,
+        history: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
