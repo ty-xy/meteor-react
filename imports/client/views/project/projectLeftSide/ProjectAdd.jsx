@@ -15,7 +15,7 @@ import AvatarSelf from '../../../components/AvatarSelf';
 import ChoosePeopleModel from '../../../components/ChoosePeopleModel';
 import PeopleList from '../../manage/audit/component/PeopleList';
 
-
+const { TextArea } = Input;
 const Option = Select.Option;
 const text = <span>点击切换头像</span>;
 const j = Math.floor(Math.random() * 4);
@@ -43,6 +43,7 @@ class ProjectAdd extends Component {
             temperature: '',
             intro: '',
             affiliation: '',
+            moudle: '',
             icon: ['icon-dingweichengshi', 'icon-scenery', 'icon-shandong', 'icon-jingdian-simiao'],
             color: ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'],
             showImage: true,
@@ -50,6 +51,8 @@ class ProjectAdd extends Component {
             requireGroupNotice: false, // 必填项错误信息是否提示
             approvers: [], // 选择的审核对象
             copy: [],
+            showName: false,
+            showIntro: false,
         };
     }
     componentWillMount() {
@@ -65,7 +68,6 @@ class ProjectAdd extends Component {
             uuids: uuid.v4(),
         });
     }
-
     handleChange(name, e) {
         const newState = {};
         newState[name] = e.target.value;
@@ -74,8 +76,26 @@ class ProjectAdd extends Component {
     handleChangeT = (value) => {
         this.setState({ affiliation: `${value}` });
     }
+    handleChangeTt = (value) => {
+        this.setState({ moudle: `${value}` });
+    }
     handleMessage = () => {
-        this.createProject();
+        if (this.state.temperature !== '' && this.state.intro !== '') {
+            this.createProject();
+        } else if (this.state.temperature === '' && this.state.intro !== '') {
+            this.setState({
+                showName: true,
+            });
+        } else if (this.state.temperature !== '' && this.state.intro === '') {
+            this.setState({
+                showIntro: true,
+            });
+        } else {
+            this.setState({
+                showName: true,
+                showIntro: true,
+            });
+        }
     }
     changeUpdateTitle = () => {
         this.setState({
@@ -175,7 +195,7 @@ class ProjectAdd extends Component {
                                 <ImgUp keyword="img" className="img-title" fileList={[]} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload}{...this.props} />}
                         </Tooltip>
                     </div>
-                    <div className="common-type">
+                    <div className="common-type ">
                         <label htmlFor="name-first"> 项目名称：</label>
                         <Input
                             type="text"
@@ -185,23 +205,34 @@ class ProjectAdd extends Component {
                             value={this.state.temperature}
                             onChange={this.handleChange.bind(this, 'temperature')}
                         />
+                        <div style={{ height: '20px' }}>
+                            <p
+                                style={{ display: this.state.showName ? 'block' : 'none' }}
+                                className="input-name"
+                            >请输入项目名称</p>
+                        </div>
                     </div>
 
-                    <div className="common-type">
-                        <label htmlFor="name-second"> 项目简介：</label>
-                        <Input
-                            type="Input.TextArea"
+                    <div className="common-type common-input">
+                        <label htmlFor="name-second" > 项目简介：</label>
+                        <TextArea
                             placeholder="请输入项目简介"
-                            style={{ height: '69px', width: '292px' }}
+                            style={{ height: '69px', width: '292px', verticalAlign: 'middle' }}
                             id="name-second"
                             value={this.state.intro}
                             onChange={this.handleChange.bind(this, 'intro')}
                         />
+                        <div style={{ height: '20px' }}>
+                            <p
+                                style={{ display: this.state.showIntro ? 'block' : 'none' }}
+                                className="input-name"
+                            >请输入项目简介</p>
+                        </div>
                     </div>
-                    <div className="common-type">
+                    <div className="common-type common-input">
                         <label htmlFor="name-third" >项目归属：</label>
                         <Select
-                            value={this.state.affiliation}
+                            value={this.state.affiliation || '1'}
                             style={{ width: '292px' }}
                             onChange={this.handleChangeT}
                             id="name-third"
@@ -216,7 +247,7 @@ class ProjectAdd extends Component {
                     </div>
                     <div className="common-type">
                         <label htmlFor="name-third" >项目归属：</label>
-                        <Select defaultValue="不使用" style={{ width: '292px' }} onChange={this.handleChangeT} id="name-third">
+                        <Select defaultValue="不使用" style={{ width: '292px' }} onChange={this.handleChangeTt} id="name-third">
                             <Option value="不使用">不使用</Option>
                             <Option value="企业">使用模板 </Option>
                         </Select>
@@ -254,7 +285,10 @@ class ProjectAdd extends Component {
                             </FormItem>
                         </ChoosePeopleModel>
                     </div>
-                    <div className="ejianlian-add-projectf" onClick={this.props.click}>
+                    <div
+                        className="ejianlian-add-projectf"
+                        onClick={this.state.showName && this.state.showIntro ? this.props.click : null}
+                    >
                         <div className="add-button add-button-create" onClick={this.handleMessage}>
                             {/* <input type="button" value="创建项目" >' */}
                             创建

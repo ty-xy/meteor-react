@@ -25,10 +25,10 @@ Project.schema = new SimpleSchema({
         type: String,
     },
     // // 项目模板id
-    // formBoard: {
-    //     type: String,
-    //     regEx: SimpleSchema.RegEx.Id,
-    // },
+    formBoard: {
+        type: String,
+        // regEx: SimpleSchema.RegEx.Id,
+    },
     // // 创建人id
     creater: {
         type: String,

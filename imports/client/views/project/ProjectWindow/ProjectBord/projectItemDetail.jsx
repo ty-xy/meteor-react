@@ -85,22 +85,10 @@ class ProjectItemDetail extends Component {
         });
     }
     onPanelChange = (value) => {
-        console.log(value);
-        Meteor.call(
-            'changeTime', this.props.Id.Id, value._d,
-            (err) => {
-                console.log(err);
-            },
-        );
+        this.creatTime('changeTime', value);
     }
     onPanellChange = (value) => {
-        console.log(value.format('MMMM Do YYYY, h:mm:ss a'));
-        Meteor.call(
-            'changeEndTime', this.props.Id.Id, value._d,
-            (err) => {
-                console.log(err);
-            },
-        );
+        this.creatTime('changeEndTime', value);
     }
     onSelectChange = (value) => {
         this.onPanelChange(value);
@@ -111,6 +99,14 @@ class ProjectItemDetail extends Component {
     onEndChange = (value) => {
         this.onPanellChange(value);
         this.handleEnd();
+    }
+    creatTime = (func, value) => {
+        Meteor.call(
+            `${func}`, this.props.Id.Id, value._d,
+            (err) => {
+                console.log(err);
+            },
+        );
     }
     disabledEndDate = (endValue) => {
         const startValue = this.props.tasks[0].beginTime;
@@ -149,9 +145,7 @@ class ProjectItemDetail extends Component {
         this.handleOk();
     }
     // 创建任务表单
-    handleChangeS = (e) => {
-        e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
+    handleChangeS = () => {
         this.createTask();
         this.handleClose();
     }
@@ -205,9 +199,7 @@ class ProjectItemDetail extends Component {
         );
     }
     // 调用创建清单的方法
-    handleChangeCheck = (e) => {
-        e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
+    handleChangeCheck = () => {
         this.createTaskList();
         this.setState({
             checkValue: '',
@@ -230,6 +222,12 @@ class ProjectItemDetail extends Component {
     handleTitle = () => {
         this.setState({
             titleShow: !this.state.titleShow,
+        });
+    }
+    handleTitleT = () => {
+        this.handleTitle();
+        this.setState({
+            titleValue: this.props.item,
         });
     }
     handleChangeTitleQ = () => {
@@ -543,7 +541,6 @@ class ProjectItemDetail extends Component {
         this.setState({
             [`fatherList${id}`]: false,
         });
-        console.log(1111);
     }
     handleDeleteC =(id) => {
         this.handleRemoveList(id);
@@ -553,11 +550,17 @@ class ProjectItemDetail extends Component {
             [`shownT${id}`]: false,
         });
     }
+    handleSendMessage = (e, func) => {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            func();
+        }
+    }
     // 渲染子清单
     renderTasks = (id) => {
         console.log();
         return this.props.taskchild.map((listChild) => {
-            if (listChild.fatherId === id && listChild.checkble === 1) {
+            if (listChild.fatherId === id) {
                 return (
                     <div key={listChild._id}>
                         {!this.state[`showList${listChild.listId}`] ?
@@ -568,46 +571,7 @@ class ProjectItemDetail extends Component {
                                 <Checkbox
                                     onClick={e => this.handleClick(e)}
                                     onChange={e => this.handleChange(e, listChild.listId)}
-                                    checked={this.state.checked}
-                                    dataId={listChild.fatherId}
-                                />
-                                <p
-                                    style={{ marginLeft: '8px' }}
-
-                                >{listChild.name}</p>
-                            </div> :
-                            <div
-                                style={{ display: 'flex' }}
-                                onClick={() => this.handleTaskListC(listChild.listId)}
-                            >
-                                <div className="try try-out" style={{ display: this.state[`showList${listChild.listId}`] ? 'block' : 'none' }} />
-                                <ProjectInput
-                                    input="更改"
-                                    onClick={() => this.handleChangeTTitle(listChild.listId, listChild.name)}
-                                    value={this.state.TtitleValue}
-                                    onChange={e => this.handleChangeTry('TtitleValue', e)}
-                                    onConcel={() => this.handleTaskListC(listChild.listId)}
-                                />
-                                <p
-                                    style={{ marginLeft: '45px', marginTop: '20px' }}
-                                    onClick={() => this.handleDeleteC(listChild.listId)}
-                                >删除</p>
-                            </div>
-                        }
-                    </div>
-                );
-            } else if (listChild.fatherId === id && listChild.checkble === 0) {
-                return (
-                    <div key={listChild._id}>
-                        {!this.state[`showList${listChild.listId}`] ?
-                            <div
-                                style={{ marginLeft: '20px', display: 'flex' }}
-                                onClick={() => this.handleTaskList(listChild.listId)}
-                            >
-                                <Checkbox
-                                    onClick={e => this.handleClick(e)}
-                                    onChange={e => this.handleChange(e, listChild.listId)}
-                                    checked={!this.state.checked}
+                                    checked={listChild.checkble === 1 ? this.state.checked : !this.state.checked}
                                     dataId={listChild.fatherId}
                                 />
                                 <p
@@ -621,13 +585,18 @@ class ProjectItemDetail extends Component {
                                 <div className="try try-out" style={{ display: this.state[`showList${listChild.listId}`] ? 'block' : 'none' }} />
                                 <ProjectInput
                                     input="更改"
+                                    onPop={e => this.handleClick(e)}
                                     onClick={() => this.handleChangeTTitle(listChild.listId, listChild.name)}
                                     value={this.state.TtitleValue}
+                                    onKeyDown={e => this.handleSendMessage(e, () => this.handleChangeTTitle(listChild.listId, listChild.name))}
                                     onChange={e => this.handleChangeTry('TtitleValue', e)}
                                     onConcel={() => this.handleTaskListC(listChild.listId)}
                                 />
                                 <p
-                                    style={{ marginLeft: '45px', marginTop: '20px' }}
+                                    style={{ marginLeft: '45px',
+                                        marginTop: '20px',
+                                        zIndex: 2000,
+                                        position: 'relative' }}
                                     onClick={() => this.handleDeleteC(listChild.listId)}
                                 >删除</p>
                             </div>
@@ -640,7 +609,6 @@ class ProjectItemDetail extends Component {
     }
     // 开始渲染
     render() {
-        // console.log(this.props.tasks[0].endTime._d.getTime());
         const menu = (
             <Menu >
                 <Menu.Item key="1">
@@ -678,8 +646,7 @@ class ProjectItemDetail extends Component {
                             className="label-circle"
 
                         />
-                                                 正常
-
+                          正常
                         {(this.props.tasks[0] && this.props.tasks[0].label === '#d8d8d8') || (this.props.tasks[0] && this.props.tasks[0].label) === '' ?
                             <Icon icon="icon-xuanze icon-right" /> : null}
 
@@ -729,9 +696,12 @@ class ProjectItemDetail extends Component {
                                     <ProjectInput
                                         input="更改"
                                         onClick={this.handleChangeTitleQ}
+                                        onPop={e => this.handleClick(e)}
+                                        onKeyDown={e => this.handleSendMessage(e, this.handleChangeTitleQ)}
+                                        defaultvalue={this.props.item}
                                         value={this.state.titleValue}
                                         onChange={e => this.handleChangeTry('titleValue', e)}
-                                        onConcel={this.handleTitle}
+                                        onConcel={this.handleTitleT}
                                     />
                                 </div>}
                         </Col>
@@ -819,7 +789,9 @@ class ProjectItemDetail extends Component {
                                     <div className="try try-out" style={{ display: this.state.shown ? 'block' : 'none' }} />
                                     <ProjectInput
                                         input="添加"
-                                        onClick={e => this.handleChangeS(e)}
+                                        onClick={this.handleChangeS}
+                                        onPop={e => this.handleClick(e)}
+                                        onKeyDown={e => this.handleSendMessage(e, this.handleChangeS)}
                                         value={this.state.tValue}
                                         onChange={e => this.handleChangeTry('tValue', e)}
                                         onConcel={this.handleClose}
@@ -864,6 +836,8 @@ class ProjectItemDetail extends Component {
                                         <ProjectInput
                                             input="添加"
                                             value={this.state.FlistValue}
+                                            onPop={e => this.handleClick(e)}
+                                            onKeyDown={e => this.handleSendMessage(e, () => this.handleSendFList(tasklist.listId, tasklist.name))}
                                             onChange={e => this.handleChangeTry('FlistValue', e)}
                                             onConcel={() => this.handleCancelF(tasklist.listId)}
                                             onClick={() => this.handleSendFList(tasklist.listId, tasklist.name)}
@@ -878,6 +852,8 @@ class ProjectItemDetail extends Component {
                                             <ProjectInput
                                                 input="添加"
                                                 value={this.state.listValue}
+                                                onPop={e => this.handleClick(e)}
+                                                onKeyDown={e => this.handleSendMessage(e, () => this.handleSendTaskList(tasklist.listId))}
                                                 onChange={e => this.handleChangeTry('listValue', e)}
                                                 onClick={() => this.handleSendTaskList(tasklist.listId)}
                                                 onConcel={() => this.handleRTaskList(tasklist.listId)}
@@ -904,8 +880,10 @@ class ProjectItemDetail extends Component {
                                 <ProjectInput
                                     input="添加"
                                     value={this.state.checkValue}
+                                    onPop={e => this.handleClick(e)}
+                                    onKeyDown={e => this.handleSendMessage(e, this.handleChangeCheck)}
                                     onChange={e => this.handleChangeTry('checkValue', e)}
-                                    onClick={e => this.handleChangeCheck(e)}
+                                    onClick={this.handleChangeCheck}
                                     onConcel={this.handleChangeR}
                                 />
                             </div>
@@ -960,6 +938,7 @@ class ProjectItemDetail extends Component {
                                 <TextArea
                                     type="text"
                                     value={this.state.commentMark}
+                                    onKeyDown={e => this.handleSendMessage(e, this.handleMark)}
                                     onChange={e => this.handleChangeTry('commentMark', e)}
                                 />
                             </div>
@@ -994,6 +973,8 @@ class ProjectItemDetail extends Component {
                                                     type="text"
                                                     value={this.state.changeMark}
                                                     autoFocus
+                                                    onKeyDown={e => this.handleSendMessage(e, () => this.handleCreadite(MarkValue._id, MarkValue.content))}
+                                                    onClick={e => this.handleClick(e)}
                                                     onChange={e => this.handleChangeTry('changeMark', e)}
                                                 />
                                                 <button onClick={() => this.handleCreadite(MarkValue._id, MarkValue.content)}>编辑</button>

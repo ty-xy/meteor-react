@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import format from 'date-format';
 import moment from 'moment';
+import { DragSource } from 'react-dnd';
 
 import pureRender from 'pure-render-decorator';
 import TaskList from '../../../../../../imports/schema/taskList';
@@ -14,9 +15,46 @@ import Task from '../../../../../../imports/schema/task';
 import Active from '../../../../../../imports/schema/active';
 import Icon from '../../../../components/Icon';
 
+const ItemTypes = {
+    CARD: 'card',
+};
+const source = {
+    beginDrag(props) {
+        console.log(props.textId, props.index);
+        return { _id: props.textId, index: props.index };
+    },
+    endDrag(props, monitor) {
+        const item = monitor.getItem();
+        const dropResult = monitor.getDropResult();
+        const currentOffset = monitor.getSourceClientOffset();
+        console.log(item, dropResult, currentOffset);
+        if (dropResult) {
+            if (item.index !== dropResult.listName) {
+                Meteor.call('changeArray', dropResult.listName, item._id, dropResult.y, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+                Meteor.call('deleteArray', item.index, item._id, (err) => {
+                    console.log(err);
+                });
+            } else if (item.index === dropResult.listName) {
+                Meteor.call('deleteArray2', dropResult.listName, item._id, dropResult.y, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            }
+        }
+    },
+};
+const collect = connect => ({
+    connectDragSource: connect.dragSource(),
+});
 @pureRender
 class MiniCard extends Component {
     static propTypes = {
+        connectDragSource: PropTypes.func.isRequired,
         value: PropTypes.string,
         idIndex: PropTypes.string,
         begintime: PropTypes.instanceOf(Date),
@@ -45,9 +83,6 @@ class MiniCard extends Component {
             showStartTime: false,
             showOverTime: false,
         };
-    }
-    componentWillReceiveProps(nextProps) {
-        console.log('nextProps', nextProps);
     }
     onPanelChange=(value) => {
         console.log(value.format('L'));
@@ -125,8 +160,8 @@ class MiniCard extends Component {
         }
     }
     render() {
-        console.error('循环到', this.props.value);
-        return (
+        const { connectDragSource } = this.props;
+        return connectDragSource(
             <div
                 className="list-message"
                 data-id={this.props.idIndex}
@@ -244,12 +279,12 @@ class MiniCard extends Component {
                         />
                     </Modal>
                 </div>
-            </div >
+            </div >,
         );
     }
 }
 
-export default withTracker((taskid) => {
+export default DragSource(ItemTypes.CARD, source, collect)(withTracker((taskid) => {
     Meteor.subscribe('active');
     Meteor.subscribe('task');
     Meteor.subscribe('tasklist');
@@ -272,4 +307,4 @@ export default withTracker((taskid) => {
             files,
         };
     }
-})(MiniCard);
+})(MiniCard));

@@ -12,6 +12,7 @@ Meteor.methods({
             headPortrait,
             createTime: new Date(),
             pigeonhole: 1,
+            formBoard: '不使用',
             creater: Meteor.userId(),
             members,
             uprojectId,

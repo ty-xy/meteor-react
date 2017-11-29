@@ -112,7 +112,11 @@ class ProjectSet extends Component {
                 style={{ width: '60px', height: '60px', borderRadius: '50%' }}
             />);
         }
-        return <MyIcon icon={`${item} icon`} size={30} />;
+        return (
+            <div className="list-img-icon">
+                <MyIcon icon={`${item} icon`} size={30} iconColor="#fff" />
+            </div>
+        );
     }
     render() {
         console.log(this.props.setId);
@@ -120,9 +124,6 @@ class ProjectSet extends Component {
             <div id="title-f">
             创建项目
             </div>
-            {/* {this.props.projects.map((value, index) => {
-                console.log(11111);
-                return ( */}
             <div className="enjianlian-form" >
                 <div className="common-type person-type">
                     <span>项目头像：</span >
