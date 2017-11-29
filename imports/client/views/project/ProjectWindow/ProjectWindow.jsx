@@ -11,8 +11,7 @@ import ProjectLender from './ProjectBord/projectLender';
 import ProjectFile from './ProjectBord/projectFile';
 import ProjectChat from './ProjectBord/projectChat';
 import ProjectAction from './ProjectBord/projectAction';
-import ProjectBordItem from './ProjectBord/projectBordItem';
-import TaskBoard from '../../../../../imports/schema/taskBoard';
+import Board from './ProjectBord/Board';
 import Project from '../../../../../imports/schema/project';
 import ProjectSet from './ProjectBord/ProjectSet';
 import ProjectMembers from './ProjectBord/projectMembers';
@@ -21,7 +20,6 @@ const TabPane = Tabs.TabPane;
 @pureRender
 class ProjectWindow extends Component {
     static propTypes = {
-        taskF: PropTypes.arrayOf(PropTypes.object),
         projectd: PropTypes.object,
         projectL: PropTypes.arrayOf(PropTypes.object),
         //  projectd: PropTypes.arrayOf(PropTypes.object),
@@ -100,6 +98,7 @@ class ProjectWindow extends Component {
                                     visible={this.state.visible}
                                     footer={null}
                                     onOk={this.hideModal}
+                                    key={project._id}
                                     onCancel={this.hideModal}
                                     bodyStyle={{ padding: 0 }}
                                     width={450}
@@ -114,17 +113,7 @@ class ProjectWindow extends Component {
                 <div className="ejianlian-body-tab">
                     <Tabs defaultActiveKey="1" className="tab-task" >
                         <TabPane tab="任务流" key="1" style={divStyle.TabStyle}>
-                            {
-                                this.props.taskF.map(text => (
-                                    <ProjectBordItem
-                                        value={text.name}
-                                        tastBoardId={text._id}
-                                        key={text._id}
-                                        projectId={text.projectId}
-                                    />
-                                ))
-
-                            }
+                            <Board pId={this.state.id} />
                             <ProjectBordAdd pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="日历" key="2">
@@ -146,16 +135,11 @@ class ProjectWindow extends Component {
     }
 }
 export default withTracker((projectd) => {
-    Meteor.subscribe('taskboard');
     Meteor.subscribe('project');
-    const taskF = TaskBoard.find({ projectId: projectd.match.params.id }).fetch();
-    const taskL = taskF.length;
     const projectL = Project.find({ uprojectId: projectd.match.params.id }).fetch();
     const project = projectL[0];
-    console.log(project, projectL, projectd, taskF);
+    console.log(project, projectL, projectd);
     return {
-        taskF,
-        taskL,
         project,
         projectL,
         projectd,

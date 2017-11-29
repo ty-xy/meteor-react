@@ -4,15 +4,18 @@ import { Input } from 'antd';
 import Icon from '../../../../components/Icon';
 
 const { TextArea } = Input;
-export default function Icom({ Twidth, onClick, input, value, onChange, onConcel }) {
+export default function Icom({ Twidth, onClick, input, value, onChange, onConcel, onPop, onKeyDown, defaultvalue }) {
     return (
         <div style={{ zIndex: 2000, position: 'relative' }}>
             <TextArea
                 autosize={{ minRows: 1, maxRows: 6 }}
                 autoFocus
                 style={{ width: Twidth }}
+                defaultValue={defaultvalue}
                 value={value}
                 onChange={onChange}
+                onClick={onPop}
+                onKeyDown={onKeyDown}
             />
             <button
                 className="input-button"
@@ -23,10 +26,13 @@ export default function Icom({ Twidth, onClick, input, value, onChange, onConcel
     );
 }
 Icom.propTypes = {
+    onKeyDown: PropTypes.func,
+    onPop: PropTypes.func,
     Twidth: PropTypes.number,
     onClick: PropTypes.func,
     input: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func,
     onConcel: PropTypes.func,
+    defaultvalue: PropTypes.string,
 };
