@@ -86,20 +86,22 @@ class Invite extends PureComponent {
     // urls
     urls = () => {
         const { companyId, dep, groupId } = this.props;
+        const { origin } = window.location;
+        const pathname = '/login';
+        const w = `${origin}${pathname}`;
         if (companyId && dep && groupId) {
-            return `http://localhost:3000/login?companyId=${companyId}&dep=${dep}&groupId=${groupId}`;
+            return `${w}?companyId=${companyId}&dep=${dep}&groupId=${groupId}`;
         } else if (companyId && groupId) {
-            return `http://localhost:3000/login?companyId=${companyId}&groupId=${groupId}`;
+            return `${w}?companyId=${companyId}&groupId=${groupId}`;
         } else if (companyId) {
-            return `http://localhost:3000/login?companyId=${companyId}`;
+            return `${w}?companyId=${companyId}`;
         } else if (companyId && dep) {
-            return `http://localhost:3000/login?companyId=${companyId}&dep=${dep}`;
+            return `${w}?companyId=${companyId}&dep=${dep}`;
         }
     }
     render() {
         const { nums } = this.state;
         const { modelDep } = this.props;
-        console.log('props', this.props, this.urls());
         return (
             <MyModel
                 handleCancel={this.handleCancel}

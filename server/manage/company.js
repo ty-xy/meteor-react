@@ -227,13 +227,13 @@ Meteor.methods({
         if (invite) {
             const company = Company.findOne({ _id: companyId }) || {};
             const { members = [] } = company;
-            let res = '';
+            const res = {};
             (members || []).forEach((item) => {
                 if (item.userId === userId) {
-                    res = '你已存在该团队中';
+                    res.done = '你已存在该团队中';
                 }
             });
-            if (res) {
+            if (res.done) {
                 return res;
             }
         }
@@ -251,9 +251,18 @@ Meteor.methods({
                             newMembers: [userId],
                         },
                     );
+                    Meteor.users.update(
+                        { _id: Meteor.userId() },
+                        {
+                            $push: {
+                                company: companyId,
+                            },
+                        },
+                    );
                 }
             },
         );
+        return Company.findOne({ _id: companyId }).name;
     },
     // 修改人员
     editMember({ companyId, userId, name, dep = '', groupId, oldgroup, pos }) {

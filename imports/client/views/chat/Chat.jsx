@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { Button } from 'antd';
 
 
 import ContactList from './chatSideLeft/ContactList';
@@ -22,10 +23,14 @@ import SearchChat from '../../features/SearchChat';
 import TeamMembers from './chatSideLeft/TeamMembers';
 import EmptyChat from '../../components/EmptyChat';
 
+
+import InviteModel from '../manage/audit/component/MyModel';
+
 @pureRender
 class Chat extends Component {
     static propTypes = {
         chatList: PropTypes.array,
+        history: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -48,7 +53,37 @@ class Chat extends Component {
             currentKey: '',
             currentDeps: '',
             deps: '',
+            // inviteModel: true,
         };
+    }
+    componentWillMount() {
+        const { history } = this.props;
+        if (history.location.search && history.location.state === 'invite') {
+            const search = location.search.slice(1).split('&');
+            const searchs = {};
+            search.forEach((item) => {
+                searchs[item.split('=')[0]] = item.split('=')[1];
+            });
+            if (searchs.companyId) {
+                const { companyId, groupId, dep } = searchs;
+                Meteor.call(
+                    'addMember',
+                    { companyId, userId: Meteor.userId(), name: UserUtil.getName(), dep, groupId, pos: '', invite: true },
+                    (e, r) => {
+                        if (e) {
+                            feedback.dealError('添加失败');
+                            return false;
+                        }
+                        this.props.history.replace({ pathname: '/chat' });
+                        if (r.done) {
+                            feedback.dealSuccess(r.done);
+                        } else {
+                            this.setState({ inviteModel: true, inviteModelName: r });
+                        }
+                    },
+                );
+            }
+        }
     }
     handleChatType = (chatType) => {
         // console.log(2222, chatType);
@@ -92,6 +127,29 @@ class Chat extends Component {
             },
         });
     }
+    // 邀请提示
+    hideIveiteModel = () => {
+        this.setState({ inviteModel: false });
+    }
+    inviteNotice = () => {
+        const { inviteModel, inviteModelName } = this.state;
+        return (
+            <InviteModel
+                show={inviteModel}
+                title=""
+                animation="vertical"
+                mask={inviteModel}
+                height="auto"
+                footer={<div />}
+            >
+                <div style={{ padding: '30px 0', marginTop: '-22px', background: '#fff', textAlign: 'center' }}>
+                    <p className="margin-bottom-20 font20">您已成功加入团队： <span className="font24" style={{ fontWeight: 'bolder' }}>{inviteModelName}</span></p>
+                    <div style={{ textAlign: 'center' }}><img style={{ width: '200px' }} src="http://oxldjnom8.bkt.clouddn.com/invite_work.png" alt="" /></div>
+                    <Button className="e-mg-button margin-top-20" onClick={this.hideIveiteModel}>开启团队协作之旅</Button>
+                </div>
+            </InviteModel>
+        );
+    }
     renderTeamMembers = (teamId, currentDeps, deps) => {
         console.log(currentDeps);
         return <TeamMembers teamId={teamId} depsId={currentDeps} deps={deps} />;
@@ -116,6 +174,8 @@ class Chat extends Component {
         return (
             <div className="ejianlian-chat">
                 <div className="left">
+                    {/* 邀请提示框 */}
+                    {this.inviteNotice()}
                     {/* 导航部分 */}
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">

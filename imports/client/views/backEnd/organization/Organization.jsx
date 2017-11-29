@@ -75,7 +75,6 @@ class Organization extends PureComponent {
                 isDelete = false;
             }
         });
-        console.log('groupId', groupId);
         if (isDelete) {
             feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该部门吗？', () => {
                 Meteor.call(
@@ -102,7 +101,6 @@ class Organization extends PureComponent {
         e.preventDefault();
         const { users } = this.props;
         let res = [];
-        console.log('depActive', depActive, users);
         res = users.filter(item => (item.dep === depActive));
         this.setState({ depActive, users: res });
     }
@@ -115,7 +113,7 @@ class Organization extends PureComponent {
         if (editMemberInfo) {
             this.setState({ [name]: bool, editMemberInfo: {} });
         } else {
-            this.setState({ [name]: bool, editMemberInfo: {} });
+            this.setState({ [name]: bool });
         }
     }
     // 创建部门提交
