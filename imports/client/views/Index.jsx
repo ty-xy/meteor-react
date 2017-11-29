@@ -20,7 +20,7 @@ class Index extends Component {
                 if (history.location.search && history.location.state === 'invite') {
                     this.props.history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
                 } else {
-                    this.props.history.push('/manage/logging/outbox');
+                    this.props.history.push('/chat');
                 }
             }
         });
