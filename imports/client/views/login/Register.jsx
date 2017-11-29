@@ -9,6 +9,7 @@ import feedback from '../../../util/feedback';
 class Register extends Component {
     static propTypes = {
         history: PropTypes.object,
+        location: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
@@ -17,7 +18,9 @@ class Register extends Component {
         };
     }
     register = () => {
-        Meteor.call('register', this.username.value, this.password.value, this.name.value, (err) => {
+        const { location } = this.props;
+        const _this = this;
+        Meteor.call('register', this.username.value, this.password.value, this.name.value, (err, userId) => {
             if (err) {
                 this.setState({
                     registerError: err.reason,
@@ -25,7 +28,29 @@ class Register extends Component {
                 return console.error(err.reason);
             }
             Meteor.loginWithPassword(this.username.value, this.password.value);
-            feedback.dealSuccess('注册成功');
+            if (location.search && location.state === 'invite') {
+                const search = location.search.slice(1).split('&');
+                const searchs = {};
+                search.forEach((item) => {
+                    searchs[item.split('=')[0]] = item.split('=')[1];
+                });
+                if (searchs.companyId) {
+                    const { companyId, groupId, dep } = searchs;
+                    Meteor.call(
+                        'addMember',
+                        { companyId, userId, name: _this.name.value, dep, groupId, pos: '', invite: true },
+                        (e, r) => {
+                            if (e) {
+                                feedback.dealError('添加失败');
+                                return false;
+                            }
+                            feedback.dealSuccess(r || '注册成功, 且成功加入该团队');
+                        },
+                    );
+                }
+            } else {
+                feedback.dealSuccess('注册成功');
+            }
             this.login();
         });
     }

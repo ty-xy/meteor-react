@@ -65,7 +65,7 @@ class Approvaling extends Component {
         cards = cards.concat(leaves, business, commonAudit, checkbill);
         const res = [];
         cards.forEach((item) => {
-            if (item.company === UserUtil.getCompany()) {
+            if (item.company === UserUtil.getMainCompany()) {
                 item.comments.forEach((j) => {
                     if (j.userId === localUserId && j.isAudit === '待审核') {
                         res.push(item);
@@ -370,7 +370,7 @@ export default withTracker(() => {
 
     const companys = Company.find().fetch();
     let users = [];
-    const mainCompany = UserUtil.getCompany();
+    const mainCompany = UserUtil.getMainCompany();
     companys.forEach((item) => {
         if (item._id === mainCompany) {
             users = item.members;

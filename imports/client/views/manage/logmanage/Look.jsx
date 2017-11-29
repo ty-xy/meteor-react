@@ -105,7 +105,7 @@ export default withTracker(() => {
     Meteor.subscribe('company');
     const companys = Company.find().fetch();
     let allusers = [];
-    const mainCompany = UserUtil.getCompany();
+    const mainCompany = UserUtil.getMainCompany();
     companys.forEach((item) => {
         if (item._id === mainCompany) {
             allusers = item.members;
@@ -120,7 +120,7 @@ export default withTracker(() => {
     });
     return {
         users: Meteor.user() || {},
-        AllLogs: Log.find({ peo: userId, group: userdep, company: UserUtil.getCompany() }).fetch(),
+        AllLogs: Log.find({ peo: userId, group: userdep, company: UserUtil.getMainCompany() }).fetch(),
         allusers,
     };
 })(Form.create()(Look));

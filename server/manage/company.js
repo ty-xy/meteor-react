@@ -217,13 +217,26 @@ Meteor.methods({
         });
     },
     // 公司添加人员
-    addMember({ companyId, userId, name, dep = '', groupId, pos }) {
+    addMember({ companyId, userId, name, dep = '', groupId, pos, invite }) {
         const member = {
             userId,
             dep,
             pos,
             name,
         };
+        if (invite) {
+            const company = Company.findOne({ _id: companyId }) || {};
+            const { members = [] } = company;
+            let res = '';
+            (members || []).forEach((item) => {
+                if (item.userId === userId) {
+                    res = '你已存在该团队中';
+                }
+            });
+            if (res) {
+                return res;
+            }
+        }
         Company.update(
             { _id: companyId },
             {
