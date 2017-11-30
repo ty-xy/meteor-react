@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
+import Messages from '../../imports/schema/message';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
     async createCompany({ name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [] }) {
         // 创建完团队,自动创建公司的群聊
-
         const newCompany = {
             createdAt: new Date(),
             name,
@@ -28,7 +28,7 @@ Meteor.methods({
                 },
             },
         );
-        Meteor.call('createGroup', { name, members, type: 'team', companyId }, (err, res) => {
+        Meteor.call('createGroup', { name, members, type: 'team', companyId }, (err, groupId) => {
             if (err) {
                 return false;
             }
@@ -36,7 +36,7 @@ Meteor.methods({
                 { _id: companyId },
                 {
                     $set: {
-                        groupId: res,
+                        groupId,
                         companyId,
                     },
                 },
@@ -59,7 +59,25 @@ Meteor.methods({
         );
     },
     // 更换主管理员
-    changeMainManage(companyId, newManageId) {
+    changeMainManage(companyId, oldManageId, newManageId) {
+        // 从之前主管理员创建的公司中移除,在主管理员创建的公司中添加
+        Meteor.users.update(
+            { _id: oldManageId },
+            {
+                $pull: {
+                    'profile.createdCompany': companyId,
+                },
+            },
+        );
+        Meteor.users.update(
+            { _id: newManageId },
+            {
+                $pull: {
+                    'profile.createdCompany': companyId,
+                },
+            },
+        );
+        // 更换公司内部的主管理员
         Company.update(
             { _id: companyId },
             {
@@ -343,18 +361,20 @@ Meteor.methods({
     },
     // 解散团队
     deleteCompany(companyId) {
-        const companyMembers = Company.findOne({
+        const companyInfo = Company.findOne({
             _id: companyId,
         });
-        companyMembers.members.map(user => (
+        const companyGroupId = companyInfo.groupId;
+        const companyMainManage = companyInfo.admin;
+        companyInfo.members.map(user => (
             Meteor.users.update({
                 _id: user,
             }, {
                 $pull: {
                     'profile.company': companyId,
-                    'profile.createdCompany': companyId,
+                    'profile.groups': companyGroupId,
                     'profile.chatList': {
-                        companyId,
+                        groupId: companyGroupId,
                     },
                 },
                 $set: {
@@ -363,21 +383,21 @@ Meteor.methods({
 
             })
         ));
-        // 在公司列表中删除
-        Company.remove({
-            _id: companyId,
-        });
         Meteor.users.update(
-            { _id: Meteor.userId() },
+            { _id: companyMainManage },
             {
                 $pull: {
                     'profile.createdCompany': companyId,
                 },
             },
         );
-        // Messages.remove({
-        //     to: groupId,
-        // });
+        Messages.remove({
+            to: companyGroupId,
+        });
+        // 在公司列表中删除
+        Company.remove({
+            _id: companyId,
+        });
     },
     // 选择后台的当前公司
     selectBackendTeam(companyId) {
