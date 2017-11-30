@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
-import feedback from '../../../util/feedback';
+// import feedback from '../../../util/feedback';
 
 @pureRender
 class Register extends Component {
@@ -34,7 +34,7 @@ class Register extends Component {
         // this.props.history.push('/chat');
         if (history.location.search && history.location.state === 'invite') {
             history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
-            feedback.dealSuccess('注册成功');
+            // feedback.dealSuccess('注册成功');
         } else {
             history.push('/chat');
         }

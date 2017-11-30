@@ -227,6 +227,7 @@ class CopyMe extends Component {
                     footer={footer()}
                     title={`${userIdToInfo.getName(allUsers, modelData.userId)}的${modelData.type}审批`}
                     mask={showAuditCard}
+                    height="100%"
                 >
                     <div>
                         <div className="border-bottom-eee e-mg-model-body-avatar clearfix">

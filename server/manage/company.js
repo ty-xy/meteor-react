@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
+import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
@@ -215,7 +216,8 @@ Meteor.methods({
         });
     },
     // 公司添加人员
-    addMember({ companyId, userId, name, dep = '', groupId, pos, invite, companyGroupId }) {
+    addMember({ companyId, userId = Meteor.userId(), name = UserUtil.getName(), dep = '', groupId, pos, invite, companyGroupId }) {
+        console.log('addMember', companyId, userId, name, dep, groupId, invite, companyGroupId);
         const member = {
             userId,
             dep,

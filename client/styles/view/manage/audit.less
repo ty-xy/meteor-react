@@ -32,6 +32,14 @@
             max-height: 660px;
             overflow: auto;
             width: 102%;
+            .e-mg-log-card{
+                &:nth-child(3n+1){
+                    margin-right: 2%;
+                }
+                &:nth-child(3n){
+                    margin-right: 0%;
+                }
+            }
         }
         // 发起审批卡片
         .e-mg-audit-send{
@@ -243,7 +251,7 @@
 .e-mg-model-show-{
     opacity: 1;
     right: 0;
-    z-index: 1;
+    z-index: 2;
 }
 .e-mg-model-vertical{
     border-radius: 4px;
@@ -266,25 +274,30 @@
     z-index: 2;
 }
 .e-mg-model-header{
-    padding: 15px 0;
+    // padding: 15px 0;
     background: #fff;
+    height: 55px;
     border-bottom: 1px solid #eee;
 }
 .e-mg-model-header-title{
     color: RGBA(120, 120, 120, 1.00);
     font-size: 20px;
     text-align: center;
+    line-height: 50px;
 }
 .e-mg-model-header-close{
     float: right;
     padding-right: 10px;
-    margin-top: -8px;
+    // margin-top: -8px;
     .iconfont{
         font-size: 30px;
     }
 }
 .e-mg-model-body{
     position: relative;
+    height: 100%;
+    overflow: auto;
+    width: 100%;
     // top: 60px;
     // // bottom: 45px;
     // left: 0;
