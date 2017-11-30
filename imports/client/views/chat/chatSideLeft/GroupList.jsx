@@ -12,7 +12,6 @@ import Group from '../../../../schema/group';
 @pureRender
 class GroupList extends Component {
     static propTypes = {
-        groups: PropTypes.array,
         changeTo: PropTypes.func,
         handleClick: PropTypes.func,
         selfGroups: PropTypes.array,
@@ -45,7 +44,7 @@ class GroupList extends Component {
                             <p className="my-chat-group">
                                 <Icon icon="icon-qunzu icon" />
                             </p>
-                            <p className="friend-name" style={{ borderWidth: this.state.isShowMyGroup ? '0px' : this.props.groups.length > 0 ? '1px' : '0px' }}>
+                            <p className="friend-name" style={{ borderWidth: this.state.isShowMyGroup ? '0px' : this.props.teamGroups.length > 0 ? '1px' : '0px' }}>
                                 团队群聊
                                 {
                                     this.state.isShowMyGroup ?
@@ -85,7 +84,7 @@ class GroupList extends Component {
                             <p className="my-chat-group">
                                 <Icon icon="icon-qunzu icon" />
                             </p>
-                            <p className="friend-name" style={{ borderWidth: this.state.isShowMyGroup ? '0px' : this.props.groups.length > 0 ? '1px' : '0px' }}>
+                            <p className="friend-name" style={{ borderWidth: this.state.isShowMyGroup ? '0px' : this.props.selfGroups.length > 0 ? '1px' : '0px' }}>
                                 我的群聊
                                 {
                                     this.state.isShowMyGroup ?
@@ -129,10 +128,9 @@ export default withTracker(() => {
     Meteor.subscribe('group');
     const groupIds = UserUtil.getGroups();
     const groups = groupIds.map(_id => Group.findOne({ _id }));
-    const selfGroups = groups.filter(x => x.type === 'group' || x.type === undefined); // 之后数据库重新更新后,要删掉对undefined的判断
-    const teamGroups = groups.filter(x => x.type === 'team');
+    const selfGroups = groups.filter(x => x && (x.type === 'group' || x.type === undefined)); // 之后数据库重新更新后,要删掉对undefined的判断
+    const teamGroups = groups.filter(x => x && (x.type === 'team' && x.companyId));
     return {
-        groups,
         selfGroups,
         teamGroups,
     };
