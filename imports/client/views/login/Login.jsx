@@ -3,12 +3,14 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
-import feedback from '../../../util/feedback';
+// import feedback from '../../../util/feedback';
+// import UserUtil from '../../../util/user';
 
 @pureRender
 class Login extends Component {
     static propTypes = {
         history: PropTypes.object,
+        location: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
@@ -16,7 +18,13 @@ class Login extends Component {
             loginError: '',
         };
     }
+    componentWillReceiveProps() {
+        if (this.props.location.search) {
+            this.props.history.replace({ pathname: '/login', search: this.props.location.search, state: 'invite' });
+        }
+    }
     login = () => {
+        const { history } = this.props;
         Meteor.loginWithPassword(
             this.username.value,
             this.password.value,
@@ -27,13 +35,13 @@ class Login extends Component {
                     });
                     return console.error(err.reason);
                 }
-                this.props.history.push('/chat');
-                feedback.dealSuccess('登录成功');
+                // this.props.history.push('/chat');
+                history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
             },
         );
     }
     gotoRegister = () => {
-        this.props.history.push('/register');
+        this.props.history.push({ pathname: '/register', search: this.props.location.search, state: this.props.location.search && 'invite' });
     }
     gotoForgetPassword = () => {
         this.props.history.push('/forgetPassword');

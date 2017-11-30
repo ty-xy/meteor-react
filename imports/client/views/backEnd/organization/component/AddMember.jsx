@@ -58,7 +58,6 @@ class AddMembers extends PureComponent {
             if (err) {
                 return false;
             }
-            console.log('新增人员提交', editMemberInfo);
             handleSubmitMember(fields, editMemberInfo.userId, editMemberInfo.dep);
         });
     }
@@ -66,7 +65,6 @@ class AddMembers extends PureComponent {
         // const {  } = this.state;
         const { modelMember, data, editMemberInfo } = this.props;
         const reg = new RegExp(/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/, 'g');
-        console.log('新增人员', editMemberInfo);
         return (
             <MyModel
                 handleCancel={this.handleCancel}

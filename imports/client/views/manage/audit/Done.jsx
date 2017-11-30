@@ -64,7 +64,7 @@ class Done extends Component {
         cards = cards.concat(leaves, business, commonAudit, checkbill);
         const res = [];
         cards.forEach((item) => {
-            if (item.company === UserUtil.getCompany()) {
+            if (item.company === UserUtil.getMainCompany()) {
                 item.comments.forEach((j) => {
                     if (j.userId === localUserId && (j.isAudit === '同意' || j.isAudit === '拒绝')) {
                         res.push(item);
@@ -325,7 +325,7 @@ export default withTracker(() => {
     Meteor.subscribe('users');
     const companys = Company.find().fetch();
     let users = [];
-    const mainCompany = UserUtil.getCompany();
+    const mainCompany = UserUtil.getMainCompany();
     companys.forEach((item) => {
         if (item._id === mainCompany) {
             users = item.members;

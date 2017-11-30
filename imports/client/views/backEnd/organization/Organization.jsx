@@ -34,7 +34,6 @@ class Organization extends PureComponent {
     }
     componentWillReceiveProps(nextProps) {
         if (!this.state.depActive) {
-            console.log('componentWillReceiveProps');
             this.setState({ users: nextProps.users });
         }
     }
@@ -76,7 +75,6 @@ class Organization extends PureComponent {
                 isDelete = false;
             }
         });
-        console.log('groupId', groupId);
         if (isDelete) {
             feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该部门吗？', () => {
                 Meteor.call(
@@ -103,7 +101,6 @@ class Organization extends PureComponent {
         e.preventDefault();
         const { users } = this.props;
         let res = [];
-        console.log('depActive', depActive, users);
         res = users.filter(item => (item.dep === depActive));
         this.setState({ depActive, users: res });
     }
@@ -201,6 +198,7 @@ class Organization extends PureComponent {
     handleSubmitMember = (res, editMemberInfo, oldgroup) => {
         const companyId = UserUtil.getCurrentBackendCompany();
         const { allUsers, users, company } = this.props;
+        const companyGroupId = company.groupId;
         let isNot = false;
         let bool = false;
         let groupId = '';
@@ -210,12 +208,12 @@ class Organization extends PureComponent {
                 isNot = true;
             }
         });
-        company.deps.forEach((item) => {
+        (company.deps || []).forEach((item) => {
             if (item.id === res.dep) {
                 groupId = item.groupId;
             }
         });
-        company.deps.forEach((item) => {
+        (company.deps || []).forEach((item) => {
             if (item.id === oldgroup) {
                 oldgroup = item.groupId;
             }
@@ -247,7 +245,7 @@ class Organization extends PureComponent {
             if (bool) {
                 Meteor.call(
                     'addMember',
-                    { ...res, companyId, groupId },
+                    { ...res, companyId, groupId, companyGroupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('添加失败');
@@ -287,7 +285,6 @@ class Organization extends PureComponent {
             }
         });
         const _this = this;
-        console.log('_users', _users, fields, selectedRowKeys, groupId, oldgroup);
         Meteor.call(
             'batchSetDep',
             { companyId, _users, groupId, oldgroup },
@@ -319,7 +316,7 @@ class Organization extends PureComponent {
     // 新增成员renmodel
     addMembersModel = () => {
         const { company, allUsers } = this.props;
-        const { editMemberInfo = {} } = this.state;
+        const { editMemberInfo = {}, depActive } = this.state;
         if (editMemberInfo.userId) {
             return (
                 <AddMember
@@ -331,6 +328,9 @@ class Organization extends PureComponent {
                     allUsers={allUsers}
                 />
             );
+        }
+        if (depActive) {
+            editMemberInfo.dep = depActive;
         }
         return (
             <AddMember
@@ -355,6 +355,7 @@ class Organization extends PureComponent {
     // 删除成员
     delCompanyMember = (userId, record) => {
         const { deps = [] } = this.props.company;
+        const companyGroupId = this.props.company.groupId;
         let groupId = '';
         deps.forEach((item) => {
             if (item.id === record.dep) {
@@ -368,7 +369,7 @@ class Organization extends PureComponent {
                 const companyId = UserUtil.getCurrentBackendCompany();
                 Meteor.call(
                     'delCompanyMember',
-                    { companyId, userId, groupId },
+                    { companyId, userId, groupId, companyGroupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('删除失败');
@@ -453,16 +454,30 @@ class Organization extends PureComponent {
     }
     // ---- 邀请员工 ----
     pleaseInvite = () => {
-        const { members } = this.props.company;
+        const { members, deps = [] } = this.props.company;
+        const { inviteModel, depActive } = this.state;
+        let depGroupId = '';
+        deps.forEach((item) => {
+            if (item.id === depActive) {
+                depGroupId = item.groupId;
+            }
+        });
         return (
             <Invite
-                title="新增部门"
                 addDepModel={this.modelShowHide}
-                postAddDep={this.postAddDep}
-                modelDep={this.state.inviteModel}
+                postInvite={this.postInvite}
+                modelDep={inviteModel}
                 deps={members || []}
+                companyId={UserUtil.getCurrentBackendCompany()}
+                dep={depActive}
+                groupId={depActive ? depGroupId : UserUtil.getCompanyGrounpId()}
             />
         );
+    }
+    // 邀请员工发送短信
+    postInvite = (bool, name, fields) => {
+        console.log('fields', fields);
+        this.setState({ [name]: bool });
     }
     render() {
         const { deps = [] } = this.props.company;
@@ -474,7 +489,7 @@ class Organization extends PureComponent {
         } else {
             data = users.filter(item => (!item.dep));
         }
-        // console.log('render', this.props, this.state, data);
+        console.log('render', this.props, this.state);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">

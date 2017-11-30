@@ -28,7 +28,7 @@ const MyDate = ({ keyword, label, required, defaultValue, placeholder, requiredE
                 required, message: requiredErr,
             }],
         })(
-            <RangePicker allowClear format={formatDate} disabledDate={disabledDate} onChange={date => onChange(date, k)} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }} />,
+            <RangePicker allowClear format={formatDate} disabledDate={disabledDate} onChange={(date, dateString) => onChange(date, dateString, k)} placeholder={placeholder} style={{ width: width ? `${width}px` : '100%' }} />,
         )}
     </FormItem>
 );

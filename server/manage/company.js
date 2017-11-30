@@ -217,13 +217,27 @@ Meteor.methods({
         });
     },
     // 公司添加人员
-    addMember({ companyId, userId, name, dep = '', groupId, pos }) {
+    addMember({ companyId, userId, name, dep = '', groupId, pos, invite, companyGroupId }) {
+        console.log('companyGroupId', companyGroupId, companyId, Meteor.userId());
         const member = {
             userId,
             dep,
             pos,
             name,
         };
+        if (invite) {
+            const company = Company.findOne({ _id: companyId }) || {};
+            const { members = [] } = company;
+            const res = {};
+            (members || []).forEach((item) => {
+                if (item.userId === userId) {
+                    res.done = '你已存在该团队中';
+                }
+            });
+            if (res.done) {
+                return res;
+            }
+        }
         Company.update(
             { _id: companyId },
             {
@@ -231,6 +245,7 @@ Meteor.methods({
             },
             (err, res) => {
                 if (res && dep) {
+                    // 加入公司部门群聊
                     Meteor.call(
                         'addGroupMembers',
                         {
@@ -238,9 +253,28 @@ Meteor.methods({
                             newMembers: [userId],
                         },
                     );
+                } else if (res) {
+                    // 加入公司大群聊
+                    Meteor.call(
+                        'addGroupMembers',
+                        {
+                            groupId: companyGroupId,
+                            newMembers: [userId],
+                        },
+                    );
+                    // 更新人员所在公司
+                    Meteor.users.update(
+                        { _id: userId },
+                        {
+                            $push: {
+                                'profile.company': companyId,
+                            },
+                        },
+                    );
                 }
             },
         );
+        return Company.findOne({ _id: companyId }).name;
     },
     // 修改人员
     editMember({ companyId, userId, name, dep = '', groupId, oldgroup, pos }) {
@@ -274,7 +308,7 @@ Meteor.methods({
         );
     },
     // 删除人员
-    delCompanyMember({ companyId, userId, groupId }) {
+    delCompanyMember({ companyId, userId, groupId, companyGroupId }) {
         Company.update(
             { _id: companyId },
             {
@@ -282,9 +316,24 @@ Meteor.methods({
             },
             (err, res) => {
                 if (res) {
+                    // 从部门群聊中删除
                     Meteor.call(
                         'deleteMember',
                         groupId, userId,
+                    );
+                    // 从公司大群聊中删除
+                    Meteor.call(
+                        'deleteMember',
+                        companyGroupId, userId,
+                    );
+                    // 删除人员company字段中公司id
+                    Meteor.users.update(
+                        { _id: userId },
+                        {
+                            $pull: {
+                                'profile.company': companyId,
+                            },
+                        },
                     );
                 }
             },

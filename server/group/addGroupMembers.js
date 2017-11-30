@@ -4,7 +4,6 @@ import Group from '../../imports/schema/group';
 
 Meteor.methods({
     addGroupMembers({ groupId, newMembers }) {
-        console.log(newMembers);
         newMembers.map(user =>
             Group.update(
                 { _id: groupId },

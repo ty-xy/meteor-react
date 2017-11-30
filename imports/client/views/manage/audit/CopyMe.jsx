@@ -65,7 +65,7 @@ class CopyMe extends Component {
         const res = [];
         console.log('concatAll', cards);
         cards.forEach((item) => {
-            if (item.company === UserUtil.getCompany() && (item.status === '同意')) {
+            if (item.company === UserUtil.getMainCompany() && (item.status === '同意')) {
                 item.copy.forEach((j) => {
                     if (j === localUserId) {
                         res.push(item);
@@ -318,7 +318,7 @@ export default withTracker(() => {
     Meteor.subscribe('users');
     const companys = Company.find().fetch();
     let users = [];
-    const mainCompany = UserUtil.getCompany();
+    const mainCompany = UserUtil.getMainCompany();
     companys.forEach((item) => {
         if (item._id === mainCompany) {
             users = item.members;

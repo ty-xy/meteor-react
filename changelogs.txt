@@ -11,3 +11,20 @@
 2017-11-28 18:50:12,   build 12
 
  zg-xym    build results on build on build 11
+----------------------------------
+
+2017-11-29 09:53:59,   build 13
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    merge master
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    feat:修改创建项目的bug 修改项目头像样式
+ zg xy    feat:创建项目没有写名称及简介，无法创建
+ zg xy    feat:实现本班可以拖拽
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    feat:拖拽到其他版目前可以，相同的版还在研究
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ zg xym    Update build.sh - delete duplicated "build" on committed msg
+ zg gwt    feature: invite copy urls;
+ zg-xym    build results on build on build 12
