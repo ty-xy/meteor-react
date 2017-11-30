@@ -19,7 +19,7 @@ class Register extends Component {
     register = () => {
         const { history } = this.props;
         // const _this = this;
-        Meteor.call('register', this.username.value, this.password.value, this.name.value, (err) => {
+        Meteor.call('register', this.username.value, this.password.value, this.name.value, (err, userId) => {
             if (err) {
                 this.setState({
                     registerError: err.reason,
@@ -27,13 +27,14 @@ class Register extends Component {
                 return console.error(err.reason);
             }
             Meteor.loginWithPassword(this.username.value, this.password.value);
-            this.login(history);
+            this.login(history, userId);
         });
     }
-    login = (history) => {
+    login = (history, userId) => {
         // this.props.history.push('/chat');
         if (history.location.search && history.location.state === 'invite') {
-            history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
+            const search = `${history.location.search}&userId=${userId}`;
+            history.push({ pathname: '/chat', search, state: history.location.state });
             // feedback.dealSuccess('注册成功');
         } else {
             history.push('/chat');
