@@ -101,7 +101,6 @@ Meteor.methods({
             admin,
             avatar,
         };
-        let groupId = '';
         Company.update(
             { _id },
             {
@@ -111,25 +110,19 @@ Meteor.methods({
                 if (res && isAutoChat) {
                     Meteor.call(
                         'createGroup',
-                        { name, members, type: 'team', superiorId: _id },
-                        (err, groupid) => {
+                        { name, members, type: 'team' },
+                        (err, groupId) => {
                             if (err) {
                                 return false;
                             }
-                            groupId = groupid;
                             newCompany.groupId = groupId;
                             Company.update(
                                 { _id, 'deps.id': id },
                                 {
                                     $set: { 'deps.$': newCompany },
-                                },
-                                (e, r) => {
-                                    if (error) {
-                                        console.log('e', e);
-                                    }
-                                    if (r) {
-                                        console.log('将群聊更新进部门信息', groupid);
-                                    }
+                                    $push: {
+                                        subGroupIds: groupId,
+                                    },
                                 },
                             );
                         },
@@ -181,6 +174,14 @@ Meteor.methods({
                     Meteor.call(
                         'deleteGroup',
                         groupId,
+                    );
+                    Company.update(
+                        { _id: companyId },
+                        {
+                            $pull: {
+                                subGroupIds: groupId,
+                            },
+                        },
                     );
                 }
             },
