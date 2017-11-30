@@ -35,7 +35,7 @@ Meteor.methods({
         };
         Group.schema.validate(newGroup);
         const groupId = Group.insert(newGroup);
-        members.map((user =>
+        groupMembers.map((user =>
             Meteor.users.update(
                 { _id: user },
                 {

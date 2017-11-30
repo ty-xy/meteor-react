@@ -39,7 +39,8 @@ class MainManage extends Component {
     }
     confirmChange = (selectedId) => {
         const companyId = this.props.currentCompany._id;
-        Meteor.call('changeMainManage', companyId, selectedId[0], (err) => {
+        const oldAdminId = this.props.currentCompany.admin;
+        Meteor.call('changeMainManage', companyId, oldAdminId, selectedId[0], (err) => {
             if (err) {
                 console.error(err.reason);
             }

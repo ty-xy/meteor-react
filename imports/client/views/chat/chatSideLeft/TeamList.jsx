@@ -9,6 +9,7 @@ import Avatar from '../../../components/Avatar';
 import UserUtil from '../../../../util/user';
 import Company from '../../../../schema/company';
 import feedback from '../../../../util/feedback';
+import Icon from '../../../components/Icon';
 
 const SubMenu = Menu.SubMenu;
 class TeamList extends Component {
@@ -54,13 +55,12 @@ class TeamList extends Component {
     renderSubMenu = (departments) => {
         if (departments && departments.length) {
             return departments.map(dev =>
-                <Menu.Item key={dev.id}>{dev.name}</Menu.Item>,
+                <Menu.Item key={dev.id}><Icon icon="icon-Path" size={10} iconColor="#979797" />&nbsp;{dev.name}</Menu.Item>,
             );
         }
     }
     renderTeamTitle = (name, logo, membersLength) => <div className="team-title"><Avatar name="企业" avatarColor="red" avatar={logo} /><p>{name}({membersLength})</p></div>
     render() {
-        console.log(this.props.companyList);
         return (
             <div className="team-list">
                 <div className="create-team-btn">
@@ -88,20 +88,23 @@ class TeamList extends Component {
                     >
                         {
                             this.props.companyList[0] && this.props.companyList.map(company =>
-                                (<SubMenu
-                                    onTitleClick={() => {
-                                        this.props.handleTeamMembers('teamMembers', company._id);
-                                        this.setCurrentTeamId(company._id);
-                                    }
-                                    }
-                                    title={this.renderTeamTitle(company.name, company.logo, company.members.length)}
-                                    key={company._id}
-                                >
-                                    {
-                                        this.renderSubMenu(company.deps)
-                                    }
-                                </SubMenu>
-                                ),
+                                (company ?
+                                    <SubMenu
+                                        onTitleClick={() => {
+                                            this.props.handleTeamMembers('teamMembers', company._id);
+                                            this.setCurrentTeamId(company._id);
+                                        }
+                                        }
+                                        title={this.renderTeamTitle(company.name, company.logo, company.members.length)}
+                                        key={company._id}
+                                    >
+                                        {
+                                            this.renderSubMenu(company.deps)
+                                        }
+                                    </SubMenu>
+                                    :
+                                    null),
+
                             )
                         }
                     </Menu>

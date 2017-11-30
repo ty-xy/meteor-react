@@ -37,7 +37,6 @@ class SelectBackendTeam extends Component {
             height: '30px',
             lineHeight: '30px',
         };
-        console.log(this.props.createdCompany);
         return (
             <div>
                 {
