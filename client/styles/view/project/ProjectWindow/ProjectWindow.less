@@ -135,10 +135,23 @@
         }
     }
    .ejianlian-body-tab{
-      height:70px;
+      height:100%;
       // border-bottom:1px solid #ddd;
        .tab-task{
           border-bottom:none !important;
+          height:100%;
+         //  margin-right: 1.25rem;
+        //   display: -webkit-box;
+        //   display: -ms-flexbox;
+          display: flex;
+          max-height: 100%;
+          -webkit-box-pack: stretch;
+          -ms-flex-pack: stretch;
+          justify-content: stretch;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+          flex-direction: column;
           .ant-tabs-bar{
               height:68px !important;
               box-sizing:border-box !important;
@@ -208,13 +221,32 @@
      }
      .ejianlian-project-item-list{
          width:337px;
-         height:730px;
-         overflow:auto;
+        max-height:100%;
+        margin-bottom:35px;
+         overflow:scroll;
          background: #EEEEEE;
          box-shadow: 1px 1px 3px 0 rgba(102,102,102,0.50);
          border-radius: 5px;
          margin-left:30px;
          padding:20px;
+         .list-input{
+            margin-top:15px;
+            .input-text{
+             width:297px;
+             height:46px;
+            }
+            .list-button{
+               margin-top:10px;
+               text-align:left;
+               button:first-child{
+                   margin-right:20px;
+                   font-size:16px;
+                   background-color:#15b4f1;
+                   color:white;
+
+              }  
+            }
+        }
          .list-message{
              margin-top:5px;
               .list-message-item{
