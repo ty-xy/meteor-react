@@ -28,7 +28,7 @@ Meteor.methods({
                 },
             },
         );
-        Meteor.call('createGroup', { name, members, type: 'team' }, (err, res) => {
+        Meteor.call('createGroup', { name, members, type: 'team', companyId }, (err, res) => {
             if (err) {
                 return false;
             }
@@ -37,6 +37,7 @@ Meteor.methods({
                 {
                     $set: {
                         groupId: res,
+                        companyId,
                     },
                 },
             );
