@@ -47,11 +47,7 @@ class Header extends Component {
         this.context.history.push(path);
     }
     handleLogin = () => {
-        Meteor.logout((err) => {
-            if (!err) {
-                this.context.history.push({ pathname: '/login', search: '', state: '2321' });
-            }
-        });
+        Meteor.logout();
     }
     closeMenu = () => {
         this.setState({

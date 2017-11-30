@@ -5,6 +5,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import feedback from '../../../../../util/feedback';
 
 // import AvatarSelf from '../../../../components/AvatarSelf';
 import MyIcon from '../../../../components/Icon';
@@ -21,6 +22,7 @@ class ProjectSet extends Component {
         projects: PropTypes.arrayOf(PropTypes.object),
         setId: PropTypes.string,
         ProjectId: PropTypes.string,
+        click: PropTypes.any,
     }
     constructor(props) {
         super(props);
@@ -52,13 +54,16 @@ class ProjectSet extends Component {
             });
         }
     }
-    handleProject=() => {
+    DeleteProject=() => {
         Meteor.call(
             'deleteProject', this.props.ProjectId,
             (err) => {
                 console.log(err);
             },
         );
+    }
+    handleProject =() => {
+        feedback.dealDelete('提示', '确定要删除该项目吗?', this.DeleteProject);
     }
     handlechangePig=() => {
         Meteor.call(
@@ -68,12 +73,17 @@ class ProjectSet extends Component {
             },
         );
     }
+    handleOverProject = () => {
+        feedback.dealDelete('提示', '确定要归档该项目吗?', this.handlechangePig);
+    }
     handleChangeInput(name, e) {
         const newState = {};
         newState[name] = e.target.value;
         this.setState(newState);
     }
     handleChange = () => {
+        this.props.click();
+        console.log(this.state.affiliation);
         Meteor.call(
             'changeProject',
             this.props.setId,
@@ -89,7 +99,6 @@ class ProjectSet extends Component {
     // 改变属性
     handleChangeT = (value) => {
         this.setState({ affiliation: `${value}` });
-        // alert(`${value}`);
     }
     changeUpdate = (name, imgs) => {
         console.log('changeUpdate', name, imgs);
@@ -119,7 +128,7 @@ class ProjectSet extends Component {
         );
     }
     render() {
-        console.log(this.props.setId);
+        console.log(this.state.affiliation);
         return (<div className="ejianlian-project-add project-setting" >
             <div id="title-f">
             创建项目
@@ -168,7 +177,7 @@ class ProjectSet extends Component {
                         style={{ width: '292px' }}
                         onChange={this.handleChangeT}
                         id="name-third"
-                        Value={this.state.affiliation}
+                        value={`${this.state.affiliation}` || '1'}
                     >
                         <Option value="1">私有
                             <p>仅项目成员可看和编辑</p>
@@ -181,7 +190,9 @@ class ProjectSet extends Component {
 
                 <div className="ejianlian-add-projectf">
                     <div className="add-button add-button-save" onClick={this.handleChange}>
+
                                       保存修改
+
                     </div>
                     <Link to="/project">
                         <div className="add-button add-button-delete" onClick={this.handleProject}>
@@ -189,7 +200,7 @@ class ProjectSet extends Component {
                         </div>
                     </Link>
                     <Link to="/project">
-                        <div className="add-button add-button-back" onClick={this.handlechangePig}>
+                        <div className="add-button add-button-back" onClick={this.handleOverProject}>
                             <MyIcon icon="icon-guidangxiangmu icon-guidang" />归档该项目
                         </div>
                     </Link>

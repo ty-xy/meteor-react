@@ -71,7 +71,6 @@ class ProjectWindow extends Component {
             },
         };
         return (
-
             <div className="ejianlian-project-window-show">
                 {this.props.projectL.map((project, index) => {
                     console.log(project.members);
@@ -103,7 +102,7 @@ class ProjectWindow extends Component {
                                     bodyStyle={{ padding: 0 }}
                                     width={450}
                                 >
-                                    <ProjectSet setId={project._id} ProjectId={project.uprojectId} />
+                                    <ProjectSet setId={project._id} ProjectId={project.uprojectId} click={this.hideModal} />
                                 </Modal>
                             </Col>
                         </Row>

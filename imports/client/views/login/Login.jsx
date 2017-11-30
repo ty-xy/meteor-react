@@ -3,8 +3,8 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
-import feedback from '../../../util/feedback';
-import UserUtil from '../../../util/user';
+// import feedback from '../../../util/feedback';
+// import UserUtil from '../../../util/user';
 
 @pureRender
 class Login extends Component {
@@ -24,7 +24,7 @@ class Login extends Component {
         }
     }
     login = () => {
-        const { location } = this.props;
+        const { history } = this.props;
         Meteor.loginWithPassword(
             this.username.value,
             this.password.value,
@@ -35,30 +35,8 @@ class Login extends Component {
                     });
                     return console.error(err.reason);
                 }
-                this.props.history.push('/chat');
-                if (location.search && location.state === 'invite') {
-                    const search = location.search.slice(1).split('&');
-                    const searchs = {};
-                    search.forEach((item) => {
-                        searchs[item.split('=')[0]] = item.split('=')[1];
-                    });
-                    if (searchs.companyId) {
-                        const { companyId, groupId, dep } = searchs;
-                        Meteor.call(
-                            'addMember',
-                            { companyId, userId: Meteor.userId(), name: UserUtil.getName(), dep, groupId, pos: '', invite: true },
-                            (e, r) => {
-                                if (e) {
-                                    feedback.dealError('添加失败');
-                                    return false;
-                                }
-                                feedback.dealSuccess(r || '登录成功, 且成功加入该团队');
-                            },
-                        );
-                    }
-                } else {
-                    feedback.dealSuccess('登录成功');
-                }
+                // this.props.history.push('/chat');
+                history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
             },
         );
     }

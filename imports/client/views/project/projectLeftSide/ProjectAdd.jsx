@@ -72,6 +72,11 @@ class ProjectAdd extends Component {
         const newState = {};
         newState[name] = e.target.value;
         this.setState(newState);
+        if (name === 'temperature') {
+            this.setState({
+                showName: false,
+            });
+        }
     }
     handleChangeT = (value) => {
         this.setState({ affiliation: `${value}` });
@@ -80,20 +85,11 @@ class ProjectAdd extends Component {
         this.setState({ moudle: `${value}` });
     }
     handleMessage = () => {
-        if (this.state.temperature !== '' && this.state.intro !== '') {
+        if (this.state.temperature !== '') {
             this.createProject();
-        } else if (this.state.temperature === '' && this.state.intro !== '') {
-            this.setState({
-                showName: true,
-            });
-        } else if (this.state.temperature !== '' && this.state.intro === '') {
-            this.setState({
-                showIntro: true,
-            });
         } else {
             this.setState({
                 showName: true,
-                showIntro: true,
             });
         }
     }
@@ -222,12 +218,6 @@ class ProjectAdd extends Component {
                             value={this.state.intro}
                             onChange={this.handleChange.bind(this, 'intro')}
                         />
-                        <div style={{ height: '20px' }}>
-                            <p
-                                style={{ display: this.state.showIntro ? 'block' : 'none' }}
-                                className="input-name"
-                            >请输入项目简介</p>
-                        </div>
                     </div>
                     <div className="common-type common-input">
                         <label htmlFor="name-third" >项目归属：</label>
@@ -249,7 +239,7 @@ class ProjectAdd extends Component {
                         <label htmlFor="name-third" >项目归属：</label>
                         <Select defaultValue="不使用" style={{ width: '292px' }} onChange={this.handleChangeTt} id="name-third">
                             <Option value="不使用">不使用</Option>
-                            <Option value="企业">使用模板 </Option>
+                            <Option value="企业">模版创建 </Option>
                         </Select>
                     </div>
                     <div className="common-type">
@@ -287,7 +277,7 @@ class ProjectAdd extends Component {
                     </div>
                     <div
                         className="ejianlian-add-projectf"
-                        onClick={this.state.showName && this.state.showIntro ? this.props.click : null}
+                        onClick={this.state.temperature !== '' ? this.props.click : null}
                     >
                         <div className="add-button add-button-create" onClick={this.handleMessage}>
                             {/* <input type="button" value="创建项目" >' */}
