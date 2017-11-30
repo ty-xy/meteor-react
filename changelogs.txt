@@ -28,3 +28,16 @@
  zg xym    Update build.sh - delete duplicated "build" on committed msg
  zg gwt    feature: invite copy urls;
  zg-xym    build results on build on build 12
+----------------------------------
+
+2017-11-30 10:43:21,   build 14
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    feat:修改石墨上bug
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    fix: log bugs
+ zg gwt    fix: log bug 
+ zg gwt    feature: when delete personnel  delete companygroupId peos
+ zg gwt    feature: invite finish
+ zg-xym    build results on build on build 13
