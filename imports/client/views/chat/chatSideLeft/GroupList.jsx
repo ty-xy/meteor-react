@@ -44,14 +44,13 @@ class GroupList extends Component {
 
     renderSubMenu = (departments) => {
         if (departments && departments.length) {
-            return departments.map(dev =>
-                <Menu.Item key={dev._id}>{dev.name}</Menu.Item>,
+            return departments.map(department =>
+                <Menu.Item key={department._id}>{department.name}({department.members.length})<span className="department-mask">部门</span></Menu.Item>,
             );
         }
     }
-    renderTeam = company => <Menu.Item key={company._id}>{company.name}</Menu.Item>
-
-    renderTeamTitle = (name, logo) => <div className="team-title" style={{ display: 'flex' }}><Avatar name="企业" avatarColor="red" avatar={logo} /><p>{name}</p></div>
+    renderTeam = company => <Menu.Item key={company._id}>{company.name}({company.members.length})<span className="team-mask">团队</span></Menu.Item>
+    renderTeamTitle = (name, logo) => <div className="team-title"><Avatar name="企业" avatarColor="red" avatar={logo} /><p>{name}</p></div>
     render() {
         return (
             <div className="ejianlian-chat-group-list">
@@ -110,7 +109,7 @@ class GroupList extends Component {
                                             <p>
                                                 <Avatar name={item.name} avatar={item.avatar ? item.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} />
                                             </p>
-                                            <p className={this.props.selfGroups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}</p>
+                                            <p className={this.props.selfGroups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}({item.members.length})</p>
                                         </div>
                                         :
                                         null

@@ -9,6 +9,7 @@ import Avatar from '../../../components/Avatar';
 import UserUtil from '../../../../util/user';
 import Company from '../../../../schema/company';
 import feedback from '../../../../util/feedback';
+import Icon from '../../../components/Icon';
 
 const SubMenu = Menu.SubMenu;
 class TeamList extends Component {
@@ -54,7 +55,7 @@ class TeamList extends Component {
     renderSubMenu = (departments) => {
         if (departments && departments.length) {
             return departments.map(dev =>
-                <Menu.Item key={dev.id}>{dev.name}</Menu.Item>,
+                <Menu.Item key={dev.id}><Icon icon="icon-Path" size={10} iconColor="#979797" />&nbsp;{dev.name}</Menu.Item>,
             );
         }
     }
