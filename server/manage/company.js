@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
+import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
@@ -325,37 +326,63 @@ Meteor.methods({
             },
         );
     },
-    // 删除人员
-    delCompanyMember({ companyId, userId, groupId, companyGroupId }) {
-        Company.update(
+    /*
+     退出团队/删除公司人员;
+     * @param companyId(公司Id)
+     * @param departmentId(部门群聊ID)
+     1,公司(对应公司群聊)的members里要删除该成员
+     2,该成员user数据表中对应团队的, company,groups,chatList, currentBackendCompany字段
+     3,该成员所在的部门(对应部门群聊)中的Members
+    */
+    async deleteCompanyMember({ companyId, departmentGroupId }) {
+        const companyInfo = await Company.findOne({ _id: companyId });
+        const companyGroupId = companyInfo.groupId || '';
+        await Company.update(
             { _id: companyId },
             {
-                $pull: { members: { userId } },
-            },
-            (err, res) => {
-                if (res) {
-                    // 从部门群聊中删除
-                    Meteor.call(
-                        'deleteMember',
-                        groupId, userId,
-                    );
-                    // 从公司大群聊中删除
-                    Meteor.call(
-                        'deleteMember',
-                        companyGroupId, userId,
-                    );
-                    // 删除人员company字段中公司id
-                    Meteor.users.update(
-                        { _id: userId },
-                        {
-                            $pull: {
-                                'profile.company': companyId,
-                            },
-                        },
-                    );
-                }
+                $pull: {
+                    members: {
+                        userId: Meteor.userId(),
+                    },
+                },
             },
         );
+        // 如果有部门ID
+        if (departmentGroupId) {
+            await Meteor.call(
+                'deleteMember',
+                departmentGroupId, Meteor.userId(),
+            );
+        }
+        // 从公司大群聊中删除
+        await Meteor.call(
+            'deleteMember',
+            companyGroupId, Meteor.userId(),
+        );
+        // 删除人员company字段中公司id
+        await Meteor.users.update(
+            { _id: Meteor.userId() },
+            {
+                $pull: {
+                    'profile.company': companyId,
+                },
+                $unset: {
+                    'profile.currentBackendCompany': '',
+                },
+            },
+        );
+        // 需要判断当前选中后台是否是被删除人员所在的公司ID
+        const currentCompanyId = await UserUtil.getCurrentBackendCompany();
+        if (companyId === currentCompanyId) {
+            await Meteor.users.update(
+                { _id: Meteor.userId() },
+                {
+                    $unset: {
+                        'profile.currentBackendCompany': '',
+                    },
+                },
+            );
+        }
     },
     // 选择后台的当前公司
     selectBackendTeam(companyId) {

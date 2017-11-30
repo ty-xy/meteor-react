@@ -132,7 +132,8 @@ export default withTracker(() => {
     const selfGroups = groups.filter(x => x && (x.type === 'group' || x.type === undefined)); // 之后数据库重新更新后,要删掉对undefined的判断
     const teamGroups = groups.filter(x => x && (x.type === 'team' && x.companyId));
     teamGroups.forEach((team) => {
-        const subGroupIds = Company.findOne({ _id: team.companyId }).subGroupIds;
+        const companyInfo = Company.findOne({ _id: team._id });
+        const subGroupIds = companyInfo && companyInfo.subGroupIds;
         if (subGroupIds) {
             team.subGroup = subGroupIds.map(subGroupId => Group.findOne({ _id: subGroupId }));
         }
