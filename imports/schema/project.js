@@ -16,10 +16,12 @@ Project.schema = new SimpleSchema({
     // 项目简介
     intro: {
         type: String,
+        optional: true,
     },
     // // 项目归属 1：私有，2：公有
     affiliation: {
         type: String,
+        optional: true,
     },
     uprojectId: {
         type: String,

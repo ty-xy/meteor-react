@@ -628,7 +628,7 @@ class ProjectItemDetail extends Component {
                 <Menu.Item key="0" className="tag-li-show">
                     <Row>
                         <Col span={20}>
-                            <div className="tag-title">标签</div>
+                            <div className="tag-title">优先级</div>
                         </Col>
                         <Col span={4}>
                             <Icon icon="icon-guanbi1 icon" onClick={this.handleOk} />
@@ -725,7 +725,7 @@ class ProjectItemDetail extends Component {
                             </div>
                         </Col>
                         <Col span={5}>
-                            <p>标签</p>
+                            <p>优先级</p>
                             <div style={{ display: 'flex' }}>
                                 <Tooltip title="点击切换" placement="top">
                                     <Dropdown overlay={menuL} trigger={['click']} className="change-modal">
@@ -971,6 +971,7 @@ class ProjectItemDetail extends Component {
                                             <div style={{ position: 'relative', zIndex: 1000 }}>
                                                 <TextArea
                                                     type="text"
+                                                    defaultValue={MarkValue.content}
                                                     value={this.state.changeMark}
                                                     autoFocus
                                                     onKeyDown={e => this.handleSendMessage(e, () => this.handleCreadite(MarkValue._id, MarkValue.content))}

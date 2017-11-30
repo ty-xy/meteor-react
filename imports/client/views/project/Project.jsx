@@ -11,10 +11,10 @@ class Project extends Component {
         return (
             <div className="ejianlian-project">
                 <div className="left">
-                    <div className="ejianlian-project-nav">
-                        <OverProject {...this.props} />
-                        <ProjectList />
-                    </div>
+                    {/* // <div className="ejianlian-project-nav"> */}
+                    <OverProject {...this.props} />
+                    <ProjectList />
+                    {/* </div> */}
                 </div>
                 <div className="ejianlian-project-window">
                     <Mange />

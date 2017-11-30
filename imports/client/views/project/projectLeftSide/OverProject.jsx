@@ -29,7 +29,7 @@ export default class OverProject extends Component {
     render() {
         // console.table(this.props);
         return (
-            <div style={{ height: '140px' }}>
+            <div>
                 <Modal
                     visible={this.state.visible}
                     footer={null}

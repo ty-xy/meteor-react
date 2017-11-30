@@ -4,7 +4,7 @@ import Project from '../../imports/schema/project';
 
 
 Meteor.methods({
-    createGroup1({ name, intro, affiliation, headPortrait, members = [], uprojectId }) {
+    createGroup1({ name, intro = '', affiliation = '1', headPortrait, members = [], uprojectId }) {
         const newGroup = {
             name,
             intro,
