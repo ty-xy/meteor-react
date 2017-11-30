@@ -15,12 +15,11 @@ class Tab1 extends (React.PureComponent || React.Component) {
         this.state = {
             logType: '日报',
             expand: false,
-            disabledType: false,
             templates: [
                 { name: '日报', url: '/manage/logging' },
                 { name: '周报', url: '/manage/logging/week' },
                 { name: '月报', url: '/manage/logging/month' },
-                { name: '营业日报', url: '/manage/logging/sale' },
+                // { name: '营业日报', url: '/manage/logging/sale' },
             ],
             template: [],
         };
@@ -47,7 +46,7 @@ class Tab1 extends (React.PureComponent || React.Component) {
     }
     routers = location => (
         <div className="">
-            {urls.indexOf(location.pathname) >= 0 ? <ButtonTab choooseCachelog={this.choooseCachelog} moreChange={this.moreChange} {...this.state} {...this.props} /> : null}
+            {urls.indexOf(location.pathname) >= 0 ? <ButtonTab choooseCachelog={this.choooseCachelog} moreChange={this.moreChange} disabledType={location.state && location.state.edit} {...this.state} {...this.props} /> : null}
             <Route exact path="/manage/logging" component={Day} />
             <Route path="/manage/logging/week" component={Day} />
             <Route path="/manage/logging/month" component={Day} />

@@ -181,6 +181,7 @@ class Organization extends PureComponent {
                         {
                             deps.map(item => (<a href="" key={item.id} className={classnames('dep-a', { 'dep-active': depActive === item.id })} onClick={e => this.handleTabDep(e, item.id)}>{item.name} <span>{item.num || 0}</span></a>))
                         }
+                        {deps.length === 0 && <p className="ant-table-placeholder">暂无部门</p>}
                     </div>
                 }
             </div>

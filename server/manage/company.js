@@ -95,7 +95,7 @@ Meteor.methods({
     },
     // 创建部门且创建群聊
     addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '', members }) {
-        const newCompany = {
+        const newDep = {
             id,
             name,
             isAutoChat, // 是否自动创建部门群聊
@@ -105,7 +105,7 @@ Meteor.methods({
         Company.update(
             { _id },
             {
-                $push: { deps: newCompany },
+                $push: { deps: newDep },
             },
             (error, res) => {
                 if (res && isAutoChat) {
@@ -116,11 +116,11 @@ Meteor.methods({
                             if (err) {
                                 return false;
                             }
-                            newCompany.groupId = groupId;
+                            newDep.groupId = groupId;
                             Company.update(
                                 { _id, 'deps.id': id },
                                 {
-                                    $set: { 'deps.$': newCompany },
+                                    $set: { 'deps.$': newDep },
                                     $push: {
                                         subGroupIds: groupId,
                                     },
@@ -161,32 +161,28 @@ Meteor.methods({
         );
     },
     // delCompanyDep 删除部门， 且删除群聊
-    delCompanyDep({ companyId, id, groupId, isAutoChat }) {
-        Company.update(
+    async delCompanyDep({ companyId, id, groupId, isAutoChat }) {
+        await Company.update(
             { _id: companyId },
             {
                 $pull: { deps: { id } },
             },
-            (err, res) => {
-                if (err) {
-                    return false;
-                }
-                if (res && isAutoChat) {
-                    Meteor.call(
-                        'deleteGroup',
-                        groupId,
-                    );
-                    Company.update(
-                        { _id: companyId },
-                        {
-                            $pull: {
-                                subGroupIds: groupId,
-                            },
-                        },
-                    );
-                }
-            },
         );
+
+        if (isAutoChat) {
+            await Meteor.call(
+                'deleteGroup',
+                groupId,
+            );
+            await Company.update(
+                { _id: companyId },
+                {
+                    $pull: {
+                        subGroupIds: groupId,
+                    },
+                },
+            );
+        }
     },
     // 批量设置部门人员
     batchSetDep({ companyId, _users, groupId, oldgroup }) {
@@ -220,7 +216,6 @@ Meteor.methods({
     },
     // 公司添加人员
     addMember({ companyId, userId, name, dep = '', groupId, pos, invite, companyGroupId }) {
-        console.log('companyGroupId', companyGroupId, companyId, Meteor.userId());
         const member = {
             userId,
             dep,

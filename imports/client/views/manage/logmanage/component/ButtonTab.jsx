@@ -3,7 +3,7 @@ import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const ButtonTab = ({ logType, disabledType, expand, template, moreChange, location, choooseCachelog }) => (
+const ButtonTab = ({ disabledType, expand, template, moreChange, location, choooseCachelog }) => (
     <div className="e-mg-buttonTab margin-top-20">
         <p className="margin-bottom-10">选择日志模板：{disabledType}</p>
         {
@@ -12,11 +12,13 @@ const ButtonTab = ({ logType, disabledType, expand, template, moreChange, locati
                 if (state._id) {
                     state.handleTab = true;
                 }
-                if (item === logType) {
+                if (item.name === (location.state && location.state.type)) {
                     return (<Link
                         key={item.name}
-                        className={location.pathname !== item.url ? 'margin-right-20 e-mg-log-button-tab' : 'margin-right-20 e-mg-log-button-tab e-mg-log-button-tab-active'}
+                        className="margin-right-20 e-mg-log-button-tab e-mg-log-button-tab-active"
                         to={{ pathname: item.url, state }}
+                        disabled
+                        style={{ color: '#fff' }}
                     >
                         {item.name}
                     </Link>);
@@ -47,7 +49,7 @@ const ButtonTab = ({ logType, disabledType, expand, template, moreChange, locati
 );
 ButtonTab.propTypes = {
     location: PropTypes.object,
-    logType: PropTypes.string,
+    // logType: PropTypes.string,
     expand: PropTypes.bool,
     disabledType: PropTypes.bool,
     template: PropTypes.array,
