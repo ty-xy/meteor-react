@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
-import Messages from '../../imports/schema/message';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
@@ -37,7 +36,6 @@ Meteor.methods({
                 {
                     $set: {
                         groupId,
-                        companyId,
                     },
                 },
             );
@@ -358,46 +356,6 @@ Meteor.methods({
                 }
             },
         );
-    },
-    // 解散团队
-    deleteCompany(companyId) {
-        const companyInfo = Company.findOne({
-            _id: companyId,
-        });
-        const companyGroupId = companyInfo.groupId;
-        const companyMainManage = companyInfo.admin;
-        companyInfo.members.map(user => (
-            Meteor.users.update({
-                _id: user,
-            }, {
-                $pull: {
-                    'profile.company': companyId,
-                    'profile.groups': companyGroupId,
-                    'profile.chatList': {
-                        groupId: companyGroupId,
-                    },
-                },
-                $set: {
-                    'profile.currentBackendCompany': '',
-                },
-
-            })
-        ));
-        Meteor.users.update(
-            { _id: companyMainManage },
-            {
-                $pull: {
-                    'profile.createdCompany': companyId,
-                },
-            },
-        );
-        Messages.remove({
-            to: companyGroupId,
-        });
-        // 在公司列表中删除
-        Company.remove({
-            _id: companyId,
-        });
     },
     // 选择后台的当前公司
     selectBackendTeam(companyId) {

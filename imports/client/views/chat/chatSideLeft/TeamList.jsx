@@ -61,7 +61,6 @@ class TeamList extends Component {
     }
     renderTeamTitle = (name, logo, membersLength) => <div className="team-title"><Avatar name="企业" avatarColor="red" avatar={logo} /><p>{name}({membersLength})</p></div>
     render() {
-        console.log(this.props.companyList);
         return (
             <div className="team-list">
                 <div className="create-team-btn">
@@ -89,20 +88,23 @@ class TeamList extends Component {
                     >
                         {
                             this.props.companyList[0] && this.props.companyList.map(company =>
-                                (<SubMenu
-                                    onTitleClick={() => {
-                                        this.props.handleTeamMembers('teamMembers', company._id);
-                                        this.setCurrentTeamId(company._id);
-                                    }
-                                    }
-                                    title={this.renderTeamTitle(company.name, company.logo, company.members.length)}
-                                    key={company._id}
-                                >
-                                    {
-                                        this.renderSubMenu(company.deps)
-                                    }
-                                </SubMenu>
-                                ),
+                                (company ?
+                                    <SubMenu
+                                        onTitleClick={() => {
+                                            this.props.handleTeamMembers('teamMembers', company._id);
+                                            this.setCurrentTeamId(company._id);
+                                        }
+                                        }
+                                        title={this.renderTeamTitle(company.name, company.logo, company.members.length)}
+                                        key={company._id}
+                                    >
+                                        {
+                                            this.renderSubMenu(company.deps)
+                                        }
+                                    </SubMenu>
+                                    :
+                                    null),
+
                             )
                         }
                     </Menu>
