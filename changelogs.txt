@@ -41,3 +41,11 @@
  zg gwt    feature: when delete personnel  delete companygroupId peos
  zg gwt    feature: invite finish
  zg-xym    build results on build on build 13
+----------------------------------
+
+2017-11-30 10:55:40,   build 15
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    Merge branch 'master' into wyx-chat
+ 王亚星    feat: 添加创建公司群聊companyId字段
+ zg-xym    build results on build 14
