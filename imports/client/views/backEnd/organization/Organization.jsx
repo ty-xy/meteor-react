@@ -75,7 +75,6 @@ class Organization extends PureComponent {
                 isDelete = false;
             }
         });
-        console.log('groupId', groupId);
         if (isDelete) {
             feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该部门吗？', () => {
                 Meteor.call(
@@ -102,7 +101,6 @@ class Organization extends PureComponent {
         e.preventDefault();
         const { users } = this.props;
         let res = [];
-        console.log('depActive', depActive, users);
         res = users.filter(item => (item.dep === depActive));
         this.setState({ depActive, users: res });
     }
@@ -115,7 +113,7 @@ class Organization extends PureComponent {
         if (editMemberInfo) {
             this.setState({ [name]: bool, editMemberInfo: {} });
         } else {
-            this.setState({ [name]: bool, editMemberInfo: {} });
+            this.setState({ [name]: bool });
         }
     }
     // 创建部门提交
@@ -200,6 +198,7 @@ class Organization extends PureComponent {
     handleSubmitMember = (res, editMemberInfo, oldgroup) => {
         const companyId = UserUtil.getCurrentBackendCompany();
         const { allUsers, users, company } = this.props;
+        const companyGroupId = company.groupId;
         let isNot = false;
         let bool = false;
         let groupId = '';
@@ -209,12 +208,12 @@ class Organization extends PureComponent {
                 isNot = true;
             }
         });
-        company.deps.forEach((item) => {
+        (company.deps || []).forEach((item) => {
             if (item.id === res.dep) {
                 groupId = item.groupId;
             }
         });
-        company.deps.forEach((item) => {
+        (company.deps || []).forEach((item) => {
             if (item.id === oldgroup) {
                 oldgroup = item.groupId;
             }
@@ -246,7 +245,7 @@ class Organization extends PureComponent {
             if (bool) {
                 Meteor.call(
                     'addMember',
-                    { ...res, companyId, groupId },
+                    { ...res, companyId, groupId, companyGroupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('添加失败');
@@ -356,6 +355,7 @@ class Organization extends PureComponent {
     // 删除成员
     delCompanyMember = (userId, record) => {
         const { deps = [] } = this.props.company;
+        const companyGroupId = this.props.company.groupId;
         let groupId = '';
         deps.forEach((item) => {
             if (item.id === record.dep) {
@@ -369,7 +369,7 @@ class Organization extends PureComponent {
                 const companyId = UserUtil.getCurrentBackendCompany();
                 Meteor.call(
                     'delCompanyMember',
-                    { companyId, userId, groupId },
+                    { companyId, userId, groupId, companyGroupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('删除失败');

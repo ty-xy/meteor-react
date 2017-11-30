@@ -13,7 +13,7 @@ class Detail extends (PureComponent || Component) {
     render() {
         const { nickname, plan, finish, _id, help, num, peos } = this.props.location.state;
         const { allUsers } = this.props;
-        console.log('location', this.props);
+        // console.log('location', this.props);
         return (
             <Row className="e-mg-log-details">
                 <Col span={24} className="e-mg-log-details-header">

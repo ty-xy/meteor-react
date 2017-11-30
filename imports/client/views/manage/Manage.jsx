@@ -45,7 +45,6 @@ class Manage extends (PureComponent || Component) {
             });
     }
     clickCompany = (id) => {
-        console.log('切换公司', id);
         Meteor.users.update(
             Meteor.userId(),
             {
@@ -55,66 +54,7 @@ class Manage extends (PureComponent || Component) {
             },
         );
     }
-    // 更新部门
-    updateDepartment = (e) => {
-        e.preventDefault();
-        console.log('更新部门');
-        const _id = Meteor.user().profile.mainCompany;
-        const res = {
-            deparment: '财政部',
-            _id,
-        };
-        Meteor.call(
-            'updateDepartment',
-            res,
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            },
-        );
-    }
-    // 更新部门
-    updateMember = (e) => {
-        e.preventDefault();
-        console.log('更新部门');
-        const _id = Meteor.user().profile.mainCompany;
-        const res = {
-            member: '4HApvk4bZLigRvWrq',
-            _id,
-        };
-        Meteor.call(
-            'updateMember',
-            res,
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            },
-        );
-    }
-    // 更新部门人员
-    updateMemberDep = (e) => {
-        e.preventDefault();
-        console.log('更新部门');
-        const _id = Meteor.user().profile.mainCompany;
-        const res = {
-            member: '4HApvk4bZLigRvWrq',
-            department: '财政部',
-            _id,
-        };
-        Meteor.call(
-            'updateMemberDep',
-            res,
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            },
-        );
-    }
     render() {
-        // console.log('allCompanys', this.props);
         return (
             <Row className="e-mg-container" gutter={50}>
                 <LeftCard {...this.props} {...this.context} {...this.state} changeCompany={this.clickCompany} />

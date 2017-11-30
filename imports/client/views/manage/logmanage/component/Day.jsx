@@ -160,12 +160,13 @@ class Day extends (React.PureComponent || React.Component) {
     }
     // handlechange input改变缓存
     handlechange = (e, keyword) => {
-        this.setState({ [keyword]: e.target.value }, () => {
-            this.handleblur();
-        });
+        // console.log('handlechange', e.target.value, keyword);
+        this.setState({ [keyword]: e.target.value });
+        this.handleblur();
     }
     handleblur = () => {
         const { finish, plan, help, img, file, peo, group, logType, _id, firstCache } = this.state;
+        // console.log('handleblur', finish, plan, help, img, file, peo, group, logType, _id, firstCache);
         const userId = Meteor.user()._id;
         const nickname = Meteor.user().profile.name;
         const company = Meteor.user().profile.mainCompany;
@@ -236,7 +237,7 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
-        console.log('day', this.props, this.state.img);
+        // console.log('day', this.props, this.state);
         return (
             <Form onSubmit={this.formSubmit} id="formDiv" ref={i => this.$formDiv = i}>
                 <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
