@@ -27,10 +27,6 @@ const target = {
         console.log(props.tastBoardId, Math.floor((monitor.getSourceClientOffset().y - 250) / 90));
         return { listName: props.tastBoardId, y: Math.ceil((monitor.getSourceClientOffset().y - 290) / 90) };
     },
-    // hover(props, monitor) {
-    //     // console.log(props, monitor);
-    //     // console.log(component);
-    // },
 };
 
 function collect(connect, monitor) {
@@ -86,7 +82,6 @@ class ProjectBordItem extends Component {
         console.log(this.state);
     }
     componentWillReceiveProps(nextProps) {
-        //  console.log('componentWillReceiveProps', nextProps, this.props.taskg, this.props.x);
         this.setState({
             titleValue: this.props.value,
             array: this.props.x,
@@ -94,7 +89,6 @@ class ProjectBordItem extends Component {
             tasksA: this.props.tasksA,
             fd: nextProps.fd,
         });
-        //  const tasks = Task.find({}).fetch();
     }
     handleConcern = () => {
         this.setState({
@@ -284,7 +278,7 @@ class ProjectBordItem extends Component {
                         </div>
                     </div> :
                     <div className="list-add list-title" onClick={this.handleList}>
-                        <Icon icon="icon-jiahao icon" />
+                        <Icon icon="icon-jiahao icon" iconColor="#999" size={14} />
                         <p>添加卡片</p>
                     </div>
                 }
