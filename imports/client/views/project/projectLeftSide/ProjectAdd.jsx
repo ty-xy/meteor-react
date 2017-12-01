@@ -309,76 +309,34 @@ class ProjectAdd extends Component {
 export default withTracker(() => {
     Meteor.subscribe('company');
     Meteor.subscribe('users');
-    // const currentCompany = Company.findOne({ _id: currentCompanyId });
     const friendIds = UserUtil.getFriends();
     const companyIds = UserUtil.getCompanyList();
-    // const companyInfo = {};
     const companyList = companyIds.map(_id =>
         Company.findOne({ _id }),
     );
-    // const companyInfo = {};
-    // companyList.forEach((item) => {
-    //     if (item) {
-    //         companyInfo.name = item.name;
-    //         companyInfo.members = item.members;
-    //     }
-    // });
 
-    companyList.map((item) => {
+    const teamValueL = companyList.map((item) => {
+        const teamValue = {};
         const members = [];
         for (const value of Object.values(item.members)) {
             members.push(value.userId);
         }
-        return members;
+        console.log(members);
+        teamValue.name = item.name;
+        teamValue.members = members;
+        teamValue.department = [];
+        return teamValue;
     });
+    teamValueL.unshift({
+        name: 'e建联好友',
+        members: friendIds,
+        department: [], // 不存在的时候需要传一个空数组
+    });
+    console.log(teamValueL);
 
-    console.log(companyIds, companyList);
-    const team = [
-        {
-            name: 'e建联好友',
-            members: friendIds,
-            department: [], // 不存在的时候需要传一个空数组
-        },
-        // {
-        //     name: companyList[0].name,
-        //     members,
-        //     department: [
-        //         // {
-        //         //     name: '技术部',
-        //         //     members: [
-        //         //         // 成员
-        //         //         'kfFea3wBriB48DPpM',
-        //         //     ],
-        //         // },
-        //         // {
-        //         //     name: '产品部',
-        //         //     members: [
-        //         //         // 成员
-        //         //         'Agvq9dmbsXNFtBcwi',
-        //         //     ],
-        //         // },
-        //     ],
-        // },
-    ];
+    const team = teamValueL;
     return {
-        // members,
         team,
     };
-    // Meteor.subscribe('company');
-    // Meteor.subscribe('users');
-    // Meteor.subscribe('project');
-    // const companys = Company.find().fetch();
-    // const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
-    // let companyInfo = {};
-    // companys.forEach((item) => {
-    //     if (item._id === mainCompany) {
-    //         companyInfo = item;
-    //     }
-    // });
-    // return {
-    //     companyInfo,
-    //     companys,
-    //     allUsers: Meteor.users.find().fetch(),
-    // };
 })(ProjectAdd);
 
