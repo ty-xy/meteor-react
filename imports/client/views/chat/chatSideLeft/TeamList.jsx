@@ -43,14 +43,14 @@ class TeamList extends Component {
             visible: false,
         });
     }
-    handleCreateTeam = (formValues) => {
-        Meteor.call('createCompany', formValues, (error, result) => {
-            feedback.dealError(error);
-            if (result) {
-                feedback.dealSuccess('创建成功');
-                this.handleCancel();
-            }
-        });
+    handleCreateTeam = async (formValues) => {
+        try {
+            await Meteor.callPromise('createCompany', formValues);
+            feedback.dealSuccess('创建成功');
+            this.handleCancel();
+        } catch (err) {
+            feedback.dealError(err);
+        }
     }
     renderSubMenu = (departments) => {
         if (departments && departments.length) {

@@ -2,7 +2,7 @@
 .group-setting-block {
     & > .container-content {
         width: 450px;
-        height: 604px;
+        height: 650px;
         font-size:16px;
         .group-item {
             display: flex;
@@ -42,12 +42,15 @@
             }
         }
         .members-avatar {
-            .group-item;
+            overflow: hidden;
+            padding: 10px 20px;
             .avatar-wrap {
                 position: relative;
                 width: 50px;
                 height: 45px;
                 cursor: pointer;
+                float: left;
+                margin-bottom: 5px;
                 & > .icon-cuowu {
                     position: absolute;
                     font-size: 15px;
@@ -72,6 +75,7 @@
                 color: #ddd;
                 font-size: 40px;
                 line-height: 34px;
+                float: left;
             }
         }
         .group-avatar-wrap:hover{

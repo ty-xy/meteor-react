@@ -9,6 +9,7 @@ import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 import Company from '../../../../schema/company';
 import fields from '../../../../util/fields';
+import feedback from '../../../../util/feedback';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -52,10 +53,14 @@ class TeamMembers extends Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll(async (err, formValues) => {
             if (err) {
+                feedback.dealWarning('请选择离开原因');
                 throw err;
             }
             console.log(555, formValues);
-            Meteor.call('');
+            await Meteor.callPromise('deleteCompanyMember', {
+                companyId: this.props.currentCompany._id,
+            });
+            this.handleCancel();
         });
     }
     renderHeader = (name, depsName) => (<div className="dev-title">

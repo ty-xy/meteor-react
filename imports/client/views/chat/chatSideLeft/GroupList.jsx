@@ -45,11 +45,11 @@ class GroupList extends Component {
     renderSubMenu = (departments) => {
         if (departments && departments.length) {
             return departments.map(department =>
-                <Menu.Item key={department._id}>{department.name}({department.members.length})<span className="department-mask">部门</span></Menu.Item>,
+                <Menu.Item key={department._id}>{department.name}<span className="department-mask">部门</span></Menu.Item>,
             );
         }
     }
-    renderTeam = company => <Menu.Item key={company._id}>{company.name}({company.members.length})<span className="team-mask">团队</span></Menu.Item>
+    renderTeam = company => <Menu.Item key={company._id}>{company.name}<span className="team-mask">团队</span></Menu.Item>
     renderTeamTitle = (name, logo) => <div className="team-title"><Avatar name="企业" avatarColor="red" avatar={logo} /><p>{name}</p></div>
     render() {
         return (
