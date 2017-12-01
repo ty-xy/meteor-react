@@ -21,9 +21,10 @@ import Checkbill from '../../../../../imports/schema/checkBill';
 import Business from '../../../../../imports/schema/business';
 import Company from '../../../../../imports/schema/company';
 import UserUtil, { userIdToInfo } from '../../../../util/user';
+import types from './types';
 
 const { TextArea } = Input;
-const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
+// const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
 let searchFilter = false;
 const filterCodition = {
     type: '',
@@ -230,6 +231,7 @@ class MyAudit extends Component {
                     footer={footer()}
                     title={`${userIdToInfo.getName(allUsers, modelData.userId)}的${modelData.type}审批`}
                     mask={showAuditCard}
+                    height="100%"
                 >
                     <div>
                         <div className="border-bottom-eee e-mg-model-body-avatar clearfix">

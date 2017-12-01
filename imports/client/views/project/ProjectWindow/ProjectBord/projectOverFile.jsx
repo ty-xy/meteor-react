@@ -48,7 +48,7 @@ class projectOverFile extends Component {
     }
     render() {
         return (
-            <div style={{ height: '690px' }} className="ejianlian-project-back">
+            <div style={{ height: '100%' }} className="ejianlian-project-back">
                 <Card title="已建档项目" style={{ height: '100%', textAlign: 'center', position: 'relative' }}>
                     {this.state.length === 0 ?
                         <div className="e-p-o-right">

@@ -232,7 +232,6 @@ class CreateTeam extends Component {
                             <SelectMembers
                                 confirmSelected={this.confirmSelected}
                                 team={this.props.team}
-
                             />
                         </Modal>
                         :

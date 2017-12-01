@@ -181,6 +181,7 @@ class Organization extends PureComponent {
                         {
                             deps.map(item => (<a href="" key={item.id} className={classnames('dep-a', { 'dep-active': depActive === item.id })} onClick={e => this.handleTabDep(e, item.id)}>{item.name} <span>{item.num || 0}</span></a>))
                         }
+                        {deps.length === 0 && <p className="ant-table-placeholder">暂无部门</p>}
                     </div>
                 }
             </div>
@@ -218,7 +219,7 @@ class Organization extends PureComponent {
                 oldgroup = item.groupId;
             }
         });
-        // console.log('13614376223', company.deps, res, groupId, oldgroup);
+        console.log('13614376223', { ...res, companyId, groupId, companyGroupId }, '-=', Meteor.user());
         if (editMemberInfo) {
             Meteor.call(
                 'editMember',
@@ -245,7 +246,7 @@ class Organization extends PureComponent {
             if (bool) {
                 Meteor.call(
                     'addMember',
-                    { ...res, companyId, groupId, companyGroupId },
+                    { ...res, companyId, departmentGroupId: groupId, companyGroupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('添加失败');
@@ -368,8 +369,8 @@ class Organization extends PureComponent {
             feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
                 const companyId = UserUtil.getCurrentBackendCompany();
                 Meteor.call(
-                    'delCompanyMember',
-                    { companyId, userId, groupId, companyGroupId },
+                    'deleteCompanyMember',
+                    { companyId, departmentGroupId: groupId, userId, companyGroupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('删除失败');

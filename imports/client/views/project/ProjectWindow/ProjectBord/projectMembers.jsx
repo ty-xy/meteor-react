@@ -6,6 +6,7 @@ import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import AvatarSelf from '../../../../components/AvatarSelf';
 
+// import SelectMembers from '../../../../features/SelectMembers';
 import Icon from '../../../../components/Icon';
 
 const Search = Input.Search;

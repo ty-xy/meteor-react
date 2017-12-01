@@ -9,7 +9,16 @@ import { userIdToInfo } from '../../util/user';
 const Option = Select.Option;
 
 
-const colors = ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'];
+const colors = [
+    '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
+    '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
+    '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
+    '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
+    '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
+    '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
+    '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
+    '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
+];
 
 class ChoosePeopleModel extends (PureComponent || Component) {
     state = {
@@ -266,24 +275,24 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         this.setState({ componentSelectedUser: this.state.leftUsers, visible: false });
         this.props.ok(keyword, this.state.leftUsers);
     }
-    getAvatar = (allUsers, userId) => {
+    getAvatar = (allUsers, userId, index) => {
         const avatar = userIdToInfo.getAvatar(allUsers, userId);
         const name = userIdToInfo.getName(allUsers, userId);
         if (avatar) {
             return (<img src={avatar} alt="" />);
         }
-        return <span style={{ background: colors[Math.floor(Math.random() * 4)], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
+        return <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
     }
     // 获取群组avatar
     getDepAvatar = (name) => {
         const { deps } = this.state;
         let avatar = '';
-        deps.forEach((item) => {
+        deps.forEach((item, index) => {
             if (item.name === name) {
                 if (item.avatar) {
                     avatar = (<img src={item.avatar} alt="" />);
                 } else {
-                    avatar = <span style={{ background: colors[Math.floor(Math.random() * 4)], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{name}</span>;
+                    avatar = <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{name}</span>;
                 }
             }
         });
@@ -297,11 +306,11 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         // 用户列表
         const searchUser = (data) => {
             if (depVal) {
-                return data.map((item) => {
+                return data.map((item, index) => {
                     if (item.dep === depVal) {
                         return (
                             <a key={item.userId} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleChange(e, item.userId)}>
-                                {this.getAvatar(allUsers, item.userId)}
+                                {this.getAvatar(allUsers, item.userId, index)}
                                 {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
                                 <span>{userIdToInfo.getName(allUsers, item.userId)}</span>
                             </a>
@@ -310,9 +319,9 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                     return null;
                 });
             }
-            return data.map(item => (
+            return data.map((item, index) => (
                 <a key={item.userId} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleChange(e, item.userId)}>
-                    {this.getAvatar(allUsers, item.userId)}
+                    {this.getAvatar(allUsers, item.userId, index)}
                     {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
                     <span>{userIdToInfo.getName(allUsers, item.userId)}</span>
                 </a>

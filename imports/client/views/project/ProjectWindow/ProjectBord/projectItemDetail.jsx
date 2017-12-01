@@ -270,9 +270,10 @@ class ProjectItemDetail extends Component {
         );
     }
     // 显示编辑框
-    showCreadite = (id) => {
+    showCreadite = (id, item) => {
         this.setState({
             [`shownCreadite${id}`]: true,
+            changeMark: item,
         });
     }
     // 编辑active
@@ -482,9 +483,10 @@ class ProjectItemDetail extends Component {
             showCopyCard: false,
         });
     }
-    handleTaskList = (id) => {
+    handleTaskList = (id, item) => {
         this.setState({
             [`showList${id}`]: true,
+            TtitleValue: item,
         });
     }
     handleTaskListC =(id) => {
@@ -532,9 +534,10 @@ class ProjectItemDetail extends Component {
         );
         this.handleCancelF(id);
     }
-    handleFlist =(id) => {
+    handleFlist =(id, item) => {
         this.setState({
             [`fatherList${id}`]: true,
+            FlistValue: item,
         });
     }
     handleCancelF =(id) => {
@@ -566,7 +569,7 @@ class ProjectItemDetail extends Component {
                         {!this.state[`showList${listChild.listId}`] ?
                             <div
                                 style={{ marginLeft: '20px', display: 'flex' }}
-                                onClick={() => this.handleTaskList(listChild.listId)}
+                                onClick={() => this.handleTaskList(listChild.listId, listChild.name)}
                             >
                                 <Checkbox
                                     onClick={e => this.handleClick(e)}
@@ -815,7 +818,7 @@ class ProjectItemDetail extends Component {
                                         <Col
                                             span={19}
                                             style={{ display: 'flex' }}
-                                            onClick={() => this.handleFlist(tasklist.listId)}
+                                            onClick={() => this.handleFlist(tasklist.listId, tasklist.name)}
                                         >
                                             <Icon icon="icon-squarecheck" />
                                             <p className="qingdan-name">{tasklist.name}</p>
@@ -956,7 +959,7 @@ class ProjectItemDetail extends Component {
                                             <p>{MarkValue.content}</p>
                                             <span>{format('yyyy-MM-dd', MarkValue.createTime)}</span>
                                             <span>--</span>
-                                            <a onClick={() => this.showCreadite(MarkValue._id)}>编辑</a>
+                                            <a onClick={() => this.showCreadite(MarkValue._id, MarkValue.content)}>编辑</a>
                                             <span>--</span>
                                             <span onClick={() => this.handleRemove(MarkValue._id)} >
                                                 删除
