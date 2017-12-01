@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { Input, Select, Tooltip, Form } from 'antd';
+import { Input, Select, Tooltip, Modal } from 'antd';
 
 import pureRender from 'pure-render-decorator';
 import PropTypes from 'prop-types';
@@ -10,31 +10,24 @@ import uuid from 'uuid';
 
 import MyIcon from '../../../components/Icon';
 import Company from '../../../../schema/company';
+import UserUtil from '../../../../util/user';
 import ImgUp from '../ProjectWindow/ProjectBord/component/imgUp';
+import Avatar from '../../../components/Avatar';
 import AvatarSelf from '../../../components/AvatarSelf';
-import ChoosePeopleModel from '../../../components/ChoosePeopleModel';
-import PeopleList from '../../manage/audit/component/PeopleList';
+import SelectMembers from '../../../features/SelectMembers';
+// import ChoosePeopleModel from '../../../components/ChoosePeopleModel';
+// import PeopleList from '../../manage/audit/component/PeopleList';
 
 const { TextArea } = Input;
 const Option = Select.Option;
 const text = <span>点击切换头像</span>;
 const j = Math.floor(Math.random() * 4);
-const FormItem = Form.Item;
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-    },
-};
 @pureRender
 class ProjectAdd extends Component {
     static propTypes = {
         click: PropTypes.func,
         history: PropTypes.object,
+        team: PropTypes.array,
         // to: PropTypes.string,
     }
     constructor(props) {
@@ -53,6 +46,7 @@ class ProjectAdd extends Component {
             copy: [],
             showName: false,
             showIntro: false,
+            showSelect: false,
         };
     }
     componentWillMount() {
@@ -78,6 +72,16 @@ class ProjectAdd extends Component {
             });
         }
     }
+    handleAddMembers = () => {
+        this.setState({
+            showSelect: true,
+        });
+    }
+    closeSelect = () => {
+        this.setState({
+            showSelect: false,
+        });
+    }
     handleChangeT = (value) => {
         this.setState({ affiliation: `${value}` });
     }
@@ -98,6 +102,15 @@ class ProjectAdd extends Component {
             showImage: false,
         });
     }
+    confirmSelected = (members) => {
+        // console.log('选择加入的人员', members);
+        const selectMembers = members;
+        this.setState({
+            selectMembersId: members,
+            selectMembers: selectMembers.map(_id => Meteor.users.findOne({ _id })),
+            showSelect: false,
+        });
+    }
     createProject = () => {
         const _this = this;
         console.log('createProject', _this);
@@ -109,7 +122,7 @@ class ProjectAdd extends Component {
                 intro: this.state.intro,
                 affiliation: this.state.affiliation,
                 headPortrait: this.state.showImage ? this.state.icon[j] : this.state.img[0],
-                members: this.state.copy,
+                members: this.state.selectMembersId,
                 uprojectId: this.state.uuids,
             },
             (err) => {
@@ -173,8 +186,7 @@ class ProjectAdd extends Component {
         const divStyle = {
             background: this.state.color[j],
         };
-        console.log(this.props);
-        const { visiblecopy, copy, requireGroupNotice } = this.state;
+        console.log(this.state.selectMembersId);
         return (
             <div className="ejianlian-project-add" >
                 <div id="title-f">
@@ -247,33 +259,38 @@ class ProjectAdd extends Component {
                         <AvatarSelf />
                     </div>
                     <div>
-                        <ChoosePeopleModel
-                            visible={visiblecopy}
-                            cancel={this.handleCancel}
-                            ok={this.handleOk}
-                            keyword="copy"
-                            defaultValue={copy || []}
-                            modelTitle="项目组成员"
-                        >
-                            <FormItem
-                                {...formItemLayout}
-                                label="项目组成员"
-                            >
-                                <a href="" onClick={this.showModal} style={{ color: 'rgb(204, 204, 204)' }} >对方过后就</a>
-                                <PeopleList
-                                    keyword="copy"
-                                    iconTitle="项目组成员"
-                                    componentSelectedUser={copy || []}
-                                    showModal={this.showModal}
-                                    handleGroupChange={this.handleGroupChange}
-                                    handlePeopleChange={this.handlePeopleChange}
-                                    requiredErr="审批人必选"
-                                    required={requireGroupNotice}
-                                    {...this.props}
-                                    {...this.state}
-                                />
-                            </FormItem>
-                        </ChoosePeopleModel>
+                        <div className="add-members common-type" onClick={this.handleAddMembers}>
+                            <div> 项目成员:</div>
+                            <div style={{ display: 'flex' }}>
+                                <MyIcon icon="icon-tianjia3 icon" size={35} />
+                                {
+                                    this.state.selectMembers && this.state.selectMembers.map(user => (
+                                        user ?
+                                            <Avatar key={user._id} avatarColor={user.profile && user.profile.avatarColor} name={user.profile && user.profile.name} avatar={user.profile && user.profile.avatar} />
+                                            :
+                                            null
+                                    ))
+                                }
+                            </div>
+                            {
+                                this.state.showSelect ?
+                                    <Modal
+                                        title="选择人员"
+                                        visible
+                                        onCancel={this.closeSelect}
+                                        width={430}
+                                        footer={null}
+                                    >
+                                        <SelectMembers
+                                            confirmSelected={this.confirmSelected}
+                                            team={this.props.team}
+                                        />
+                                    </Modal>
+                                    :
+                                    null
+
+                            }
+                        </div>
                     </div>
                     <div
                         className="ejianlian-add-projectf"
@@ -292,19 +309,76 @@ class ProjectAdd extends Component {
 export default withTracker(() => {
     Meteor.subscribe('company');
     Meteor.subscribe('users');
-    Meteor.subscribe('project');
-    const companys = Company.find().fetch();
-    const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
-    let companyInfo = {};
-    companys.forEach((item) => {
-        if (item._id === mainCompany) {
-            companyInfo = item;
+    // const currentCompany = Company.findOne({ _id: currentCompanyId });
+    const friendIds = UserUtil.getFriends();
+    const companyIds = UserUtil.getCompanyList();
+    // const companyInfo = {};
+    const companyList = companyIds.map(_id =>
+        Company.findOne({ _id }),
+    );
+    // const companyInfo = {};
+    // companyList.forEach((item) => {
+    //     if (item) {
+    //         companyInfo.name = item.name;
+    //         companyInfo.members = item.members;
+    //     }
+    // });
+
+    companyList.map((item) => {
+        const members = [];
+        for (const value of Object.values(item.members)) {
+            members.push(value.userId);
         }
+        return members;
     });
+
+    console.log(companyIds, companyList);
+    const team = [
+        {
+            name: 'e建联好友',
+            members: friendIds,
+            department: [], // 不存在的时候需要传一个空数组
+        },
+        // {
+        //     name: companyList[0].name,
+        //     members,
+        //     department: [
+        //         // {
+        //         //     name: '技术部',
+        //         //     members: [
+        //         //         // 成员
+        //         //         'kfFea3wBriB48DPpM',
+        //         //     ],
+        //         // },
+        //         // {
+        //         //     name: '产品部',
+        //         //     members: [
+        //         //         // 成员
+        //         //         'Agvq9dmbsXNFtBcwi',
+        //         //     ],
+        //         // },
+        //     ],
+        // },
+    ];
     return {
-        companyInfo,
-        companys,
-        allUsers: Meteor.users.find().fetch(),
+        // members,
+        team,
     };
+    // Meteor.subscribe('company');
+    // Meteor.subscribe('users');
+    // Meteor.subscribe('project');
+    // const companys = Company.find().fetch();
+    // const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
+    // let companyInfo = {};
+    // companys.forEach((item) => {
+    //     if (item._id === mainCompany) {
+    //         companyInfo = item;
+    //     }
+    // });
+    // return {
+    //     companyInfo,
+    //     companys,
+    //     allUsers: Meteor.users.find().fetch(),
+    // };
 })(ProjectAdd);
 
