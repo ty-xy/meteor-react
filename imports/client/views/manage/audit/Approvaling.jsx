@@ -22,9 +22,10 @@ import Business from '../../../../../imports/schema/business';
 import Company from '../../../../../imports/schema/company';
 import UserUtil, { userIdToInfo } from '../../../../util/user';
 import ChoosePeopleModel from '../../../../client/components/ChoosePeopleModel';
+import types from './types';
 
 const { TextArea } = Input;
-const types = ['事假', '病假', '年假', '调休假', '婚假', '产假', '陪产假', '路途假', '出差', '报销', '通用审批', '其他'];
+// const types = ['事假', '病假', '年假', '调休假', '婚假', '产假', '陪产假', '路途假', '出差', '报销', '通用审批', '其他'];
 let searchFilter = false;
 const filterCodition = {
     type: '',
@@ -177,7 +178,7 @@ class Approvaling extends Component {
                 } else {
                     feedback.successToastFb(`${auditIdea}成功`, () => {
                         _this.setState({ commentModel: false, auditComment: '', showAuditCard: false }, () => {
-                            _this.handlerAudit('', modelData._id);
+                            // _this.handlerAudit('', modelData._id);
                         });
                     });
                 }
@@ -233,6 +234,7 @@ class Approvaling extends Component {
     }
     render() {
         const { showAuditCard, cards, modelData, commentModel, auditIdea, visibletransit, auditComment } = this.state;
+        console.log('modelData', modelData);
         const footer = () => {
             if (modelData.status === '待审核') {
                 return (
