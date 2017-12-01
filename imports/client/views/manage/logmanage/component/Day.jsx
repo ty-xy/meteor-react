@@ -11,6 +11,7 @@ import FileUpload from '../../component/FileUpload';
 import ChoosePeopleModel from '../../../../components/ChoosePeopleModel';
 import PeopleList from '../../audit/component/PeopleList';
 import feedback from '../../../../../util/feedback';
+import UserUtil from '../../../../../util/user';
 
 const FormItem = Form.Item;
 
@@ -46,7 +47,8 @@ class Day extends (React.PureComponent || React.Component) {
         if (pathname === '/manage/logging' && !state.edit) {
             const caches = nextProps.cachelog;
             if (caches.length) {
-                this.setState({ ...this.state, ...caches[0], firstCache: true });
+                const peo = caches[0].peo.map(item => (item.userId));
+                this.setState({ ...this.state, ...caches[0], peo, firstCache: true });
             }
         }
     }
@@ -62,25 +64,21 @@ class Day extends (React.PureComponent || React.Component) {
                 feedback.dealWarning('发送群组和对象至少选其一');
                 return false;
             }
-            fields.type = logType;
-            fields.file = file;
-            fields.img = img;
-            fields.peo = peo;
-            fields.group = group;
-            this.tabSubmit(fields);
+            const peoObj = peo.map(userId => ({ userId }));
+            this.tabSubmit({ ...fields, peo: peoObj, type: logType, img, file, group });
         });
     }
     // 写日志
     tabSubmit = (fields) => {
         const _this = this;
-        fields.userId = Meteor.user()._id;
-        fields.nickname = Meteor.user().profile.name;
-        fields.company = Meteor.user().profile.mainCompany;
+        fields.userId = Meteor.userId();
+        fields.nickname = UserUtil.getName();
+        fields.company = UserUtil.getMainCompany();
+        fields.cache = false;
         const { state = {} } = this.props.location;
         const { firstCache } = this.state;
         if (state.edit || state.handleTab || firstCache) {
             fields._id = this.state._id;
-            fields.cache = false;
             Meteor.call(
                 'updateLog',
                 { ...fields },
@@ -167,9 +165,9 @@ class Day extends (React.PureComponent || React.Component) {
     handleblur = () => {
         const { finish, plan, help, img, file, peo, group, logType, _id, firstCache } = this.state;
         // console.log('handleblur', finish, plan, help, img, file, peo, group, logType, _id, firstCache);
-        const userId = Meteor.user()._id;
-        const nickname = Meteor.user().profile.name;
-        const company = Meteor.user().profile.mainCompany;
+        const userId = Meteor.userId();
+        const nickname = UserUtil.getName();
+        const company = UserUtil.getMainCompany();
         const cache = {
             finish, plan, help, img, file, peo, group,
         };
@@ -237,7 +235,6 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
-        console.log('day', this.props, this.state);
         return (
             <Form onSubmit={this.formSubmit} id="formDiv" ref={i => this.$formDiv = i}>
                 <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} {...this.props} />

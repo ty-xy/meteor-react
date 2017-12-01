@@ -11,6 +11,10 @@ import AvatarSelf from '../../components/AvatarSelf';
 import SelectBackendTeam from '../../features/SelectBackendTeam';
 import feedback from '../../../util/feedback';
 import UserUtil from '../../../util/user';
+import Company from '../../../schema/company';
+import Log from '../../../schema/log';
+import MyNotification from '../../components/Notification';
+
 
 // import Notice from './Notice';
 
@@ -22,6 +26,7 @@ class Header extends Component {
     }
     static propTypes = {
         currentCompanyId: PropTypes.string,
+        logs: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
@@ -56,7 +61,6 @@ class Header extends Component {
         document.removeEventListener('click', this.closeMenu);
     }
     showModal = () => {
-        console.log('head', this.props.currentCompanyId);
         if (!this.props.currentCompanyId) {
             this.setState({
                 isShowBackend: true,
@@ -81,8 +85,15 @@ class Header extends Component {
         });
     }
     render() {
+        console.log('haeder', this.props);
+        const { logs } = this.props;
         return (
             <div className="ejianlianHeader">
+                <div className="e-notification-wrap clearfix">
+                    {
+                        logs.map((item, index) => (<MyNotification key={item._id} index={index} {...item} {...this.context} />))
+                    }
+                </div>
                 <div className="ejianlian-header-bar">
                     <div className="ejianlian-header-logo">
                         <Link to="/"><img style={{ width: '80px', margin: '12px 20px' }} src="/logo.png" /></Link>
@@ -150,9 +161,34 @@ class Header extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('company');
+    Meteor.subscribe('log');
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
+    Meteor.subscribe('company');
+    const companys = Company.find().fetch();
+    let allusers = [];
+    const userId = Meteor.userId();
+    let group = '';
+    const mainCompany = UserUtil.getMainCompany();
+    for (let i = 0; i < companys.length; i++) {
+        if (companys[i]._id === mainCompany) {
+            allusers = companys[i].members;
+            break;
+        }
+    }
+    let logs = [];
+    for (let i = 0; i < allusers.length; i++) {
+        if (allusers[i].userId === userId) {
+            group = allusers[i].dep;
+            break;
+        }
+    }
+    const search = { 'peo.userId': userId, company: mainCompany };
+    const searchGroup = { group, company: mainCompany };
+    logs = Log.find({ $or: [{ ...search }, { ...searchGroup }] }).fetch();
+    logs = logs.filter(item => (item.userId !== Meteor.userId()));
     return {
         currentCompanyId,
+        logs,
     };
 })(Header);
 

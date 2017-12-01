@@ -111,7 +111,6 @@ class ImgUpload extends (PureComponent || Component) {
     render() {
         const { previewVisible, previewImage, token } = this.state;
         const { fileList } = this.props;
-        console.log('igm', this.state, this.props);
         const defaultImg = fileList.map(item => ({
             uid: item,
             name: `${item}`,

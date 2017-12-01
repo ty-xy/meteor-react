@@ -108,6 +108,7 @@ class MyLog extends PureComponent {
         const { logs } = this.state;
         const data = logs || AllLogs;
         const TYPE = types.map(item => ({ id: item, name: item }));
+        console.log('mylog', Meteor.userId(), UserUtil.getMainCompany(), this.props.allUsers);
         return (
             <Row gutter={25} className="e-mg-log-filter" type="flex" justify="start">
                 <Col span={24} className="margin-bottom-20">
@@ -129,7 +130,7 @@ MyLog.propTypes = {
     searchLog: PropTypes.func,
     history: PropTypes.object,
     logs: PropTypes.array,
-    allUser: PropTypes.array,
+    allUsers: PropTypes.array,
     AllLogs: PropTypes.array,
     type: PropTypes.string,
     username: PropTypes.array,
@@ -139,9 +140,9 @@ MyLog.propTypes = {
 };
 export default withTracker(() => {
     Meteor.subscribe('log');
-    const userId = Meteor.user() && Meteor.user()._id;
+    const userId = Meteor.userId();
     return {
-        users: Meteor.user() || {},
+        allUsers: Meteor.users.find().fetch() || [],
         AllLogs: Log.find({ userId, company: UserUtil.getMainCompany(), cache: false }).fetch(),
     };
 })(Form.create()(MyLog));

@@ -108,27 +108,23 @@ export default withTracker(() => {
     const companys = Company.find().fetch();
     let allusers = [];
     const mainCompany = UserUtil.getMainCompany();
-    companys.forEach((item) => {
-        if (item._id === mainCompany) {
-            allusers = item.members;
+
+    for (let i = 0; i < companys.length; i++) {
+        if (companys[i]._id === mainCompany) {
+            allusers = companys[i].members;
+            break;
         }
-    });
+    }
     const userId = Meteor.userId();
     let group = '';
     let AllLogs = [];
-    allusers.forEach((item) => {
-        if (item.userId === userId) {
-            group = item.dep;
-            // if (item.admin === 'admin') {
-            //     AllLogs = Log.find().fetch();
-            // } else {
-            //     const search = { peo: userId, company: mainCompany };
-            //     const searchGroup = { group, company: mainCompany };
-            //     AllLogs = Log.find({ $or: [{ ...search }, { ...searchGroup }] }).fetch();
-            // }
+    for (let i = 0; i < allusers.length; i++) {
+        if (allusers[i].userId === userId) {
+            group = allusers[i].dep;
+            break;
         }
-    });
-    const search = { peo: userId, company: mainCompany };
+    }
+    const search = { 'peo.userId': userId, company: mainCompany };
     const searchGroup = { group, company: mainCompany };
     AllLogs = Log.find({ $or: [{ ...search }, { ...searchGroup }] }).fetch();
     AllLogs = AllLogs.filter(item => (item.userId !== Meteor.userId()));

@@ -8,7 +8,7 @@ import { userIdToInfo } from '../../../../util/user';
 class Detail extends (PureComponent || Component) {
     goback = (e) => {
         e.preventDefault();
-        this.props.history.goBack();
+        this.props.history.push('/chat');
     }
     render() {
         const { nickname, plan, finish, _id, help, num, peos } = this.props.location.state;

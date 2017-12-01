@@ -3,13 +3,14 @@ import { Col } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import format from 'date-format';
+import { Meteor } from 'meteor/meteor';
 import { userIdToInfo } from '../../../../../util/user';
 
 const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _id, createdAt = new Date(), allUsers }) => (
     <Col className="e-mg-log-card">
         <div className="e-mg-log-card-header">
             <Col span={16}>
-                <img src={userIdToInfo.getAvatar(allUsers, _id) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" alt="" />
+                <img src={userIdToInfo.getAvatar(allUsers, Meteor.userId()) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" alt="" />
                 <span className="e-mg-log-card-header-left">{nickname}</span>
             </Col>
             <Col span={8} className="e-mg-log-card-header-right">{type}</Col>
