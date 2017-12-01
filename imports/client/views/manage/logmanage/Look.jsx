@@ -73,6 +73,7 @@ class Look extends PureComponent {
         const { AllLogs } = this.props;
         const data = logs || AllLogs;
         const TYPE = types.map(item => ({ id: item, name: item }));
+        console.log('AllLogs', AllLogs);
         return (
             <Row gutter={25} className="e-mg-log-filter" type="flex" justify="start">
                 <Col span={24} className="margin-bottom-20">
@@ -112,16 +113,18 @@ export default withTracker(() => {
             allusers = item.members;
         }
     });
-    const userId = Meteor.user() && Meteor.user()._id;
-    let userdep = '';
+    const userId = Meteor.userId();
+    let group = '';
     allusers.forEach((item) => {
         if (item.userId === userId) {
-            userdep = item.dep;
+            group = item.dep;
         }
     });
+    const search = { peo: userId, group, company: mainCompany };
+    // console.log('withTracker', userId, group, UserUtil.getMainCompany(), allusers, companys, { ...search });
     return {
         users: Meteor.user() || {},
-        AllLogs: Log.find({ peo: userId, group: userdep, company: UserUtil.getMainCompany() }).fetch(),
+        AllLogs: Log.find({ ...search }).fetch(),
         allusers,
     };
 })(Form.create()(Look));
