@@ -114,12 +114,12 @@ class Day extends (React.PureComponent || React.Component) {
         // const { img, file } = this.state;
         if (name === 'img') {
             this.setState({ img: imgs }, () => {
-                this.handleblur();
+                // this.handleblur();
             });
         }
         if (name === 'file') {
             this.setState({ file: imgs }, () => {
-                this.handleblur();
+                // this.handleblur();
             });
         }
     }
@@ -145,7 +145,7 @@ class Day extends (React.PureComponent || React.Component) {
     // 选中的人
     handleOk = (keyword, leftUsers) => {
         this.setState({ [keyword]: leftUsers, [`visible${keyword}`]: false, requireGroupNotice: false }, () => {
-            this.handleblur();
+            // this.handleblur();
         });
     }
     // 选中后删除
@@ -162,7 +162,7 @@ class Day extends (React.PureComponent || React.Component) {
     handlechange = (e, keyword) => {
         // console.log('handlechange', e.target.value, keyword);
         this.setState({ [keyword]: e.target.value });
-        this.handleblur();
+        // this.handleblur();
     }
     handleblur = () => {
         const { finish, plan, help, img, file, peo, group, logType, _id, firstCache } = this.state;
@@ -237,12 +237,12 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
-        // console.log('day', this.props, this.state);
+        console.log('day', this.props, this.state);
         return (
             <Form onSubmit={this.formSubmit} id="formDiv" ref={i => this.$formDiv = i}>
-                <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
-                <InputArea defaultValue={plan} title={textShow === '日' ? '明日工作计划' : `下${textShow}工作计划`} keyword="plan" required requiredErr="工作计划必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
-                <InputArea defaultValue={help} title="需要协调与帮助：" keyword="help" marginBottom="20px" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
+                <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} {...this.props} />
+                <InputArea defaultValue={plan} title={textShow === '日' ? '明日工作计划' : `下${textShow}工作计划`} keyword="plan" required requiredErr="工作计划必填" onChange={this.handlechange} {...this.props} />
+                <InputArea defaultValue={help} title="需要协调与帮助：" keyword="help" marginBottom="20px" onChange={this.handlechange} {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                 <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
                 <ChoosePeopleModel

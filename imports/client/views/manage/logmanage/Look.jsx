@@ -115,16 +115,26 @@ export default withTracker(() => {
     });
     const userId = Meteor.userId();
     let group = '';
+    let AllLogs = [];
     allusers.forEach((item) => {
         if (item.userId === userId) {
             group = item.dep;
+            // if (item.admin === 'admin') {
+            //     AllLogs = Log.find().fetch();
+            // } else {
+            //     const search = { peo: userId, company: mainCompany };
+            //     const searchGroup = { group, company: mainCompany };
+            //     AllLogs = Log.find({ $or: [{ ...search }, { ...searchGroup }] }).fetch();
+            // }
         }
     });
-    const search = { peo: userId, group, company: mainCompany };
-    // console.log('withTracker', userId, group, UserUtil.getMainCompany(), allusers, companys, { ...search });
+    const search = { peo: userId, company: mainCompany };
+    const searchGroup = { group, company: mainCompany };
+    AllLogs = Log.find({ $or: [{ ...search }, { ...searchGroup }] }).fetch();
+    AllLogs = AllLogs.filter(item => (item.userId !== Meteor.userId()));
     return {
         users: Meteor.user() || {},
-        AllLogs: Log.find({ ...search }).fetch(),
+        AllLogs,
         allusers,
     };
 })(Form.create()(Look));
