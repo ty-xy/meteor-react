@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import pureRender from 'pure-render-decorator';
 import { Meteor } from 'meteor/meteor';
+import { Modal } from 'antd';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 
 import AddFriend from './AddFriend';
-import AddGroup from './AddGroup';
 import UserUtil from '../../../../../util/user';
+import SelectMembers from '../../../../features/SelectMembers';
+import Company from '../../../../../schema/company';
+import fields from '../../../../../util/fields';
+import feedback from '../../../../../util/feedback';
 
 @pureRender
 class AddChat extends Component {
     static propTypes = {
-        users: PropTypes.array,
+        team: PropTypes.array,
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
     };
@@ -52,6 +56,22 @@ class AddChat extends Component {
             isShowAddGroup: !this.state.isShowAddGroup,
         });
     }
+    handleCreateGroup = async (selectedMembers) => {
+        try {
+            // 注意判断选中的人是否包含Meter.userId()
+            const members = selectedMembers.includes(Meteor.userId()) ? selectedMembers : [Meteor.userId(), ...selectedMembers];
+            const result = await Meteor.callPromise('createGroup', {
+                name: `由${Meteor.user().profile.name}发起的群聊`,
+                members,
+            });
+            await this.props.changeTo(result, result, '', 'message');
+            await this.props.handleToggle(result);
+            await this.handleAddGroup();
+            feedback.dealSuccess('成功创建群聊');
+        } catch (err) {
+            feedback.dealError(err);
+        }
+    }
     render() {
         return (
             <div className="ejianlian-add-chat">
@@ -70,14 +90,22 @@ class AddChat extends Component {
                     isShowAddFriend={this.state.isShowAddFriend}
                     isShowFriendCode={this.state.isShowFriendCode}
                 />
-                <AddGroup
-                    handleAddGroup={this.handleAddGroup}
-                    isShowAddGroup={this.state.isShowAddGroup}
-                    users={this.props.users}
-                    type="createGroup"
-                    changeTo={this.props.changeTo}
-                    handleToggle={this.props.handleToggle}
-                />
+
+                <Modal
+                    title="发起群聊"
+                    visible={this.state.isShowAddGroup}
+                    onCancel={this.handleAddGroup}
+                    width={430}
+                    wrapClassName="create-team-mask"
+                    footer={null}
+                >
+                    <SelectMembers
+                        confirmSelected={this.handleCreateGroup}
+                        team={this.props.team}
+
+                    />
+                </Modal>
+
             </div>
         );
     }
@@ -85,10 +113,58 @@ class AddChat extends Component {
 
 
 export default withTracker(() => {
+    Meteor.subscribe('company');
     Meteor.subscribe('users');
     const friendIds = UserUtil.getFriends();
-    const users = friendIds.map(_id => Meteor.users.findOne({ _id }));
+    const friends = [
+        {
+            name: 'e建联好友',
+            members: friendIds,
+            department: [], // 不存在的时候需要传一个空数组
+        },
+    ];
+    const companyListIds = UserUtil.getCompanyList();
+    const companyList = companyListIds.map(companyId => Company.findOne(
+        { _id: companyId },
+        { fields: fields.searchCompany },
+    ));
+    if (companyList[0]) {
+        const teams = companyList.map((company) => {
+            const members = company.members;
+            const name = company.name;
+            const memberIds = [];
+            for (const value of Object.values(members)) {
+                memberIds.push(value.userId);
+            }
+            const deps = company.deps || [];
+            const department = deps.map((depId) => {
+                const depMembers = members.filter(x => x.dep === depId.id);
+                const depMemberIds = [];
+                for (const value of Object.values(depMembers)) {
+                    depMemberIds.push(value.userId);
+                }
+                return {
+                    name: depId.name,
+                    members: depMemberIds,
+                };
+            });
+            /*
+            1,不存在部门
+            2,存在部门但是部门里面没有人
+            */
+            return {
+                name,
+                members: memberIds,
+                department,
+            };
+        });
+        const team = friends.concat(teams);
+        return {
+            team,
+        };
+    }
+    const team = friends;
     return {
-        users,
+        team,
     };
 })(AddChat);

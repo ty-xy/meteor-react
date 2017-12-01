@@ -45,8 +45,7 @@ class TeamList extends Component {
     }
     handleCreateTeam = async (formValues) => {
         try {
-            const result = await Meteor.callPromise('createCompany', formValues);
-            console.log(result);
+            await Meteor.callPromise('createCompany', formValues);
             feedback.dealSuccess('创建成功');
             this.handleCancel();
         } catch (err) {

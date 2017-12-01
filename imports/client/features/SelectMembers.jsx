@@ -132,10 +132,12 @@ class SelectMembers extends Component {
         return this.renderTreeNodes(chooseUsers);
     }
     renderDepartments = (currentDepartment) => {
-        currentDepartment.forEach((x) => {
+        // 过滤掉存在部门但是部门里面没有人的情况
+        const result = currentDepartment.filter(x => x.members[0]);
+        result.forEach((x) => {
             x.user = x.members.map(_id => Meteor.users.findOne({ _id }, { fields: fields.searchAllUser }));
         });
-        return currentDepartment.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={`$$${item.name}`} dataRef={item}>
+        return result.map(item => (<TreeNode title={`${item.name}(${item.user.length})`} key={`$$${item.name}`} dataRef={item}>
             {this.renderTreeNodes(item.user)}
         </TreeNode>));
     }
