@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
-import UserUtil from '../../imports/util/user';
+// import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
@@ -356,7 +356,7 @@ Meteor.methods({
             },
         );
         // 需要判断当前选中后台是否是被删除人员所在的公司ID
-        const currentCompanyId = await UserUtil.getCurrentBackendCompany();
+        const currentCompanyId = await Meteor.users.findOne({ _id: userId }).profile.currentBackendCompany;
         if (companyId === currentCompanyId) {
             await Meteor.users.update(
                 { _id: Meteor.userId() },
