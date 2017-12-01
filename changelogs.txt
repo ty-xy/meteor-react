@@ -75,3 +75,11 @@
  王亚星    feat: 实现团队群聊显示
  王亚星    fix: 修改创建群聊时个人信息中群聊信息未更新bug
  zg-xym    build results on build 15
+----------------------------------
+
+2017-12-01 11:39:43,   build 17
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    feat:项目成员增加团队添加功能
+ zg-xym    build results on build 16
