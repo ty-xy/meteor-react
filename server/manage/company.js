@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
+import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
@@ -325,7 +326,9 @@ Meteor.methods({
      2,该成员user数据表中对应团队的, company,groups,chatList, currentBackendCompany字段
      3,该成员所在的部门(对应部门群聊)中的Members
     */
-    async deleteCompanyMember({ companyId, userId, departmentGroupId, companyGroupId }) {
+    async deleteCompanyMember({ companyId, userId = Meteor.userId(), departmentGroupId }) {
+        const companyInfo = Company.findOne({ _id: companyId });
+        const companyGroupId = companyInfo.groupId || '';
         await Company.update(
             { _id: companyId },
             {
@@ -352,6 +355,18 @@ Meteor.methods({
                 },
             },
         );
+        // 需要判断当前选中后台是否是被删除人员所在的公司ID
+        const currentCompanyId = await UserUtil.getCurrentBackendCompany();
+        if (companyId === currentCompanyId) {
+            await Meteor.users.update(
+                { _id: Meteor.userId() },
+                {
+                    $unset: {
+                        'profile.currentBackendCompany': '',
+                    },
+                },
+            );
+        }
     },
     // 选择后台的当前公司
     selectBackendTeam(companyId) {
