@@ -7,6 +7,7 @@ import { Meteor } from 'meteor/meteor';
 import { DragDropContext } from 'react-dnd';
 
 import ProjectBordItem from './projectBordItem';
+// import CustomDragLayer from './CustomDragLayer';
 import TaskBoard from '../../../../../schema/taskBoard';
 
 @pureRender
@@ -23,6 +24,7 @@ class Board extends Component {
         };
         return (
             <div style={divStyle.TabStyle}>
+                {/* <CustomDragLayer snapToGrid={false} /> */}
                 { this.props.taskF.map(text => (
                     <ProjectBordItem
                         value={text.name}

@@ -190,9 +190,7 @@ class ProjectSet extends Component {
 
                 <div className="ejianlian-add-projectf">
                     <div className="add-button add-button-save" onClick={this.handleChange}>
-
                                       保存修改
-
                     </div>
                     <Link to="/project">
                         <div className="add-button add-button-delete" onClick={this.handleProject}>
