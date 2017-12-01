@@ -154,6 +154,7 @@ export default Form.create({})(
             {
                 name: currentCompany.name,
                 members,
+                department: [],
             },
         ];
         return {
