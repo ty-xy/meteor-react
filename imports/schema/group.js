@@ -41,8 +41,9 @@ Group.schema = new SimpleSchema({
     type: {
         type: String,
     },
-    superiorId: {
+    companyId: {
         type: String,
+        optional: true,
     },
 });
 

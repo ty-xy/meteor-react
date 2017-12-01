@@ -48,6 +48,16 @@ class TeamMembers extends Component {
             visible: false,
         });
     }
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFieldsAndScroll(async (err, formValues) => {
+            if (err) {
+                throw err;
+            }
+            console.log(555, formValues);
+            Meteor.call('');
+        });
+    }
     renderHeader = (name, depsName) => (<div className="dev-title">
         <p>
             <span className="company">{name}</span>
@@ -102,9 +112,9 @@ class TeamMembers extends Component {
                                     }],
                                 })(
                                     <RadioGroup>
-                                        <Radio value="a">离职</Radio>
-                                        <Radio value="b">非企业员工</Radio>
-                                        <Radio value="c">其他</Radio>
+                                        <Radio value="离职">离职</Radio>
+                                        <Radio value="非企业员工">非企业员工</Radio>
+                                        <Radio value="其他">其他</Radio>
                                     </RadioGroup>,
                                 )}
                             </FormItem>
@@ -112,11 +122,9 @@ class TeamMembers extends Component {
                                 label="其他补充(选填)"
                                 {...formItemLayout}
                             >
-                                {getFieldDecorator('name', {
+                                {getFieldDecorator('otherReason', {
                                     rules: [{
                                         type: 'string', message: '类型为string!',
-                                    }, {
-                                        required: false, message: '团队名称!',
                                     }],
                                 })(
                                     <TextArea rows={4} />,

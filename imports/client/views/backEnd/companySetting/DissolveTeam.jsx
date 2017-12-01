@@ -15,6 +15,9 @@ class DissolveTeam extends Component {
         form: PropTypes.object,
         currentCompanyId: PropTypes.string,
     }
+    static contextTypes = {
+        history: PropTypes.object,
+    }
     constructor() {
         super();
         this.state = {
@@ -22,8 +25,8 @@ class DissolveTeam extends Component {
         };
     }
     handleSubmit = () => {
-        console.log('解散团队', this.props.currentCompanyId);
-        Meteor.call('deleteSubAdmin', this.props.currentCompanyId, (err) => {
+        this.context.history.push('/chat');
+        Meteor.call('deleteCompany', this.props.currentCompanyId, (err) => {
             if (err) {
                 console.error(err);
             }
