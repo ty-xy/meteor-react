@@ -17,10 +17,19 @@ Task.schema = new SimpleSchema({
         regEx: SimpleSchema.RegEx.Id,
     },
     // 创建人id
+    memberId: {
+        type: String,
+        regEx: SimpleSchema.RegEx.Id,
+    },
     // content: {
     //     type: String,
     //     regEx: SimpleSchema.RegEx.Id,
     // },
+    // 成员 []
+    taskMembers: {
+        type: [String],
+        optional: true,
+    },
     // 创建时间
     createTime: {
         type: Date,

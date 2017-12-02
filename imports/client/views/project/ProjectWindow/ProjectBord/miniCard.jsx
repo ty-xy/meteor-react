@@ -10,7 +10,7 @@ import { DragSource } from 'react-dnd';
 import pureRender from 'pure-render-decorator';
 import TaskList from '../../../../../../imports/schema/taskList';
 import ProjectItemDetail from './projectItemDetail';
-import AvatarSelf from '../../../../components/AvatarSelf';
+import Avatar from '../../../../components/Avatar';
 import Task from '../../../../../../imports/schema/task';
 import Active from '../../../../../../imports/schema/active';
 import Icon from '../../../../components/Icon';
@@ -69,6 +69,9 @@ class MiniCard extends Component {
         TaskLength: PropTypes.number,
         taskOver: PropTypes.number,
         files: PropTypes.array,
+        avatarColor: PropTypes.string,
+        avatar: PropTypes.string,
+        name: PropTypes.string,
     }
     constructor(...args) {
         super(...args);
@@ -255,7 +258,11 @@ class MiniCard extends Component {
                                 </div> : null}
                         </div>
                         <div style={{ width: '42px', height: '42px', borderRadius: '50%' }}>
-                            <AvatarSelf />
+                            <Avatar
+                                avatarColor={this.props.avatarColor}
+                                name={this.props.name}
+                                avatar={this.props.avatar}
+                            />
                         </div>
                     </div>
                     <Modal
@@ -287,6 +294,7 @@ class MiniCard extends Component {
 export default DragSource(ItemTypes.CARD, source, collect)(withTracker((taskid) => {
     Meteor.subscribe('active');
     Meteor.subscribe('task');
+    Meteor.subscribe('users');
     Meteor.subscribe('tasklist');
     const activeL = Active.find({ taskId: taskid.idIndex }).fetch().length;
     const tasks = Task.find({ _id: taskid.idIndex }).fetch();
@@ -297,14 +305,21 @@ export default DragSource(ItemTypes.CARD, source, collect)(withTracker((taskid) 
         const endtime = tasks[0].endTime;
         const label = tasks[0].label;
         const files = tasks[0].fileId;
+        const memberId = tasks[0].memberId;
+        const { profile = {} } = Meteor.users.findOne({ _id: memberId }) || {};
+        const { name = '', avatarColor = '', avatar = '' } = profile;
         return {
             begintime,
+            name,
+            avatar,
+            avatarColor,
             activeL,
             endtime,
             label,
             TaskLength,
             taskOver,
             files,
+            memberId,
         };
     }
 })(MiniCard));

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Calendar, Menu, Dropdown, Checkbox, Tooltip, Tag, DatePicker } from 'antd';
+import { Row, Col, Calendar, Menu, Dropdown, Checkbox, Tooltip, Tag, DatePicker } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
@@ -7,18 +7,18 @@ import uuid from 'uuid';
 import format from 'date-format';
 import moment from 'moment';
 import pureRender from 'pure-render-decorator';
-import AvatarSelf from '../../../../components/AvatarSelf';
+
 import Icon from '../../../../components/Icon';
 import ProjectInput from './projectInput';
 import Task from '../../../../../../imports/schema/task';
 import File from '../../../../../../imports/schema/file';
 import TaskList from '../../../../../../imports/schema/taskList';
-import Active from '../../../../../../imports/schema/active';
 import feedback from '../../../../../util/feedback';
 import ProjectCopy from './ProjectCopy';
 import TaskBoard from '../../../../../../imports/schema/taskBoard';
+import ProjectTaskMember from './projectTaskMember';
+import ProjectActive from './projectActive';
 
-const { TextArea } = Input;
 @pureRender
 class ProjectItemDetail extends Component {
     static propTypes = {
@@ -27,7 +27,6 @@ class ProjectItemDetail extends Component {
         index: PropTypes.string,
         textId: PropTypes.string,
         tasks: PropTypes.arrayOf(PropTypes.object),
-        activities: PropTypes.arrayOf(PropTypes.object),
         delete: PropTypes.func,
         tasklists: PropTypes.arrayOf(PropTypes.object),
         taskchild: PropTypes.arrayOf(PropTypes.object),
@@ -42,17 +41,14 @@ class ProjectItemDetail extends Component {
             shown: false,
             shownT: false,
             shownR: true,
-            // shownCreadite: tru, // 显示编辑的
             tValue: '',
             titleValue: '',
             time: '', // 开始的时间
             endtime: '', // 结束的时间
-            commentMark: '', //  评论的内容
             visible: false, // 模态框可见
             visiblel: false,
             mask: false, // 不要模态款
             checkValue: '', // 检查值
-            changeMark: '',
             listValue: '',
             visib: false, // 子菜单的值
             number: 0,
@@ -65,7 +61,6 @@ class ProjectItemDetail extends Component {
             overNumber: 0,
             checked: true,
             FlistValue: '',
-            // showList: true,
             TtitleValue: '',
         };
     }
@@ -177,12 +172,6 @@ class ProjectItemDetail extends Component {
         this.setState(newState);
     }
     // 调用创建活动的方法
-    handleMark = () => {
-        this.createActive();
-        this.setState({
-            commentMark: '',
-        });
-    }
     // 创建清单表
     createTaskList = () => {
         Meteor.call(
@@ -241,59 +230,6 @@ class ProjectItemDetail extends Component {
             titleShow: !this.state.titleShow,
             titleValue: '',
         });
-    }
-    // 调用移除评论的活动 目前没有成功 ／／ 成功修改
-    handleRemove = (id) => {
-        // this.deleteActive(id);
-        feedback.dealDelete('提示', '确定要删除该评论么?', () => this.deleteActive(id));
-    }
-    // 创建移除评论活动的方法
-    deleteActive = (id) => {
-        Meteor.call(
-            'deleteActive', id, (err) => {
-                console.log(err);
-            },
-        );
-    }
-    // 创建评论活动
-    createActive = () => {
-        console.log(this.state.commentMark);
-        Meteor.call(
-            'createActive',
-            {
-                content: this.state.commentMark,
-                taskId: this.props.Id.Id,
-            },
-            (err) => {
-                console.log(err);
-            },
-        );
-    }
-    // 显示编辑框
-    showCreadite = (id, item) => {
-        this.setState({
-            [`shownCreadite${id}`]: true,
-            changeMark: item,
-        });
-    }
-    // 编辑active
-    handleCreadite = (id, value) => {
-        // console.log(this.props.id)
-        this.changActive(id, value);
-        this.handleCancelCreadite(id);
-    }
-    handleCancelCreadite=(id) => {
-        this.setState({
-            [`shownCreadite${id}`]: false,
-        });
-    }
-    // 改变活动
-    changActive = (id, value) => {
-        Meteor.call(
-            'changeActive', id, this.state.changeMark || value, (err) => {
-                console.log(err);
-            },
-        );
     }
     handleClose = () => {
         this.setState({
@@ -717,17 +653,9 @@ class ProjectItemDetail extends Component {
                     </Row>
                 </div>
                 <div className="modal-detail-content detail-common">
-                    <Row className="detail-list-common">
-                        <Col span={5}>
-                            <p>成员</p>
-                            <div style={{ display: 'flex' }}>
-                                <div className="person-size">
-                                    <AvatarSelf />
-                                </div>
-                                <Icon icon="icon-tianjia circle-icon" />
-                            </div>
-                        </Col>
-                        <Col span={5}>
+                    <div className="detail-list-common">
+                        <ProjectTaskMember projectId={this.props.projectId}{...this.props} />
+                        <div className="detail-list-content-top">
                             <p>优先级</p>
                             <div style={{ display: 'flex' }}>
                                 <Tooltip title="点击切换" placement="top">
@@ -740,48 +668,50 @@ class ProjectItemDetail extends Component {
                                     </Dropdown>
                                 </Tooltip>
                             </div>
-                        </Col>
-                        <Col span={7} style={{ textAlign: 'center' }} >
-                            <p >开始</p>
-                            {this.props.tasks[0] && this.props.tasks[0].beginTime ?
-                                <div onClick={this.handleStart}>
-                                    <div className="start-time" onClick={this.handleStart}>
-                                        {format('yyyy年MM月dd日', this.props.tasks[0].beginTime)}
+                        </div>
+                        <div style={{ display: 'flex' }} className="detail-list-content-top">
+                            <div className="detail-time-start">
+                                <p >开始</p>
+                                {this.props.tasks[0] && this.props.tasks[0].beginTime ?
+                                    <div onClick={this.handleStart}>
+                                        <div className="start-time" onClick={this.handleStart}>
+                                            {format('yyyy年MM月dd日', this.props.tasks[0].beginTime)}
+                                        </div>
+                                        {<div className="try" style={{ display: this.state.showBegin ? 'block' : 'none' }} />}
                                     </div>
-                                    {<div className="try" style={{ display: this.state.showBegin ? 'block' : 'none' }} />}
-                                </div>
-                                :
-                                <div className="none-time">
-                                    <DatePicker
-                                        placeholder=" 设置开始时间"
-                                        onChange={this.onPanelChange}
-                                    />
-                                </div>
-                            }
-                        </Col>
-                        <Col span={7} >
-                            <p >结束</p>
-                            {this.props.tasks[0] && this.props.tasks[0].endTime ?
-                                <div onClick={this.handleChangeEnd}>
-                                    <div
-                                        className="start-time"
-                                        onClick={this.handleEnd}
-                                        style={this.handleShowColor()}
-                                    >
-                                        {format('yyyy年MM月dd日', this.props.tasks[0].endTime)}
+                                    :
+                                    <div className="none-time">
+                                        <DatePicker
+                                            placeholder=" 设置开始时间"
+                                            onChange={this.onPanelChange}
+                                        />
                                     </div>
-                                    <div className="try" style={{ display: this.state.showEnd ? 'block' : 'none' }} />
-                                </div>
-                                :
-                                <div className="none-time">
-                                    <DatePicker
-                                        placeholder=" 设置结束时间"
-                                        disabledDate={this.disabledEndDate}
-                                        onChange={this.onPanellChange}
-                                    />
-                                </div>}
-                        </Col>
-                    </Row>
+                                }
+                            </div>
+                            <div>
+                                <p >结束</p>
+                                {this.props.tasks[0] && this.props.tasks[0].endTime ?
+                                    <div onClick={this.handleChangeEnd}>
+                                        <div
+                                            className="start-time"
+                                            onClick={this.handleEnd}
+                                            style={this.handleShowColor()}
+                                        >
+                                            {format('yyyy年MM月dd日', this.props.tasks[0].endTime)}
+                                        </div>
+                                        <div className="try" style={{ display: this.state.showEnd ? 'block' : 'none' }} />
+                                    </div>
+                                    :
+                                    <div className="none-time">
+                                        <DatePicker
+                                            placeholder=" 设置结束时间"
+                                            disabledDate={this.disabledEndDate}
+                                            onChange={this.onPanellChange}
+                                        />
+                                    </div>}
+                            </div>
+                        </div>
+                    </div>
                     <div className="detail-list-common detail-list-decription">
                         <p>
                             描述
@@ -929,66 +859,8 @@ class ProjectItemDetail extends Component {
                                         <Col span={3} onClick={() => this.handleRemoveFile(value._id)}>删除</Col>
                                         <Col span={4}>10月20</Col>
                                     </Row>))}</div> : null}
-
                     </div>
-                    <div className="detail-list-common detail-comment">
-                        <p className="comment-title">活动</p>
-                        <div>
-                            <div style={{ display: 'flex' }}>
-                                <div className="person-size">
-                                    <AvatarSelf />
-                                </div>
-                                <TextArea
-                                    type="text"
-                                    value={this.state.commentMark}
-                                    onKeyDown={e => this.handleSendMessage(e, this.handleMark)}
-                                    onChange={e => this.handleChangeTry('commentMark', e)}
-                                />
-                            </div>
-                            <button className="comment-button" onClick={this.handleMark}>评论</button>
-                        </div>
-                        {this.props.activities.map((MarkValue) => {
-                            console.log();
-                            return (
-                                <div style={{ display: 'flex' }} className="comment-talk" key={MarkValue._id} >
-                                    <div className="person-size">
-                                        <AvatarSelf />
-                                    </div>
-                                    {!this.state[`shownCreadite${MarkValue._id}`] ?
-                                        <div >
-                                            <p>{MarkValue.content}</p>
-                                            <span>{format('yyyy-MM-dd', MarkValue.createTime)}</span>
-                                            <span>--</span>
-                                            <a onClick={() => this.showCreadite(MarkValue._id, MarkValue.content)}>编辑</a>
-                                            <span>--</span>
-                                            <span onClick={() => this.handleRemove(MarkValue._id)} >
-                                                删除
-                                            </span>
-                                        </div>
-                                        :
-                                        <div
-                                            onClick={() => this.handleCancelCreadite(MarkValue._id)}
-
-                                        >
-                                            <div className="try try-out" style={{ display: this.state[`shownCreadite${MarkValue._id}`] ? 'block' : 'none' }} />
-                                            <div style={{ position: 'relative', zIndex: 1000 }}>
-                                                <TextArea
-                                                    type="text"
-                                                    defaultValue={MarkValue.content}
-                                                    value={this.state.changeMark}
-                                                    autoFocus
-                                                    onKeyDown={e => this.handleSendMessage(e, () => this.handleCreadite(MarkValue._id, MarkValue.content))}
-                                                    onClick={e => this.handleClick(e)}
-                                                    onChange={e => this.handleChangeTry('changeMark', e)}
-                                                />
-                                                <button onClick={() => this.handleCreadite(MarkValue._id, MarkValue.content)}>编辑</button>
-                                            </div>
-                                        </div>}
-                                </div>
-                            );
-                        })
-                        }
-                    </div>
+                    <ProjectActive {...this.props} />
                 </div>
                 {this.state.showEnd ?
                     <div className="clender-setting  clender-setting-more clender-over" >
@@ -1024,11 +896,10 @@ class ProjectItemDetail extends Component {
 }
 export default withTracker((Id) => {
     Meteor.subscribe('task');
+    Meteor.subscribe('users');
     Meteor.subscribe('tasklist');
     Meteor.subscribe('taskboard');
-    Meteor.subscribe('active');
     Meteor.subscribe('files');
-    const activities = Active.find({ taskId: Id.idIndex }, { sort: { createTime: -1 } }).fetch();
     const tasks = Task.find({ _id: Id.idIndex }).fetch();
     const tasklists = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: '' }] }).fetch();
     const taskchild = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: { $ne: '' } }] }).fetch();
@@ -1042,10 +913,8 @@ export default withTracker((Id) => {
     });
     const iddd = idd.map(element => (element.length));
     const cId = checkId.map(element => (element.length));
-    console.table(Id.textId, Id);
     return {
         Id,
-        activities,
         tasklists,
         taskchild,
         iddd,

@@ -73,7 +73,7 @@ class ProjectWindow extends Component {
         return (
             <div className="ejianlian-project-window-show">
                 {this.props.projectL.map((project, index) => {
-                    console.log(project.members);
+                    console.log('');
                     return (<div className="window-title" key={index} >
                         <Row>
                             <Col span={22}><p>{project.name}</p></Col>
@@ -89,7 +89,11 @@ class ProjectWindow extends Component {
                                     bodyStyle={{ padding: 0 }}
                                     width={375}
                                 >
-                                    <ProjectMembers member={project.members} />
+                                    <ProjectMembers
+                                        member={project.members}
+                                        projectId={project.uprojectId}
+                                        members={project.members}
+                                    />
                                 </Modal>
                             </Col>
                             <Col span={1}> <Icon icon="icon-shezhi" className="icon-two" onClick={this.showModal} />
@@ -137,7 +141,6 @@ export default withTracker((projectd) => {
     Meteor.subscribe('project');
     const projectL = Project.find({ uprojectId: projectd.match.params.id }).fetch();
     const project = projectL[0];
-    console.log(project, projectL, projectd);
     return {
         project,
         projectL,
