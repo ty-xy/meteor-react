@@ -18,12 +18,13 @@ import Icon from '../../../../components/Icon';
 class projectMembers extends Component {
     static propTypes = {
         // name: PropTypes.string,
-        // members: PropTypes.array,
+        memberId: PropTypes.string,
         avatarColor: PropTypes.string,
         avatar: PropTypes.string,
         name: PropTypes.string,
         textId: PropTypes.string,
         team: PropTypes.array,
+        TaskMembers: PropTypes.array,
         allMembers: PropTypes.arrayOf(PropTypes.object),
     }
     constructor(props) {
@@ -49,8 +50,11 @@ class projectMembers extends Component {
             selectMembers: selectMembers.map(_id => Meteor.users.findOne({ _id })),
             showSelect: false,
         });
+        let memberArrays = this.props.TaskMembers.concat(members);
+        memberArrays = Array.from(new Set(memberArrays));
+        memberArrays = memberArrays.filter(item => item !== this.props.memberId);
         Meteor.call(
-            'changeTaskMembers', this.props.textId, members, (err) => {
+            'changeTaskMembers', this.props.textId, memberArrays, (err) => {
                 console.log(err);
             },
         );
@@ -115,6 +119,7 @@ export default withTracker((member) => {
             department: [], // 不存在的时候需要传一个空数组
         },
     ];
+    console.log(member, TaskMembers);
     const { profile = {} } = Meteor.users.findOne({ _id: member.memberId }) || {};
     const { name = '', avatarColor = '', avatar = '' } = profile;
     return {
@@ -122,6 +127,7 @@ export default withTracker((member) => {
         team,
         avatarColor,
         avatar,
+        TaskMembers: TaskMembers.length ? TaskMembers : [],
         allMembers: TaskMembers.length ? Meteor.users.find({ _id: { $in: TaskMembers } }).fetch() : '',
     };
 })(projectMembers);

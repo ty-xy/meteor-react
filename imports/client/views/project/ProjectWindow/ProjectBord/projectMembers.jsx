@@ -79,6 +79,23 @@ class projectMembers extends Component {
                 console.log(err);
             },
         );
+        if (members.length > 0) {
+            members.forEach((value) => {
+                if (value) {
+                    Meteor.call(
+                        'createProjectmember',
+                        {
+                            projectId: this.props.projectId,
+                            member: value,
+                            memberType: '2',
+                        },
+                        (err) => {
+                            console.log(err);
+                        },
+                    );
+                }
+            });
+        }
     }
     render() {
         return (
