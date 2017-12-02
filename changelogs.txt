@@ -98,3 +98,18 @@
  王亚星    delete: 删除显示群成员人数功能
  王亚星    feat: 添加deanius:promise用promise更优雅的实现Meteor.call的回调
  zg-xym    build results on build 17
+----------------------------------
+
+2017-12-02 16:41:08,   build 19
+
+ zg-xym    build results on build 18
+----------------------------------
+
+2017-12-02 16:45:09,   build 20
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+----------------------------------
+
+2017-12-02 16:57:39,   build 21
+
+ zg-xym    build results on build 20
