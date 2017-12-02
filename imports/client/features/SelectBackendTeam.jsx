@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Radio, Button } from 'antd';
+import { Radio, Button, Modal } from 'antd';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import UserUtil from '../../util/user';
 import Company from '../../schema/company';
 import fields from '../../util/fields';
+import CreateTeam from '../features/CreateTeam';
+import feedback from '../../util/feedback';
 
 
 const RadioGroup = Radio.Group;
@@ -22,6 +24,7 @@ class SelectBackendTeam extends Component {
         super(...args);
         this.state = {
             value: '',
+            visible: false,
         };
     }
     onChange = (e) => {
@@ -30,7 +33,29 @@ class SelectBackendTeam extends Component {
             value: e.target.value,
         });
     }
-
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
+    }
+    handleCancel = (e) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    }
+    handleCreateTeam = async (formValues) => {
+        try {
+            const result = await Meteor.callPromise('createCompany', formValues);
+            feedback.dealSuccess('创建成功');
+            this.handleCancel();
+            this.setState({
+                value: result,
+            });
+        } catch (err) {
+            feedback.dealError(err);
+        }
+    }
     render() {
         const radioStyle = {
             display: 'block',
@@ -59,10 +84,22 @@ class SelectBackendTeam extends Component {
                         </div>
                         :
                         <div>你还没有创建团队,立即去
-                            <span style={{ color: '#29b6f6' }} >创建</span>
+                            <button style={{ color: '#29b6f6' }} onClick={this.showModal} >创建</button>
                         </div>
                 }
-
+                <Modal
+                    title="创建团队"
+                    visible={this.state.visible}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                    wrapClassName="create-team-mask"
+                    footer={null}
+                >
+                    <CreateTeam
+                        isShowAdd
+                        handleSubmit={this.handleCreateTeam}
+                    />
+                </Modal>
             </div>
         );
     }

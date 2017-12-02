@@ -4,7 +4,7 @@ import Group from '../../imports/schema/group';
 
 Meteor.methods({
     // name: 群聊/团队名称, members: 群聊成员, type: group/team 区分是个人群聊和团队群聊
-    createGroup({ name, members, type = 'group', companyId = '', avatar = 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png' }) {
+    async createGroup({ name, members, type = 'group', companyId = '', avatar = 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png' }) {
         let groupMembers = [];
         if (type === 'team') {
             if (members[0] && members[0].userId) {
@@ -34,8 +34,9 @@ Meteor.methods({
             companyId,
         };
         Group.schema.validate(newGroup);
-        const groupId = Group.insert(newGroup);
-        groupMembers.map((user =>
+        const groupId = await Group.insert(newGroup);
+        console.log(111, groupMembers);
+        await groupMembers.map((user =>
             Meteor.users.update(
                 { _id: user },
                 {
@@ -50,6 +51,7 @@ Meteor.methods({
                 },
             )
         ));
+        console.log(666);
         return groupId;
     },
 });
