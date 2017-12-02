@@ -4,7 +4,7 @@ import Project from '../../imports/schema/project';
 
 
 Meteor.methods({
-    createGroup1({ name, intro = '', affiliation = '1', headPortrait, members = [], uprojectId }) {
+    createGroup1({ name, intro = '', affiliation = '1', headPortrait, creater, members = [], uprojectId }) {
         const newGroup = {
             name,
             intro,
@@ -13,7 +13,7 @@ Meteor.methods({
             createTime: new Date(),
             pigeonhole: 1,
             formBoard: '不使用',
-            creater: Meteor.userId(),
+            creater,
             members,
             uprojectId,
         };

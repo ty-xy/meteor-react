@@ -5,10 +5,11 @@ import TaskBoard from '../../imports/schema/taskBoard';
 
 
 Meteor.methods({
-    createTask({ name, taskBoardId, textId }) {
+    createTask({ name, taskBoardId, textId, memberId }) {
         const newTask = {
             name,
             taskBoardId,
+            memberId,
             describe: '',
             createTime: new Date(),
             beginTime: null,
@@ -16,9 +17,20 @@ Meteor.methods({
             label: '',
             textId,
             fileId: [],
+            taskMembers: [],
         };
         Task.schema.validate(newTask);
         Task.insert(newTask);
+    },
+    changeTaskMembers(textId, taskMembers) {
+        Task.update(
+            { textId },
+            {
+                $set: {
+                    taskMembers,
+                },
+            },
+        );
     },
     changeSortAarry(id, taskId) {
         TaskBoard.update(

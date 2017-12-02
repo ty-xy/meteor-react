@@ -124,6 +124,7 @@ class ProjectAdd extends Component {
                 headPortrait: this.state.showImage ? this.state.icon[j] : this.state.img[0],
                 members: this.state.selectMembersId,
                 uprojectId: this.state.uuids,
+                creater: Meteor.userId(),
             },
             (err) => {
                 if (err) {
@@ -248,7 +249,7 @@ class ProjectAdd extends Component {
                         </Select>
                     </div>
                     <div className="common-type">
-                        <label htmlFor="name-third" >项目归属：</label>
+                        <label htmlFor="name-third" >项目模板：</label>
                         <Select defaultValue="不使用" style={{ width: '292px' }} onChange={this.handleChangeTt} id="name-third">
                             <Option value="不使用">不使用</Option>
                             <Option value="企业">模版创建 </Option>
