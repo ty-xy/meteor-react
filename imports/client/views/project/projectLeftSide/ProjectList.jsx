@@ -85,7 +85,10 @@ export default withTracker(() => {
     const project = [];
     projectId.map((item) => {
         const project1 = Project.find({ uprojectId: item.projectId }, { sort: { createTime: -1 } }).fetch();
-        return project.unshift(project1[0]);
+        if (project1[0] !== undefined) {
+            return project.unshift(project1[0]);
+        }
+        return null;
     });
     const projects = Project.find({ }, { sort: { createTime: -1 } }).fetch();
     console.log(project);
