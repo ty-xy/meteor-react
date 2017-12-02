@@ -9,6 +9,12 @@ Meteor.methods({
         log.update(
             { _id, 'peo.userId': Meteor.userId() },
             { $set: { 'peo.$.isRead': true } },
+            (err) => {
+                if (err) {
+                    return err;
+                }
+                return true;
+            },
         );
     },
     // 关闭查看

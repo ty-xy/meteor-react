@@ -118,6 +118,7 @@ Meteor.methods({
             isAutoChat, // 是否自动创建部门群聊
             admin,
             avatar,
+            members: [],
         };
         Company.update(
             { _id },
@@ -256,6 +257,13 @@ Meteor.methods({
             (err, r) => {
                 if (r) {
                     if (dep) {
+                        // 加入部门
+                        Company.update(
+                            { _id: companyId, 'deps.id': dep },
+                            {
+                                $push: { 'deps.$.members': userId },
+                            },
+                        );
                         // 加入公司部门群聊
                         Meteor.call(
                             'addGroupMembers',
@@ -285,38 +293,57 @@ Meteor.methods({
                 }
             },
         );
+
         return Company.findOne({ _id: companyId }) ? Company.findOne({ _id: companyId }).name : '邀请出错';
     },
     // 修改人员
-    editMember({ companyId, userId, name, dep = '', groupId, oldgroup, pos }) {
+    async editMember({ companyId, userId, dep = '', oldDep, groupId, oldgroup, pos }) {
         const member = {
             userId,
             dep,
             pos,
-            name,
         };
         // console.log('editMember', companyId, member);
-        Company.update(
-            { _id: companyId, 'members.userId': userId },
-            {
-                $set: { 'members.$': member },
-            },
-            (err, res) => {
-                if (res && dep) {
-                    Meteor.call(
-                        'deleteMember',
-                        oldgroup, userId,
-                    );
-                    Meteor.call(
-                        'addGroupMembers',
-                        {
-                            groupId,
-                            newMembers: [userId],
-                        },
-                    );
-                }
-            },
-        );
+        if (dep) {
+            await Company.update(
+                { _id: companyId, 'members.userId': userId },
+                {
+                    $set: { 'members.$': member },
+                },
+            );
+            // 删除旧部
+            await Company.update(
+                { _id: companyId, 'deps.id': oldDep },
+                {
+                    $pull: { 'deps.$.members': userId },
+                },
+            );
+            // 新曾新部
+            await Company.update(
+                { _id: companyId, 'deps.id': dep },
+                {
+                    $push: { 'deps.$.members': userId },
+                },
+            );
+            await Meteor.call(
+                'deleteMember',
+                oldgroup, userId,
+            );
+            await Meteor.call(
+                'addGroupMembers',
+                {
+                    groupId,
+                    newMembers: [userId],
+                },
+            );
+        } else {
+            await Company.update(
+                { _id: companyId, 'members.userId': userId },
+                {
+                    $set: { 'members.$': member },
+                },
+            );
+        }
     },
     /*
      退出团队/删除公司人员;
@@ -326,13 +353,19 @@ Meteor.methods({
      2,该成员user数据表中对应团队的, company,groups,chatList, currentBackendCompany字段
      3,该成员所在的部门(对应部门群聊)中的Members
     */
-    async deleteCompanyMember({ companyId, userId = Meteor.userId(), departmentGroupId }) {
+    async deleteCompanyMember({ companyId, userId = Meteor.userId(), departmentGroupId, dep = '' }) {
         const companyInfo = Company.findOne({ _id: companyId });
         const companyGroupId = companyInfo.groupId || '';
         await Company.update(
             { _id: companyId },
             {
                 $pull: { members: { userId } },
+            },
+        );
+        await Company.update(
+            { _id: companyId, 'deps.id': dep },
+            {
+                $pull: { 'deps.$.members': userId },
             },
         );
         if (departmentGroupId) {

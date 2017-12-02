@@ -91,7 +91,7 @@ class Header extends Component {
             <div className="ejianlianHeader">
                 <div className="e-notification-wrap clearfix">
                     {
-                        logs.map((item, index) => (<MyNotification key={item._id} index={index} {...item} {...this.context} />))
+                        logs.map(item => (<MyNotification key={item._id} {...item} {...this.props} {...this.context} />))
                     }
                 </div>
                 <div className="ejianlian-header-bar">
@@ -162,8 +162,8 @@ class Header extends Component {
 export default withTracker(() => {
     Meteor.subscribe('company');
     Meteor.subscribe('log');
+    Meteor.subscribe('users');
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
-    Meteor.subscribe('company');
     const companys = Company.find().fetch();
     let allusers = [];
     const userId = Meteor.userId();
@@ -189,6 +189,8 @@ export default withTracker(() => {
     return {
         currentCompanyId,
         logs,
+        companys,
+        allUsers: Meteor.users.find().fetch(),
     };
 })(Header);
 

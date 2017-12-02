@@ -54,7 +54,8 @@ class Day extends (React.PureComponent || React.Component) {
     }
     formSubmit = (e) => {
         e.preventDefault();
-        const { form } = this.props;
+        const { form, companyInfo } = this.props;
+        const { deps } = companyInfo;
         const { img, file, group, peo, logType } = this.state;
         form.validateFields((err, fields) => {
             if (err) {
@@ -64,7 +65,24 @@ class Day extends (React.PureComponent || React.Component) {
                 feedback.dealWarning('发送群组和对象至少选其一');
                 return false;
             }
-            const peoObj = peo.map(userId => ({ userId }));
+            let peos = peo;
+            if (group && group.length) {
+                group.forEach((depId) => {
+                    for (let i = 0; i < deps.length; i++) {
+                        if (depId === deps[i].id) {
+                            peos = peos.concat(deps[i].members);
+                            break;
+                        }
+                    }
+                });
+            }
+            const peoRes = [];
+            peos.forEach((item) => {
+                if (peoRes.indexOf(item) === -1) {
+                    peoRes.push(item);
+                }
+            });
+            const peoObj = peos.map(userId => ({ userId }));
             this.tabSubmit({ ...fields, peo: peoObj, type: logType, img, file, group });
         });
     }
@@ -235,6 +253,7 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
+        console.log('day', this.props);
         return (
             <Form onSubmit={this.formSubmit} id="formDiv" ref={i => this.$formDiv = i}>
                 <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} {...this.props} />
@@ -308,19 +327,10 @@ export default withTracker(() => {
     Meteor.subscribe('company');
     Meteor.subscribe('users');
     Meteor.subscribe('log');
-    const companys = Company.find().fetch();
-    const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
-    let companyInfo = {};
-    companys.forEach((item) => {
-        if (item._id === mainCompany) {
-            companyInfo = item;
-        }
-    });
-    const userId = Meteor.user() && Meteor.user()._id;
     return {
-        companyInfo,
-        companys,
+        companyInfo: Company.findOne({ _id: UserUtil.getMainCompany() }),
+        companys: Company.find().fetch(),
         allUsers: Meteor.users.find().fetch(),
-        cachelog: Log.find({ userId, company: mainCompany, type: '日报', cache: true }).fetch(),
+        cachelog: Log.find({ userId: Meteor.userId(), company: UserUtil.getMainCompany(), type: '日报', cache: true }).fetch(),
     };
 })(Form.create()(Day));
