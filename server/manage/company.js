@@ -359,7 +359,7 @@ Meteor.methods({
         const currentCompanyId = await Meteor.users.findOne({ _id: userId }).profile.currentBackendCompany;
         if (companyId === currentCompanyId) {
             await Meteor.users.update(
-                { _id: Meteor.userId() },
+                { _id: userId },
                 {
                     $unset: {
                         'profile.currentBackendCompany': '',

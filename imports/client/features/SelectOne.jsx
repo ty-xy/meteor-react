@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
+import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
 
 import Icon from '../components/Icon';
 import Avatar from '../components/Avatar';
@@ -27,7 +29,7 @@ class SelectOne extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="select-one">
                 <ul className="select-group-list">
                     {
                         this.props.users.map((item, index) => (
@@ -56,10 +58,17 @@ class SelectOne extends Component {
                         ))
                     }
                 </ul>
-                <button onClick={this.props.confirmChange.bind(this, Object.keys(this.state.selected)[0])}>确定</button>
+                <button onClick={this.props.confirmChange.bind(this, Object.keys(this.state.selected)[0])} className="confirm-btn">确定</button>
             </div>
         );
     }
 }
 
-export default SelectOne;
+export default withTracker(({ friendIds }) => {
+    const users = friendIds.map(_id =>
+        Meteor.users.findOne({ _id }),
+    );
+    return {
+        users,
+    };
+})(SelectOne);

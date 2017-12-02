@@ -75,3 +75,26 @@
  王亚星    feat: 实现团队群聊显示
  王亚星    fix: 修改创建群聊时个人信息中群聊信息未更新bug
  zg-xym    build results on build 15
+----------------------------------
+
+2017-12-01 11:39:43,   build 17
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    feat:项目成员增加团队添加功能
+ zg-xym    build results on build 16
+----------------------------------
+
+2017-12-01 18:39:51,   build 18
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    fix: 修改群设置成员部分样式问题
+ 王亚星    fix: 修复删除团队人员更新该人员currentBackendCompany
+ 王亚星    Merge branch 'master' into wyx-chat
+ 王亚星    feat: 添加单选人员组件
+ 王亚星    refactor: 重构发起群聊选择人员功能
+ 王亚星    feat: 选择进入后台时没有创建任何团队提供创建团队入口
+ 王亚星    feat: 添加退出团队功能
+ 王亚星    delete: 删除显示群成员人数功能
+ 王亚星    feat: 添加deanius:promise用promise更优雅的实现Meteor.call的回调
+ zg-xym    build results on build 17

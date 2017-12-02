@@ -45,4 +45,10 @@ export default {
         name: 1,
         logo: 1,
     },
+    // 选择人员时的团队
+    searchCompany: {
+        name: 1,
+        deps: 1,
+        members: 1,
+    },
 };
