@@ -169,6 +169,7 @@ class ProjectBordItem extends Component {
                 name: this.state.cardInput,
                 taskBoardId: this.props.tastBoardId,
                 textId: this.state.uuids,
+                memberId: Meteor.userId(),
             },
             (err) => {
                 console.log(err);
@@ -301,13 +302,11 @@ export default DropTarget(ItemTypes.CARD, target, collect)(withTracker((indd) =>
         }).fetch();
         const hash = {};
         const fd = TaskBoard.find({}).fetch().map((value) => {
-            // console.log(value._id);
             const ide = value._id;
             const dde = value.sortArray;
             hash[ide] = dde;
             return hash;
         });
-        // console.log(TaskBoard.findOne({ _id: indd.tastBoardId }));
         return {
             tasks,
             taskg,

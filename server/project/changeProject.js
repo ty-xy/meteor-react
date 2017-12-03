@@ -17,4 +17,14 @@ Meteor.methods({
             },
         );
     },
+    changeMembers(projectId, members) {
+        Project.update(
+            { uprojectId: projectId },
+            {
+                $set: {
+                    members,
+                },
+            },
+        );
+    },
 });
