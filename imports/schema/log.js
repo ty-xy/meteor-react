@@ -39,7 +39,18 @@ log.schema = new SimpleSchema({
         optional: true,
     },
     peo: {
-        type: [String],
+        type: [Object],
+        optional: true,
+    },
+    'peo.$.userId': {
+        type: String,
+    },
+    'peo.$.isRead': {
+        type: Boolean,
+        optional: true,
+    },
+    'peo.$.rejectLook': {
+        type: Boolean,
         optional: true,
     },
     group: {

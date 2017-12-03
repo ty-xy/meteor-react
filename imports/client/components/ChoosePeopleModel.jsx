@@ -33,14 +33,14 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         const { companyInfo } = this.props;
         const { members = [], deps = [] } = companyInfo;
         this.setState({
-            users: members,
+            users: members.filter(item => (item.userId !== Meteor.userId())),
             deps,
             companyInfo,
         });
     }
     componentWillReceiveProps(nextProps) {
         const { members = [], deps = [] } = nextProps.companyInfo;
-        const users = members;
+        const users = members.filter(item => (item.userId !== Meteor.userId()));
         const _users = [];
         let _deps = deps;
         const leftUsers = [];
@@ -62,7 +62,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 _deps = [];
                 deps.forEach((j) => {
                     for (let i = 0, item = nextProps.defaultValue; i < item.length; i++) {
-                        if (item[i] === j.name) {
+                        if (item[i] === j.id) {
                             j.selected = true;
                             leftUsers.push(item[i]);
                             break;
@@ -162,20 +162,20 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         }
     }
     // 选中群组
-    handleGroupChange = (e, name) => {
+    handleGroupChange = (e, id) => {
         e.preventDefault();
         let allNum = 0;
         const { deps } = this.state;
         const _dep = [];
         const leftUsers = this.state.leftUsers;
         deps.forEach((item) => {
-            if (item.name === name) {
+            if (item.id === id) {
                 item.selected = !item.selected;
-                const isNot = leftUsers.indexOf(name);
+                const isNot = leftUsers.indexOf(id);
                 if (isNot > -1) {
                     leftUsers.splice(isNot, 1);
                 } else {
-                    leftUsers.push(name);
+                    leftUsers.push(id);
                 }
             }
             if (item.selected) {
@@ -203,7 +203,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 if (e.target.checked === true) {
                     allNum++;
                     item.selected = true;
-                    leftUsers.push(item.name);
+                    leftUsers.push(item.id);
                 } else {
                     allNum--;
                     item.selected = false;
@@ -284,15 +284,15 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         return <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
     }
     // 获取群组avatar
-    getDepAvatar = (name) => {
+    getDepAvatar = (id) => {
         const { deps } = this.state;
         let avatar = '';
         deps.forEach((item, index) => {
-            if (item.name === name) {
+            if (item.id === id) {
                 if (item.avatar) {
                     avatar = (<img src={item.avatar} alt="" />);
                 } else {
-                    avatar = <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{name}</span>;
+                    avatar = <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{item.name}</span>;
                 }
             }
         });
@@ -329,13 +329,25 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         };
         const searchDep = () => (
             deps.map(item => (
-                <a key={item.name} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleGroupChange(e, item.name)}>
-                    {this.getDepAvatar(item.name)}
+                <a key={item.name} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleGroupChange(e, item.id)}>
+                    {this.getDepAvatar(item.id)}
                     {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
                     <span>{item.name}</span>
                 </a>
             ))
         );
+        // getDepartmentName 获取部门名称
+        const getDepartmentName = (id) => {
+            let depname = '';
+            for (let i = 0; i < deps.length; i++) {
+                if (deps[i].id === id) {
+                    depname = deps[i].name;
+                    break;
+                }
+            }
+            return depname;
+        };
+        // console.log('stete', this.state);
         return (
             <div>
                 {this.props.children}
@@ -351,7 +363,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                     <Row className="e-mg-audit-xuanze-row">
                         <div className="e-mg-audit-xuanze-left e-mg-audit-xuanze-col">
                             {
-                                isSelecteGroup ? leftUsers.map(item => (<Tag key={item} closable className="margin-bottom-20" onClose={() => this.handleGroupChange(item)}>{item}</Tag>))
+                                isSelecteGroup ? leftUsers.map(item => (<Tag key={item} closable className="margin-bottom-20" onClose={() => this.handleGroupChange(item)}>{getDepartmentName(item)}</Tag>))
                                     :
                                     leftUsers.map(item => (<Tag key={item} closable className="margin-bottom-20" onClose={() => this.handleChange(item)}>{userIdToInfo.getName(allUsers, item)}</Tag>))
                             }

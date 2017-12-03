@@ -58,6 +58,7 @@ class Chat extends Component {
     }
     componentWillMount() {
         const { history } = this.props;
+        console.log('chat', history);
         if (history.location.search && history.location.state === 'invite') {
             const search = location.search.slice(1).split('&');
             const searchs = {};

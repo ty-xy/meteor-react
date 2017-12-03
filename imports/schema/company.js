@@ -89,6 +89,11 @@ Company.schema = new SimpleSchema({
         type: String,
         optional: true,
     },
+    // 部门成员
+    'deps.$.members': {
+        type: String,
+        optional: true,
+    },
     // 成员Id
     'members.$.userId': {
         type: String,
