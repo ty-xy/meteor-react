@@ -174,15 +174,9 @@ class GroupSetting extends Component {
         reader.readAsDataURL(image);
     }
     render() {
-        console.log(this.props.admin, Meteor.userId());
         return (
-            <div className="container-wrap group-setting-block">
-                <div className="opacity" onClick={this.props.showGroupSet} />
-                <div className="container-middle container-content">
-                    <div className="container-title">
-                        群设置
-                        <Icon icon="icon-guanbi icon-close" onClick={this.props.showGroupSet} size={20} />
-                    </div>
+            <div className="group-setting-block">
+                <div className=" container-content">
                     <div className="group-info">
                         <div className="group-base-info">
                             <div className="group-avatar-wrap">

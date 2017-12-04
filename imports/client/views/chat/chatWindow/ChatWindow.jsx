@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Popover, Tooltip, Progress } from 'antd';
+import { Popover, Tooltip, Progress, Modal } from 'antd';
 import format from 'date-format';
 
 import Message from '../../../../../imports/schema/message';
@@ -487,18 +487,28 @@ class ChatWindow extends Component {
                 }
                 {
                     this.state.isShowGroupSet ?
-                        <GroupSetting
-                            showGroupSet={this.showGroupSet}
-                            groupName={groupName}
-                            groupMemberIds={memberIds}
-                            groupId={groupId}
-                            admin={admin}
-                            isDisturb={isDisturb}
-                            stickTop={stickTop}
-                            avatar={groupAvatar}
-                            changeTo={this.props.changeTo}
-                            handleFriendIdInfo={this.handleFriendIdInfo}
-                        />
+                        <Modal
+                            title="群设置"
+                            visible
+                            onCancel={this.showGroupSet}
+                            width={370}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <GroupSetting
+                                showGroupSet={this.showGroupSet}
+                                groupName={groupName}
+                                groupMemberIds={memberIds}
+                                groupId={groupId}
+                                admin={admin}
+                                isDisturb={isDisturb}
+                                stickTop={stickTop}
+                                avatar={groupAvatar}
+                                changeTo={this.props.changeTo}
+                                handleFriendIdInfo={this.handleFriendIdInfo}
+                            />
+                        </Modal>
+
                         :
                         null
                 }
