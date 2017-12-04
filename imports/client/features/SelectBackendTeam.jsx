@@ -10,6 +10,7 @@ import Company from '../../schema/company';
 import fields from '../../util/fields';
 import CreateTeam from '../features/CreateTeam';
 import feedback from '../../util/feedback';
+import Avatar from '../components/Avatar';
 
 
 const RadioGroup = Radio.Group;
@@ -63,7 +64,7 @@ class SelectBackendTeam extends Component {
             lineHeight: '30px',
         };
         return (
-            <div className="select-backend-team">
+            <div className="select-one">
                 {
                     this.props.createdCompany[0] ?
                         <div>
@@ -74,13 +75,19 @@ class SelectBackendTeam extends Component {
                                             style={radioStyle}
                                             value={item._id}
                                             key={item._id}
-                                        >{item.name}</Radio>),
+                                        >
+                                            <p className="user-info">
+                                                <Avatar avatarColor="#29b6f6" name={item.name} avatar={item.logo} />
+                                                {item.name}
+                                            </p>
+                                        </Radio>),
                                     )
                                 }
                             </RadioGroup>
                             <br />
-                            <br />
-                            <Button type="primary" onClick={() => this.props.selectBackendTeam(this.state.value)}>确定</Button>
+                            <div className="btn-wrap">
+                                <Button type="primary" onClick={() => this.props.selectBackendTeam(this.state.value)}>确定</Button>
+                            </div>
                         </div>
                         :
                         <div>你还没有创建团队,立即去

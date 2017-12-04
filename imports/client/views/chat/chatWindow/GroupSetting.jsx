@@ -174,6 +174,7 @@ class GroupSetting extends Component {
         reader.readAsDataURL(image);
     }
     render() {
+        console.log(this.props.admin, Meteor.userId());
         return (
             <div className="container-wrap group-setting-block">
                 <div className="opacity" onClick={this.props.showGroupSet} />
@@ -306,6 +307,7 @@ class GroupSetting extends Component {
 export default withTracker(({ groupMemberIds }) => {
     Meteor.subscribe('company');
     Meteor.subscribe('users');
+    Meteor.subscribe('user');
     const friendIds = UserUtil.getFriends();
     const groupMembers = groupMemberIds.map(_id =>
         Meteor.users.findOne({ _id }),

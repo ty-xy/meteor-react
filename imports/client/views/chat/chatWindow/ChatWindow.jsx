@@ -345,7 +345,7 @@ class ChatWindow extends Component {
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const memberIds = this.props.chatGroup ? this.props.chatGroup.members : [];
-        const admin = this.props.chatGroup ? this.props.chatGroup.admin._id : '';
+        const admin = this.props.chatGroup ? this.props.chatGroup.admin : '';
         const notice = this.props.chatGroup ? this.props.chatGroup.notice : '';
         const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
         const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : false;
