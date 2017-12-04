@@ -21,8 +21,8 @@ Meteor.methods({
             cache,
         };
         Log.schema.validate(newLog);
-        const id = Log.insert(newLog);
-        if (id) {
+        const _id = Log.insert(newLog);
+        if (_id) {
             const res = {
                 from: Meteor.userId(),
                 userCompany: UserUtil.getMainCompany(),
@@ -32,6 +32,12 @@ Meteor.methods({
             Meteor.call(
                 'createGlobalNotice',
                 (res),
+                (err, noticeId) => {
+                    Log.update(
+                        { _id },
+                        { $set: { noticeId } },
+                    );
+                },
             );
         }
     },

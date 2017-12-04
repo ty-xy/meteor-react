@@ -50,21 +50,12 @@ log.schema = new SimpleSchema({
         type: Boolean,
         optional: true,
     },
-    toMembers: {
-        type: [Object],
-        optional: true,
-    },
-    'toMembers.$.userId': {
+    // 全局通知
+    noticeId: {
         type: String,
-    },
-    'toMembers.$.isRead': {
-        type: Boolean,
         optional: true,
     },
-    'toMembers.$.rejectRead': {
-        type: Boolean,
-        optional: true,
-    },
+
 });
 
 export default log;

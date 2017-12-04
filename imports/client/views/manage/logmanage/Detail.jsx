@@ -4,34 +4,67 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { userIdToInfo } from '../../../../util/user';
 import Notice from '../../../../schema/notice';
+import Log from '../../../../schema/log';
 
 
 class Detail extends (PureComponent || Component) {
+    state = {
+        members: {},
+    }
     goback = (e) => {
         e.preventDefault();
         this.props.history.push('/chat');
     }
     render() {
-        const { nickname, plan, finish, _id, help } = this.props.location.state;
-        const { allUsers, toMembers } = this.props;
-        let num = 0;
+        const { id } = this.props.match.params || {};
+        let logInfo = {};
         let members = [];
-        toMembers.forEach((item) => {
-            if (item._id === _id) {
-                members = toMembers;
+        const { allUsers, toMembers, logs } = this.props;
+
+        logs.forEach((item) => {
+            if (item._id === id) {
+                logInfo = item;
             }
         });
-        for (let i = 0; i < members.length; i++) {
-            if (members[i].isRead) {
+        const { nickname, finish, plan, help, _id, noticeId } = logInfo;
+        if (noticeId) {
+            toMembers.forEach((item) => {
+                if (noticeId === item._id) {
+                    members = item.toMembers;
+                }
+            });
+        }
+        let num = 0;
+        members.forEach((item) => {
+            if (item.isRead) {
                 num++;
             }
-        }
-        console.log('location', this.props, members, Meteor.userId());
+        });
+        const colors = [
+            '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
+            '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
+            '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
+            '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
+            '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
+            '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
+            '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
+            '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
+        ];
+        const styles = {
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            background: colors[Math.round(Math.random() * 4)],
+            color: '#fff',
+            marginRight: '0px',
+            lineHeight: '36px',
+            marginBottom: '0px',
+        };
         return (
             <Row className="e-mg-log-details">
                 <Col span={24} className="e-mg-log-details-header">
                     <a href="" onClick={this.goback}>关闭</a>
-                    <span>{nickname}的日志</span>
+                    <span>{userIdToInfo.getName(allUsers, _id)}的日志</span>
                 </Col>
                 <Col span={24} className="e-mg-log-details-content">
                     <Col span={24} className="e-mg-log-details-area">
@@ -50,14 +83,17 @@ class Detail extends (PureComponent || Component) {
                         <p>{help || '暂无输入'}</p>
                     </Col>
                     <Col span={24} className="e-mg-log-details-footer">
-                        <p>{num || 0}人已读</p>
+                        <p>{num}人已读</p>
                         <Col span={24} data-peos={members}>
                             {
                                 members.map((item) => {
                                     if (item.isRead) {
                                         return (
                                             <span key={item.userId}>
-                                                <img src={userIdToInfo.getAvatar(allUsers, item.userId) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="36" />
+                                                {userIdToInfo.getAvatar(allUsers, item.userId) ?
+                                                    <img src={userIdToInfo.getAvatar(allUsers, item.userId) || '无头像'} width="36" />
+                                                    : <span style={styles}>{userIdToInfo.getName(allUsers, item.userId).substr(-2, 3)}</span>
+                                                }
                                                 <p>{userIdToInfo.getName(allUsers, item.userId)}</p>
                                             </span>
                                         );
@@ -84,9 +120,11 @@ class Detail extends (PureComponent || Component) {
 export default withTracker(() => {
     Meteor.subscribe('users');
     Meteor.subscribe('notice');
+    Meteor.subscribe('log');
     return {
         allUsers: Meteor.users.find().fetch(),
         toMembers: Notice.find().fetch(),
+        logs: Log.find().fetch(),
     };
 })(Detail);
 

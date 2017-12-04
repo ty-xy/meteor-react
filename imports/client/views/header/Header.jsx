@@ -85,7 +85,7 @@ class Header extends Component {
         });
     }
     render() {
-        console.log('haeder', this.props);
+        console.log('haeder', this.props.notices);
         const { notices } = this.props;
         return (
             <div className="ejianlianHeader">
@@ -173,7 +173,6 @@ export default withTracker(() => {
     return {
         currentCompanyId,
         notices,
-        logs: [],
         companys,
         allUsers: Meteor.users.find().fetch(),
     };

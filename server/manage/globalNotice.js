@@ -18,7 +18,8 @@ Meteor.methods({
             noticeType,
         };
         notice.schema.validate(obj);
-        notice.insert(obj);
+        const _id = notice.insert(obj);
+        return _id;
     },
     // 查看日志
     readLog(_id) {
