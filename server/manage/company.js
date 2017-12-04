@@ -18,16 +18,26 @@ Meteor.methods({
         };
         Company.schema.validate(newCompany);
         const companyId = await Company.insert(newCompany);
-        // 是我创建的需要在createdCompany和company里添加
+        // 是我创建的需要在createdCompany
         Meteor.users.update(
             { _id: Meteor.userId() },
             {
                 $push: {
                     'profile.createdCompany': companyId,
-                    'profile.company': companyId,
                 },
             },
         );
+        // 每个成员的company里添加
+        members.map(member => (
+            Meteor.users.update(
+                { _id: member.userId },
+                {
+                    $push: {
+                        'profile.company': companyId,
+                    },
+                },
+            )
+        ));
         Meteor.call('createGroup', { name, members, type: 'team', companyId }, (err, groupId) => {
             if (err) {
                 return false;

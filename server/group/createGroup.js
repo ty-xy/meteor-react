@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import Group from '../../imports/schema/group';
 
 Meteor.methods({
-    // name: 群聊/团队名称, members: 群聊成员, type: group/team 区分是个人群聊和团队群聊
+    // name: 群聊/团队名称, members: 群聊成员, type: group/team 区分是个人群聊和团队群聊, companyId: 公司大群聊
     async createGroup({ name, members, type = 'group', companyId = '', avatar = 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png' }) {
         let groupMembers = [];
         if (type === 'team') {
