@@ -43,7 +43,12 @@ class AddChat extends Component {
     }
     handleAddFriend = () => {
         this.setState({
-            isShowAddFriend: !this.state.isShowAddFriend,
+            isShowAddFriend: true,
+        });
+    }
+    closeAddFriend = () => {
+        this.setState({
+            isShowAddFriend: false,
         });
     }
     handleFriendCode = () => {
@@ -84,27 +89,42 @@ class AddChat extends Component {
                 <div className="chat-add-user" onClick={this.handleClick}>
                     +
                 </div>
-                <AddFriend
-                    handleAddFriend={this.handleAddFriend}
-                    handleFriendCode={this.handleFriendCode}
-                    isShowAddFriend={this.state.isShowAddFriend}
-                    isShowFriendCode={this.state.isShowFriendCode}
-                />
-
-                <Modal
-                    title="发起群聊"
-                    visible={this.state.isShowAddGroup}
-                    onCancel={this.handleAddGroup}
-                    width={430}
-                    wrapClassName="create-team-mask"
-                    footer={null}
-                >
-                    <SelectMembers
-                        confirmSelected={this.handleCreateGroup}
-                        team={this.props.team}
-                    />
-                </Modal>
-
+                {
+                    this.state.isShowAddFriend ?
+                        <Modal
+                            title="添加好友"
+                            visible
+                            onCancel={this.closeAddFriend}
+                            width={380}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <AddFriend
+                                handleFriendCode={this.handleFriendCode}
+                                isShowFriendCode={this.state.isShowFriendCode}
+                            />
+                        </Modal>
+                        :
+                        null
+                }
+                {
+                    this.state.isShowAddGroup ?
+                        <Modal
+                            title="发起群聊"
+                            visible
+                            onCancel={this.handleAddGroup}
+                            width={430}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <SelectMembers
+                                confirmSelected={this.handleCreateGroup}
+                                team={this.props.team}
+                            />
+                        </Modal>
+                        :
+                        null
+                }
             </div>
         );
     }
