@@ -3,8 +3,8 @@ import { Meteor } from 'meteor/meteor';
 import Group from '../../imports/schema/group';
 
 Meteor.methods({
-    // name: 群聊/团队名称, members: 群聊成员, type: group/team 区分是个人群聊和团队群聊
-    async createGroup({ name, members, type = 'group', companyId = '', avatar = 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png' }) {
+    // name: 群聊/团队名称, members: 群聊成员, type: group/team 区分是个人群聊和团队群聊, companyId: 公司大群聊, superiorId: 团队里面的部门所属的公司ID
+    async createGroup({ name, members, type = 'group', companyId = '', superiorId = '', avatar = 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png' }) {
         let groupMembers = [];
         if (type === 'team') {
             if (members[0] && members[0].userId) {
@@ -32,10 +32,10 @@ Meteor.methods({
             },
             type,
             companyId,
+            superiorId,
         };
         Group.schema.validate(newGroup);
         const groupId = await Group.insert(newGroup);
-        console.log(111, groupMembers);
         await groupMembers.map((user =>
             Meteor.users.update(
                 { _id: user },
@@ -51,7 +51,6 @@ Meteor.methods({
                 },
             )
         ));
-        console.log(666);
         return groupId;
     },
 });

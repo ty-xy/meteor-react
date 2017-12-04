@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Popover, Tooltip, Progress } from 'antd';
+import { Popover, Tooltip, Progress, Modal } from 'antd';
 import format from 'date-format';
 
 import Message from '../../../../../imports/schema/message';
@@ -344,13 +344,14 @@ class ChatWindow extends Component {
         const { name = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
-        const members = this.props.chatGroup ? this.props.chatGroup.members : [];
-        const admin = this.props.chatGroup ? this.props.chatGroup.admin._id : '';
+        const memberIds = this.props.chatGroup ? this.props.chatGroup.members : [];
+        const admin = this.props.chatGroup ? this.props.chatGroup.admin : '';
         const notice = this.props.chatGroup ? this.props.chatGroup.notice : '';
         const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
         const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : false;
         const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop : {};
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
+        const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
         return this.props.to ?
             <div className="ejianlian-chat-window">
                 {
@@ -487,18 +488,29 @@ class ChatWindow extends Component {
                 }
                 {
                     this.state.isShowGroupSet ?
-                        <GroupSetting
-                            showGroupSet={this.showGroupSet}
-                            groupName={groupName}
-                            members={members}
-                            groupId={groupId}
-                            admin={admin}
-                            isDisturb={isDisturb}
-                            stickTop={stickTop}
-                            avatar={groupAvatar}
-                            changeTo={this.props.changeTo}
-                            handleFriendIdInfo={this.handleFriendIdInfo}
-                        />
+                        <Modal
+                            title="群设置"
+                            visible
+                            onCancel={this.showGroupSet}
+                            width={370}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <GroupSetting
+                                showGroupSet={this.showGroupSet}
+                                groupName={groupName}
+                                groupMemberIds={memberIds}
+                                groupId={groupId}
+                                admin={admin}
+                                isDisturb={isDisturb}
+                                stickTop={stickTop}
+                                avatar={groupAvatar}
+                                changeTo={this.props.changeTo}
+                                handleFriendIdInfo={this.handleFriendIdInfo}
+                                groupType={groupType}
+                            />
+                        </Modal>
+
                         :
                         null
                 }
@@ -536,7 +548,7 @@ export default withTracker(({ to, userId }) => {
     Meteor.subscribe('group');
     Meteor.subscribe('files');
     const chatGroup = Group.findOne({ _id: to });
-    PopulateUtil.group(chatGroup);
+    // PopulateUtil.group(chatGroup);
     const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
     if (files[0]) {
         files.forEach((d, i, data) => {

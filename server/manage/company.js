@@ -18,16 +18,26 @@ Meteor.methods({
         };
         Company.schema.validate(newCompany);
         const companyId = await Company.insert(newCompany);
-        // 是我创建的需要在createdCompany和company里添加
+        // 是我创建的需要在createdCompany
         Meteor.users.update(
             { _id: Meteor.userId() },
             {
                 $push: {
                     'profile.createdCompany': companyId,
-                    'profile.company': companyId,
                 },
             },
         );
+        // 每个成员的company里添加
+        members.map(member => (
+            Meteor.users.update(
+                { _id: member.userId },
+                {
+                    $push: {
+                        'profile.company': companyId,
+                    },
+                },
+            )
+        ));
         Meteor.call('createGroup', { name, members, type: 'team', companyId }, (err, groupId) => {
             if (err) {
                 return false;
@@ -129,7 +139,7 @@ Meteor.methods({
                 if (res && isAutoChat) {
                     Meteor.call(
                         'createGroup',
-                        { name, members, type: 'team' },
+                        { name, members, type: 'team', superiorId: _id },
                         (err, groupId) => {
                             if (err) {
                                 return false;
@@ -217,7 +227,7 @@ Meteor.methods({
                             oldgroup, item.userId,
                         );
                         Meteor.call(
-                            'addGroupMembers',
+                            'newMemberIds',
                             {
                                 groupId,
                                 newMembers: [item.userId],
@@ -269,7 +279,7 @@ Meteor.methods({
                             'addGroupMembers',
                             {
                                 groupId: departmentGroupId,
-                                newMembers: [userId],
+                                newMemberIds: [userId],
                             },
                         );
                     }
@@ -278,7 +288,7 @@ Meteor.methods({
                         'addGroupMembers',
                         {
                             groupId: companyGroupId,
-                            newMembers: [userId],
+                            newMemberIds: [userId],
                         },
                     );
                     // 更新人员所在公司
@@ -333,7 +343,7 @@ Meteor.methods({
                 'addGroupMembers',
                 {
                     groupId,
-                    newMembers: [userId],
+                    newMemberIds: [userId],
                 },
             );
         } else {

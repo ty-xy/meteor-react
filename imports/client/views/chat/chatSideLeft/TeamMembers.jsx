@@ -10,6 +10,7 @@ import Icon from '../../../components/Icon';
 import Company from '../../../../schema/company';
 import fields from '../../../../util/fields';
 import feedback from '../../../../util/feedback';
+import ChatFriendInfo from '../chatWindow/ChatFriendInfo';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -22,21 +23,37 @@ class TeamMembers extends Component {
         currentMembers: PropTypes.array || [],
         currentCompany: PropTypes.object,
         depsName: PropTypes.string,
+        changeTo: PropTypes.func,
+        handleToggle: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
         this.state = {
             visible: false,
+            isShowFriendInfo: false,
+            chatFriendId: '',
             columns: [{
                 title: '',
                 dataIndex: 'profile',
                 render: profile => (
-                    <div className="team-memebers-info">
+                    <div className="team-memebers-info" onClick={this.showFriendInfo.bind(this, profile._id)}>
                         <Avatar name={profile.name} avatarColor={profile.avatarColor} avatar={profile.avatar} />
                         <p>{profile.name}</p>
                     </div>),
             }],
         };
+    }
+    handleFriendInfo = () => {
+        this.setState({
+            isShowFriendInfo: !this.state.isShowFriendInfo,
+        });
+    }
+    showFriendInfo = (friendId) => {
+        console.log(111, friendId);
+        this.setState({
+            isShowFriendInfo: true,
+            chatFriendId: friendId,
+        });
     }
     quitTeam = () => {
         this.setState({
@@ -95,6 +112,19 @@ class TeamMembers extends Component {
                     title={() => this.renderHeader(name, this.props.depsName)}
                     rowKey={record => record._id}
                 />
+                {
+                    this.state.isShowFriendInfo ?
+                        <ChatFriendInfo
+                            handleFriendInfo={this.handleFriendInfo}
+                            friendId={this.state.chatFriendId}
+                            temporaryChat
+                            changeTo={this.props.changeTo}
+                            handleToggle={this.props.handleToggle}
+                        />
+                        :
+                        null
+
+                }
                 <Modal
                     title="退出团队"
                     visible={this.state.visible}
@@ -165,6 +195,7 @@ export default Form.create({})(
             currentMembers.forEach((x) => {
                 x.key = x.userId;
                 x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;
+                x.profile._id = x.userId;
             });
         }
 

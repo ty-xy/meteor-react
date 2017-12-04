@@ -5,11 +5,11 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import Avatar from '../../../components/Avatar';
-import SelectMembers from '../../../features/SelectMembers';
 import feedback from '../../../../util/feedback';
 import UserUtil from '../../../../util/user';
 import Company from '../../../../schema/company';
 import fields from '../../../../util/fields';
+import SelectOne from '../../../features/SelectOne';
 
 
 const FormItem = Form.Item;
@@ -17,7 +17,7 @@ class MainManage extends Component {
     static propTypes = {
         form: PropTypes.object,
         currentCompany: PropTypes.object,
-        team: PropTypes.array,
+        teamMemberIds: PropTypes.array,
     }
     constructor() {
         super();
@@ -31,16 +31,15 @@ class MainManage extends Component {
             visible: true,
         });
     }
-    handleCancel = (e) => {
-        console.log(e);
+    handleCancel = () => {
         this.setState({
             visible: false,
         });
     }
-    confirmChange = (selectedId) => {
+    confirmChange = (newAdminId) => {
         const companyId = this.props.currentCompany._id;
         const oldAdminId = this.props.currentCompany.admin;
-        Meteor.call('changeMainManage', companyId, oldAdminId, selectedId[0], (err) => {
+        Meteor.call('changeMainManage', companyId, oldAdminId, newAdminId, (err) => {
             if (err) {
                 console.error(err.reason);
             }
@@ -127,10 +126,11 @@ class MainManage extends Component {
                     onCancel={this.handleCancel}
                     wrapClassName="create-team-mask"
                     footer={null}
+                    width={400}
                 >
-                    <SelectMembers
-                        team={this.props.team}
-                        confirmSelected={this.confirmChange}
+                    <SelectOne
+                        teamMemberIds={this.props.teamMemberIds}
+                        confirmChange={this.confirmChange}
                     />
                 </Modal>
             </div>
@@ -150,16 +150,10 @@ export default Form.create({})(
         for (const value of Object.values(currentCompany.members)) {
             members.push(value.userId);
         }
-        const team = [
-            {
-                name: currentCompany.name,
-                members,
-                department: [],
-            },
-        ];
+
         return {
             currentCompany,
-            team,
+            teamMemberIds: members,
         };
     })(MainManage),
 );
