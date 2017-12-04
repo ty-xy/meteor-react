@@ -10,6 +10,7 @@ Meteor.methods({
             {
                 $set: {
                     content,
+                    createTime: new Date(),
                 },
             },
         );

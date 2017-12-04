@@ -15,4 +15,9 @@ Meteor.methods({
         ProjectMember.schema.validate(newProjectmember);
         ProjectMember.insert(newProjectmember);
     },
+    outProjectmember(Id) {
+        ProjectMember.remove({
+            _id: Id,
+        });
+    },
 });
