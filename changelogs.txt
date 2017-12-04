@@ -130,3 +130,17 @@
  zg xym    Merge branch 'feature/management_gwt' into 'master'
  zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
  zg-xym    build results on build 22
+----------------------------------
+
+2017-12-04 14:51:20,   build 24
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    fix:评论如果不是创建者，显示评论和删除
+ zg xy    fix:卡片复制，谁复制显示谁的头像
+ zg xy    fix:卡片谁创建谁才有删除权限
+ zg xy    fix:编辑评论最新的评论在开头
+ zg xy    feat:卡片上的评论的编辑和删除功能只有创建者可以使用
+ zg xy    feat:只有创建者才有删除权限
+ zg xy    feat:只有项目传创建者可以删除，归档修改项目，成员只可以推出改项目的功能
+ zg-xym    build results on build 23

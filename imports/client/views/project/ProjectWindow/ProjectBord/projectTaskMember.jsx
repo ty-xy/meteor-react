@@ -25,7 +25,10 @@ class projectMembers extends Component {
         textId: PropTypes.string,
         team: PropTypes.array,
         TaskMembers: PropTypes.array,
-        allMembers: PropTypes.arrayOf(PropTypes.object),
+        allMembers: PropTypes.oneOfType([
+            PropTypes.arrayOf(PropTypes.object),
+            PropTypes.string,
+        ]),
     }
     constructor(props) {
         super(props);

@@ -214,6 +214,7 @@ class ProjectBordItem extends Component {
                 index={value.taskBoardId}
                 ind={index}
                 textId={value.textId}
+                memberId={value.memberId}
                 projectId={this.props.projectId}
                 deleteCard={() => this.handleDeleteTaskL(value.textId)}
             />);
