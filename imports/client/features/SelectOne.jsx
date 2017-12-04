@@ -10,7 +10,7 @@ import Avatar from '../components/Avatar';
 @pureRender
 class SelectOne extends Component {
     static propTypes = {
-        users: PropTypes.array,
+        teamMembers: PropTypes.array,
         confirmChange: PropTypes.func,
     };
     constructor(...args) {
@@ -32,7 +32,7 @@ class SelectOne extends Component {
             <div className="select-one">
                 <ul className="select-group-list">
                     {
-                        this.props.users.map((item, index) => (
+                        this.props.teamMembers.map((item, index) => (
                             item && item.profile ?
                                 <li
                                     key={index}
@@ -48,7 +48,7 @@ class SelectOne extends Component {
 
                                         }
                                     </p>
-                                    <p className={this.props.users.length - 1 !== index ? 'user-info' : 'user-info user-info-last'}>
+                                    <p className={this.props.teamMembers.length - 1 !== index ? 'user-info' : 'user-info user-info-last'}>
                                         <Avatar avatarColor={item.profile.avatarColor} name={item.profile.name} avatar={item.profile.avatar} />
                                         {item.profile.name}
                                     </p>
@@ -64,11 +64,11 @@ class SelectOne extends Component {
     }
 }
 
-export default withTracker(({ friendIds }) => {
-    const users = friendIds.map(_id =>
+export default withTracker(({ teamMemberIds }) => {
+    const teamMembers = teamMemberIds.map(_id =>
         Meteor.users.findOne({ _id }),
     );
     return {
-        users,
+        teamMembers,
     };
 })(SelectOne);

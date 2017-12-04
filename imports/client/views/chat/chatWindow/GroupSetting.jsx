@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
-import { Switch } from 'antd';
+import { Switch, Modal } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
-import AddGroup from '../chatSideLeft/addChat/AddGroup';
-import SeleteAdmin from '../../../features/SeleteAdmin';
+// import AddGroup from '../chatSideLeft/addChat/AddGroup';
+// import SeleteAdmin from '../../../features/SeleteAdmin';
 import UserUtil from '../../../../util/user';
 import feedback from '../../../../util/feedback';
+import SelectOne from '../../../features/SelectOne';
 
 @pureRender
 class GroupSetting extends Component {
@@ -18,7 +19,7 @@ class GroupSetting extends Component {
         showGroupSet: PropTypes.func,
         groupName: PropTypes.string,
         members: PropTypes.array,
-        users: PropTypes.array,
+        friendIds: PropTypes.array,
         groupId: PropTypes.string,
         admin: PropTypes.string,
         isDisturb: PropTypes.bool,
@@ -33,8 +34,8 @@ class GroupSetting extends Component {
         this.state = {
             isShowAddGroup: false,
             isShowSeleteAdmin: false,
-            restUsers: [],
-            restMembers: [],
+            restUserIds: [],
+            teamMemberIds: [],
             isChangeName: false,
         };
     }
@@ -54,9 +55,13 @@ class GroupSetting extends Component {
     selectAdmin = () => {
         const { members } = this.props;
         const restMembers = members.filter(x => x._id !== Meteor.userId());
+        const memberIds = [];
+        for (const value of Object.values(restMembers)) {
+            memberIds.push(value._id);
+        }
         this.setState({
             isShowSeleteAdmin: true,
-            restMembers,
+            teamMemberIds: memberIds,
         });
     }
     closeSeleteAdmin = () => {
@@ -64,13 +69,25 @@ class GroupSetting extends Component {
             isShowSeleteAdmin: false,
         });
     }
+    // 确认选择新的群主
+    confirmChange = (newAdminId) => {
+        this.setState({
+            isShowSeleteAdmin: false,
+        });
+        Meteor.call('changeAdmin', this.props.groupId, newAdminId, (err) => {
+            if (err) {
+                console.error(err.reason);
+            }
+            feedback.dealSuccess('修改成功');
+        });
+    }
     // 邀请更多好友
     handleAddGroup = () => {
-        const { users = [], members } = this.props;
-        const restUsers = users.filter(x => !members.find(y => y._id === x._id));
+        const { friendIds = [], members } = this.props;
+        const restUserIds = friendIds.filter(x => !members.find(y => y === x));
         this.setState({
             isShowAddGroup: !this.state.isShowAddGroup,
-            restUsers,
+            restUserIds,
         });
     }
     deleteMember = (memberId, content) => {
@@ -241,7 +258,7 @@ class GroupSetting extends Component {
                         }
                     </div>
                 </div>
-                <AddGroup
+                {/* <AddGroup
                     handleAddGroup={this.handleAddGroup}
                     isShowAddGroup={this.state.isShowAddGroup}
                     users={this.state.restUsers}
@@ -249,17 +266,20 @@ class GroupSetting extends Component {
                     groupId={this.props.groupId}
                     isEditGroupName={this.props.members.length < 4}
                     members={this.props.members}
-                />
-                {
-                    this.state.isShowSeleteAdmin ?
-                        <SeleteAdmin
-                            users={this.state.restMembers}
-                            groupId={this.props.groupId}
-                            closeSeleteAdmin={this.closeSeleteAdmin}
-                        />
-                        :
-                        null
-                }
+                /> */}
+                <Modal
+                    title="管理员设置"
+                    visible={this.state.isShowSeleteAdmin}
+                    onCancel={this.closeSeleteAdmin}
+                    width={430}
+                    wrapClassName="create-team-mask"
+                    footer={null}
+                >
+                    <SelectOne
+                        teamMemberIds={this.state.teamMemberIds}
+                        confirmChange={this.confirmChange}
+                    />
+                </Modal>
             </div>
         );
     }
@@ -268,9 +288,8 @@ class GroupSetting extends Component {
 export default withTracker(() => {
     Meteor.subscribe('users');
     const friendIds = UserUtil.getFriends();
-    const users = friendIds.map(_id => Meteor.users.findOne({ _id }));
     return {
-        users,
+        friendIds,
     };
 })(GroupSetting);
 

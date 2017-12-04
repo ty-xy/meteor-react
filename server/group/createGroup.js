@@ -35,7 +35,6 @@ Meteor.methods({
         };
         Group.schema.validate(newGroup);
         const groupId = await Group.insert(newGroup);
-        console.log(111, groupMembers);
         await groupMembers.map((user =>
             Meteor.users.update(
                 { _id: user },
@@ -51,7 +50,6 @@ Meteor.methods({
                 },
             )
         ));
-        console.log(666);
         return groupId;
     },
 });
