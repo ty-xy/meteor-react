@@ -342,7 +342,6 @@ class ProjectItemDetail extends Component {
     // 复制卡片
     handleCopy = (v) => {
         console.log(v);
-
         const task = this.props.tasks[0];
         console.log(task);
         Meteor.call(
@@ -350,6 +349,7 @@ class ProjectItemDetail extends Component {
             { name: task.name,
                 taskBoardId: task.taskBoardId,
                 textId: this.state.uuids,
+                memberId: Meteor.userId(),
             },
             (err) => {
                 console.log(err);
