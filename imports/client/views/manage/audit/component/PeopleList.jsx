@@ -24,18 +24,30 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
         return <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
     };
     // 获取群组avatar
-    const getDepAvatar = (data, name) => {
+    const getDepAvatar = (data, id) => {
         let avatar = '';
         data.forEach((item, index) => {
-            if (item.name === name) {
+            if (item.id === id) {
                 if (item.avatar) {
                     avatar = (<img src={item.avatar} alt="" />);
                 } else {
-                    avatar = <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{name}</span>;
+                    avatar = <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{item.name}</span>;
                 }
             }
         });
         return avatar;
+    };
+    // 获取depname
+    const getDepartmentName = (id) => {
+        let depname = '';
+        const dep = companyInfo.deps;
+        for (let i = 0; i < dep.length; i++) {
+            if (dep[i].id === id) {
+                depname = dep[i].name;
+                break;
+            }
+        }
+        return depname;
     };
     return (
         <div style={{ position: 'relative' }}>
@@ -43,7 +55,7 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
                 componentSelectedUser.map(item => (
                     <a href="" key={item} onClick={e => handlePeopleChange(e, item, keyword)} className="e-mg-audit-seleted-img">
                         {getDepAvatar(companyInfo.deps || [], item)}
-                        <p>{item}</p>
+                        <p>{getDepartmentName(item)}</p>
                     </a>
                 )) :
                 componentSelectedUser.map((item, index) => (

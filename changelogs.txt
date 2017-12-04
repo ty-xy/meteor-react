@@ -113,3 +113,20 @@
 2017-12-02 16:57:39,   build 21
 
  zg-xym    build results on build 20
+----------------------------------
+
+2017-12-02 22:32:27,   build 22
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    feat:从项目成员加好友，也可以实现只能项目参与者看到项目
+ zg xy    feat:只有项目创建者和项目成员可以看到已经创建项目
+ zg xy    feat:修改卡片添加人的bug
+ zg-xym    build results on build 21
+----------------------------------
+
+2017-12-03 11:15:39,   build 23
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg-xym    build results on build 22

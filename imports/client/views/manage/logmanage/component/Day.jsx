@@ -11,6 +11,7 @@ import FileUpload from '../../component/FileUpload';
 import ChoosePeopleModel from '../../../../components/ChoosePeopleModel';
 import PeopleList from '../../audit/component/PeopleList';
 import feedback from '../../../../../util/feedback';
+import UserUtil from '../../../../../util/user';
 
 const FormItem = Form.Item;
 
@@ -46,13 +47,15 @@ class Day extends (React.PureComponent || React.Component) {
         if (pathname === '/manage/logging' && !state.edit) {
             const caches = nextProps.cachelog;
             if (caches.length) {
-                this.setState({ ...this.state, ...caches[0], firstCache: true });
+                const peo = caches[0].peo.map(item => (item.userId));
+                this.setState({ ...this.state, ...caches[0], peo, firstCache: true });
             }
         }
     }
     formSubmit = (e) => {
         e.preventDefault();
-        const { form } = this.props;
+        const { form, companyInfo } = this.props;
+        const { deps } = companyInfo;
         const { img, file, group, peo, logType } = this.state;
         form.validateFields((err, fields) => {
             if (err) {
@@ -62,25 +65,38 @@ class Day extends (React.PureComponent || React.Component) {
                 feedback.dealWarning('发送群组和对象至少选其一');
                 return false;
             }
-            fields.type = logType;
-            fields.file = file;
-            fields.img = img;
-            fields.peo = peo;
-            fields.group = group;
-            this.tabSubmit(fields);
+            let peos = peo;
+            if (group && group.length) {
+                group.forEach((depId) => {
+                    for (let i = 0; i < deps.length; i++) {
+                        if (depId === deps[i].id) {
+                            peos = peos.concat(deps[i].members);
+                            break;
+                        }
+                    }
+                });
+            }
+            const peoRes = [];
+            peos.forEach((item) => {
+                if (peoRes.indexOf(item) === -1) {
+                    peoRes.push(item);
+                }
+            });
+            const peoObj = peos.map(userId => ({ userId }));
+            this.tabSubmit({ ...fields, peo: peoObj, type: logType, img, file, group });
         });
     }
     // 写日志
     tabSubmit = (fields) => {
         const _this = this;
-        fields.userId = Meteor.user()._id;
-        fields.nickname = Meteor.user().profile.name;
-        fields.company = Meteor.user().profile.mainCompany;
+        fields.userId = Meteor.userId();
+        fields.nickname = UserUtil.getName();
+        fields.company = UserUtil.getMainCompany();
+        fields.cache = false;
         const { state = {} } = this.props.location;
         const { firstCache } = this.state;
         if (state.edit || state.handleTab || firstCache) {
             fields._id = this.state._id;
-            fields.cache = false;
             Meteor.call(
                 'updateLog',
                 { ...fields },
@@ -114,12 +130,12 @@ class Day extends (React.PureComponent || React.Component) {
         // const { img, file } = this.state;
         if (name === 'img') {
             this.setState({ img: imgs }, () => {
-                this.handleblur();
+                // this.handleblur();
             });
         }
         if (name === 'file') {
             this.setState({ file: imgs }, () => {
-                this.handleblur();
+                // this.handleblur();
             });
         }
     }
@@ -145,7 +161,7 @@ class Day extends (React.PureComponent || React.Component) {
     // 选中的人
     handleOk = (keyword, leftUsers) => {
         this.setState({ [keyword]: leftUsers, [`visible${keyword}`]: false, requireGroupNotice: false }, () => {
-            this.handleblur();
+            // this.handleblur();
         });
     }
     // 选中后删除
@@ -162,14 +178,14 @@ class Day extends (React.PureComponent || React.Component) {
     handlechange = (e, keyword) => {
         // console.log('handlechange', e.target.value, keyword);
         this.setState({ [keyword]: e.target.value });
-        this.handleblur();
+        // this.handleblur();
     }
     handleblur = () => {
         const { finish, plan, help, img, file, peo, group, logType, _id, firstCache } = this.state;
         // console.log('handleblur', finish, plan, help, img, file, peo, group, logType, _id, firstCache);
-        const userId = Meteor.user()._id;
-        const nickname = Meteor.user().profile.name;
-        const company = Meteor.user().profile.mainCompany;
+        const userId = Meteor.userId();
+        const nickname = UserUtil.getName();
+        const company = UserUtil.getMainCompany();
         const cache = {
             finish, plan, help, img, file, peo, group,
         };
@@ -237,12 +253,12 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
-        // console.log('day', this.props, this.state);
+        console.log('day', this.props);
         return (
             <Form onSubmit={this.formSubmit} id="formDiv" ref={i => this.$formDiv = i}>
-                <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
-                <InputArea defaultValue={plan} title={textShow === '日' ? '明日工作计划' : `下${textShow}工作计划`} keyword="plan" required requiredErr="工作计划必填" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
-                <InputArea defaultValue={help} title="需要协调与帮助：" keyword="help" marginBottom="20px" onChange={this.handlechange} handleblur={this.handleblur} {...this.props} />
+                <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} {...this.props} />
+                <InputArea defaultValue={plan} title={textShow === '日' ? '明日工作计划' : `下${textShow}工作计划`} keyword="plan" required requiredErr="工作计划必填" onChange={this.handlechange} {...this.props} />
+                <InputArea defaultValue={help} title="需要协调与帮助：" keyword="help" marginBottom="20px" onChange={this.handlechange} {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                 <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
                 <ChoosePeopleModel
@@ -311,19 +327,10 @@ export default withTracker(() => {
     Meteor.subscribe('company');
     Meteor.subscribe('users');
     Meteor.subscribe('log');
-    const companys = Company.find().fetch();
-    const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
-    let companyInfo = {};
-    companys.forEach((item) => {
-        if (item._id === mainCompany) {
-            companyInfo = item;
-        }
-    });
-    const userId = Meteor.user() && Meteor.user()._id;
     return {
-        companyInfo,
-        companys,
+        companyInfo: Company.findOne({ _id: UserUtil.getMainCompany() }),
+        companys: Company.find().fetch(),
         allUsers: Meteor.users.find().fetch(),
-        cachelog: Log.find({ userId, company: mainCompany, type: '日报', cache: true }).fetch(),
+        cachelog: Log.find({ userId: Meteor.userId(), company: UserUtil.getMainCompany(), type: '日报', cache: true }).fetch(),
     };
 })(Form.create()(Day));

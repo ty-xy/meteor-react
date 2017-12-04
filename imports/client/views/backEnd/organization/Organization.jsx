@@ -203,6 +203,7 @@ class Organization extends PureComponent {
         let isNot = false;
         let bool = false;
         let groupId = '';
+        let oldDep = '';
         const _this = this;
         users.forEach((item) => {
             if (userIdToInfo.getUsername(allUsers, item.userId) === res.phone) {
@@ -217,13 +218,14 @@ class Organization extends PureComponent {
         (company.deps || []).forEach((item) => {
             if (item.id === oldgroup) {
                 oldgroup = item.groupId;
+                oldDep = item.id;
             }
         });
         console.log('13614376223', { ...res, companyId, groupId, companyGroupId }, '-=', Meteor.user());
         if (editMemberInfo) {
             Meteor.call(
                 'editMember',
-                { ...res, userId: editMemberInfo, companyId, groupId, oldgroup },
+                { ...res, userId: editMemberInfo, companyId, groupId, oldgroup, oldDep },
                 (err) => {
                     if (err) {
                         feedback.dealError('编辑失败');
@@ -368,9 +370,10 @@ class Organization extends PureComponent {
         } else {
             feedback.dealDelete('删除提醒', '此删除不可撤销，确认删除该成员吗？', () => {
                 const companyId = UserUtil.getCurrentBackendCompany();
+                const dep = record.dep;
                 Meteor.call(
                     'deleteCompanyMember',
-                    { companyId, departmentGroupId: groupId, userId, companyGroupId },
+                    { companyId, departmentGroupId: groupId, userId, companyGroupId, dep },
                     (err) => {
                         if (err) {
                             feedback.dealError('删除失败');

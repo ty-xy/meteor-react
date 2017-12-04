@@ -2,7 +2,7 @@ import React, { Component, PureComponent } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Upload, Button, Icon } from 'antd';
-import files from '../../../../schema/file';
+import Files from '../../../../schema/file';
 import feedback from '../../../../util/feedback';
 
 
@@ -20,21 +20,20 @@ class FileUpload extends (PureComponent || Component) {
         };
         this.imgs = [];
     }
-    componentWillReceiveProps() {
-        const { fileList } = this.props;
+    componentWillReceiveProps(nextProps) {
+        const { fileList, files } = nextProps;
         this.imgs = fileList;
         const _fileList = [];
         if (!this.state.upload) {
-            (fileList || []).forEach((_id) => {
-                // const querys = fileLists.filter((i) => (item === i._id));
-                const querys = files.findOne({ _id }) || [];
+            (fileList || []).forEach((item) => {
+                const querys = files.filter(i => (item === i._id))[0] || {};
                 if (querys._id) {
                     querys.uid = querys._id;
                     _fileList.push(querys);
                 }
             });
             if (fileList && fileList.length) {
-                this.setState({ _fileList });
+                this.setState({ _fileList, k: Math.random() });
             }
         }
     }
@@ -102,7 +101,6 @@ class FileUpload extends (PureComponent || Component) {
             className: 'e-mg-imgupload',
             fileList: _fileList,
         };
-        // console.log('fileupload', this.props, _fileList);
         return (
             <div className="clearfix margin-bottom-30 e-mg-fileUpload">
                 <p style={{ marginBottom: '10px' }}>{this.props.title}</p>
@@ -117,10 +115,10 @@ class FileUpload extends (PureComponent || Component) {
 }
 
 export default withTracker(() => {
-    Meteor.subscribe('file');
+    Meteor.subscribe('files');
     return {
         users: Meteor.user() || {},
-        files: files.find().fetch(),
+        files: Files.find().fetch(),
     };
 })(FileUpload);
 

@@ -18,6 +18,7 @@ class Index extends Component {
             } else if (user && this.isLogin === false) {
                 this.isLogin = true;
                 if (history.location.search && history.location.state === 'invite') {
+                    console.log('history', history);
                     this.props.history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
                 } else {
                     this.props.history.push('/chat');
