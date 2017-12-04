@@ -45,6 +45,10 @@ Group.schema = new SimpleSchema({
         type: String,
         optional: true,
     },
+    superiorId: {
+        type: String,
+        optional: true,
+    },
 });
 
 export default Group;

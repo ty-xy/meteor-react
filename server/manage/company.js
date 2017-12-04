@@ -139,7 +139,7 @@ Meteor.methods({
                 if (res && isAutoChat) {
                     Meteor.call(
                         'createGroup',
-                        { name, members, type: 'team' },
+                        { name, members, type: 'team', superiorId: _id },
                         (err, groupId) => {
                             if (err) {
                                 return false;

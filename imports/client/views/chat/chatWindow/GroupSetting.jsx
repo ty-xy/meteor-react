@@ -13,6 +13,7 @@ import SelectOne from '../../../features/SelectOne';
 import SelectMembers from '../../../features/SelectMembers';
 import Company from '../../../../schema/company';
 import fields from '../../../../util/fields';
+import Group from '../../../../schema/group';
 
 @pureRender
 class GroupSetting extends Component {
@@ -298,7 +299,7 @@ class GroupSetting extends Component {
     }
 }
 
-export default withTracker(({ groupMemberIds }) => {
+export default withTracker(({ groupMemberIds, groupType, groupId }) => {
     Meteor.subscribe('company');
     Meteor.subscribe('users');
     Meteor.subscribe('user');
@@ -306,6 +307,46 @@ export default withTracker(({ groupMemberIds }) => {
     const groupMembers = groupMemberIds.map(_id =>
         Meteor.users.findOne({ _id }),
     );
+    // 如果是团队群聊,只能添加团队内部人员
+    if (groupType === 'team') {
+        const teamGroup = Group.findOne({ _id: groupId });
+        const currentCompanyId = teamGroup.companyId || teamGroup.superiorId;
+        const currentCompany = Company.findOne(
+            { _id: currentCompanyId },
+            { fields: fields.searchCompany },
+        );
+        const comapanyMembers = currentCompany.members;
+        const name = currentCompany.name;
+        const memberIds = [];
+        for (const value of Object.values(comapanyMembers)) {
+            memberIds.push(value.userId);
+        }
+        const deps = currentCompany.deps || [];
+        const department = deps.map((depId) => {
+            const depMembers = comapanyMembers.filter(x => x.dep === depId.id);
+            const depMemberIds = [];
+            for (const value of Object.values(depMembers)) {
+                depMemberIds.push(value.userId);
+            }
+            const restDepMembersIds = depMemberIds.filter(x => !groupMemberIds.find(y => y === x));
+            return {
+                name: depId.name,
+                members: restDepMembersIds,
+            };
+        });
+        const restMemberIds = memberIds.filter(x => !groupMemberIds.find(y => y === x));
+        const team = [{
+            name,
+            members: restMemberIds,
+            department,
+        },
+        ];
+        return {
+            team,
+            groupMemberIds,
+            groupMembers,
+        };
+    }
     const restFriendIds = friendIds.filter(x => !groupMemberIds.find(y => y === x));
     const friends = [
         {

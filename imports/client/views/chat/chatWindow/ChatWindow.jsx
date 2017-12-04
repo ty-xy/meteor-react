@@ -351,6 +351,7 @@ class ChatWindow extends Component {
         const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : false;
         const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop : {};
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
+        const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
         return this.props.to ?
             <div className="ejianlian-chat-window">
                 {
@@ -506,6 +507,7 @@ class ChatWindow extends Component {
                                 avatar={groupAvatar}
                                 changeTo={this.props.changeTo}
                                 handleFriendIdInfo={this.handleFriendIdInfo}
+                                groupType={groupType}
                             />
                         </Modal>
 
