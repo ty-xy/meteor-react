@@ -32,24 +32,20 @@ class ProjectMembers extends Component {
             func();
         }
     }
-    showCreadite = (id, item, userId) => {
-        if (Meteor.userId() === userId) {
-            this.setState({
-                [`shownCreadite${id}`]: true,
-                changeMark: item,
-            });
-        }
+    showCreadite = (id, item) => {
+        this.setState({
+            [`shownCreadite${id}`]: true,
+            changeMark: item,
+        });
     }
     handleChangeTry=(name, e) => {
         const newState = {};
         newState[name] = e.target.value;
         this.setState(newState);
     }
-    handleRemove = (id, userId) => {
+    handleRemove = (id) => {
         // this.deleteActive(id);
-        if (Meteor.userId() === userId) {
-            feedback.dealDelete('提示', '确定要删除该评论么?', () => this.deleteActive(id));
-        }
+        feedback.dealDelete('提示', '确定要删除该评论么?', () => this.deleteActive(id));
     }
     deleteActive = (id) => {
         Meteor.call(
@@ -134,13 +130,18 @@ class ProjectMembers extends Component {
                             {!this.state[`shownCreadite${MarkValue._id}`] ?
                                 <div >
                                     <p>{MarkValue.content}</p>
-                                    <span>{format('yyyy-MM-dd', MarkValue.createTime)}</span>
-                                    <span>--</span>
-                                    <a onClick={() => this.showCreadite(MarkValue._id, MarkValue.content, MarkValue.userId)}>编辑</a>
-                                    <span>--</span>
-                                    <span onClick={() => this.handleRemove(MarkValue._id, MarkValue.userId)} >
-                                    删除
-                                    </span>
+                                    <div style={{ display: 'flex' }}>
+                                        <span>{format('yyyy-MM-dd', MarkValue.createTime)}</span>
+                                        {MarkValue.userId === Meteor.userId() ?
+                                            <div>
+                                                <span>--</span>
+                                                <a onClick={() => this.showCreadite(MarkValue._id, MarkValue.content)}>编辑</a>
+                                                <span>--</span>
+                                                <span onClick={() => this.handleRemove(MarkValue._id)} >
+                                            删除
+                                                </span>
+                                            </div> : null}
+                                    </div>
                                 </div>
                                 :
                                 <div
