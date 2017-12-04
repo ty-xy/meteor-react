@@ -63,7 +63,7 @@ class SelectBackendTeam extends Component {
             lineHeight: '30px',
         };
         return (
-            <div>
+            <div className="select-backend-team">
                 {
                     this.props.createdCompany[0] ?
                         <div>
@@ -94,6 +94,7 @@ class SelectBackendTeam extends Component {
                     onCancel={this.handleCancel}
                     wrapClassName="create-team-mask"
                     footer={null}
+                    width={300}
                 >
                     <CreateTeam
                         isShowAdd
