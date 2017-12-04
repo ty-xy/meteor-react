@@ -227,7 +227,7 @@ Meteor.methods({
                             oldgroup, item.userId,
                         );
                         Meteor.call(
-                            'addGroupMembers',
+                            'newMemberIds',
                             {
                                 groupId,
                                 newMembers: [item.userId],
@@ -288,7 +288,7 @@ Meteor.methods({
                         'addGroupMembers',
                         {
                             groupId: companyGroupId,
-                            newMembers: [userId],
+                            newMemberIds: [userId],
                         },
                     );
                     // 更新人员所在公司
@@ -343,7 +343,7 @@ Meteor.methods({
                 'addGroupMembers',
                 {
                     groupId,
-                    newMembers: [userId],
+                    newMemberIds: [userId],
                 },
             );
         } else {
