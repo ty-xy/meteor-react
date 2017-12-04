@@ -279,7 +279,7 @@ Meteor.methods({
                             'addGroupMembers',
                             {
                                 groupId: departmentGroupId,
-                                newMembers: [userId],
+                                newMemberIds: [userId],
                             },
                         );
                     }
