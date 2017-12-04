@@ -6,7 +6,7 @@ import format from 'date-format';
 import { Meteor } from 'meteor/meteor';
 import { userIdToInfo } from '../../../../../util/user';
 
-const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _id, createdAt = new Date(), allUsers }) => (
+const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _id, userId, createdAt = new Date(), allUsers, toMembers }) => (
     <Col className="e-mg-log-card">
         <div className="e-mg-log-card-header">
             <Col span={16}>
@@ -27,7 +27,7 @@ const CardLog = ({ edit, delLog, editLog, finish, plan, type, nickname, help, _i
                     <a href="" onClick={e => delLog(e, _id)}>删除</a>
                     <a href="" onClick={e => editLog(e, _id, type)} className="margin-left-10">修改</a>
                 </Col>)
-                    : (<Col span={12} className="right"><Link to={{ pathname: '/manage/logging/detail', state: { edit, delLog, editLog, finish, plan, type, nickname, help, _id } }}>查看详情</Link></Col>)
+                    : (<Col span={12} className="right"><Link to={{ pathname: '/manage/logging/detail', state: { edit, delLog, editLog, finish, plan, type, nickname, help, _id, toMembers, userId } }}>查看详情</Link></Col>)
             }
         </div>
     </Col>
@@ -43,8 +43,10 @@ CardLog.propTypes = {
     help: PropTypes.string,
     type: PropTypes.string,
     nickname: PropTypes.string,
+    userId: PropTypes.string,
     createdAt: PropTypes.object,
     allUsers: PropTypes.array,
+    toMembers: PropTypes.array,
 };
 
 export default CardLog;

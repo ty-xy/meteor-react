@@ -39,18 +39,7 @@ log.schema = new SimpleSchema({
         optional: true,
     },
     peo: {
-        type: [Object],
-        optional: true,
-    },
-    'peo.$.userId': {
-        type: String,
-    },
-    'peo.$.isRead': {
-        type: Boolean,
-        optional: true,
-    },
-    'peo.$.rejectLook': {
-        type: Boolean,
+        type: [String],
         optional: true,
     },
     group: {
@@ -58,6 +47,21 @@ log.schema = new SimpleSchema({
         optional: true,
     },
     cache: {
+        type: Boolean,
+        optional: true,
+    },
+    toMembers: {
+        type: [Object],
+        optional: true,
+    },
+    'toMembers.$.userId': {
+        type: String,
+    },
+    'toMembers.$.isRead': {
+        type: Boolean,
+        optional: true,
+    },
+    'toMembers.$.rejectRead': {
         type: Boolean,
         optional: true,
     },

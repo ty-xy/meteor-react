@@ -12,7 +12,7 @@ import SelectBackendTeam from '../../features/SelectBackendTeam';
 import feedback from '../../../util/feedback';
 import UserUtil from '../../../util/user';
 import Company from '../../../schema/company';
-import Log from '../../../schema/log';
+import Notice from '../../../schema/notice';
 import MyNotification from '../../components/Notification';
 
 
@@ -26,7 +26,7 @@ class Header extends Component {
     }
     static propTypes = {
         currentCompanyId: PropTypes.string,
-        logs: PropTypes.array,
+        notices: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
@@ -86,12 +86,12 @@ class Header extends Component {
     }
     render() {
         console.log('haeder', this.props);
-        const { logs } = this.props;
+        const { notices } = this.props;
         return (
             <div className="ejianlianHeader">
                 <div className="e-notification-wrap clearfix">
                     {
-                        logs.map(item => (<MyNotification key={item._id} {...item} {...this.props} {...this.context} />))
+                        notices.map(item => (<MyNotification key={item._id} {...item} {...this.props} {...this.context} />))
                     }
                 </div>
                 <div className="ejianlian-header-bar">
@@ -161,34 +161,19 @@ class Header extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('company');
-    Meteor.subscribe('log');
+    Meteor.subscribe('notices');
     Meteor.subscribe('users');
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
     const companys = Company.find().fetch();
-    let allusers = [];
     const userId = Meteor.userId();
-    let group = '';
-    const mainCompany = UserUtil.getMainCompany();
-    for (let i = 0; i < companys.length; i++) {
-        if (companys[i]._id === mainCompany) {
-            allusers = companys[i].members;
-            break;
-        }
-    }
-    let logs = [];
-    for (let i = 0; i < allusers.length; i++) {
-        if (allusers[i].userId === userId) {
-            group = allusers[i].dep;
-            break;
-        }
-    }
-    const search = { 'peo.userId': userId };
-    const searchGroup = { group };
-    logs = Log.find({ $or: [{ ...search }, { ...searchGroup }] }).fetch();
-    logs = logs.filter(item => (item.userId !== Meteor.userId()));
+    let notices = [];
+    notices = Notice.find({ 'toMembers.userId': userId }).fetch();
+
+    notices = notices.filter(item => (item.from !== userId));
     return {
         currentCompanyId,
-        logs,
+        notices,
+        logs: [],
         companys,
         allUsers: Meteor.users.find().fetch(),
     };

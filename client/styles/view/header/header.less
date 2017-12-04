@@ -147,14 +147,18 @@
 .e-notification-wrap{
     position: fixed;
     top: 90px;
-    width: 400px;
+    width: 410px;
     right: 0px;
-    z-index: 9998;
+    z-index: 198;
+    bottom: 80px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-left: 25px;
 }
 .e-notification{
     position: absolute;
     transform: translateX(500px);
-    z-index: 9999;
+    z-index: 199;
     margin-bottom: 20px;
     padding: 15px 30px;
     background: #fff;
@@ -191,5 +195,5 @@
     transform: translateX(0px);
     transition: all 0.3s ease-out;
     right: 15px;
-    z-index: 9991;
+    z-index: 201;
 }

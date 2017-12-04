@@ -3,6 +3,7 @@ import { Row, Col } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { userIdToInfo } from '../../../../util/user';
+import Notice from '../../../../schema/notice';
 
 
 class Detail extends (PureComponent || Component) {
@@ -11,9 +12,21 @@ class Detail extends (PureComponent || Component) {
         this.props.history.push('/chat');
     }
     render() {
-        const { nickname, plan, finish, _id, help, num, peos } = this.props.location.state;
-        const { allUsers } = this.props;
-        // console.log('location', this.props);
+        const { nickname, plan, finish, _id, help } = this.props.location.state;
+        const { allUsers, toMembers } = this.props;
+        let num = 0;
+        let members = [];
+        toMembers.forEach((item) => {
+            if (item._id === _id) {
+                members = toMembers;
+            }
+        });
+        for (let i = 0; i < members.length; i++) {
+            if (members[i].isRead) {
+                num++;
+            }
+        }
+        console.log('location', this.props, members, Meteor.userId());
         return (
             <Row className="e-mg-log-details">
                 <Col span={24} className="e-mg-log-details-header">
@@ -38,15 +51,20 @@ class Detail extends (PureComponent || Component) {
                     </Col>
                     <Col span={24} className="e-mg-log-details-footer">
                         <p>{num || 0}人已读</p>
-                        <Col span={24} data-peos={peos}>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="36" />
-                                <p>王晓儿</p>
-                            </span>
-                            <span>
-                                <img src="http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg" width="36px" />
-                                <p>王晓儿</p>
-                            </span>
+                        <Col span={24} data-peos={members}>
+                            {
+                                members.map((item) => {
+                                    if (item.isRead) {
+                                        return (
+                                            <span key={item.userId}>
+                                                <img src={userIdToInfo.getAvatar(allUsers, item.userId) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="36" />
+                                                <p>{userIdToInfo.getName(allUsers, item.userId)}</p>
+                                            </span>
+                                        );
+                                    }
+                                    return null;
+                                })
+                            }
                         </Col>
                     </Col>
                 </Col>
@@ -65,8 +83,10 @@ class Detail extends (PureComponent || Component) {
 // };
 export default withTracker(() => {
     Meteor.subscribe('users');
+    Meteor.subscribe('notice');
     return {
         allUsers: Meteor.users.find().fetch(),
+        toMembers: Notice.find().fetch(),
     };
 })(Detail);
 
