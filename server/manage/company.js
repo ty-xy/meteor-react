@@ -203,7 +203,8 @@ Meteor.methods({
         }
     },
     // 批量设置部门人员
-    batchSetDep({ companyId, _users, groupId, oldgroup }) {
+    batchSetDep({ companyId, _users, groupId, oldgroup, oldDep }) {
+        console.log('oldDep', oldDep);
         _users.forEach((item) => {
             Company.update(
                 { _id: companyId, 'members.userId': item.userId },
@@ -221,6 +222,20 @@ Meteor.methods({
                             {
                                 groupId,
                                 newMembers: [item.userId],
+                            },
+                        );
+                        // 删除旧部中的userid
+                        Company.update(
+                            { _id: companyId, 'deps.id': oldDep },
+                            {
+                                $pull: { 'deps.$.members': item.userId },
+                            },
+                        );
+                        // 更新修改后的部门的 userID
+                        Company.update(
+                            { _id: companyId, 'deps.id': item.dep },
+                            {
+                                $push: { 'deps.$.members': item.userId },
                             },
                         );
                     }
