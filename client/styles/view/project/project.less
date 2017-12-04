@@ -24,16 +24,16 @@
          flex: 1;
          .ant-tabs:not(.ant-tabs-vertical) > .ant-tabs-content {
             width: 100%;
-            overflow: auto;
+            // overflow: auto;
             height:100%;
          }
         .ant-tabs:not(.ant-tabs-vertical) > .ant-tabs-content > .ant-tabs-tabpane {
             -webkit-flex-shrink: 0;
             -ms-flex-negative: 0;
             flex-shrink: 0;
-            /* width: 100%; */
-            width: auto;
-            /* overflow: auto; */
+            width: 100%; 
+            // width: auto;
+            overflow: scroll; 
             -webkit-transition: opacity .45s;
             transition: opacity .45s;
             opacity: 1;
