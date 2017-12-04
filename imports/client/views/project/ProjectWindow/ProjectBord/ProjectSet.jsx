@@ -11,6 +11,7 @@ import feedback from '../../../../../util/feedback';
 import MyIcon from '../../../../components/Icon';
 import ImgUp from './component/imgUp';
 import Project from '../../../../../../imports/schema/project';
+import ProjectMember from '../../../../../../imports/schema/projectmember';
 
 // import GroupSelect from '../../../manage/audit/component/GroupSelect';
 
@@ -21,8 +22,10 @@ class ProjectSet extends Component {
     static propTypes = {
         projects: PropTypes.arrayOf(PropTypes.object),
         setId: PropTypes.string,
+        Id: PropTypes.string,
         ProjectId: PropTypes.string,
         click: PropTypes.any,
+        projectmember: PropTypes.string,
     }
     constructor(props) {
         super(props);
@@ -95,6 +98,14 @@ class ProjectSet extends Component {
                 console.log(error);
             },
         );
+    }
+    outProjectmember = () => {
+        Meteor.call('outProjectmember', this.props.Id, (err) => {
+            console.log(err);
+        });
+    }
+    handlBackProject =() => {
+        feedback.dealDelete('提示', '确定要退出这个项目吗?', this.outProjectmember);
     }
     // 改变属性
     handleChangeT = (value) => {
@@ -171,38 +182,49 @@ class ProjectSet extends Component {
                         id="name-second"
                     />
                 </div>
-                <div className="common-type">
-                    <label htmlFor="name-third" >项目归属：</label>
-                    <Select
-                        style={{ width: '292px' }}
-                        onChange={this.handleChangeT}
-                        id="name-third"
-                        value={`${this.state.affiliation}` || '1'}
-                    >
-                        <Option value="1">私有
-                            <p>仅项目成员可看和编辑</p>
-                        </Option>
-                        <Option value="2">企业
-                            <p>企业内所有成员看见，仅项目成员可编辑</p>
-                        </Option>
-                    </Select>
-                </div>
+                {this.props.projectmember && this.props.projectmember === '1' ?
+                    <div>
+                        <div className="common-type">
+                            <label htmlFor="name-third" >项目归属：</label>
+                            <Select
+                                style={{ width: '292px' }}
+                                onChange={this.handleChangeT}
+                                id="name-third"
+                                value={`${this.state.affiliation}` || '1'}
+                            >
+                                <Option value="1">私有
+                                    <p>仅项目成员可看和编辑</p>
+                                </Option>
+                                <Option value="2">企业
+                                    <p>企业内所有成员看见，仅项目成员可编辑</p>
+                                </Option>
+                            </Select>
+                        </div>
 
-                <div className="ejianlian-add-projectf">
-                    <div className="add-button add-button-save" onClick={this.handleChange}>
+                        <div className="ejianlian-add-projectf">
+                            <div className="add-button add-button-save" onClick={this.handleChange}>
                                       保存修改
-                    </div>
-                    <Link to="/project">
-                        <div className="add-button add-button-delete" onClick={this.handleProject}>
+                            </div>
+                            <Link to="/project">
+                                <div className="add-button add-button-delete" onClick={this.handleProject}>
                                        删除该项目
+                                </div>
+                            </Link>
+                            <Link to="/project">
+                                <div className="add-button add-button-back" onClick={this.handleOverProject}>
+                                    <MyIcon icon="icon-guidangxiangmu icon-guidang" />归档该项目
+                                </div>
+                            </Link>
                         </div>
-                    </Link>
+                    </div> :
                     <Link to="/project">
-                        <div className="add-button add-button-back" onClick={this.handleOverProject}>
-                            <MyIcon icon="icon-guidangxiangmu icon-guidang" />归档该项目
+                        <div className="ejianlian-add-projectf">
+                            <div className="add-button add-button-save" onClick={this.handlBackProject}>
+                                      退出改项目
+                            </div>
                         </div>
                     </Link>
-                </div>
+                }
             </div>
         </div>);
     }
@@ -210,10 +232,18 @@ class ProjectSet extends Component {
 
 export default withTracker((o) => {
     Meteor.subscribe('project');
+    Meteor.subscribe('projectMember');
     const projects = Project.find({ _id: o.setId }).fetch();
-    console.log(projects);
+    const projectmember = ProjectMember.findOne({ $and: [{ projectId: o.ProjectId }, { member: Meteor.userId() }] });
+    console.log(projectmember);
+    // if()
+    // projectmember = projectmember.memberType;
+    // const Id = ProjectMember.findOne({ $and: [{ projectId: o.ProjectId }, { member: Meteor.userId() }] });
+    console.log(projects, o, projectmember === '1', projectmember);
     return {
         projects,
+        projectmember: projectmember ? projectmember.memberType : '',
+        Id: projectmember ? projectmember._id : '',
         // taskId
     };
 })(ProjectSet);
