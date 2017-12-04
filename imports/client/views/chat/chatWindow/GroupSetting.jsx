@@ -7,19 +7,20 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
-// import AddGroup from '../chatSideLeft/addChat/AddGroup';
-// import SeleteAdmin from '../../../features/SeleteAdmin';
 import UserUtil from '../../../../util/user';
 import feedback from '../../../../util/feedback';
 import SelectOne from '../../../features/SelectOne';
+import SelectMembers from '../../../features/SelectMembers';
+import Company from '../../../../schema/company';
+import fields from '../../../../util/fields';
 
 @pureRender
 class GroupSetting extends Component {
     static propTypes = {
         showGroupSet: PropTypes.func,
         groupName: PropTypes.string,
-        members: PropTypes.array,
-        friendIds: PropTypes.array,
+        groupMembers: PropTypes.array,
+        groupMemberIds: PropTypes.array,
         groupId: PropTypes.string,
         admin: PropTypes.string,
         isDisturb: PropTypes.bool,
@@ -27,12 +28,12 @@ class GroupSetting extends Component {
         avatar: PropTypes.string,
         changeTo: PropTypes.func,
         handleFriendIdInfo: PropTypes.func,
-
-    };
+        team: PropTypes.array,
+    }
     constructor(...args) {
         super(...args);
         this.state = {
-            isShowAddGroup: false,
+            isShowAddMembers: false,
             isShowSeleteAdmin: false,
             restUserIds: [],
             teamMemberIds: [],
@@ -40,28 +41,24 @@ class GroupSetting extends Component {
         };
     }
     setNotDisturb = (checked) => {
-        console.log('设置了消息免打扰', checked);
+        // console.log('设置了消息免打扰', checked);
         Meteor.call('changeGroupDisturb', this.props.groupId, checked, (err) => {
             feedback.dealError(err);
         });
     }
     setGroupFirst = (checked) => {
-        console.log('设置了当前群聊置顶', checked);
+        // console.log('设置了当前群聊置顶', checked);
         Meteor.call('changeGroupStickTop', this.props.groupId, checked, (err) => {
             feedback.dealError(err);
         });
     }
     // 选择新的群主
     selectAdmin = () => {
-        const { members } = this.props;
-        const restMembers = members.filter(x => x._id !== Meteor.userId());
-        const memberIds = [];
-        for (const value of Object.values(restMembers)) {
-            memberIds.push(value._id);
-        }
+        const { groupMemberIds } = this.props;
+        const teamMemberIds = groupMemberIds.filter(x => x !== Meteor.userId());
         this.setState({
             isShowSeleteAdmin: true,
-            teamMemberIds: memberIds,
+            teamMemberIds,
         });
     }
     closeSeleteAdmin = () => {
@@ -82,13 +79,30 @@ class GroupSetting extends Component {
         });
     }
     // 邀请更多好友
-    handleAddGroup = () => {
-        const { friendIds = [], members } = this.props;
-        const restUserIds = friendIds.filter(x => !members.find(y => y === x));
+    handleAddMembers = () => {
         this.setState({
-            isShowAddGroup: !this.state.isShowAddGroup,
-            restUserIds,
+            isShowAddMembers: true,
         });
+    }
+    closeAddMembers = () => {
+        this.setState({
+            isShowAddMembers: false,
+        });
+    }
+    // 添加更多群成员
+    addMembers = (newMemberIds) => {
+        Meteor.call('addGroupMembers',
+            {
+                groupId: this.props.groupId,
+                newMemberIds,
+            },
+            (err) => {
+                if (err) {
+                    console.error(err.reason);
+                }
+                feedback.dealSuccess('添加成功');
+            },
+        );
     }
     deleteMember = (memberId, content) => {
         Meteor.call('deleteMember', this.props.groupId, memberId, (err) => {
@@ -199,12 +213,12 @@ class GroupSetting extends Component {
 
                     </div>
                     <div className="group-members">
-                        <p>群成员{this.props.members.length}人</p>
+                        <p>群成员{this.props.groupMembers.length}人</p>
                         <p className="all">全部成员</p>
                     </div>
                     <div className="members-avatar">
                         {
-                            this.props.members.map((item, i) =>
+                            this.props.groupMembers.map((item, i) =>
                                 (item.profile ?
                                     <div className="avatar-wrap" key={i}>
                                         <div onClick={this.props.handleFriendIdInfo.bind(this, item._id)}>
@@ -225,7 +239,7 @@ class GroupSetting extends Component {
                             )
                         }
 
-                        <div className="avatar avatar-add" onClick={this.handleAddGroup}>+</div>
+                        <div className="avatar avatar-add" onClick={this.handleAddMembers}>+</div>
                     </div>
                     <div className="group-members">
                         <p>消息免打扰</p>
@@ -258,15 +272,19 @@ class GroupSetting extends Component {
                         }
                     </div>
                 </div>
-                {/* <AddGroup
-                    handleAddGroup={this.handleAddGroup}
-                    isShowAddGroup={this.state.isShowAddGroup}
-                    users={this.state.restUsers}
-                    type="addMember"
-                    groupId={this.props.groupId}
-                    isEditGroupName={this.props.members.length < 4}
-                    members={this.props.members}
-                /> */}
+                <Modal
+                    title="添加人员"
+                    visible={this.state.isShowAddMembers}
+                    onCancel={this.closeAddMembers}
+                    width={430}
+                    wrapClassName="create-team-mask"
+                    footer={null}
+                >
+                    <SelectMembers
+                        confirmSelected={this.addMembers}
+                        team={this.props.team}
+                    />
+                </Modal>
                 <Modal
                     title="管理员设置"
                     visible={this.state.isShowSeleteAdmin}
@@ -285,11 +303,70 @@ class GroupSetting extends Component {
     }
 }
 
-export default withTracker(() => {
+export default withTracker(({ groupMemberIds }) => {
+    Meteor.subscribe('company');
     Meteor.subscribe('users');
     const friendIds = UserUtil.getFriends();
+    const groupMembers = groupMemberIds.map(_id =>
+        Meteor.users.findOne({ _id }),
+    );
+    const restFriendIds = friendIds.filter(x => !groupMemberIds.find(y => y === x));
+    const friends = [
+        {
+            name: 'e建联好友',
+            members: restFriendIds,
+            department: [], // 不存在的时候需要传一个空数组
+        },
+    ];
+    const companyListIds = UserUtil.getCompanyList();
+    const companyList = companyListIds.map(companyId => Company.findOne(
+        { _id: companyId },
+        { fields: fields.searchCompany },
+    ));
+    if (companyList[0]) {
+        const teams = companyList.map((company) => {
+            const comapanyMembers = company.members;
+            const name = company.name;
+            const memberIds = [];
+            for (const value of Object.values(comapanyMembers)) {
+                memberIds.push(value.userId);
+            }
+            const deps = company.deps || [];
+            const department = deps.map((depId) => {
+                const depMembers = comapanyMembers.filter(x => x.dep === depId.id);
+                const depMemberIds = [];
+                for (const value of Object.values(depMembers)) {
+                    depMemberIds.push(value.userId);
+                }
+                const restDepMembersIds = depMemberIds.filter(x => !groupMemberIds.find(y => y === x));
+                return {
+                    name: depId.name,
+                    members: restDepMembersIds,
+                };
+            });
+            /*
+            1,不存在部门
+            2,存在部门但是部门里面没有人
+            */
+            const restMemberIds = memberIds.filter(x => !groupMemberIds.find(y => y === x));
+            return {
+                name,
+                members: restMemberIds,
+                department,
+            };
+        });
+        const team = friends.concat(teams);
+        return {
+            team,
+            groupMemberIds,
+            groupMembers,
+        };
+    }
+    const team = friends;
     return {
-        friendIds,
+        team,
+        groupMemberIds,
+        groupMembers,
     };
 })(GroupSetting);
 

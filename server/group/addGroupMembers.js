@@ -3,20 +3,20 @@ import { Meteor } from 'meteor/meteor';
 import Group from '../../imports/schema/group';
 
 Meteor.methods({
-    addGroupMembers({ groupId, newMembers }) {
-        newMembers.map(user =>
+    addGroupMembers({ groupId, newMemberIds }) {
+        newMemberIds.map(userId =>
             Group.update(
                 { _id: groupId },
                 {
                     $push: {
-                        members: user,
+                        members: userId,
                     },
                 },
             ),
         );
-        newMembers.map((user =>
+        newMemberIds.map((userId =>
             Meteor.users.update(
-                { _id: user },
+                { _id: userId },
                 {
                     $push: {
                         'profile.groups': groupId,

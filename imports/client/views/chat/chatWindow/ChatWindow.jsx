@@ -344,7 +344,7 @@ class ChatWindow extends Component {
         const { name = '' } = profile;
         const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
-        const members = this.props.chatGroup ? this.props.chatGroup.members : [];
+        const memberIds = this.props.chatGroup ? this.props.chatGroup.members : [];
         const admin = this.props.chatGroup ? this.props.chatGroup.admin._id : '';
         const notice = this.props.chatGroup ? this.props.chatGroup.notice : '';
         const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
@@ -490,7 +490,7 @@ class ChatWindow extends Component {
                         <GroupSetting
                             showGroupSet={this.showGroupSet}
                             groupName={groupName}
-                            members={members}
+                            groupMemberIds={memberIds}
                             groupId={groupId}
                             admin={admin}
                             isDisturb={isDisturb}
@@ -536,7 +536,7 @@ export default withTracker(({ to, userId }) => {
     Meteor.subscribe('group');
     Meteor.subscribe('files');
     const chatGroup = Group.findOne({ _id: to });
-    PopulateUtil.group(chatGroup);
+    // PopulateUtil.group(chatGroup);
     const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
     if (files[0]) {
         files.forEach((d, i, data) => {

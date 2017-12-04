@@ -102,7 +102,6 @@ class AddChat extends Component {
                     <SelectMembers
                         confirmSelected={this.handleCreateGroup}
                         team={this.props.team}
-
                     />
                 </Modal>
 
