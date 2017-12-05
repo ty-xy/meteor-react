@@ -85,7 +85,7 @@ class Header extends Component {
         });
     }
     render() {
-        console.log('haeder', this.props.notices);
+        // console.log('haeder', this.props.notices);
         const { notices } = this.props;
         return (
             <div className="ejianlianHeader">

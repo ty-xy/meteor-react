@@ -272,18 +272,18 @@ class Organization extends PureComponent {
         const _users = [];
         let oldgroup = '';
         let groupId = '';
-        company.deps.forEach((item) => {
-            if (item.id === users[0].dep) {
-                oldgroup = item.groupId;
-            }
-            if (item.id === fields.dep) {
-                groupId = item.groupId;
-            }
-        });
         users.forEach((item) => {
             if (selectedRowKeys.indexOf(item.userId) > -1) {
                 item.dep = fields.dep || '';
                 _users.push(item);
+            }
+        });
+        company.deps.forEach((item) => {
+            if (item.id === depActive) {
+                oldgroup = item.groupId;
+            }
+            if (item.id === fields.dep) {
+                groupId = item.groupId;
             }
         });
         const _this = this;
@@ -504,7 +504,7 @@ class Organization extends PureComponent {
                         {this.depList(deps, this.props.users)}
                     </Col>
                     <Col span={18} className="e-mg-organization-card e-mg-organization-right clearfix">
-                        <RightHeader name="中亿集团有限公司" handleSetting={this.handleSetting} {...this.state} />
+                        <RightHeader name={this.props.company.name} handleSetting={this.handleSetting} {...this.state} />
                         {this.handleBtns()}
                         {this.tableList(data)}
                         {this.addMembersModel()}

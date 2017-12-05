@@ -28,6 +28,7 @@ Meteor.methods({
                 userCompany: UserUtil.getMainCompany(),
                 toMembers,
                 noticeType: type,
+                logId: _id,
             };
             Meteor.call(
                 'createGlobalNotice',

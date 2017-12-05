@@ -223,15 +223,17 @@ Meteor.methods({
                 },
                 (err, res) => {
                     if (res && item.dep) {
+                        console.log('deleteMember', oldgroup, item.userId);
                         Meteor.call(
                             'deleteMember',
-                            oldgroup, item.userId,
+                            oldgroup,
+                            item.userId,
                         );
                         Meteor.call(
-                            'newMemberIds',
+                            'addGroupMembers',
                             {
                                 groupId,
-                                newMembers: [item.userId],
+                                newMemberIds: [item.userId],
                             },
                         );
                         // 删除旧部中的userid
