@@ -30,6 +30,7 @@ class GroupSetting extends Component {
         changeTo: PropTypes.func,
         handleFriendIdInfo: PropTypes.func,
         team: PropTypes.array,
+        handleToggle: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -217,7 +218,11 @@ class GroupSetting extends Component {
                             this.props.groupMembers.map((item, i) =>
                                 (item.profile ?
                                     <div className="avatar-wrap" key={i}>
-                                        <div onClick={this.props.handleFriendIdInfo.bind(this, item._id)}>
+                                        <div onClick={() => {
+                                            this.props.handleFriendIdInfo(item._id);
+                                            this.props.handleToggle(item._id);
+                                        }}
+                                        >
                                             <Avatar name={item.profile.name} avatarColor={item.profile.avatarColor} avatar={item.profile.avatar} />
                                         </div>
 
