@@ -34,6 +34,7 @@ class ProjectItemDetail extends Component {
         cId: PropTypes.array,
         files: PropTypes.string,
         projectId: PropTypes.string,
+        memberId: PropTypes.string,
     }
     constructor(...props) {
         super(...props);
@@ -341,7 +342,6 @@ class ProjectItemDetail extends Component {
     // 复制卡片
     handleCopy = (v) => {
         console.log(v);
-
         const task = this.props.tasks[0];
         console.log(task);
         Meteor.call(
@@ -349,6 +349,7 @@ class ProjectItemDetail extends Component {
             { name: task.name,
                 taskBoardId: task.taskBoardId,
                 textId: this.state.uuids,
+                memberId: Meteor.userId(),
             },
             (err) => {
                 console.log(err);
@@ -553,9 +554,10 @@ class ProjectItemDetail extends Component {
                 <Menu.Item key="1">
                     <p onClick={this.handleTitle}>编辑名称</p>
                 </Menu.Item>
-                <Menu.Item key="0">
-                    <p onClick={this.props.delete}>删除</p>
-                </Menu.Item>
+                {Meteor.userId() === this.props.memberId ?
+                    <Menu.Item key="0">
+                        <p onClick={this.props.delete}>删除</p>
+                    </Menu.Item> : null}
                 <Menu.Divider />
                 <Menu.Item key="10">
                     <p onClick={this.handleCopys}>复制卡片</p>
@@ -911,6 +913,7 @@ export default withTracker((Id) => {
         const length = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: id.listId }, { checkble: 1 }] }).fetch();
         return length;
     });
+    console.log(Id);
     const iddd = idd.map(element => (element.length));
     const cId = checkId.map(element => (element.length));
     return {

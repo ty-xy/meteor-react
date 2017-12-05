@@ -1,55 +1,42 @@
 @import '../../styles/view/util/util.less';
 .select-one {
     overflow: hidden;
-    .select-group-list {
-        width: 410px;
-        height: 345px;
-        border: 1px solid #ddd;
-        margin: 20px auto;
-        border-radius: 4px;
-        padding: 0;
-        overflow: scroll;
-        .group-user-item {
-            display: flex;
-            height: 60px;
-            line-height: 60px;
-        }
-        .checkbox {
-            width: 60px;
-            text-align: center;
-            & > .icon {
-                font-size: 26px;
-                color: #7ED321;
-            }
-        }
-        .user-info {
-            border-bottom: 1px solid #ddd;
-            width: 100%;
-            display: flex;
-            & > .avatar {
-                height: 40px;
-                line-height: 40px;
-                width: 40px;
-                float: left;
-                margin-top: 10px;
-                margin-right: 10px;
-                font-size: 13px;
-            }
-        }
-        .user-info-last {
-            border: 0;
+    width: 100%;
+    .ant-radio-wrapper {
+        margin-bottom: 10px;
+    }
+    .ant-radio + span {
+        display: inline-block;
+    }
+    .user-info {
+        width: 100%;
+        display: inline-block;
+        & > .avatar {
+            height: 40px;
+            line-height: 40px;
+            width: 40px;
+            float: left;
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 13px;
         }
     }
-    .confirm-btn {
-        background: #29B6F6;
-        border-radius: 3px;
-        width: 100px;
-        height: 46px;
-        text-align: center;
-        line-height: 46px;
-        margin-top: 30px;
-        margin-right: 20px;
-        float: right;
-        color: #fff;
+    .ant-radio-group {
+        width: 100%;
+    }
+    .btn-wrap {
+        text-align: right;
+        width: 100%;
+    }
+    .ant-btn-primary {
+        background-color: @mainColor !important;
+        // float: right;
+        border-color: @mainColor !important;
+    }
+    .ant-radio-inner {
+        border-color: @greenColor !important;
+    }
+    .ant-radio-inner:after {
+        background-color: @greenColor !important;
     }
 }

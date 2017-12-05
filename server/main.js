@@ -22,6 +22,7 @@ import Leave from '../imports/schema/leave';
 import Business from '../imports/schema/business';
 import CheckBill from '../imports/schema/checkBill';
 import CommonAudit from '../imports/schema/commonAudit';
+import ProjectMember from '../imports/schema/projectmember';
 
 import TaskList from '../imports/schema/taskList';
 import File from '../imports/schema/file';
@@ -93,6 +94,7 @@ Meteor.publish('project', () => Project.find({}));
 Meteor.publish('taskboard', () => TaskBoard.find({}));
 Meteor.publish('tasklist', () => TaskList.find({}));
 Meteor.publish('task', () => Task.find({}));
+Meteor.publish('projectmember', () => ProjectMember.find({}));
 
 Meteor.publish('company', () => Company.find({}));
 

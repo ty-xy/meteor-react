@@ -5,12 +5,12 @@ import qiniu from '../../imports/util/qiniu';
 
 Meteor.methods({
     // 修改群主
-    changeAdmin(groupId, admin) {
+    changeAdmin(groupId, newAdminId) {
         Group.update(
             { _id: groupId },
             {
                 $set: {
-                    admin,
+                    admin: newAdminId,
                 },
             },
         );

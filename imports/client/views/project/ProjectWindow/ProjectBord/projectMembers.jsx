@@ -10,7 +10,8 @@ import Icon from '../../../../components/Icon';
 import UserUtil from '../../../../../util/user';
 import Company from '../../../../../schema/company';
 import feedback from '../../../../../util/feedback';
-import Project from '../../../../../../imports/schema/project';
+// import Project from '../../../../../../imports/schema/project';
+import ProjectMember from '../../../../../../imports/schema/projectmember';
 
 const Search = Input.Search;
 
@@ -21,6 +22,7 @@ class projectMembers extends Component {
         members: PropTypes.array,
         projectId: PropTypes.string,
         team: PropTypes.array,
+        projectType: PropTypes.string,
         avatarColor: PropTypes.string,
         avatar: PropTypes.string,
         allMembers: PropTypes.arrayOf(PropTypes.object),
@@ -53,14 +55,10 @@ class projectMembers extends Component {
         feedback.dealDelete('提示', '确定要删除该成员吗?', () => this.deleteMember(id));
     }
     deleteMember = (id) => {
-        const members = this.props.members;
-        const index = members.indexOf(id);
-        members.splice(index, 1);
-        Meteor.call(
-            'changeMembers', this.props.projectId, members, (err) => {
-                console.log(err);
-            },
-        );
+        const members = ProjectMember.findOne({ $and: [{ projectId: this.props.projectId }, { member: id }] });
+        Meteor.call('outProjectmember', members._id, (err) => {
+            console.log(err);
+        });
     }
     confirmSelected = (members) => {
         // console.log('选择加入的人员', members);
@@ -79,6 +77,23 @@ class projectMembers extends Component {
                 console.log(err);
             },
         );
+        if (members.length > 0) {
+            members.forEach((value) => {
+                if (value) {
+                    Meteor.call(
+                        'createProjectmember',
+                        {
+                            projectId: this.props.projectId,
+                            member: value,
+                            memberType: '2',
+                        },
+                        (err) => {
+                            console.log(err);
+                        },
+                    );
+                }
+            });
+        }
     }
     render() {
         return (
@@ -119,20 +134,21 @@ class projectMembers extends Component {
                                     />
                                 </p>
                                 <p>{user.profile.name}</p>
-                                <div
-                                    style={{ marginLeft: '210px', lineHeight: '70px' }}
-                                >
-                                    {/* <Dropdown overlay={menu} trigger={['click']}> */}
-                                    <Icon icon="icon-gengduo" onClick={() => this.handleShowList(user._id)} />
-                                    {this.state[`showList${user._id}`] ?
-                                        <div className="members-delete-total">
-                                            <div className="triangle-up" />
-                                            <div className="members-delete" onClick={() => this.handleRemove(user._id)}>
+                                {this.props.projectType === '1' ?
+                                    <div
+                                        style={{ marginLeft: '210px', lineHeight: '70px' }}
+                                    >
+                                        {/* <Dropdown overlay={menu} trigger={['click']}> */}
+                                        <Icon icon="icon-gengduo" onClick={() => this.handleShowList(user._id)} />
+                                        {this.state[`showList${user._id}`] ?
+                                            <div className="members-delete-total">
+                                                <div className="triangle-up" />
+                                                <div className="members-delete" onClick={() => this.handleRemove(user._id)}>
                                             移除项目成员
-                                            </div>
-                                        </div> : null}
-                                    {/* </Dropdown > */}
-                                </div>
+                                                </div>
+                                            </div> : null}
+                                        {/* </Dropdown > */}
+                                    </div> : null}
                             </li>))
                         : null
                     }
@@ -167,8 +183,20 @@ export default withTracker((member) => {
     Meteor.subscribe('users');
     Meteor.subscribe('company');
     Meteor.subscribe('project');
+    Meteor.subscribe('projectmember');
+
     const projectId = member.projectId;
-    const projectBuilder = Project.findOne({ uprojectId: projectId }).creater;
+    const projectMember = ProjectMember.find({ $and: [{ projectId }, { memberType: '2' }] }).fetch();
+    const projectMemberList = [];
+    if (projectMember !== '') {
+        projectMember.map((item) => {
+            projectMemberList.push(item.member);
+            return projectMemberList;
+        });
+    }
+    const projectBuilder = ProjectMember.findOne({ $and: [{ projectId }, { memberType: '1' }] });
+    const exsitMember = ProjectMember.findOne({ $and: [{ projectId }, { member: Meteor.userId() }] });
+    const projectType = exsitMember ? exsitMember.memberType : '';
     const friendIds = UserUtil.getFriends();
     const companyIds = UserUtil.getCompanyList();
     const companyList = companyIds.map(_id =>
@@ -192,14 +220,15 @@ export default withTracker((member) => {
         department: [], // 不存在的时候需要传一个空数组
     });
     const team = teamValueL;
-    const { profile = {} } = Meteor.users.findOne({ _id: projectBuilder }) || {};
+    const { profile = {} } = Meteor.users.findOne({ _id: projectBuilder.member }) || {};
     const { name = '', avatarColor = '', avatar = '' } = profile;
-    console.log(profile);
+    console.log(profile, projectMember, projectBuilder, projectMemberList, projectType);
     return {
         name,
         team,
         avatarColor,
         avatar,
-        allMembers: Meteor.users.find({ _id: { $in: member.member } }).fetch(),
+        projectType,
+        allMembers: Meteor.users.find({ _id: { $in: projectMemberList } }).fetch(),
     };
 })(projectMembers);

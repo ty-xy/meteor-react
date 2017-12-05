@@ -130,13 +130,18 @@ class ProjectMembers extends Component {
                             {!this.state[`shownCreadite${MarkValue._id}`] ?
                                 <div >
                                     <p>{MarkValue.content}</p>
-                                    <span>{format('yyyy-MM-dd', MarkValue.createTime)}</span>
-                                    <span>--</span>
-                                    <a onClick={() => this.showCreadite(MarkValue._id, MarkValue.content)}>编辑</a>
-                                    <span>--</span>
-                                    <span onClick={() => this.handleRemove(MarkValue._id)} >
-                                    删除
-                                    </span>
+                                    <div style={{ display: 'flex' }}>
+                                        <span>{format('yyyy-MM-dd', MarkValue.createTime)}</span>
+                                        {MarkValue.userId === Meteor.userId() ?
+                                            <div>
+                                                <span>--</span>
+                                                <a onClick={() => this.showCreadite(MarkValue._id, MarkValue.content)}>编辑</a>
+                                                <span>--</span>
+                                                <span onClick={() => this.handleRemove(MarkValue._id)} >
+                                            删除
+                                                </span>
+                                            </div> : null}
+                                    </div>
                                 </div>
                                 :
                                 <div

@@ -203,7 +203,7 @@ Meteor.users.update(
 ```
 [mongodb的操作方法](https://docs.mongodb.com/manual/reference/operator/update/pull/)
 
-## SelectMembers组件接收的props及具体含义(目前还不支持单选)
+## SelectMembers组件接收的props及具体含义(多选)
 
 ```js
  team: PropTypes.array.isRequired, // 需要选择的人员
@@ -241,4 +241,12 @@ const team = [
     },
 ];
 ```
-> 可参考在CreateTeam组件中的使用
+> 可参考在`addChat`组件中发起群聊选择人员的使用
+
+## SelectOne组件接收的props及具体含义(单选)
+
+```js
+ teamMemberIds: PropTypes.array.isRequired, // 需要选择的人员
+ confirmChange: PropTypes.func.isRequired, // 选择完成后的函数,函数的参数为选中的人员ID
+```
+> 可参考在`GroupSetting`组件中更换群主的使用

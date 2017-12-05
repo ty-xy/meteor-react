@@ -102,7 +102,7 @@ class AddGroup extends Component {
             'addGroupMembers',
             {
                 groupId: this.props.groupId,
-                newMembers: selectedUsers.map(user => user._id),
+                newMemberIds: selectedUsers.map(user => user._id),
             },
             (err) => {
                 feedback.dealError(err);

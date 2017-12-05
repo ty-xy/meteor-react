@@ -110,11 +110,56 @@ class ProjectAdd extends Component {
             selectMembers: selectMembers.map(_id => Meteor.users.findOne({ _id })),
             showSelect: false,
         });
+        // if (members.length !== 0) {
+
+        // }
+        // members.forEach((value) => {
+        //     if (value) {
+        //         Meteor.call(
+        //             'createProjectmember',
+        //             {
+        //                 projectId: this.state.uuids,
+        //                 member: value,
+        //                 memberType: '1',
+        //             },
+        //             (err) => {
+        //                 console.log(err);
+        //             },
+        //         );
+        //     }
+        // });
     }
     createProject = () => {
         const _this = this;
-        console.log('createProject', _this);
-
+        console.log(this.state.selectMembersId);
+        Meteor.call(
+            'createProjectmember',
+            {
+                projectId: this.state.uuids,
+                member: Meteor.userId(),
+                memberType: '1',
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
+        if (this.state.selectMembersId && this.state.selectMembersId.length > 0) {
+            this.state.selectMembersId.forEach((value) => {
+                if (value) {
+                    Meteor.call(
+                        'createProjectmember',
+                        {
+                            projectId: this.state.uuids,
+                            member: value,
+                            memberType: '2',
+                        },
+                        (err) => {
+                            console.log(err);
+                        },
+                    );
+                }
+            });
+        }
         Meteor.call(
             'createGroup1',
             {
