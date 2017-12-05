@@ -4,6 +4,8 @@ import leave from '../../imports/schema/leave';
 import business from '../../imports/schema/business';
 import checkBill from '../../imports/schema/checkBill';
 import commonaudit from '../../imports/schema/commonAudit';
+import UserUtil from '../../imports/util/user';
+
 
 Meteor.methods({
     createLeave({ approvers, copy, daynum, endAt, startAt, img, reason, type, status, comments, userId, company }) {
@@ -32,8 +34,29 @@ Meteor.methods({
             company,
         };
         leave.schema.validate(newLeave);
-        leave.insert(newLeave);
+        const _id = leave.insert(newLeave);
         // 通知下一级审批人
+        if (_id) {
+            const res = {
+                from: Meteor.userId(),
+                userCompany: UserUtil.getMainCompany(),
+                toMembers: [approvers[0]],
+                noticeType: type,
+                logId: _id,
+            };
+            Meteor.call(
+                'createGlobalNotice',
+                (res),
+                (err, noticeId) => {
+                    if (noticeId) {
+                        leave.update(
+                            { _id },
+                            { $set: { noticeId } },
+                        );
+                    }
+                },
+            );
+        }
     },
     // 处理审批
     updateAudit({ content, userId, _id, type, isAudit, transit }) {
@@ -125,11 +148,21 @@ Meteor.methods({
                         createdAt: new Date(),
                     });
                     // 通知下一个人
+                    const res = {
+                        from: Meteor.userId(),
+                        userCompany: UserUtil.getMainCompany(),
+                        toMembers: [approvers[i]],
+                        noticeType: type,
+                        logId: _id,
+                    };
+                    Meteor.call(
+                        'createGlobalNotice',
+                        (res),
+                    );
                     break;
                 }
             }
             if (allApp === 0) {
-                console.log('审核通过了');
                 status = '同意';
             }
             break;

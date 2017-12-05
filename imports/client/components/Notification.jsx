@@ -32,12 +32,18 @@ class Notification extends Component {
     gotoLook = (e, _id, arg) => {
         e.preventDefault();
         const { nickname, plan, finish, help, num, toMembers, logId } = arg;
+        console.log('arg', arg);
+        const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
         Meteor.call(
             'readLog',
             (_id),
             (err) => {
                 if (!err) {
-                    this.context.history.push({ pathname: `/manage/logging/detail/${logId}`, state: { nickname, plan, finish, _id, help, num, toMembers } });
+                    if (types.indexOf(arg.noticeType) > -1) {
+                        this.context.history.push('/manage/audit/approvaling');
+                    } else {
+                        this.context.history.push({ pathname: `/manage/logging/detail/${logId}`, state: { nickname, plan, finish, _id, help, num, toMembers } });
+                    }
                 }
             },
         );
