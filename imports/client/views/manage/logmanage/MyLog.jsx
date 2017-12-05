@@ -108,7 +108,6 @@ class MyLog extends PureComponent {
         const { logs } = this.state;
         const data = logs || AllLogs;
         const TYPE = types.map(item => ({ id: item, name: item }));
-        console.log('mylog', Meteor.userId(), UserUtil.getMainCompany(), this.props.allUsers);
         return (
             <Row gutter={25} className="e-mg-log-filter" type="flex" justify="start">
                 <Col span={24} className="margin-bottom-20">

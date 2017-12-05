@@ -74,6 +74,7 @@ Manage.contextTypes = {
 
 export default withTracker(() => {
     Meteor.subscribe('company');
+    Meteor.subscribe('notice');
     return {
         users: Meteor.user() || {},
         allCompanys: Company.find().fetch(),
