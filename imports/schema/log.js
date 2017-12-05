@@ -39,18 +39,7 @@ log.schema = new SimpleSchema({
         optional: true,
     },
     peo: {
-        type: [Object],
-        optional: true,
-    },
-    'peo.$.userId': {
-        type: String,
-    },
-    'peo.$.isRead': {
-        type: Boolean,
-        optional: true,
-    },
-    'peo.$.rejectLook': {
-        type: Boolean,
+        type: [String],
         optional: true,
     },
     group: {
@@ -61,6 +50,12 @@ log.schema = new SimpleSchema({
         type: Boolean,
         optional: true,
     },
+    // 全局通知
+    noticeId: {
+        type: String,
+        optional: true,
+    },
+
 });
 
 export default log;
