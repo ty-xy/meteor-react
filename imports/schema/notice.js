@@ -16,8 +16,13 @@ Notice.schema = new SimpleSchema({
         regEx: SimpleSchema.RegEx.Id,
         optional: true,
     },
-    // 发送的类型
+    // 日志请假等发送类型
     noticeType: {
+        type: String,
+        optional: true,
+    },
+    // 日志id
+    logId: {
         type: String,
         optional: true,
     },
