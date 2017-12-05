@@ -1,26 +1,68 @@
 const SMSClient = require('@alicloud/sms-sdk');
 // ACCESS_KEY_ID/ACCESS_KEY_SECRET 根据实际申请的账号信息进行替换
-const accessKeyId = 'yourAccessKeyId';
-const secretAccessKey = 'yourAccessKeySecret';
+const accessKeyId = 'LTAITn4gR4pbJCfu';
+const secretAccessKey = 'mBNkjfQ3CHhkde68GP7w3zj7SFOPa5';
 // 初始化sms_client
 const smsClient = new SMSClient({
     accessKeyId,
     secretAccessKey,
 });
+
+function createRandomCode() {
+    return Math.round(Math.random() * 10000);
+}
 // 发送短信
-smsClient.sendSMS({
-    PhoneNumbers: '1500000000',
-    SignName: '云通信产品',
-    TemplateCode: 'SMS_000000',
-    TemplateParam: '{"code":"12345","product":"云通信"}',
-}).then((res) => {
-    const {
-        Code,
-    } = res;
-    if (Code === 'OK') {
-        // 处理返回参数
-        console.log(res);
-    }
-}, (err) => {
-    console.log(err);
-});
+function sendSMS(PhoneNumbers, TemplateCode) {
+    const currentSMSCode = createRandomCode();
+    return new Promise((resolve, reject) => {
+        smsClient.sendSMS(
+            {
+                PhoneNumbers,
+                SignName: '知工网络科技',
+                TemplateCode,
+                TemplateParam: `{"code":${currentSMSCode},"product":"知工网络科技"}`,
+            },
+        ).then((res) => {
+            const { Code } = res;
+            if (Code === 'OK') {
+            // 处理返回参数
+                console.log(res);
+                resolve(res);
+            }
+        }, (err) => {
+            console.log(err);
+            reject(err);
+        });
+    });
+}
+// 查询短信
+function queryDetail(PhoneNumber, BizId, SendDate) {
+    return new Promise((resolve, reject) => {
+        smsClient.queryDetail({
+            BizId,
+            PhoneNumber,
+            SendDate,
+            PageSize: '10',
+            CurrentPage: '1',
+        }).then((res) => {
+            const {
+                Code,
+                SmsSendDetailDTOs,
+            } = res;
+            if (Code === 'OK') {
+                // 处理发送详情内容
+                console.log(SmsSendDetailDTOs);
+                resolve(SmsSendDetailDTOs);
+            }
+        }, (err) => {
+            // 处理错误
+            console.log(err);
+            reject(err);
+        });
+    });
+}
+
+module.exports = {
+    sendSMS,
+    queryDetail,
+};
