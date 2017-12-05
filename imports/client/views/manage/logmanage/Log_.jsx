@@ -7,7 +7,8 @@ import Inbox from './Look';
 import Outbox from './MyLog';
 import Detail from './Detail';
 
-const urls = ['/manage/logging', '/manage/logging/week', '/manage/logging/day', '/manage/logging/month', '/manage/logging/sale'];
+const writes = ['/manage/logging', '/manage/logging/week', '/manage/logging/day', '/manage/logging/month', '/manage/logging/sale'];
+const urls = ['/manage/logging', '/manage/logging/outbox', '/manage/logging/inbox', '/manage/logging/week', '/manage/logging/day', '/manage/logging/month', '/manage/logging/sale'];
 
 class Log extends Component {
     static propTypes = {
@@ -18,12 +19,12 @@ class Log extends Component {
         this.state = {};
     }
     // Tab不切换
-    tabs = ({ pathname }) => (pathname === '/manage/logging/detail' ? null :
+    tabs = ({ pathname }) => (urls.indexOf(pathname) > -1 ?
         (<Row className="e-mg-notice-tab">
-            <Link to="/manage/logging" className={(urls.indexOf(pathname) >= 0) ? 'e-mg-notice-tab-a-active' : ''}>写日报</Link>
+            <Link to="/manage/logging" className={(writes.indexOf(pathname) >= 0) ? 'e-mg-notice-tab-a-active' : ''}>写日报</Link>
             <Link to="/manage/logging/outbox" className={pathname === '/manage/logging/outbox' ? 'e-mg-notice-tab-a-active' : ''}>我发出的</Link>
             <Link to="/manage/logging/inbox" className={pathname === '/manage/logging/inbox' ? 'e-mg-notice-tab-a-active' : ''}>我收到的</Link>
-        </Row>)
+        </Row>) : null
     )
     // 路由
     Routes = () => (
@@ -31,7 +32,7 @@ class Log extends Component {
             <Route extra path="/manage/logging" component={Write} />
             <Route strict path="/manage/logging/outbox" component={Outbox} />
             <Route strict path="/manage/logging/inbox" component={Inbox} />
-            <Route strict path="/manage/logging/detail" component={Detail} />
+            <Route strict path="/manage/logging/detail/:id" component={Detail} />
         </div>
     )
     render() {

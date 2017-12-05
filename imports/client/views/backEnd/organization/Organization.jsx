@@ -221,7 +221,6 @@ class Organization extends PureComponent {
                 oldDep = item.id;
             }
         });
-        console.log('13614376223', { ...res, companyId, groupId, companyGroupId }, '-=', Meteor.user());
         if (editMemberInfo) {
             Meteor.call(
                 'editMember',
@@ -232,7 +231,7 @@ class Organization extends PureComponent {
                         return false;
                     }
                     feedback.successToastFb('编辑成功', () => {
-                        _this.setState({ modelMember: false, editMember: {}, editMemberInfo: {} });
+                        _this.setState({ modelMember: false, editMember: {}, editMemberInfo: {}, selectedRowKeys: [] });
                     });
                 },
             );
@@ -255,7 +254,7 @@ class Organization extends PureComponent {
                             return false;
                         }
                         feedback.successToastFb('添加成功', () => {
-                            _this.setState({ modelMember: false });
+                            _this.setState({ modelMember: false, selectedRowKeys: [] });
                         });
                     },
                 );
@@ -267,37 +266,38 @@ class Organization extends PureComponent {
     }
     // 批量修改提交
     handleSubmitBatchDep = (fields) => {
-        const { selectedRowKeys } = this.state;
+        const { selectedRowKeys, depActive } = this.state;
         const { users, company } = this.props;
         const companyId = UserUtil.getCurrentBackendCompany();
         const _users = [];
         let oldgroup = '';
         let groupId = '';
+        users.forEach((item) => {
+            if (selectedRowKeys.indexOf(item.userId) > -1) {
+                item.dep = fields.dep || '';
+                _users.push(item);
+            }
+        });
         company.deps.forEach((item) => {
-            if (item.id === users[0].dep) {
+            if (item.id === depActive) {
                 oldgroup = item.groupId;
             }
             if (item.id === fields.dep) {
                 groupId = item.groupId;
             }
         });
-        users.forEach((item) => {
-            if (selectedRowKeys.indexOf(item.userId) > -1) {
-                item.dep = fields.dep;
-                _users.push(item);
-            }
-        });
         const _this = this;
+        console.log('batchSetDep', companyId, _users, groupId, oldgroup, depActive);
         Meteor.call(
             'batchSetDep',
-            { companyId, _users, groupId, oldgroup },
+            { companyId, _users, groupId, oldgroup, oldDep: depActive },
             (err) => {
                 if (err) {
                     feedback.dealError('批量设置失败');
                     return false;
                 }
                 feedback.successToastFb('批量设置成功', () => {
-                    _this.setState({ modelBatchDep: false });
+                    _this.setState({ modelBatchDep: false, selectedRowKeys: [], selectedRows: [] });
                 });
             },
         );
@@ -389,6 +389,7 @@ class Organization extends PureComponent {
     tableList = (users) => {
         const { allUsers } = this.props;
         const { deps = [] } = this.props.company;
+        const { selectedRowKeys } = this.state;
         const columns = [
             {
                 title: '姓名',
@@ -426,8 +427,9 @@ class Organization extends PureComponent {
             },
         ];
         const rowSelection = {
-            onChange: (selectedRowKeys, selectedRows) => {
-                this.setState({ selectedRows, selectedRowKeys });
+            selectedRowKeys,
+            onChange: (selectedRowKey, selectedRows) => {
+                this.setState({ selectedRows, selectedRowKeys: selectedRowKey });
             },
         };
         return (
@@ -493,7 +495,7 @@ class Organization extends PureComponent {
         } else {
             data = users.filter(item => (!item.dep));
         }
-        console.log('render', this.props, this.state);
+        console.log('render', this.state);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">
@@ -502,7 +504,7 @@ class Organization extends PureComponent {
                         {this.depList(deps, this.props.users)}
                     </Col>
                     <Col span={18} className="e-mg-organization-card e-mg-organization-right clearfix">
-                        <RightHeader name="中亿集团有限公司" handleSetting={this.handleSetting} {...this.state} />
+                        <RightHeader name={this.props.company.name} handleSetting={this.handleSetting} {...this.state} />
                         {this.handleBtns()}
                         {this.tableList(data)}
                         {this.addMembersModel()}

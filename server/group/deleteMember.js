@@ -3,6 +3,7 @@ import Group from '../../imports/schema/group';
 
 Meteor.methods({
     deleteMember(groupId, memberId) {
+        console.log('object', groupId, memberId);
         Group.update(
             { _id: groupId },
             {

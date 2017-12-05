@@ -58,7 +58,7 @@ class Chat extends Component {
     }
     componentWillMount() {
         const { history } = this.props;
-        console.log('chat', history);
+        // console.log('chat', 'componentWillMount');
         if (history.location.search && history.location.state === 'invite') {
             const search = location.search.slice(1).split('&');
             const searchs = {};
@@ -151,20 +151,27 @@ class Chat extends Component {
             </InviteModel>
         );
     }
-    renderTeamMembers = (teamId, currentDeps, deps) => {
-        console.log(currentDeps);
-        return <TeamMembers teamId={teamId} depsId={currentDeps} deps={deps} />;
-    }
+    renderTeamMembers = (teamId, currentDeps, deps) => (<TeamMembers
+        teamId={teamId}
+        depsId={currentDeps}
+        deps={deps}
+        changeTo={this.changeTo}
+        handleToggle={this.handleToggle}
+    />)
     renderChatType = (chatType) => {
         // console.log(chatType);
         switch (chatType) {
         case 'message':
             // console.log('aaa', this);
-            return <ChatWindow to={this.state.to} userId={this.state.userId} changeTo={this.changeTo} handleToggle={this.handleToggle} />;
+            return (<ChatWindow
+                to={this.state.to}
+                userId={this.state.userId}
+                changeTo={this.changeTo}
+                handleToggle={this.handleToggle}
+            />);
         case 'newFriend':
             return <NewFriend />;
         case 'teamMembers':
-            console.log(this.state.currentDeps);
             return this.renderTeamMembers(this.state.currentKey, this.state.currentDeps, this.state.deps);
         default:
             return <EmptyChat />;

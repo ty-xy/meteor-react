@@ -82,8 +82,9 @@ class Day extends (React.PureComponent || React.Component) {
                     peoRes.push(item);
                 }
             });
-            const peoObj = peos.map(userId => ({ userId }));
-            this.tabSubmit({ ...fields, peo: peoObj, type: logType, img, file, group });
+            const toMembers = peos.map(userId => ({ userId }));
+            // 创建日志
+            this.tabSubmit({ ...fields, peo, type: logType, img, file, group, toMembers });
         });
     }
     // 写日志
@@ -116,7 +117,10 @@ class Day extends (React.PureComponent || React.Component) {
                     if (_err) {
                         feedback.dealError(_err);
                     } else {
-                        feedback.successToastFb('发布成功', () => { _this.setState({ cache: false }); _this.props.history.push({ pathname: '/manage/logging/outbox' }); });
+                        feedback.successToastFb('发布成功', () => {
+                            _this.setState({ cache: false });
+                            _this.props.history.push({ pathname: '/manage/logging/outbox' });
+                        });
                     }
                 },
             );
@@ -253,7 +257,6 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
-        console.log('day', this.props);
         return (
             <Form onSubmit={this.formSubmit} id="formDiv" ref={i => this.$formDiv = i}>
                 <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} {...this.props} />

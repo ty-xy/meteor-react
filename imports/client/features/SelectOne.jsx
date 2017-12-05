@@ -3,21 +3,29 @@ import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
+import { Radio, Button } from 'antd';
 
-import Icon from '../components/Icon';
 import Avatar from '../components/Avatar';
 
+const RadioGroup = Radio.Group;
 @pureRender
 class SelectOne extends Component {
     static propTypes = {
-        users: PropTypes.array,
+        teamMembers: PropTypes.array,
         confirmChange: PropTypes.func,
     };
     constructor(...args) {
         super(...args);
         this.state = {
             selected: {},
+            value: '',
         };
+    }
+    onChange = (e) => {
+        console.log('radio checked', e.target.value);
+        this.setState({
+            value: e.target.value,
+        });
     }
     // 点击按钮,选择或取消选择
     handleToggle = (value) => {
@@ -28,47 +36,51 @@ class SelectOne extends Component {
         });
     }
     render() {
+        const radioStyle = {
+            display: 'block',
+            height: '30px',
+            lineHeight: '30px',
+        };
         return (
             <div className="select-one">
-                <ul className="select-group-list">
-                    {
-                        this.props.users.map((item, index) => (
-                            item && item.profile ?
-                                <li
-                                    key={index}
-                                    className="group-user-item"
-                                    onClick={this.handleToggle.bind(this, item._id)}
-                                >
-                                    <p className="checkbox">
-                                        {
-                                            this.state.selected && this.state.selected[item._id] ?
-                                                <Icon icon="icon-chuangyikongjianICON_fuzhi- icon" />
-                                                :
-                                                <Icon icon="icon-weixuanzhong icon" />
+                {
+                    this.props.teamMembers[0] ?
+                        <div>
+                            <RadioGroup onChange={this.onChange} value={this.state.value}>
+                                {
+                                    this.props.teamMembers.map(item =>
+                                        (<Radio
+                                            style={radioStyle}
+                                            value={item._id}
+                                            key={item._id}
+                                        >
+                                            <p className="user-info">
+                                                <Avatar avatarColor={item.profile.avatarColor} name={item.profile.name} avatar={item.profile.avatar} />
+                                                {item.profile.name}
+                                            </p>
+                                        </Radio>),
+                                    )
+                                }
+                                <br />
+                                <div className="btn-wrap">
+                                    <Button type="primary" onClick={() => this.props.confirmChange(this.state.value)}>确定</Button>
+                                </div>
 
-                                        }
-                                    </p>
-                                    <p className={this.props.users.length - 1 !== index ? 'user-info' : 'user-info user-info-last'}>
-                                        <Avatar avatarColor={item.profile.avatarColor} name={item.profile.name} avatar={item.profile.avatar} />
-                                        {item.profile.name}
-                                    </p>
-                                </li>
-                                :
-                                <div key={index}>暂无好友</div>
-                        ))
-                    }
-                </ul>
-                <button onClick={this.props.confirmChange.bind(this, Object.keys(this.state.selected)[0])} className="confirm-btn">确定</button>
+                            </RadioGroup>
+                        </div>
+                        :
+                        <div>暂无好友</div>
+                }
             </div>
         );
     }
 }
 
-export default withTracker(({ friendIds }) => {
-    const users = friendIds.map(_id =>
+export default withTracker(({ teamMemberIds }) => {
+    const teamMembers = teamMemberIds.map(_id =>
         Meteor.users.findOne({ _id }),
     );
     return {
-        users,
+        teamMembers,
     };
 })(SelectOne);

@@ -130,3 +130,45 @@
  zg xym    Merge branch 'feature/management_gwt' into 'master'
  zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
  zg-xym    build results on build 22
+----------------------------------
+
+2017-12-04 14:51:20,   build 24
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    fix:评论如果不是创建者，显示评论和删除
+ zg xy    fix:卡片复制，谁复制显示谁的头像
+ zg xy    fix:卡片谁创建谁才有删除权限
+ zg xy    fix:编辑评论最新的评论在开头
+ zg xy    feat:卡片上的评论的编辑和删除功能只有创建者可以使用
+ zg xy    feat:只有创建者才有删除权限
+ zg xy    feat:只有项目传创建者可以删除，归档修改项目，成员只可以推出改项目的功能
+ zg-xym    build results on build 23
+----------------------------------
+
+2017-12-04 18:24:56,   build 25
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    Merge branch 'master' into wyx-chat
+ 王亚星    fix: 修复团队部门群聊无法显示bug
+ 王亚星    refactor: 修改addGroupMembers方法中参数命名
+ 王亚星    feat: 团队群选择添加人员只能添加公司内部人员
+ 王亚星    feat: 点击组织架构人员头像显示个人信息
+ 王亚星    refactor: 重构群设置弹窗
+ 王亚星    refactor: 重构添加好友功能
+ zg-xym    build results on build 24
+----------------------------------
+
+2017-12-05 10:00:43,   build 26
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    merge: 解决冲突
+ zg-xym    build results on build 25
+----------------------------------
+
+2017-12-05 15:30:03,   build 27
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    fix: 修改众多bug
+ zg-xym    build results on build 26

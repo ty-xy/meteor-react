@@ -10,12 +10,46 @@ Notice.schema = new SimpleSchema({
         type: String,
         regEx: SimpleSchema.RegEx.Id,
     },
+    // 发送人所在团队
+    userCompany: {
+        type: String,
+        regEx: SimpleSchema.RegEx.Id,
+        optional: true,
+    },
+    // 日志请假等发送类型
+    noticeType: {
+        type: String,
+        optional: true,
+    },
+    // 日志id
+    logId: {
+        type: String,
+        optional: true,
+    },
+    // 发送日志等的通知对象
+    toMembers: {
+        type: [Object],
+        optional: true,
+    },
+    'toMembers.$.userId': {
+        type: String,
+    },
+    'toMembers.$.isRead': {
+        type: Boolean,
+        optional: true,
+    },
+    'toMembers.$.rejectRead': {
+        type: Boolean,
+        optional: true,
+    },
     to: {
         type: String,
         regEx: /.+/,
+        optional: true,
     },
     noticeContent: {
         type: String,
+        optional: true,
     },
     // 通知类型: 0,用户需要确认(加好友验证)1,用户不需要确认(添加好友,删除好友,加入群,被踢了)
     // verifyFriend: 加好友验证; workNotice: 工作通知; projectNotice: 项目通知

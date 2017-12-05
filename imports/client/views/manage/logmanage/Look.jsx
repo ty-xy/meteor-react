@@ -124,7 +124,7 @@ export default withTracker(() => {
             break;
         }
     }
-    const search = { 'peo.userId': userId, company: mainCompany };
+    const search = { peo: userId, company: mainCompany };
     const searchGroup = { group, company: mainCompany };
     AllLogs = Log.find({ $or: [{ ...search }, { ...searchGroup }] }).fetch();
     AllLogs = AllLogs.filter(item => (item.userId !== Meteor.userId()));
