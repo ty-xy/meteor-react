@@ -157,3 +157,10 @@
  王亚星    refactor: 重构群设置弹窗
  王亚星    refactor: 重构添加好友功能
  zg-xym    build results on build 24
+----------------------------------
+
+2017-12-05 10:00:43,   build 26
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    merge: 解决冲突
+ zg-xym    build results on build 25
