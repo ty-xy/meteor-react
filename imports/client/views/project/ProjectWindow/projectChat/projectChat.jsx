@@ -23,6 +23,11 @@ class projectChat extends Component {
         pId: PropTypes.string,
 
     }
+    componentDidUpdate() {
+        if (this.props.pId) {
+            this.$message.addEventListener('keydown', this.handleSendMessage);
+        }
+    }
     handleChatUser = (fromId, toId, groupId) => {
         if (fromId === Meteor.userId()) {
             return;
