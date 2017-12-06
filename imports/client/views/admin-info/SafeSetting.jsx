@@ -2,20 +2,27 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
+import { Form, Input, Row, Col, Button } from 'antd';
+import { Accounts } from 'meteor/accounts-base';
 
 import Icon from '../../components/Icon';
 import feedback from '../../../util/feedback';
+import regexp from '../../../util/regexp';
 
-
+const FormItem = Form.Item;
 class SafeSetting extends Component {
     static propTypes = {
         user: PropTypes.object,
+        form: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
         this.state = {
             isShowEditAccount: false,
             isShowEditAccountStep2: false,
+            countDownNum: 60,
+            sendBtnStatus: 0,
+            BizId: '',
         };
     }
     handleEditAccount = () => {
@@ -42,26 +49,125 @@ class SafeSetting extends Component {
             isShowEditAccountStep2: false,
         });
     }
+    sendMessage = async () => {
+        const form = this.props.form;
+        const username = form.getFieldValue('username');
+        if (!username) {
+            return feedback.dealWarning('请输入正确的手机号');
+        }
+
+        this.setState({
+            sendBtnStatus: 1,
+        });
+        let countDownNum = this.state.countDownNum;
+        const countDownDate = setInterval(() => {
+            countDownNum--;
+            this.setState({
+                countDownNum,
+            });
+            if (countDownNum <= 0) {
+                this.setState({
+                    sendBtnStatus: 2,
+                    countDownNum: 60,
+                });
+                clearInterval(countDownDate);
+            }
+        }, 1000);
+        const result = await Meteor.callPromise('sendRegisterSMS', username);
+        this.setState({
+            BizId: result.BizId,
+        });
+    }
+    hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
+    handleRegister = async (e) => {
+        e.preventDefault();
+        const form = this.props.form;
+        if (this.state.countDownNum <= 0 && this.state.countDownNum >= 60) {
+            return feedback.dealWarning('请重新接受验证码');
+        }
+        form.validateFieldsAndScroll(async (err, values) => {
+            if (!err) {
+                console.log('Received values of form: ', values);
+            }
+            if (!values.verificationCode) {
+                return feedback.dealWarning('请输入验证码');
+            }
+            const queryResult = await Meteor.callPromise('queryDetail', values.username, this.state.BizId, Number(values.verificationCode));
+            if (!queryResult) {
+                return feedback.dealWarning('请输入正确的验证码');
+            }
+            Meteor.call('changeUserName', values.username, (error) => {
+                if (error) {
+                    return feedback.dealError(error);
+                }
+                feedback.dealSuccess('用户名修改成功');
+            });
+            this.setState({
+                isShowEditAccount: false,
+                isShowEditAccountStep2: false,
+            });
+        });
+    }
     saveChangePassword = () => {
+        console.log(111, Accounts.changePassword);
         if (this.$newPassword.value && this.$newRePassword.value && this.$oldPassword.value) {
             if (this.$newPassword.value !== this.$newRePassword.value) {
-                feedback.dealWarning('两次输入的密码不一致');
-                return;
+                return feedback.dealWarning('两次输入的密码不一致');
             }
-            Meteor.call('changeUserPassword', this.$oldPassword.value, this.$newPassword.value, (err) => {
+            Accounts.changePassword(this.$oldPassword.value, this.$newPassword.value, (err) => {
                 if (err) {
-                    feedback.dealError(err);
-                    return;
+                    return feedback.dealError(err);
                 }
-
                 feedback.dealSuccess('密码修改成功');
             });
+            // Meteor.call('changeUserPassword', this.$oldPassword.value, this.$newPassword.value, (err) => {
+            //     if (err) {
+            //         feedback.dealError(err);
+            //         return;
+            //     }
+
+            //     feedback.dealSuccess('密码修改成功');
+            // });
         } else {
             feedback.dealWarning('请输入密码');
         }
     }
+    // 验证输入的是否为初始密码
+    handleNext = () => {
+        const form = this.props.form;
+        form.validateFieldsAndScroll(async (err, values) => {
+            console.log(2222, values);
+        });
+    }
     render() {
         const { username } = this.props.user;
+        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+        const userNameError = isFieldTouched('username') && getFieldError('username');
+        const verificationCodeError = isFieldTouched('verificationCode') && getFieldError('verificationCode');
+        const passwordError = isFieldTouched('password') && getFieldError('password');
+
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 8 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 16 },
+            },
+        };
+        const tailFormItemLayout = {
+            wrapperCol: {
+                xs: {
+                    span: 24,
+                    offset: 0,
+                },
+                sm: {
+                    span: 16,
+                    offset: 8,
+                },
+            },
+        };
         return (
             <div className="safe-setting">
                 <div className="login-account">
@@ -121,10 +227,33 @@ class SafeSetting extends Component {
                         <div className="edit-step-tip">
                             <img src="/editAccount1.png" alt="" />
                         </div>
-                        <div>
+                        <Form onSubmit={this.handleNext} style={{ width: '85%' }}>
+                            <FormItem
+                                validateStatus={passwordError ? 'error' : ''}
+                                help={passwordError || ''}
+                                label="登录密码"
+                            >
+                                {getFieldDecorator('password', {
+                                    rules: [{
+                                        required: true,
+                                        pattern: regexp.passwordRe,
+                                        message: '请输入正确的密码!',
+                                        whitespace: true,
+                                    }],
+                                }, {
+                                    validator: this.checkConfirm,
+                                })(
+                                    <Input type="password" placeholder="请输入初始登录密码" />,
+                                )}
+                            </FormItem>
+                            <FormItem {...tailFormItemLayout}>
+                                <Button disabled={this.hasErrors(getFieldsError())} type="primary" htmlType="submit" className="register-btn">下一步</Button>
+                            </FormItem>
+                        </Form>
+                        {/* <div>
                             <input type="password" placeholder="请输入登录密码" className="input-password" />
                         </div>
-                        <div className="next-btn" onClick={this.handleShowEditAccountStep2}>下一步</div>
+                        <div className="next-btn" onClick={this.handleShowEditAccountStep2}>下一步</div> */}
                     </div>
                 </div>
                 <div className="container-wrap" style={{ display: this.state.isShowEditAccountStep2 ? 'block' : 'none' }} >
@@ -136,14 +265,65 @@ class SafeSetting extends Component {
                         <div className="edit-step-tip">
                             <img src="/editAccount2.png" alt="" />
                         </div>
-                        <div>
-                            <input type="number" placeholder="请输入手机号" className="input-password" ref={i => this.$newUserName = i} />
-                        </div>
-                        <div className="code-container">
-                            <input type="number" placeholder="请您输入验证码" className="code" />
-                            <p>获取验证码</p>
-                        </div>
-                        <div className="next-btn" onClick={this.saveChangeUserName}>完成</div>
+                        <Form onSubmit={this.handleRegister} style={{ width: '85%' }}>
+                            <FormItem
+                                {...formItemLayout}
+                                label="手机号"
+                                validateStatus={userNameError ? 'error' : ''}
+                                help={userNameError || ''}
+                            >
+                                {getFieldDecorator('username', {
+                                    rules: [{
+                                        required: true,
+                                        pattern: regexp.phoneRe,
+                                        message: '请输入正确的手机号!',
+                                    }],
+                                })(
+                                    <Input placeholder="请输入手机号" />,
+                                )}
+                            </FormItem>
+
+                            <FormItem
+                                {...formItemLayout}
+                                label="验证码"
+                                validateStatus={verificationCodeError ? 'error' : ''}
+                                help={verificationCodeError || ''}
+                            >
+                                <Row gutter={8}>
+                                    <Col span={12}>
+                                        {getFieldDecorator('verificationCode', {
+                                            rules: [{ required: true, message: '请输入正确的短信验证码' }],
+                                        })(
+                                            <Input placeholder="短信验证码" />,
+                                        )}
+                                    </Col>
+                                    <Col span={12}>
+                                        {
+                                            this.state.sendBtnStatus === 0 ?
+                                                <Button className="obtainCode" onClick={this.sendMessage}>获取验证码</Button>
+                                                :
+                                                null
+                                        }
+                                        {
+                                            this.state.sendBtnStatus === 1 ?
+                                                <Button className="countDownBtn" >剩余{this.state.countDownNum}秒</Button>
+                                                :
+                                                null
+                                        }
+                                        {
+                                            this.state.sendBtnStatus === 2 ?
+                                                <Button className="obtainCode" onClick={this.sendMessage}>重新发送</Button>
+                                                :
+                                                null
+                                        }
+                                    </Col>
+                                </Row>
+                            </FormItem>
+
+                            <FormItem {...tailFormItemLayout} className="text-line">
+                                <Button disabled={this.hasErrors(getFieldsError())} type="primary" htmlType="submit" className="register-btn">完成</Button>
+                            </FormItem>
+                        </Form>
                     </div>
                 </div>
             </div>
@@ -152,6 +332,6 @@ class SafeSetting extends Component {
 }
 
 
-export default withTracker(() => ({
+export default Form.create()(withTracker(() => ({
     user: Meteor.user() || {},
-}))(SafeSetting);
+}))(SafeSetting));

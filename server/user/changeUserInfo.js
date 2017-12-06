@@ -31,7 +31,8 @@ Meteor.methods({
     },
     // 修改密码(需要输入原密码的那种)
     changeUserPassword(oldPassword, newPassword) {
-        // console.log(111, Accounts);
+        // console.log(Accounts.changePassword);
+        // 后端拿不到该方法,所以在前端调用
         Accounts.changePassword(oldPassword, newPassword, (err) => {
             console.error(err);
         });
