@@ -9,7 +9,7 @@ import Icon from '../../../components/Icon';
 import ProjectBordAdd from './ProjectBord/ProjectBordAdd';
 import ProjectLender from './ProjectBord/projectLender';
 import ProjectFile from './ProjectFile/projectFile';
-import ProjectChat from './ProjectBord/projectChat';
+import ProjectChat from './projectChat/projectChat';
 import ProjectAction from './ProjectBord/projectAction';
 import Board from './ProjectBord/Board';
 import Project from '../../../../../imports/schema/project';
@@ -21,6 +21,7 @@ const TabPane = Tabs.TabPane;
 class ProjectWindow extends Component {
     static propTypes = {
         projectd: PropTypes.object,
+        // project: PropTypes.object,
         projectL: PropTypes.arrayOf(PropTypes.object),
         //  projectd: PropTypes.arrayOf(PropTypes.object),
     }
@@ -126,7 +127,7 @@ class ProjectWindow extends Component {
                             <ProjectFile pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="群聊" key="4">
-                            <ProjectChat />
+                            <ProjectChat pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="动态" key="5">
                             <ProjectAction />

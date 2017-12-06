@@ -119,6 +119,7 @@ class Chat extends Component {
                 feedback.dealError(err);
             });
         }
+        console.log(to);
         this.handleToggle(userId);
         this.setState({ to, userId, chatType });
     }

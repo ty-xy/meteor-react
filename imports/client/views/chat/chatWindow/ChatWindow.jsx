@@ -552,6 +552,7 @@ export default withTracker(({ to, userId }) => {
     Meteor.subscribe('group');
     Meteor.subscribe('files');
     const chatGroup = Group.findOne({ _id: to });
+    console.log(to, userId, chatGroup);
     // PopulateUtil.group(chatGroup);
     const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
     if (files[0]) {
@@ -568,6 +569,7 @@ export default withTracker(({ to, userId }) => {
     }
 
     const messages = Message.find({ to }).fetch();
+    console.log(messages);
     messages.forEach((d, i, data) => {
         d.showYearMonth = false;
         if (i) {
