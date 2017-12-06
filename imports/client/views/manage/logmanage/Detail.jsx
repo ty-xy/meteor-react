@@ -5,6 +5,9 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { userIdToInfo } from '../../../../util/user';
 import Notice from '../../../../schema/notice';
 import Log from '../../../../schema/log';
+import File from '../../../../schema/file';
+
+import ImageViewer from '../../../features/ImageViewer';
 
 
 class Detail extends (PureComponent || Component) {
@@ -27,6 +30,11 @@ class Detail extends (PureComponent || Component) {
         e.preventDefault();
         this.props.history.goBack();
     }
+    closeImageViewer = (index, bool) => {
+        this.setState({
+            [`showImgViewer${index}`]: bool,
+        });
+    }
     render() {
         const { id } = this.props.match.params || {};
         let logInfo = {};
@@ -38,7 +46,7 @@ class Detail extends (PureComponent || Component) {
                 logInfo = item;
             }
         });
-        const { nickname, finish, plan, help, _id, noticeId } = logInfo;
+        const { nickname, finish, plan, help, _id, noticeId, img = [], file = [] } = logInfo;
         if (noticeId) {
             toMembers.forEach((item) => {
                 if (noticeId === item._id) {
@@ -93,6 +101,38 @@ class Detail extends (PureComponent || Component) {
                         <p>需要协调的任务</p>
                         <p>{help || '暂无输入'}</p>
                     </Col>
+                    {
+                        img.length ? <Col span={24} className="margin-top-20">
+                            <p>图片</p>
+                            {img.map((item, index) => (<span key={item}>
+                                <span className="margin-right-10">
+                                    <img
+                                        width="80"
+                                        src={`http://oxldjnom8.bkt.clouddn.com/${item}`}
+                                        ref={i => this.img = i}
+                                        onLoad={this.imageLoad}
+                                        onDoubleClick={() => this.closeImageViewer(index, true)}
+                                        onError={() => this.img.src = 'http://oxldjnom8.bkt.clouddn.com/404Img.jpeg'}
+                                    />
+                                </span>
+                                {
+                                    this.state[`showImgViewer${index}`] ?
+                                        <ImageViewer
+                                            download
+                                            image={`http://oxldjnom8.bkt.clouddn.com/${item}`}
+                                            closeImage={() => this.closeImageViewer(index, false)}
+                                        />
+                                        : null
+                                }
+                            </span>))}
+                        </Col> : null
+                    }
+                    {
+                        file.length ? <Col span={24} className="e-mg-log-details-area">
+                            <p>附件</p>
+                            {file.map(item => (<p key={item}><a download href={File.findOne({ _id: item }) && File.findOne({ _id: item }).url}>{File.findOne({ _id: item }) && File.findOne({ _id: item }).name}</a></p>))}
+                        </Col> : null
+                    }
                     <Col span={24} className="e-mg-log-details-footer">
                         <p>{num}人已读</p>
                         <Col span={24} data-peos={members}>
@@ -119,23 +159,16 @@ class Detail extends (PureComponent || Component) {
         );
     }
 }
-// Detail.propTypes = {
-//     nickname: PropTypes.string,
-//     avatar: PropTypes.string,
-//     plan: PropTypes.string,
-//     finish: PropTypes.string,
-//     help: PropTypes.string,
-//     num: PropTypes.string,
-//     peos: PropTypes.array,
-// };
 export default withTracker(() => {
     Meteor.subscribe('users');
     Meteor.subscribe('notice');
     Meteor.subscribe('log');
+    Meteor.subscribe('files');
     return {
         allUsers: Meteor.users.find().fetch(),
         toMembers: Notice.find().fetch(),
         logs: Log.find().fetch(),
+        files: File.find().fetch(),
     };
 })(Detail);
 

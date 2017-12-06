@@ -21,7 +21,7 @@ class Index extends Component {
                     console.log('history', history);
                     this.props.history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
                 } else {
-                    this.props.history.push('/chat');
+                    this.props.history.push('/manage');
                 }
             }
         });
