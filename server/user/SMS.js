@@ -32,8 +32,8 @@ Meteor.methods({
     queryDetail(PhoneNumber, BizId, SMSCode) {
         return new Promise((resolve, reject) => {
             SMSClient.queryDetail(PhoneNumber, BizId, format('yyyyMMdd', new Date())).then((response) => {
-                const result = response.SmsSendDetailDTO[0].Content.indexOf(SMSCode) !== -1;
-                resolve(result);
+                const SMSVerificationResult = response.SmsSendDetailDTO[0].Content.indexOf(SMSCode) !== -1;
+                resolve(SMSVerificationResult);
             }).catch((err) => {
                 reject(err);
             });

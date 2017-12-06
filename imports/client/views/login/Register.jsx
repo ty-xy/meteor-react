@@ -16,7 +16,6 @@ class Register extends Component {
             registerError: '',
             countDownNum: 60,
             sendBtnStatus: 0,
-            // SMSCode: '',
             BizId: '',
         };
     }
