@@ -27,7 +27,7 @@ class Register extends Component {
         const form = this.props.form;
         const username = form.getFieldValue('username');
         if (!username) {
-            feedback.dealWarning('请输入正确的手机号');
+            return feedback.dealWarning('请输入正确的手机号');
         }
 
         this.setState({
