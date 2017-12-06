@@ -80,6 +80,7 @@ class Register extends Component {
         }
     }
     render() {
+        const { history } = this.props;
         return (
             <div className="ejianlian-form-wrap ejianlian-register">
                 <div className="form-content-wrap container-middle">
@@ -122,7 +123,7 @@ class Register extends Component {
                         </ul>
                         <p className="register-error">{this.state.registerError}</p>
                         <div className="register-btn" onClick={this.register}>完成</div>
-                        <div className="registered">已有账号,<span onClick={this.login}>立即登录</span></div>
+                        <div className="registered">已有账号,<span onClick={() => this.login(history, '')}>立即登录</span></div>
                         <div className="login-by-other">
                             <div className="login-style-wrap">
                                 <p className="login-line" />
