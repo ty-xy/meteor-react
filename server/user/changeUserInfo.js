@@ -18,6 +18,7 @@ Meteor.methods({
                 },
             )));
     },
+    // 修改用户名(手机号)
     changeUserName(newUserName) {
         Meteor.users.update(
             Meteor.userId(),
@@ -28,13 +29,15 @@ Meteor.methods({
             },
         );
     },
+    // 修改密码(需要输入原密码的那种)
     changeUserPassword(oldPassword, newPassword) {
         // console.log(111, Accounts);
         Accounts.changePassword(oldPassword, newPassword, (err) => {
             console.error(err);
         });
     },
-    setUserPassword(newPassword) {
+    // 忘记密码后重新修改密码
+    setUserPassword({ newPassword }) {
         Accounts.setPassword(Meteor.userId(), newPassword, (err) => {
             console.error(err);
         });

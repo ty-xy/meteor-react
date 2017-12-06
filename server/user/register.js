@@ -5,7 +5,7 @@ import assert from '../../imports/util/assert';
 
 Meteor.methods({
     register({ username, password, name }) {
-        assert(RegexpUtil.phoneNumber.test(username), 400, '无效的手机号码');
+        assert(RegexpUtil.phoneRe.test(username), 400, '无效的手机号码');
         assert(password.length > 0, 400, '密码不能为空');
         assert(name.length > 0, 400, '姓名不能为空');
 

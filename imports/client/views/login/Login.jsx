@@ -38,7 +38,6 @@ class Login extends Component {
         const { history } = this.props;
         e.preventDefault();
         this.props.form.validateFields((error, values) => {
-            console.log(values);
             if (!error) {
                 console.log('Received values of form: ', values);
             }
@@ -50,7 +49,6 @@ class Login extends Component {
                         feedback.dealError(err.reason);
                         return console.error(err.reason);
                     }
-                    // this.props.history.push('/chat');
                     history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
                 },
             );

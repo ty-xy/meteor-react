@@ -8,10 +8,6 @@ import feedback from '../../../util/feedback';
 import regexp from '../../../util/regexp';
 
 const FormItem = Form.Item;
-
-function hasErrors(fieldsError) {
-    return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
 @pureRender
 class Register extends Component {
     static propTypes = {
@@ -96,14 +92,6 @@ class Register extends Component {
                 Meteor.loginWithPassword(values.username, values.password);
             });
         });
-    }
-    checkPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && value !== form.getFieldValue('password')) {
-            callback('两次密码输入不一致!');
-        } else {
-            callback();
-        }
     }
     render() {
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
@@ -235,7 +223,7 @@ class Register extends Component {
                                 )}
                             </FormItem>
                             <FormItem {...tailFormItemLayout} className="text-line">
-                                <Button disabled={hasErrors(getFieldsError())} type="primary" htmlType="submit" className="register-btn">注册</Button>
+                                <Button disabled={this.hasErrors(getFieldsError())} type="primary" htmlType="submit" className="register-btn">注册</Button>
                             </FormItem>
                             <FormItem {...tailFormItemLayout} className="text-line">
                                 <div className="registered">已有账号,<span onClick={this.login}>立即登录</span></div>
