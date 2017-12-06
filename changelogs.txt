@@ -172,3 +172,11 @@
  zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
  zg gwt    fix: 修改众多bug
  zg-xym    build results on build 26
+----------------------------------
+
+2017-12-05 20:09:44,   build 28
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    feat:任务板块的文件基本完成，等待明天测试
+ zg-xym    build results on build 27

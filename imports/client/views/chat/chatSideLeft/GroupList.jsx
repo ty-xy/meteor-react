@@ -45,7 +45,7 @@ class GroupList extends Component {
     renderSubMenu = (departments) => {
         if (departments && departments.length) {
             return departments.map(department =>
-                <Menu.Item key={department._id}>{department.name}<span className="department-mask">部门</span></Menu.Item>,
+                department && <Menu.Item key={department._id}>{department.name}<span className="department-mask">部门</span></Menu.Item>,
             );
         }
     }

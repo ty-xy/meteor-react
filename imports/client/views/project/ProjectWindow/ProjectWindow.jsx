@@ -8,7 +8,7 @@ import { Meteor } from 'meteor/meteor';
 import Icon from '../../../components/Icon';
 import ProjectBordAdd from './ProjectBord/ProjectBordAdd';
 import ProjectLender from './ProjectBord/projectLender';
-import ProjectFile from './ProjectBord/projectFile';
+import ProjectFile from './ProjectFile/projectFile';
 import ProjectChat from './ProjectBord/projectChat';
 import ProjectAction from './ProjectBord/projectAction';
 import Board from './ProjectBord/Board';
@@ -77,7 +77,7 @@ class ProjectWindow extends Component {
                     return (<div className="window-title" key={index} >
                         <Row>
                             <Col span={22}><p>{project.name}</p></Col>
-                            <Col span={1}> <Icon icon="icon-qunzu" className="icon-one" onClick={this.showMo} />
+                            <Col span={1}> <Icon icon="icon-qunzu icon-one" onClick={this.showMo} size={20} />
                                 <Modal
                                     visible={this.state.see}
                                     footer={null}
@@ -96,7 +96,7 @@ class ProjectWindow extends Component {
                                     />
                                 </Modal>
                             </Col>
-                            <Col span={1}> <Icon icon="icon-shezhi" className="icon-two" onClick={this.showModal} />
+                            <Col span={1}> <Icon icon="icon-shezhi icon-one" onClick={this.showModal} size={20} />
                                 <Modal
                                     visible={this.state.visible}
                                     footer={null}
@@ -123,7 +123,7 @@ class ProjectWindow extends Component {
                             <ProjectLender />
                         </TabPane>
                         <TabPane tab="文件" key="3">
-                            <ProjectFile />
+                            <ProjectFile pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="群聊" key="4">
                             <ProjectChat />
