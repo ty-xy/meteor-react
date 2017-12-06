@@ -88,14 +88,12 @@ class Register extends Component {
             if (!queryResult) {
                 return feedback.dealWarning('请输入正确的验证码');
             }
-            console.log(values);
             Meteor.call('register', values, (error, userId) => {
                 if (error) {
-                    feedback.dealError(err);
-                    return console.error(err.reason);
+                    return feedback.dealError(error);
                 }
+                console.log(userId);
                 Meteor.loginWithPassword(values.username, values.password);
-                this.login(userId);
             });
         });
     }
