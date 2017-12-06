@@ -48,7 +48,7 @@ class Chat extends Component {
             ],
             to: '',
             userId: '',
-            selectedChat: {},
+            selectedChat: {}, // 选中跟哪个的聊天窗口
             chatType: 'message',
             currentKey: '',
             currentDeps: '',
@@ -87,7 +87,6 @@ class Chat extends Component {
         }
     }
     handleChatType = (chatType) => {
-        // console.log(2222, chatType);
         this.setState({
             chatType,
         });
@@ -100,11 +99,13 @@ class Chat extends Component {
         });
         this.handleChatType(chatType);
     }
+    // 跳到哪个模块
     handleClick = (index) => {
         this.setState({
             selected: index,
         });
     }
+    // 选中联系人中的好友还是群组
     handleLinkManNav = (index) => {
         this.setState({
             selectedLinkMan: index,
@@ -123,6 +124,7 @@ class Chat extends Component {
         this.setState({ to, userId, chatType });
     }
     handleToggle = (value) => {
+        // console.log(89898, value);
         this.setState({
             selectedChat: {
                 [value]: true,
@@ -158,6 +160,7 @@ class Chat extends Component {
         deps={deps}
         changeTo={this.changeTo}
         handleToggle={this.handleToggle}
+        handleClick={this.handleClick.bind(this, 1)}
     />)
     renderChatType = (chatType) => {
         // console.log(chatType);
@@ -169,6 +172,7 @@ class Chat extends Component {
                 userId={this.state.userId}
                 changeTo={this.changeTo}
                 handleToggle={this.handleToggle}
+                handleClick={this.handleClick.bind(this, 1)}
             />);
         case 'newFriend':
             return <NewFriend />;

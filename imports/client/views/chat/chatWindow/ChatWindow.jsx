@@ -36,6 +36,7 @@ class ChatWindow extends Component {
         files: PropTypes.array,
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
+        handleClick: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -107,6 +108,7 @@ class ChatWindow extends Component {
     handleFriendInfo = () => {
         this.setState({
             isShowFriendInfo: false,
+            isShowGroupSet: false,
         });
     }
     handleFriendFile = () => {
@@ -472,6 +474,7 @@ class ChatWindow extends Component {
                             temporaryChat={this.state.temporaryChat}
                             changeTo={this.props.changeTo}
                             handleToggle={this.props.handleToggle}
+                            handleClick={this.props.handleClick}
                         />
                         :
                         null
@@ -508,6 +511,7 @@ class ChatWindow extends Component {
                                 changeTo={this.props.changeTo}
                                 handleFriendIdInfo={this.handleFriendIdInfo}
                                 groupType={groupType}
+                                handleToggle={this.props.handleToggle}
                             />
                         </Modal>
 

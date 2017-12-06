@@ -18,6 +18,7 @@ class ChatFriendInfo extends Component {
         temporaryChat: PropTypes.bool,
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
+        handleClick: PropTypes.func,
     };
     constructor(...args) {
         super(...args);
@@ -70,22 +71,20 @@ class ChatFriendInfo extends Component {
         this.props.handleFriendInfo();
         feedback.dealDelete('提示', '确定要删除该好友么?', this.deleteFriend);
     }
+
     handleTemporaryChat = () => {
         const haveChat = Meteor.user().profile.chatList.find(item => item.userId && item.userId === this.props.friendId);
-        console.log(777, haveChat);
-        if (haveChat) {
-            // 已经存在聊天窗口,需要直接跳到对应的聊天窗口
-            this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.friendId, '', 'message');
-            this.props.handleToggle(IdUtil.merge(Meteor.userId(), this.props.friendId));
-            this.props.handleFriendInfo();
-            return;
+        if (!haveChat) {
+            Meteor.call('addTemporaryChat', this.props.friendId, (err) => {
+                if (err) {
+                    console.error(err.reason);
+                }
+            });
         }
-        Meteor.call('addTemporaryChat', this.props.friendId, (err) => {
-            if (err) {
-                console.error(err.reason);
-            }
-            this.props.handleFriendInfo();
-        });
+        this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.friendId, 'userId', 'message');
+        this.props.handleToggle(this.props.friendId);
+        this.props.handleFriendInfo();
+        this.props.handleClick();
     }
     render() {
         const userProfile = this.props.user.profile || {};

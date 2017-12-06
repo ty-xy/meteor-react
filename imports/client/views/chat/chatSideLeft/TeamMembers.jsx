@@ -25,6 +25,7 @@ class TeamMembers extends Component {
         depsName: PropTypes.string,
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
+        handleClick: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -36,7 +37,7 @@ class TeamMembers extends Component {
                 title: '',
                 dataIndex: 'profile',
                 render: profile => (
-                    <div className="team-memebers-info" onClick={this.showFriendInfo.bind(this, profile._id)}>
+                    <div className="team-memebers-info" onClick={() => this.showFriendInfo(profile._id)}>
                         <Avatar name={profile.name} avatarColor={profile.avatarColor} avatar={profile.avatar} />
                         <p>{profile.name}</p>
                     </div>),
@@ -49,7 +50,6 @@ class TeamMembers extends Component {
         });
     }
     showFriendInfo = (friendId) => {
-        console.log(111, friendId);
         this.setState({
             isShowFriendInfo: true,
             chatFriendId: friendId,
@@ -117,9 +117,10 @@ class TeamMembers extends Component {
                         <ChatFriendInfo
                             handleFriendInfo={this.handleFriendInfo}
                             friendId={this.state.chatFriendId}
-                            temporaryChat
+                            temporaryChat={this.state.chatFriendId !== Meteor.userId()}
                             changeTo={this.props.changeTo}
                             handleToggle={this.props.handleToggle}
+                            handleClick={this.props.handleClick}
                         />
                         :
                         null
