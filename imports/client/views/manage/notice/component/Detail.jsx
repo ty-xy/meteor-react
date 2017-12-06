@@ -2,9 +2,9 @@ import React, { PureComponent, Component } from 'react';
 import { Row, Col } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-import { userIdToInfo } from '../../../../util/user';
-import Notice from '../../../../schema/notice';
-import Log from '../../../../schema/log';
+import { userIdToInfo } from '../../../../../util/user';
+import Notice from '../../../../../schema/notice';
+import Notifications from '../../../../../schema/notification';
 
 
 class Detail extends (PureComponent || Component) {
@@ -13,8 +13,8 @@ class Detail extends (PureComponent || Component) {
     }
     componentDidMount() {
         const { id } = this.props.match.params || {};
-        const { toMembers } = this.props;
-        toMembers.forEach((item) => {
+        const { notices } = this.props;
+        notices.forEach((item) => {
             if (item.logId === id) {
                 Meteor.call(
                     'readLog',
@@ -31,16 +31,16 @@ class Detail extends (PureComponent || Component) {
         const { id } = this.props.match.params || {};
         let logInfo = {};
         let members = [];
-        const { allUsers, toMembers, logs } = this.props;
-
-        logs.forEach((item) => {
+        const { allUsers, notices, notifications } = this.props;
+        // console.log('detail', this.props);
+        notifications.forEach((item) => {
             if (item._id === id) {
                 logInfo = item;
             }
         });
-        const { nickname, finish, plan, help, _id, noticeId } = logInfo;
+        const { title, noticeId, content, userId, username } = logInfo;
         if (noticeId) {
-            toMembers.forEach((item) => {
+            notices.forEach((item) => {
                 if (noticeId === item._id) {
                     members = item.toMembers;
                 }
@@ -75,23 +75,19 @@ class Detail extends (PureComponent || Component) {
             <Row className="e-mg-log-details">
                 <Col span={24} className="e-mg-log-details-header">
                     <a href="" onClick={this.goback}>关闭</a>
-                    <span>{userIdToInfo.getName(allUsers, _id)}的日志</span>
+                    <span>{userIdToInfo.getName(allUsers, userId)}发布的公告</span>
                 </Col>
                 <Col span={24} className="e-mg-log-details-content">
                     <Col span={24} className="e-mg-log-details-area">
-                        <img src={userIdToInfo.getAvatar(allUsers, _id) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" /><span className="title">{nickname}</span>
+                        <img src={userIdToInfo.getAvatar(allUsers, userId) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" /><span className="title">{username}</span>
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
-                        <p>今日完成任务</p>
-                        <p>{finish || '暂无输入'}</p>
+                        <p>题目</p>
+                        <p>{title || '暂无内容'}</p>
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
-                        <p>未完成任务</p>
-                        <p>{plan || '暂无输入'}</p>
-                    </Col>
-                    <Col span={24} className="e-mg-log-details-area">
-                        <p>需要协调的任务</p>
-                        <p>{help || '暂无输入'}</p>
+                        <p>内容</p>
+                        <p>{content || '暂无内容'}</p>
                     </Col>
                     <Col span={24} className="e-mg-log-details-footer">
                         <p>{num}人已读</p>
@@ -119,23 +115,18 @@ class Detail extends (PureComponent || Component) {
         );
     }
 }
-// Detail.propTypes = {
-//     nickname: PropTypes.string,
-//     avatar: PropTypes.string,
-//     plan: PropTypes.string,
-//     finish: PropTypes.string,
-//     help: PropTypes.string,
-//     num: PropTypes.string,
-//     peos: PropTypes.array,
-// };
+Detail.propTypes = {
+
+    // notifications: PropTypes.array,
+};
 export default withTracker(() => {
     Meteor.subscribe('users');
     Meteor.subscribe('notice');
-    Meteor.subscribe('log');
+    Meteor.subscribe('notification');
     return {
         allUsers: Meteor.users.find().fetch(),
-        toMembers: Notice.find().fetch(),
-        logs: Log.find().fetch(),
+        notices: Notice.find({ noticeType: '公告' }).fetch(),
+        notifications: Notifications.find().fetch(),
     };
 })(Detail);
 

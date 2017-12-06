@@ -1,24 +1,46 @@
 import { Meteor } from 'meteor/meteor';
 
 import notice from '../../imports/schema/notification';
+import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
-    createNotice({ username, title, content, group, author, file, img, up, isSecrecy, company }) {
+    createNotice({ title, content, group, file, img, up, isSecrecy, toMembers }) {
         const newLog = {
             createdAt: new Date(),
-            username,
+            username: UserUtil.getName(),
+            userId: Meteor.userId(),
             title,
             content,
             group,
-            author,
             file,
             img,
             isSecrecy,
             up,
-            company,
+            company: UserUtil.getMainCompany(),
         };
         notice.schema.validate(newLog);
-        notice.insert(newLog);
+        const _id = notice.insert(newLog);
+        console.log('toMembers', toMembers, _id);
+        if (_id) {
+            const res = {
+                from: Meteor.userId(),
+                userCompany: UserUtil.getMainCompany(),
+                toMembers,
+                noticeType: '公告',
+                logId: _id,
+            };
+            console.log('res', res);
+            Meteor.call(
+                'createGlobalNotice',
+                (res),
+                (err, noticeId) => {
+                    notice.update(
+                        { _id },
+                        { $set: { noticeId } },
+                    );
+                },
+            );
+        }
     },
     // 修改
     updateNotice({ _id, username, title, content, group, author, file, img, up, isSecrecy, company }) {

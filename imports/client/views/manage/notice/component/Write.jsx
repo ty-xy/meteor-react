@@ -20,6 +20,7 @@ class Write extends PureComponent {
         form: PropTypes.object,
         history: PropTypes.object,
         location: PropTypes.object,
+        companyInfo: PropTypes.object,
     }
     constructor(props) {
         super(props);
@@ -49,19 +50,17 @@ class Write extends PureComponent {
     // 公告提交、编辑
     formSubmit = (e) => {
         e.preventDefault();
-        const { form, location } = this.props;
+        const { form, location, companyInfo } = this.props;
         const { img, file, group, groupRequire, isSecrecy } = this.state;
         form.validateFields((err, fields) => {
             if (err) {
                 return false;
             }
-            fields.username = Meteor.user().username;
             fields.isSecrecy = isSecrecy || false;
             fields.up = (location.state && location.state.editData.up) || false;
             fields.img = img;
             fields.file = file;
             fields.group = group;
-            fields.company = Meteor.user().profile.mainCompany;
             if (groupRequire) {
                 if (group.length === 0) {
                     this.setState({ requireGroupNotice: true });
@@ -83,9 +82,28 @@ class Write extends PureComponent {
                     },
                 );
             } else {
+                let peos = [];
+                if (group && group.length) {
+                    group.forEach((depId) => {
+                        for (let i = 0; i < companyInfo.deps.length; i++) {
+                            if (depId === companyInfo.deps[i].id) {
+                                peos = peos.concat(companyInfo.deps[i].members);
+                                break;
+                            }
+                        }
+                    });
+                }
+                const peoRes = [];
+                peos.forEach((item) => {
+                    if (peoRes.indexOf(item) === -1) {
+                        peoRes.push(item);
+                    }
+                });
+                const toMembers = peos.map(userId => ({ userId }));
+                console.log('createNotice', fields, toMembers);
                 Meteor.call(
                     'createNotice',
-                    { ...fields },
+                    { ...fields, toMembers },
                     (error) => {
                         if (error) {
                             feedback.dealError(error);
@@ -196,7 +214,6 @@ class Write extends PureComponent {
                     </ChoosePeopleModel>
                 </Col>
                 <InputType title="标题：" required requiredErr="请填写公告标题" keyword="title" editData={editData} {...this.props} />
-                <InputType title="作者：" required requiredErr="请填写公告作者" keyword="author" editData={editData} {...this.props} />
                 <InputArea title="正文：" required requiredErr="请填写公告正文" className="margin-bottom-20" defaultValue={content} keyword="content" {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                 <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
