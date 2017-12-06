@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 
-// import feedback from '../../../util/feedback';
+import feedback from '../../../util/feedback';
 
 @pureRender
 class Register extends Component {
@@ -14,11 +14,50 @@ class Register extends Component {
         super(...args);
         this.state = {
             registerError: '',
+            countDownNum: 60,
+            sendBtnStatus: 0,
+            BizId: '',
         };
     }
-    register = () => {
+    sendMessage = async () => {
+        if (!(/^1[34578]\d{9}$/.test(this.username.value))) {
+            feedback.dealWarning('请输入正确的手机号');
+        }
+        this.setState({
+            sendBtnStatus: 1,
+        });
+        let countDownNum = this.state.countDownNum;
+        const countDownDate = setInterval(() => {
+            countDownNum--;
+            this.setState({
+                countDownNum,
+            });
+            if (countDownNum <= 0) {
+                this.setState({
+                    sendBtnStatus: 2,
+                    countDownNum: 60,
+                });
+                clearInterval(countDownDate);
+            }
+        }, 1000);
+        const result = await Meteor.callPromise('sendRegisterSMS', this.username.value);
+        this.setState({
+            BizId: result.BizId,
+        });
+    }
+    register = async () => {
+        if (this.state.countDownNum <= 0 && this.state.countDownNum >= 60) {
+            return feedback.dealWarning('请重新接受验证码');
+        }
+        if (!this.yanzhengma.value) {
+            return feedback.dealWarning('请输入验证码');
+        }
+
+        const queryResult = await Meteor.callPromise('queryDetail', this.username.value, this.state.BizId, Number(this.yanzhengma.value));
+        if (!queryResult) {
+            return feedback.dealWarning('请输入正确的验证码');
+        }
         const { history } = this.props;
-        // const _this = this;
         Meteor.call('register', this.username.value, this.password.value, this.name.value, (err, userId) => {
             if (err) {
                 this.setState({
@@ -35,7 +74,7 @@ class Register extends Component {
         if (history.location.search && history.location.state === 'invite') {
             const search = `${history.location.search}&userId=${userId}`;
             history.push({ pathname: '/chat', search, state: history.location.state });
-            // feedback.dealSuccess('注册成功');
+            feedback.dealSuccess('注册成功');
         } else {
             history.push('/chat');
         }
@@ -53,8 +92,26 @@ class Register extends Component {
                                 <input type="text" placeholder="手机号" ref={i => this.username = i} />
                             </li>
                             <li>
-                                <input type="text" placeholder="验证码" />
-                                <p className="obtainCode">获取验证码</p>
+                                <input type="number" placeholder="验证码" ref={i => this.yanzhengma = i} />
+                                {
+                                    this.state.sendBtnStatus === 0 ?
+                                        <button className="obtainCode" onClick={this.sendMessage}>获取验证码</button>
+                                        :
+                                        null
+                                }
+                                {
+                                    this.state.sendBtnStatus === 1 ?
+                                        <button className="obtainCode" style={{ background: '#b2b2b2' }} >剩余{this.state.countDownNum}秒</button>
+                                        :
+                                        null
+                                }
+                                {
+                                    this.state.sendBtnStatus === 2 ?
+                                        <button className="obtainCode" onClick={this.sendMessage}>重新发送</button>
+                                        :
+                                        null
+                                }
+
                             </li>
                             <li>
                                 <input type="password" placeholder="密码" ref={i => this.password = i} />
