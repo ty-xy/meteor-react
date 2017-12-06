@@ -84,7 +84,7 @@ class Day extends (React.PureComponent || React.Component) {
             });
             const toMembers = peos.map(userId => ({ userId }));
             // 创建日志
-            this.tabSubmit({ ...fields, peo: peos, type: logType, img, file, group, toMembers });
+            this.tabSubmit({ ...fields, peo, type: logType, img, file, group, toMembers });
         });
     }
     // 写日志

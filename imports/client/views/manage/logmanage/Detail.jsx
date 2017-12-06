@@ -13,7 +13,7 @@ class Detail extends (PureComponent || Component) {
     }
     goback = (e) => {
         e.preventDefault();
-        this.props.history.push('/chat');
+        this.props.history.goBack();
     }
     render() {
         const { id } = this.props.match.params || {};

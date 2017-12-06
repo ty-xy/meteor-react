@@ -9,13 +9,14 @@ Meteor.methods({
         @parmas userCompany 发布人所在团队
         @toMembers 接受对象
     */
-    createGlobalNotice({ from, userCompany, toMembers, noticeType }) {
+    createGlobalNotice({ from, userCompany, toMembers, noticeType, logId }) {
         const obj = {
             from,
             userCompany,
             toMembers,
             createdAt: new Date(),
             noticeType,
+            logId,
         };
         notice.schema.validate(obj);
         const _id = notice.insert(obj);

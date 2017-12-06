@@ -242,7 +242,10 @@ class ProjectBordItem extends Component {
                     <Row>
                         <Col span={21} style={{ display: 'flex' }}>
                             {this.state.showTaskBoardTitle ?
-                                <p onClick={this.handlechangeTitle}>{this.props.value}</p> :
+                                <p
+                                    onClick={this.handlechangeTitle}
+                                    className="list-title-name"
+                                >{this.props.value}</p> :
                                 <ProjectInput
                                     input="更改"
                                     onClick={this.handleChangeTitleB}
@@ -255,7 +258,7 @@ class ProjectBordItem extends Component {
                         </Col>
                         <Col span={3} style={{ textAlign: 'center' }}>
                             <Dropdown overlay={menu} trigger={['click']}>
-                                <Icon icon="icon-gengduo1 icon" />
+                                <Icon icon="icon-gengduo1 icon" size={16} iconColor="#999" />
                             </Dropdown>
                         </Col>
                     </Row>
