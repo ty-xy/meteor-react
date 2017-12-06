@@ -183,6 +183,7 @@ class Write extends PureComponent {
             month = date.getMonth() + 1;
         }
         const day = date.getDate();
+        const { getFieldsValue } = this.props.form;
         return (
             <Form onSubmit={this.formSubmit} style={{ height: '100%', overflow: 'auto' }}>
                 <Col span={24} style={{ marginTop: '20px', marginBottom: '10px' }}>
@@ -229,7 +230,7 @@ class Write extends PureComponent {
                     footer={null}
                     className="e-mg-notice-preview"
                 >
-                    <p>{content}</p>
+                    <p>{getFieldsValue().content}</p>
                     <p style={{ textAlign: 'right' }}>{`${year}年${month}月${day}日`}</p>
                 </Modal>
             </Form>
