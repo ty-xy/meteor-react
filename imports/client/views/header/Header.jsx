@@ -11,6 +11,7 @@ import AvatarSelf from '../../components/AvatarSelf';
 import SelectBackendTeam from '../../features/SelectBackendTeam';
 import feedback from '../../../util/feedback';
 import UserUtil, { userIdToInfo } from '../../../util/user';
+import fields from '../../../util/fields';
 import Company from '../../../schema/company';
 import Notice from '../../../schema/notice';
 import MyNotification from '../../components/Notification';
@@ -116,7 +117,7 @@ class Header extends Component {
         });
     }
     render() {
-        console.log('haeder', this.props.allUsers);
+        // console.log('haeder', this.props, fields.getUsername);
         const { notices, allUsers } = this.props;
         const { isShowNotice } = this.state;
         return (
@@ -229,17 +230,15 @@ export default withTracker(() => {
     Meteor.subscribe('notices');
     Meteor.subscribe('users');
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
-    const companys = Company.find().fetch();
     const userId = Meteor.userId();
     let notices = [];
     notices = Notice.find({ 'toMembers.userId': userId }).fetch();
-
     notices = notices.filter(item => (item.from !== userId));
     return {
         currentCompanyId,
         notices,
-        companys,
-        allUsers: Meteor.users.find().fetch(),
+        companys: Company.find({}, { fields: fields.createdcompany }).fetch(),
+        allUsers: Meteor.users.find({}, { fields: fields.getUsername }).fetch(),
     };
 })(Header);
 
