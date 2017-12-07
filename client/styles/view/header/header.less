@@ -196,3 +196,51 @@
     right: 15px;
     z-index: 201;
 }
+// 全局按钮通知组件
+.e-global-notification{
+    background: #fff;
+    padding: 15px 0;
+    height: 100%;
+    .list{
+        position: relative;
+        border-bottom: 1px solid #eee;
+        padding: 0 30px 5px;
+        margin-bottom: 10px;
+        >.title{
+            span{
+                float: right;
+            }
+        }
+        .list-content{
+            margin-top: 10px;
+            .list-avatar{
+                float: left;
+                width: 15%;
+                img{
+                    width: 52px;
+                }
+                .no-avatar{
+                    display: inline-block;
+                    color: #fff;
+                    width: 52px;
+                    height: 52px;
+                    line-height: 52px;
+                    text-align: center;
+                    border-radius: 50%;
+                }
+            }
+            .list-desc{
+                float: left;
+                width: 85%;
+                >.title{
+                    color: #333;
+                    font-size: 18px;
+                }
+                >.desc{
+                    margin-top: 5px;
+                    color: #666;
+                }
+            }
+        }
+    }
+}
