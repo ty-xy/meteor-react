@@ -26,11 +26,11 @@ function sendSMS(PhoneNumbers, TemplateCode) {
             const { Code } = res;
             if (Code === 'OK') {
             // 处理返回参数
-                console.log(res);
+                // console.log(res);
                 resolve(res);
             }
         }, (err) => {
-            console.log(err);
+            // console.log(err);
             reject(err);
         });
     });
@@ -51,12 +51,12 @@ function queryDetail(PhoneNumber, BizId, SendDate) {
             } = res;
             if (Code === 'OK') {
                 // 处理发送详情内容
-                console.log(SmsSendDetailDTOs);
+                // console.log(SmsSendDetailDTOs);
                 resolve(SmsSendDetailDTOs);
             }
         }, (err) => {
             // 处理错误
-            console.log(err);
+            // console.log(err);
             reject(err);
         });
     });
