@@ -226,3 +226,12 @@
 2017-12-07 18:30:55,   build 34
 
  zg-xym    build results on build 33
+----------------------------------
+
+2017-12-07 19:18:19,   build 35
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ 王亚星    delete: 删除多余log
+ zg gwt    feature: 发送日报时只能选择所在公司大群或所在公司的群组
+ zg-xym    build results on build 34
