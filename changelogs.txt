@@ -197,3 +197,13 @@
  zg xy    Merge branch 'master' into feature/project_ty
  zg xy    feat:群聊板块初步完成
  zg-xym    build results on build 29
+----------------------------------
+
+2017-12-07 10:06:43,   build 31
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    feature: header组件添加fields字段过滤
+ zg gwt    feature: 全局通知中增加公告显示， 以及查看详情页面
+ zg gwt    feature: 添加图片预览下载，日志详情中添加图片预览
+ zg-xym    build results on build 30
