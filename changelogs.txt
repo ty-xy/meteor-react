@@ -212,3 +212,12 @@
 2017-12-07 15:36:16,   build 32
 
  zg-xym    build results on build 31
+----------------------------------
+
+2017-12-07 17:12:47,   build 33
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    Merge branch 'master' into wyx-chat
+ 王亚星    fix: 修改个人资料部分性别默认值
+ 王亚星    refactor: 重构修改密码部分
+ zg-xym    build results on build 32
