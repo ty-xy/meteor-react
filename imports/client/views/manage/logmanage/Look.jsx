@@ -83,7 +83,7 @@ class Look extends PureComponent {
                         <Col span={7}><DatePicker keyword="time" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
                     </Form>
                 </Col>
-                {data.map(item => (<CardLog key={item._id} {...item} />))}
+                {data.map((item, index) => (<CardLog key={item._id} index={index} {...item} />))}
                 {
                     data.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
                 }
