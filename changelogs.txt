@@ -207,3 +207,8 @@
  zg gwt    feature: 全局通知中增加公告显示， 以及查看详情页面
  zg gwt    feature: 添加图片预览下载，日志详情中添加图片预览
  zg-xym    build results on build 30
+----------------------------------
+
+2017-12-07 15:36:16,   build 32
+
+ zg-xym    build results on build 31
