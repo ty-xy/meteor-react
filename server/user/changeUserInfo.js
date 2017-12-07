@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 
 import qiniu from '../../imports/util/qiniu';
+import assert from '../../imports/util/assert';
 
 Meteor.methods({
     changeAvatar(imageBase64, _id) {
@@ -20,6 +21,8 @@ Meteor.methods({
     },
     // 修改用户名(手机号)
     changeUserName(newUserName) {
+        const findResult = Meteor.users.findOne({ username: newUserName });
+        assert(findResult === undefined, 400, '该手机号已被注册');
         Meteor.users.update(
             Meteor.userId(),
             {
@@ -28,14 +31,6 @@ Meteor.methods({
                 },
             },
         );
-    },
-    // 修改密码(需要输入原密码的那种)
-    changeUserPassword(oldPassword, newPassword) {
-        // console.log(Accounts.changePassword);
-        // 后端拿不到该方法,所以在前端调用
-        Accounts.changePassword(oldPassword, newPassword, (err) => {
-            console.error(err);
-        });
     },
     // 忘记密码后重新修改密码
     setUserPassword({ newPassword }) {
