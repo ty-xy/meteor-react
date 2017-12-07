@@ -52,14 +52,6 @@ class Notification extends Component {
     render() {
         // const { isRead } = this.state;
         const { _id, toMembers = [], companys, userCompany, from, allUsers, ...arg } = this.props;
-        let isRead; let rejectRead;
-        for (let i = 0; i < toMembers.length; i++) {
-            if (toMembers[i].userId === Meteor.userId()) {
-                isRead = toMembers[i].isRead;
-                rejectRead = toMembers[i].rejectRead;
-                break;
-            }
-        }
         let companyName = '';
         for (let i = 0; i < companys.length; i++) {
             if (companys[i]._id === userCompany) {
@@ -68,19 +60,17 @@ class Notification extends Component {
             }
         }
         return (
-            !isRead && !rejectRead ?
-                <div className="e-notification">
-                    <i className="iconfont icon-guanbi e-notification-close" onClick={() => this.hideNotification(_id)} />
-                    <p>来自 {companyName}</p>
-                    <div className="e-notification-content clearfix margin-top-20">
-                        <div className="e-notification-avatar"><img src="/start.png" /></div>
-                        <div className="e-notification-desc">
-                            <p className="title">「{arg.noticeType}」— {userIdToInfo.getName(allUsers, from)}的{arg.noticeType}</p>
-                            <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, from)}提交了{arg.noticeType}，<a href="" onClick={e => this.gotoLook(e, _id, { toMembers, companys, userCompany, from, allUsers, ...arg })}>点击前往查看</a></p>
-                        </div>
+            <div className="e-notification">
+                <i className="iconfont icon-guanbi e-notification-close" onClick={() => this.hideNotification(_id)} />
+                <p>来自 {companyName}</p>
+                <div className="e-notification-content clearfix margin-top-20">
+                    <div className="e-notification-avatar"><img src="/start.png" /></div>
+                    <div className="e-notification-desc">
+                        <p className="title">「{arg.noticeType}」— {userIdToInfo.getName(allUsers, from)}的{arg.noticeType}</p>
+                        <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, from)}提交了{arg.noticeType}，<a href="" onClick={e => this.gotoLook(e, _id, { toMembers, companys, userCompany, from, allUsers, ...arg })}>点击前往查看</a></p>
                     </div>
                 </div>
-                : <div />
+            </div>
         );
     }
 }

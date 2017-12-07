@@ -205,7 +205,21 @@ class Header extends Component {
             <div className="ejianlianHeader">
                 <div className="e-notification-wrap clearfix">
                     {
-                        notices.map(item => (<MyNotification key={item._id} {...item} {...this.props} {...this.context} />))
+                        notices.map((item) => {
+                            let isRead; let rejectRead;
+                            for (let i = 0; i < item.toMembers.length; i++) {
+                                if (item.toMembers[i].userId === Meteor.userId()) {
+                                    isRead = item.toMembers[i].isRead;
+                                    rejectRead = item.toMembers[i].rejectRead;
+                                    break;
+                                }
+                            }
+                            if (!isRead && !rejectRead) {
+                                return <MyNotification key={item._id} {...item} {...this.props} {...this.context} />;
+                            }
+                            return null;
+                        },
+                        )
                     }
                 </div>
                 <div className="ejianlian-header-bar">
@@ -290,7 +304,7 @@ export default withTracker(() => {
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
     const userId = Meteor.userId();
     let notices = [];
-    notices = Notice.find({ 'toMembers.userId': userId }, { sort: { createdAt: -1, score: { noticeType: '公告' } } }).fetch();
+    notices = Notice.find({ 'toMembers.userId': userId }, { sort: { createdAt: -1 } }).fetch();
     notices = notices.filter(item => (item.from !== userId));
     return {
         currentCompanyId,
