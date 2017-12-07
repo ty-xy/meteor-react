@@ -221,3 +221,8 @@
  王亚星    fix: 修改个人资料部分性别默认值
  王亚星    refactor: 重构修改密码部分
  zg-xym    build results on build 32
+----------------------------------
+
+2017-12-07 18:30:55,   build 34
+
+ zg-xym    build results on build 33
