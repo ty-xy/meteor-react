@@ -2,43 +2,23 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
+import { Form, Icon, Input, Button } from 'antd';
+import feedback from '../../../util/feedback';
 
-// import feedback from '../../../util/feedback';
-// import UserUtil from '../../../util/user';
+import regexp from '../../../util/regexp';
 
+const FormItem = Form.Item;
 @pureRender
 class Login extends Component {
     static propTypes = {
         history: PropTypes.object,
         location: PropTypes.object,
-    }
-    constructor(...args) {
-        super(...args);
-        this.state = {
-            loginError: '',
-        };
+        form: PropTypes.object,
     }
     componentWillReceiveProps() {
         if (this.props.location.search) {
             this.props.history.replace({ pathname: '/login', search: this.props.location.search, state: 'invite' });
         }
-    }
-    login = () => {
-        const { history } = this.props;
-        Meteor.loginWithPassword(
-            this.username.value,
-            this.password.value,
-            (err) => {
-                if (err) {
-                    this.setState({
-                        loginError: err.reason,
-                    });
-                    return console.error(err.reason);
-                }
-                // this.props.history.push('/chat');
-                history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
-            },
-        );
     }
     gotoRegister = () => {
         this.props.history.push({ pathname: '/register', search: this.props.location.search, state: this.props.location.search && 'invite' });
@@ -46,7 +26,38 @@ class Login extends Component {
     gotoForgetPassword = () => {
         this.props.history.push('/forgetPassword');
     }
+    checkConfirm = (rule, value, callback) => {
+        const form = this.props.form;
+        if (value && this.state.confirmDirty) {
+            form.validateFields(['confirm'], { force: true });
+        }
+        callback();
+    }
+    hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field])
+    handleLogin = (e) => {
+        const { history } = this.props;
+        e.preventDefault();
+        this.props.form.validateFields((error, values) => {
+            if (!error) {
+                console.log('Received values of form: ', values);
+            }
+            Meteor.loginWithPassword(
+                values.userName,
+                values.password,
+                (err) => {
+                    if (err) {
+                        feedback.dealError(err.reason);
+                        return console.error(err.reason);
+                    }
+                    history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
+                },
+            );
+        });
+    }
     render() {
+        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+        const userNameError = isFieldTouched('userName') && getFieldError('userName');
+        const passwordError = isFieldTouched('password') && getFieldError('password');
         return (
             <div className="ejianlian-login ejianlian-form-wrap">
                 <div className="login-content container-middle form-content-wrap">
@@ -54,21 +65,47 @@ class Login extends Component {
                         登录e建联
                     </div>
                     <div className="form-content">
-                        <div className="login-step">
-                            <p className="login-phone login-step-item">
-                                <i className="iconfont icon-user" />
-                                <input type="text" placeholder="手机号" ref={i => this.username = i} />
-                            </p>
-                            <p className="login-passward login-step-item">
-                                <i className="iconfont icon-denglu-mima" />
-                                <input type="password" placeholder="密码" ref={i => this.password = i} />
-                            </p>
-                        </div>
-                        <p className="login-error">{this.state.loginError}</p>
-                        <div className="login-btn" onClick={this.login}>登录</div>
+                        <Form onSubmit={this.handleLogin} className="login-form">
+                            <FormItem
+                                validateStatus={userNameError ? 'error' : ''}
+                                help={userNameError || ''}
+                            >
+                                {getFieldDecorator('userName', {
+                                    rules: [{
+                                        required: true,
+                                        pattern: regexp.phoneRe,
+                                        message: '请输入正确的手机号!',
+                                    }],
+                                })(
+                                    <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="手机号" />,
+                                )}
+                            </FormItem>
+                            <FormItem
+                                validateStatus={passwordError ? 'error' : ''}
+                                help={passwordError || ''}
+                            >
+                                {getFieldDecorator('password', {
+                                    rules: [{
+                                        required: true,
+                                        pattern: regexp.passwordRe,
+                                        message: '请输入正确的密码!',
+                                        whitespace: true,
+                                    }],
+                                }, {
+                                    validator: this.checkConfirm,
+                                })(
+                                    <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />,
+                                )}
+                            </FormItem>
+                            <FormItem>
+                                <Button disabled={this.hasErrors(getFieldsError())} type="primary" htmlType="submit" className="login-btn">
+                                    登录
+                                </Button>
+                            </FormItem>
+                        </Form>
                         <div className="login-server">
-                            <p onClick={this.gotoRegister}>注册账号</p>
-                            <p onClick={this.gotoForgetPassword}>忘记密码</p>
+                            <button onClick={this.gotoRegister}>注册账号</button>
+                            <button onClick={this.gotoForgetPassword}>忘记密码</button>
                         </div>
                         <div className="login-by-other">
                             <div className="login-style-wrap">
@@ -89,4 +126,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default Form.create()(Login);

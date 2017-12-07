@@ -1,10 +1,25 @@
+@import '../util/util.less';
 .ejianlian-register {
     .register-title {
         border: 0;
-        margin-top: 20px;
+        margin: 10px 0px;
     }
     & > .form-content-wrap {
-        height:660px !important;
+        height:600px;
+        .form-content {
+            width: 95%;
+            padding-right: 20px;
+            .ant-form-explain {
+                position: absolute;
+            }
+            .ant-form-item {
+                margin-bottom: 30px;
+                a {
+                    color: @mainColor;
+                    cursor: pointer;
+                }
+            }
+        }
     }
     .register-step {
         padding: 0;
@@ -20,7 +35,7 @@
                 height: 100%;
             }
             .obtainCode {
-                background: #29B6F6;
+                background: @mainColor;
                 border-radius: 24px;
                 height: 36px;
                 width: 90px;
@@ -35,8 +50,23 @@
             }
         }
     }
+    .obtainCode {
+        background: @mainColor;
+        border-color: @mainColor;
+        color: #fff;
+        font-size: 13px;
+    }
+    .countDownBtn {
+        background-color: #b2b2b2;
+        border-color: #b2b2b2;
+        color: #fff;
+        font-size: 13px;
+    }
+    .countDownBtn:hover {
+        color: #fff;
+    }
     .register-error {
-        color: #ef5350;
+        color: @redColor;
         font-size: 10px;
         margin-top: 5px;
         margin-bottom: -15px;
@@ -44,27 +74,27 @@
     .registered {
         text-align: center;
         & > span {
-            color: #29B6F6;
+            color: @mainColor;
+            cursor: pointer;
         }
     }
     .register-btn {
-        background: #29B6F6;
+        background: @mainColor;
         border-radius: 24px;
         height: 46px;
         width: 100%;
-        margin: 30px auto;
         text-align: center;
         line-height: 46px;
         color: #fff;
         font-size: 15px;
+        border-color:@mainColor;
     }
-    .agreeProto {
-        text-align: center;
-        margin-top: 30px;
-        color: #999;
-        font-size: 13px;
-        & > span {
-            color: #29B6F6;
-        }
+    .ant-form-horizontal {
+        width: 100%;
+        padding-right: 35px;
+    }
+    .ant-checkbox-checked .ant-checkbox-inner, .ant-checkbox-indeterminate .ant-checkbox-inner {
+        background-color: @mainColor !important;
+        border-color: @mainColor !important;
     }
 }
