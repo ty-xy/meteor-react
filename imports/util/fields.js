@@ -51,4 +51,9 @@ export default {
         deps: 1,
         members: 1,
     },
+    getUsername: {
+        username: 1,
+        'profile.name': 1,
+        'profile.mainCompany': 1,
+    },
 };

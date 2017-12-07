@@ -33,6 +33,7 @@ Notice.schema = new SimpleSchema({
     },
     'toMembers.$.userId': {
         type: String,
+        optional: true,
     },
     'toMembers.$.isRead': {
         type: Boolean,
@@ -40,6 +41,10 @@ Notice.schema = new SimpleSchema({
     },
     'toMembers.$.rejectRead': {
         type: Boolean,
+        optional: true,
+    },
+    'toMembers.$.isAudit': {
+        type: String,
         optional: true,
     },
     to: {

@@ -9,13 +9,13 @@ notification.schema = new SimpleSchema({
     username: {
         type: String,
     },
+    userId: {
+        type: String,
+    },
     company: {
         type: String,
     },
     title: {
-        type: String,
-    },
-    author: {
         type: String,
     },
     content: {
@@ -39,6 +39,10 @@ notification.schema = new SimpleSchema({
     },
     up: {
         type: Boolean,
+        optional: true,
+    },
+    noticeId: {
+        type: String,
         optional: true,
     },
 });

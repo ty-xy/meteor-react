@@ -10,14 +10,7 @@ const Option = Select.Option;
 
 
 const colors = [
-    '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
-    '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
-    '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
-    '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
-    '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
-    '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
-    '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
-    '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
+    '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
 ];
 
 class ChoosePeopleModel extends (PureComponent || Component) {
@@ -281,7 +274,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         if (avatar) {
             return (<img src={avatar} alt="" />);
         }
-        return <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
+        return <span style={{ background: colors[index % 4], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
     }
     // 获取群组avatar
     getDepAvatar = (id) => {
@@ -292,7 +285,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 if (item.avatar) {
                     avatar = (<img src={item.avatar} alt="" />);
                 } else {
-                    avatar = <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{item.name}</span>;
+                    avatar = <span style={{ background: colors[index % 4], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{item.name}</span>;
                 }
             }
         });

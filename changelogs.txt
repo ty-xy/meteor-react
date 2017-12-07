@@ -180,3 +180,35 @@
  zg xy    Merge branch 'master' into feature/project_ty
  zg xy    feat:任务板块的文件基本完成，等待明天测试
  zg-xym    build results on build 27
+----------------------------------
+
+2017-12-06 10:07:35,   build 29
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge branch 'master' into feature/management_gwt
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    refactor: 修改短信验证结果语义化变量
+ zg-xym    build results on build 28
+----------------------------------
+
+2017-12-06 15:39:26,   build 30
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    feat:群聊板块初步完成
+ zg-xym    build results on build 29
+----------------------------------
+
+2017-12-07 10:06:43,   build 31
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    feature: header组件添加fields字段过滤
+ zg gwt    feature: 全局通知中增加公告显示， 以及查看详情页面
+ zg gwt    feature: 添加图片预览下载，日志详情中添加图片预览
+ zg-xym    build results on build 30
+----------------------------------
+
+2017-12-07 15:36:16,   build 32
+
+ zg-xym    build results on build 31

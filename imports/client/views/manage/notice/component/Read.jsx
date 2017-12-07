@@ -6,12 +6,15 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import format from 'date-format';
 import notification from '../../../../../schema/notification';
+import notice from '../../../../../schema/notice';
 import feedback from '../../../../../util/feedback';
+import UserUtil from '../../../../../util/user';
 
 
 class Read extends PureComponent {
     static propTypes = {
         notices: PropTypes.array,
+        notifications: PropTypes.array,
     }
     constructor(props) {
         super(props);
@@ -21,8 +24,8 @@ class Read extends PureComponent {
     }
     setUp = (e, _id, val) => {
         e.preventDefault();
-        const { notices } = this.props;
-        const _idOld = notices[0] && notices[0]._id;
+        const { notifications } = this.props;
+        const _idOld = notifications[0] && notifications[0]._id;
         Meteor.call(
             'setNoticeUp',
             { _id, _idOld, val },
@@ -40,14 +43,30 @@ class Read extends PureComponent {
                         {record.up ? (<span className="e-mg-notice-up">置顶</span>) : null}
                         {record.isSecrecy ? (<span className="e-mg-notice-up">保密</span>) : null}
                     </p>
-                    <p style={{ color: '#bdbdbd' }}>{format('yyyy-MM-dd ', record.createdAt)}  {record.author}</p>
+                    <p style={{ color: '#bdbdbd' }}>{record.username} {format('yyyy-MM-dd ', record.createdAt)}  {record.author}</p>
                 </div>
             ),
         }, {
             title: '状态',
-            dataIndex: 'age',
+            dataIndex: '',
             key: 'age',
-            render: () => ('88人已读 未读12人'),
+            render: (record) => {
+                const { notices } = this.props;
+                let noticed = [];
+                let isRead = 0;
+                for (let i = 0; i < notices.length; i++) {
+                    if (notices[i].logId === record._id) {
+                        noticed = notices[i].toMembers;
+                        break;
+                    }
+                }
+                noticed.forEach((item) => {
+                    if (item.isRead) {
+                        isRead++;
+                    }
+                });
+                return <span>{isRead}人已读 未读{noticed.length - isRead}人</span>;
+            },
         }, {
             title: '操作',
             key: 'action',
@@ -61,6 +80,8 @@ class Read extends PureComponent {
                     <Link to={{ pathname: '/manage/notice', state: { editData: record } }}>编辑</Link>
                     <span className="ant-divider" />
                     <a href="" className="ant-dropdown-link" onClick={e => this.reCall(e, record._id, record.up)}>撤回</a>
+                    <span className="ant-divider" />
+                    <Link to={`/manage/notice/detail/${record._id}`}>查看详情</Link>
                 </span>
             ),
         }]
@@ -82,13 +103,13 @@ class Read extends PureComponent {
         });
     }
     render() {
-        const { notices } = this.props;
+        const { notifications } = this.props;
         return (
             <Row className="margin-top-20">
                 <Table
                     rowKey="_id"
                     columns={this.getColumns()}
-                    dataSource={notices || []}
+                    dataSource={notifications || []}
                     pagination={false}
                 />
             </Row>
@@ -100,6 +121,7 @@ export default withTracker(() => {
     Meteor.subscribe('notification');
     return {
         users: Meteor.user() || {},
-        notices: notification.find({ company: Meteor.user().profile.mainCompany }, { sort: { up: -1 } }).fetch(),
+        notifications: notification.find({ company: UserUtil.getMainCompany() }, { sort: { up: -1 } }).fetch(),
+        notices: notice.find({ noticeType: '公告' }).fetch(),
     };
 })(Read);

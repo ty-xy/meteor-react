@@ -110,24 +110,6 @@ class ProjectAdd extends Component {
             selectMembers: selectMembers.map(_id => Meteor.users.findOne({ _id })),
             showSelect: false,
         });
-        // if (members.length !== 0) {
-
-        // }
-        // members.forEach((value) => {
-        //     if (value) {
-        //         Meteor.call(
-        //             'createProjectmember',
-        //             {
-        //                 projectId: this.state.uuids,
-        //                 member: value,
-        //                 memberType: '1',
-        //             },
-        //             (err) => {
-        //                 console.log(err);
-        //             },
-        //         );
-        //     }
-        // });
     }
     createProject = () => {
         const _this = this;
@@ -308,15 +290,21 @@ class ProjectAdd extends Component {
                         <div className="add-members common-type" onClick={this.handleAddMembers}>
                             <div> 项目成员:</div>
                             <div style={{ display: 'flex' }}>
-                                <MyIcon icon="icon-tianjia3 icon" size={35} />
                                 {
                                     this.state.selectMembers && this.state.selectMembers.map(user => (
                                         user ?
-                                            <Avatar key={user._id} avatarColor={user.profile && user.profile.avatarColor} name={user.profile && user.profile.name} avatar={user.profile && user.profile.avatar} />
+                                            <Avatar
+                                                style={{ marginRight: '5px' }}
+                                                key={user._id}
+                                                avatarColor={user.profile && user.profile.avatarColor}
+                                                name={user.profile && user.profile.name}
+                                                avatar={user.profile && user.profile.avatar}
+                                            />
                                             :
                                             null
                                     ))
                                 }
+                                <MyIcon icon="icon-tianjia3 icon" size={35} />
                             </div>
                             {
                                 this.state.showSelect ?

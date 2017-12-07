@@ -53,12 +53,10 @@ class Chat extends Component {
             currentKey: '',
             currentDeps: '',
             deps: '',
-            // inviteModel: true,
         };
     }
     componentWillMount() {
         const { history } = this.props;
-        // console.log('chat', 'componentWillMount');
         if (history.location.search && history.location.state === 'invite') {
             const search = location.search.slice(1).split('&');
             const searchs = {};
@@ -123,7 +121,6 @@ class Chat extends Component {
         this.setState({ to, userId, chatType });
     }
     handleToggle = (value) => {
-        // console.log(89898, value);
         this.setState({
             selectedChat: {
                 [value]: true,
@@ -162,10 +159,8 @@ class Chat extends Component {
         handleClick={this.handleClick.bind(this, 1)}
     />)
     renderChatType = (chatType) => {
-        // console.log(chatType);
         switch (chatType) {
         case 'message':
-            // console.log('aaa', this);
             return (<ChatWindow
                 to={this.state.to}
                 userId={this.state.userId}
@@ -182,7 +177,6 @@ class Chat extends Component {
         }
     }
     render() {
-        // console.log(111, this.state.chatType);
         return (
             <div className="ejianlian-chat">
                 <div className="left">
