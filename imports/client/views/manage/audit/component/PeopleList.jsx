@@ -4,14 +4,7 @@ import MyIcon from '../../../../components/Icon';
 import { userIdToInfo } from '../../../../../util/user';
 
 const colors = [
-    '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
-    '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
-    '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
-    '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
-    '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
-    '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
-    '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
-    '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
+    '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
 ];
 
 const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, required, requiredErr, companyInfo, allUsers, showModal, handlePeopleChange }) => {
@@ -21,20 +14,28 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
         if (avatar) {
             return (<img src={avatar} alt="" />);
         }
-        return <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
+        return <span style={{ background: colors[index % 4], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
     };
     // 获取群组avatar
     const getDepAvatar = (data, id) => {
         let avatar = '';
-        data.forEach((item, index) => {
-            if (item.id === id) {
-                if (item.avatar) {
-                    avatar = (<img src={item.avatar} alt="" />);
-                } else {
-                    avatar = <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{item.name}</span>;
-                }
+        if (data._id === id) {
+            if (data.avatar) {
+                avatar = (<img src={data.avatar} alt="" />);
+            } else {
+                avatar = <span style={{ background: colors[0], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{data.name}</span>;
             }
-        });
+        } else {
+            data.deps.forEach((item, index) => {
+                if (item.id === id) {
+                    if (item.avatar) {
+                        avatar = (<img src={item.avatar} alt="" />);
+                    } else {
+                        avatar = <span style={{ background: colors[index % 4], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{item.name}</span>;
+                    }
+                }
+            });
+        }
         return avatar;
     };
     // 获取depname
@@ -46,6 +47,10 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
                 depname = dep[i].name;
                 break;
             }
+            if (companyInfo._id === id) {
+                depname = dep[i].name;
+                break;
+            }
         }
         return depname;
     };
@@ -54,7 +59,7 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
             {isSelecteGroup ?
                 componentSelectedUser.map(item => (
                     <a href="" key={item} onClick={e => handlePeopleChange(e, item, keyword)} className="e-mg-audit-seleted-img">
-                        {getDepAvatar(companyInfo.deps || [], item)}
+                        {getDepAvatar(companyInfo, item)}
                         <p>{getDepartmentName(item)}</p>
                     </a>
                 )) :

@@ -3,6 +3,8 @@ import { Button, Col, Form, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
+import format from 'date-format';
+
 import Company from '../../../../../schema/company';
 import InputArea from '../../component/InputArea';
 import InputType from '../../component/InputType';
@@ -100,7 +102,6 @@ class Write extends PureComponent {
                     }
                 });
                 const toMembers = peos.map(userId => ({ userId }));
-                console.log('createNotice', fields, toMembers);
                 Meteor.call(
                     'createNotice',
                     { ...fields, toMembers },
@@ -134,16 +135,12 @@ class Write extends PureComponent {
     // 预览
     handlePreviewCancel = (bool) => {
         const { form } = this.props;
-        if (bool) {
-            const res = form.getFieldsValue();
-            if (!res.content) {
-                feedback.dealError({ reason: '尚未输入正文无法预览！' });
-            } else {
-                this.setState({ visible: bool });
+        form.validateFields((err) => {
+            if (err) {
+                return false;
             }
-        } else {
             this.setState({ visible: bool });
-        }
+        });
     }
     // select people
     showModal = (e, keyword) => {
@@ -229,8 +226,8 @@ class Write extends PureComponent {
                     onCancel={() => this.handlePreviewCancel(false)}
                     footer={null}
                     className="e-mg-notice-preview"
-                >
-                    <p>{getFieldsValue().content}</p>
+                >   <p className="margin-bottom-10 font18">{getFieldsValue().title}<span style={{ marginLeft: '10px', color: 'rgba(0, 0, 0, 0.4)', fontSize: '12px' }}>{format('yyyy-MM-dd hh:mm', new Date())}</span></p>
+                    <p>{(getFieldsValue().content || '').replace(/\n/g, '\n')}</p>
                     <p style={{ textAlign: 'right' }}>{`${year}年${month}月${day}日`}</p>
                 </Modal>
             </Form>

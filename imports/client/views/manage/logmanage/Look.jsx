@@ -83,7 +83,7 @@ class Look extends PureComponent {
                         <Col span={7}><DatePicker keyword="time" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
                     </Form>
                 </Col>
-                {data.map(item => (<CardLog key={item._id} {...item} />))}
+                {data.map((item, index) => (<CardLog key={item._id} index={index} {...item} />))}
                 {
                     data.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
                 }
@@ -105,16 +105,9 @@ Look.propTypes = {
 export default withTracker(() => {
     Meteor.subscribe('log');
     Meteor.subscribe('company');
-    const companys = Company.find().fetch();
-    let allusers = [];
+    const allusers = Company.find({ _id: UserUtil.getMainCompany() }).fetch();
     const mainCompany = UserUtil.getMainCompany();
 
-    for (let i = 0; i < companys.length; i++) {
-        if (companys[i]._id === mainCompany) {
-            allusers = companys[i].members;
-            break;
-        }
-    }
     const userId = Meteor.userId();
     let group = '';
     let AllLogs = [];
@@ -126,7 +119,7 @@ export default withTracker(() => {
     }
     const search = { peo: userId, company: mainCompany };
     const searchGroup = { group, company: mainCompany };
-    AllLogs = Log.find({ $or: [{ ...search }, { ...searchGroup }] }).fetch();
+    AllLogs = Log.find({ $or: [{ ...search }, { ...searchGroup }] }, { sort: { createdAt: -1 } }).fetch();
     AllLogs = AllLogs.filter(item => (item.userId !== Meteor.userId()));
     return {
         users: Meteor.user() || {},

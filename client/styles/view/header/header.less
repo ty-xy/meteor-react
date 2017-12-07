@@ -200,7 +200,8 @@
 .e-global-notification{
     background: #fff;
     padding: 15px 0;
-    height: 100%;
+    height: 94%;
+    overflow: auto;
     .list{
         position: relative;
         border-bottom: 1px solid #eee;
@@ -231,7 +232,7 @@
             }
             .list-desc{
                 float: left;
-                width: 85%;
+                width: 70%;
                 >.title{
                     color: #333;
                     font-size: 18px;
@@ -239,6 +240,18 @@
                 >.desc{
                     margin-top: 5px;
                     color: #666;
+                }
+            }
+            .list-pointer{
+                float: left;
+                width: 15%;
+                padding: 15px 0;
+                span{
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background: #EF5350;
+                    display: inline-block;
                 }
             }
         }
