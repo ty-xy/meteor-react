@@ -21,6 +21,7 @@ class SafeSetting extends Component {
             countDownNum: 60,
             sendBtnStatus: 0,
             BizId: '',
+            confirmDirty: false,
         };
     }
     showEditAccount = () => {
@@ -83,7 +84,7 @@ class SafeSetting extends Component {
         }
         form.validateFieldsAndScroll(async (err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+                console.log(err);
             }
             if (!values.verificationCode) {
                 return feedback.dealWarning('请输入验证码');
@@ -104,20 +105,40 @@ class SafeSetting extends Component {
             });
         });
     }
-    saveChangePassword = () => {
-        if (this.$newPassword.value && this.$newRePassword.value && this.$oldPassword.value) {
-            if (this.$newPassword.value !== this.$newRePassword.value) {
-                return feedback.dealWarning('两次输入的密码不一致');
-            }
-            Accounts.changePassword(this.$oldPassword.value, this.$newPassword.value, (err) => {
-                if (err) {
-                    return feedback.dealError(err);
+    saveChangePassword = (e) => {
+        e.preventDefault();
+        const form = this.props.form;
+
+        form.validateFieldsAndScroll(async (err, values) => {
+            Accounts.changePassword(values.oldPassword, values.newPassword, (error) => {
+                if (error) {
+                    if (error.error === 403) {
+                        return feedback.dealWarning('请输入正确的初始登录密码');
+                    }
+                    return feedback.dealError(error);
                 }
                 feedback.dealSuccess('密码修改成功');
             });
+        });
+    }
+    checkPassword = (rule, value, callback) => {
+        const form = this.props.form;
+        if (value && value !== form.getFieldValue('newPassword')) {
+            callback('两次密码输入不一致!');
         } else {
-            feedback.dealWarning('请输入密码');
+            callback();
         }
+    }
+    checkConfirm = (rule, value, callback) => {
+        const form = this.props.form;
+        if (value && this.state.confirmDirty) {
+            form.validateFields(['confirmPassword'], { force: true });
+        }
+        callback();
+    }
+    handleConfirmBlur = (e) => {
+        const value = e.target.value;
+        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
     }
     render() {
         const { username } = this.props.user;
@@ -164,20 +185,61 @@ class SafeSetting extends Component {
                     <li>
                         <label htmlFor="editPassword">修改密码</label>
                     </li>
-                    <li>
-                        <label htmlFor="oldPassword">旧密码</label>
-                        <input type="password" placeholder="请您输入旧密码" ref={i => this.$oldPassword = i} />
-                    </li>
-                    <li>
-                        <label htmlFor="newPassword">新密码</label>
-                        <input type="password" placeholder="请您输入新密码" ref={i => this.$newPassword = i} />
-                    </li>
-                    <li>
-                        <label htmlFor="newPassword">确认密码</label>
-                        <input type="password" placeholder="请您再次输入新密码" ref={i => this.$newRePassword = i} />
-                    </li>
-                    <li className="save-btn">
-                        <button onClick={this.saveChangePassword}>保存</button>
+                    <li >
+                        <Form onSubmit={this.saveChangePassword}>
+                            <FormItem
+                                {...formItemLayout}
+                                label="旧密码"
+                            >
+                                {getFieldDecorator('oldPassword', {
+                                    rules: [{
+                                        required: true,
+                                        message: '请您输入旧密码!',
+                                        pattern: regexp.passwordRe,
+                                    }, {
+                                        validator: this.checkConfirm,
+                                    }],
+                                })(
+                                    <Input type="password" />,
+                                )}
+                            </FormItem>
+                            <FormItem
+                                {...formItemLayout}
+                                label="新密码"
+                            >
+                                {getFieldDecorator('newPassword', {
+                                    rules: [{
+                                        required: true,
+                                        message: '请您输入新密码!',
+                                        pattern: regexp.passwordRe,
+                                    }, {
+                                        validator: this.checkConfirm,
+                                    }],
+                                })(
+                                    <Input type="password" />,
+                                )}
+                            </FormItem>
+                            <FormItem
+                                {...formItemLayout}
+                                label="确认密码"
+                            >
+                                {getFieldDecorator('confirmPassword', {
+                                    rules: [{
+                                        required: true,
+                                        message: '请确认你输入的新密码!',
+                                        pattern: regexp.passwordRe,
+                                    }, {
+                                        validator: this.checkPassword,
+                                    }],
+                                })(
+                                    <Input type="password" onBlur={this.handleConfirmBlur} />,
+                                )}
+                            </FormItem>
+
+                            <FormItem {...tailFormItemLayout} className="confirm-btn">
+                                <Button disabled={this.hasErrors(getFieldsError())} type="primary" htmlType="submit" >完成</Button>
+                            </FormItem>
+                        </Form>
                     </li>
                 </ul>
                 <ul>
@@ -261,8 +323,8 @@ class SafeSetting extends Component {
                                     </Row>
                                 </FormItem>
 
-                                <FormItem {...tailFormItemLayout} className="text-line">
-                                    <Button disabled={this.hasErrors(getFieldsError())} type="primary" htmlType="submit" className="register-btn">完成</Button>
+                                <FormItem {...tailFormItemLayout}>
+                                    <Button disabled={this.hasErrors(getFieldsError())} type="primary" htmlType="submit" className="confim-btn">完成</Button>
                                 </FormItem>
                             </Form>
                         </Modal>

@@ -25,28 +25,16 @@
         padding: 20px 0px;
         display: flex;
         width: 450px;
-        & > label {
-            width: 80px;
-            display: block;
-            line-height: 46px;
-            margin-right: 30px;
+        .ant-form-item-label {
+            text-align: left;
+            text-overflow: clip;
         }
-        & > input, & > select {
-            width: 340px;
-            height: 46px;
-            line-height: 46px;
-            padding: 0px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background: #29B6F6;
-            border-radius: 3px;
-            width: 340px;
-            height: 50px;
-            line-height: 50px;
-            text-align: center;
-            color: #fff;
+       .confirm-btn {
+           .ant-form-item-control  {
+               button {
+                width: 200px;
+               }
+           }
         }
     }
     .save-btn {
@@ -90,40 +78,6 @@
         position: absolute;
         right: 0;
     }
-    .edit-step-tip {
-        height: 180px;
-        margin: 30px auto;
-        text-align: center;
-        & > img {
-            width: 72%;
-            margin-top: 40px;
-        }
-    }
-    .edit-account-block {
-        width:600px;
-        height: 560px;
-    }
-    .edit-account-block1 {
-        .edit-account-block;
-    }
-    .edit-step {
-        width: 400px;
-        height: 46px;
-        line-height: 46px;
-        margin: 30px auto;
-    }
-    .input-password {
-        .edit-step;
-        .border-line;
-        display: block;
-        text-indent: 10px;
-    }
-    .next-btn {
-        .edit-step;
-        text-align: center;
-        background-color: @mainColor;
-        color: #fff;
-    }
     .code-container {
         .edit-step;
         display: flex;
@@ -143,4 +97,8 @@
             border-radius: 5px;
         }
     }
+}
+.ant-btn-primary {
+    background-color: @mainColor !important;
+    border-color: @mainColor !important;
 }
