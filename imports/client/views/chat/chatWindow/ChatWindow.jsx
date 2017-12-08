@@ -57,13 +57,17 @@ class ChatWindow extends Component {
         };
     }
     componentDidUpdate(prevProps) {
-        this.props.messages.forEach((i) => {
-            if (i.readedMembers && !i.readedMembers.includes(Meteor.userId())) {
+        for (let i = this.props.messages.length - 1; i >= 0; i--) {
+            if (!i.readed) {
                 Meteor.call('readMessage', i._id, Meteor.userId(), (err) => {
-                    console.log(err);
+                    if (err) {
+                        console.log(err);
+                    }
                 });
+            } else {
+                break;
             }
-        });
+        }
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.children.length > 0) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage) {
@@ -569,6 +573,7 @@ export default withTracker(({ to, userId }) => {
 
     const messages = Message.find({ to }).fetch();
     messages.forEach((d, i, data) => {
+        d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.showYearMonth = false;
         if (i) {
             const prev = data[i - 1];
@@ -577,6 +582,7 @@ export default withTracker(({ to, userId }) => {
             d.showYearMonth = true;
         }
     });
+
     return {
         messages,
         to,
