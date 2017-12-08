@@ -1,26 +1,32 @@
-import { Modal, message } from 'antd';
+import {
+    Modal,
+    message,
+} from 'antd';
 
 const confirm = Modal.confirm;
 
 const feedback = {
     // 抛出Meteor.error的错误处理
     dealError(err) {
-        if (err) {
-            Modal.error({
+        if (err && err.reason) {
+            return Modal.error({
                 title: '提示',
                 content: err.reason,
             });
-            return console.error(err.reason);
         }
+        return Modal.error({
+            title: '提示',
+            content: err,
+        });
     },
     dealSuccess(content) {
-        Modal.success({
+        return Modal.success({
             title: '提示',
             content,
         });
     },
     dealDelete(title, content, func) {
-        confirm({
+        return confirm({
             title: title || 'Are you sure delete this task?',
             content,
             okText: '确定',
@@ -34,17 +40,17 @@ const feedback = {
         });
     },
     dealWarning(content) {
-        Modal.warning({
+        return Modal.warning({
             title: '提示',
             content,
         });
     },
     successToast(conetnt) {
-        message.success(conetnt);
+        return message.success(conetnt);
     },
     // 成功后执行回调
     successToastFb(conetnt, fb) {
-        message.success(conetnt, 0.3, fb);
+        return message.success(conetnt, 0.3, fb);
     },
 };
 
