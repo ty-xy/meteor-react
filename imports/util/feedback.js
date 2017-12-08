@@ -8,6 +8,9 @@ const confirm = Modal.confirm;
 const feedback = {
     // 抛出Meteor.error的错误处理
     dealError(err) {
+        if (!err) {
+            return;
+        }
         if (err && err.reason) {
             return Modal.error({
                 title: '提示',
