@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Popover, Tooltip, Progress, Modal } from 'antd';
+import { Popover, Tooltip, Progress, Modal, Spin } from 'antd';
 import format from 'date-format';
 
 import Message from '../../../../../imports/schema/message';
@@ -25,7 +25,7 @@ import EmptyChat from '../../../components/EmptyChat';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
-
+let count = 1;
 @pureRender
 class ChatWindow extends Component {
     static propTypes = {
@@ -55,13 +55,14 @@ class ChatWindow extends Component {
             isNewNotice: false,
             percent: 0,
         };
+        this.onScrollHandle = null;
     }
     componentDidUpdate(prevProps) {
         for (let i = this.props.messages.length - 1; i >= 0; i--) {
             if (!i.readed) {
                 Meteor.call('readMessage', i._id, Meteor.userId(), (err) => {
                     if (err) {
-                        console.log(err);
+                        feedback.dealError(err);
                     }
                 });
             } else {
@@ -125,7 +126,39 @@ class ChatWindow extends Component {
             isShowGroupSet: !this.state.isShowGroupSet,
         });
     }
+    handleMessageListScroll = (e) => {
+        const $messageList = e.target;
+        // console.log($messageList);
+        if (this.onScrollHandle) {
+            clearTimeout(this.onScrollHandle);
+        }
+        this.onScrollHandle = setTimeout(() => {
+            console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop);
+            if ($messageList.scrollHeight !== $messageList.clientHeight && $messageList.scrollTop < 10) {
+                this.setState({ showHistoryLoading: true });
+                count++;
+                // const $$group = this.getCurrentGroup();
+                // action.getHistoryMessage(
+                //     $$group.get('_id'),
+                //     'group',
+                //     $$group.get('messages').size,
+                // ).then((res) => {
+                //     this.setState({ showHistoryLoading: false });
+                //     if (res.status === 200 && res.data.length === 0) {
+                //         message.info('没有更多消息了');
+                //     }
+                // });
+                setTimeout(() => {
+                    this.setState({ showHistoryLoading: false });
+                }, 80);
+            }
+            // action.setAutoScroll($messageList.scrollHeight - $messageList.scrollTop - $messageList.clientHeight < $messageList.clientHeight / 2);
+        }, 100);
+    }
     sendMessage = (content, type) => {
+        if (!content) {
+            return feedback.dealWarning('请输入要发送的内容');
+        }
         Meteor.call(
             'insertMessage',
             {
@@ -193,7 +226,10 @@ class ChatWindow extends Component {
 
         reader.onloadend = function () {
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
-                feedback.dealError(err);
+                if (err) {
+                    console.log(err);
+                    feedback.dealError(err);
+                }
                 if (res) {
                     sendMessage(res, 'file');
                 }
@@ -407,7 +443,13 @@ class ChatWindow extends Component {
                             </div>
                         </div>
                 }
-                <div className="chat-message-list" ref={i => this.messageList = i}>
+                {
+                    this.state.showHistoryLoading ?
+                        <Spin size="large" />
+                        :
+                        null
+                }
+                <div className="chat-message-list" ref={i => this.messageList = i} onScroll={this.handleMessageListScroll}>
                     {
                         this.props.messages.map((message, index) => (
                             <div
@@ -570,8 +612,8 @@ export default withTracker(({ to, userId }) => {
             }
         });
     }
-
-    const messages = Message.find({ to }).fetch();
+    const messages = Message.find({ to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
+    // console.log(787878, messages);
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.showYearMonth = false;
