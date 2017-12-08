@@ -39,35 +39,35 @@ class ContactList extends Component {
     componentWillUpdate(nextProps) {
         if (nextProps.allUnRead && this.props.allUnRead < nextProps.allUnRead) {
             this.sound.play();
-            console.log(3333, lastLength++);
+            // console.log(3333, lastLength++);
             // ui.playSound(false);
         }
     }
     compare = property => (a, b) => b[property] - a[property];
     deleteChat = (userId, type, unreadMessage) => {
-        // console.log(111, unreadMessage);
-
         if (unreadMessage > 0) {
-            // console.log(555, this.props.allUnRead);
             Meteor.call('readMessages', this.props.allUnRead.map(x => x._id), Meteor.userId(), (err) => {
-                console.log(333, err);
+                if (err) {
+                    return feedback.dealError(err);
+                }
                 Meteor.call('deleteChat', userId, type, (err2) => {
-                    feedback.dealError(err2);
-                    // console.log(444);
+                    if (err2) {
+                        return feedback.dealError(err2);
+                    }
                     this.props.changeTo('', '');
                 });
             });
         } else {
             Meteor.call('deleteChat', userId, type, (err2) => {
-                feedback.dealError(err2);
-                // console.log(444);
+                if (err2) {
+                    return feedback.dealError(err2);
+                }
                 this.props.changeTo('', '');
             });
         }
     }
 
     renderSound = (unreadMessage) => {
-        // console.log(unreadMessage, lastLength);
         if (unreadMessage > lastLength) {
             lastLength = unreadMessage;
             return true;
@@ -185,7 +185,6 @@ class ContactList extends Component {
         } else if (item.notice) {
             return this.renderNewFriend(item.notice, i, item.friendFrom);
         }
-        // console.error('不支持的聊天类型', item);
         return null;
     }
     render() {

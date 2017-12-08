@@ -10,7 +10,7 @@ Meteor.methods({
             from: Meteor.userId(),
             to,
             type,
-            readedMembers: [],
+            readedMembers: [Meteor.userId()],
         };
         Messages.schema.validate(newMessage);
         return Messages.insert(newMessage);
