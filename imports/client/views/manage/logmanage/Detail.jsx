@@ -46,7 +46,7 @@ class Detail extends (PureComponent || Component) {
                 logInfo = item;
             }
         });
-        const { nickname, finish, plan, help, _id, noticeId, img = [], file = [] } = logInfo;
+        const { nickname, finish, plan, help, userId, noticeId, img = [], file = [] } = logInfo;
         if (noticeId) {
             toMembers.forEach((item) => {
                 if (noticeId === item._id) {
@@ -61,14 +61,7 @@ class Detail extends (PureComponent || Component) {
             }
         });
         const colors = [
-            '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
-            '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
-            '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
-            '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
-            '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
-            '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
-            '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
-            '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
+            '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
         ];
         const styles = {
             width: '36px',
@@ -83,11 +76,14 @@ class Detail extends (PureComponent || Component) {
             <Row className="e-mg-log-details">
                 <Col span={24} className="e-mg-log-details-header">
                     <a href="" onClick={this.goback}>关闭</a>
-                    <span>{userIdToInfo.getName(allUsers, _id)}的日志</span>
+                    <span>{nickname}的日志</span>
                 </Col>
                 <Col span={24} className="e-mg-log-details-content">
                     <Col span={24} className="e-mg-log-details-area">
-                        <img src={userIdToInfo.getAvatar(allUsers, _id) || 'http://k2.jsqq.net/uploads/allimg/1706/7_170629152344_5.jpg'} width="56px" /><span className="title">{nickname}</span>
+                        {userIdToInfo.getAvatar(allUsers, userId) ?
+                            <img src={userIdToInfo.getAvatar(allUsers, userId) || '无头像'} width="36" />
+                            : <span className="e-mg-log-card-noAvatar">{(nickname || '').substr(-2, 3)}</span>
+                        }
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
                         <p>今日完成任务</p>
@@ -143,7 +139,7 @@ class Detail extends (PureComponent || Component) {
                                             <span key={item.userId}>
                                                 {userIdToInfo.getAvatar(allUsers, item.userId) ?
                                                     <img src={userIdToInfo.getAvatar(allUsers, item.userId) || '无头像'} width="36" />
-                                                    : <span style={{ ...styles, background: colors[index] }}>{userIdToInfo.getName(allUsers, item.userId).substr(-2, 3)}</span>
+                                                    : <span style={{ ...styles, background: colors[index % 4] }}>{userIdToInfo.getName(allUsers, item.userId).substr(-2, 3)}</span>
                                                 }
                                                 <p>{userIdToInfo.getName(allUsers, item.userId)}</p>
                                             </span>

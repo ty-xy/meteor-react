@@ -116,7 +116,7 @@ class MyLog extends PureComponent {
                         <Col span={7}><DatePicker keyword="time" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
                     </Form>
                 </Col>
-                {data.map(item => (<CardLog edit editLog={this.editJump} delLog={this.delLog} key={item._id} {...item} {...this.props} />))}
+                {data.map((item, index) => (<CardLog edit editLog={this.editJump} delLog={this.delLog} key={item._id} index={index} {...item} {...this.props} />))}
                 {
                     data.length === 0 && <Col className="e-mg-text-center" span={23}>暂无日志。</Col>
                 }
@@ -142,7 +142,7 @@ export default withTracker(() => {
     const userId = Meteor.userId();
     return {
         allUsers: Meteor.users.find().fetch() || [],
-        AllLogs: Log.find({ userId, company: UserUtil.getMainCompany(), cache: false }).fetch(),
+        AllLogs: Log.find({ userId, company: UserUtil.getMainCompany(), cache: false }, { sort: { createdAt: -1 } }).fetch(),
     };
 })(Form.create()(MyLog));
 

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
+import format from 'date-format';
 
 import AvatarSelf from '../../components/AvatarSelf';
 import SelectBackendTeam from '../../features/SelectBackendTeam';
@@ -20,6 +21,10 @@ import MyModel from '../manage/audit/component/MyModel';
 
 // import Notice from './Notice';
 const colors = ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'];
+const auditTypes = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
+
+const logTypes = ['日报', '月报', '周报'];
+
 
 @pureRender
 class Header extends Component {
@@ -31,6 +36,7 @@ class Header extends Component {
         currentCompanyId: PropTypes.string,
         notices: PropTypes.array,
         allUsers: PropTypes.array,
+        companys: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
@@ -97,14 +103,13 @@ class Header extends Component {
     gotoLook = (e, arg) => {
         e.preventDefault();
         const { logId, _id, noticeType } = arg;
-        const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
         this.setState({ isShowNotice: false }, () => {
             Meteor.call(
                 'readLog',
                 (_id),
                 (err) => {
                     if (!err) {
-                        if (types.indexOf(noticeType) > -1) {
+                        if (auditTypes.indexOf(noticeType) > -1) {
                             this.context.history.push('/manage/audit/approvaling');
                         } else if (noticeType === '公告') {
                             this.context.history.push(`/manage/notice/detail/${logId}`);
@@ -116,15 +121,105 @@ class Header extends Component {
             );
         });
     }
+    // 全局消息model
+    globalModel = (notices, allUsers, companys) => (
+        <div className="e-global-notification">
+            {
+                notices.map((item, index) => {
+                    const { userCompany } = item;
+                    let companyName = '';
+                    for (let i = 0; i < companys.length; i++) {
+                        if (companys[i]._id === userCompany) {
+                            companyName = companys[i].name;
+                            break;
+                        }
+                    }
+                    if (item.noticeType === '公告') {
+                        return (
+                            <div key={item._id} className="list">
+                                <p className="title">来自 &nbsp;{companyName}<span>{format('yyyy.MM.dd hh:mm', item.createdAt)}</span></p>
+                                <div className="list-content clearfix margin-top-20">
+                                    <div className="list-avatar">
+                                        {userIdToInfo.getAvatar(allUsers, item.from) ?
+                                            <img src={userIdToInfo.getAvatar(allUsers, item.from)} />
+                                            : <span className="no-avatar" style={{ background: colors[index % 4] }}>{userIdToInfo.getName(allUsers, item.from).substr(-2, 2)}</span>
+                                        }
+                                    </div>
+                                    <div className="list-desc">
+                                        <p className="title">「{item.noticeType}」— {userIdToInfo.getName(allUsers, item.from)}的{item.noticeType}</p>
+                                        <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
+                                    </div>
+                                    {!item.isRead && <div className="list-pointer"><span /></div>}
+                                </div>
+                            </div>
+                        );
+                    }
+                    return null;
+                })
+            }{
+                notices.map((item, index) => {
+                    const { toMembers = [], userCompany } = item;
+                    let isRead;
+                    for (let i = 0; i < toMembers.length; i++) {
+                        if (toMembers[i].userId === Meteor.userId()) {
+                            isRead = toMembers[i].isRead;
+                            break;
+                        }
+                    }
+                    let companyName = '';
+                    for (let i = 0; i < companys.length; i++) {
+                        if (companys[i]._id === userCompany) {
+                            companyName = companys[i].name;
+                            break;
+                        }
+                    }
+                    if (logTypes.indexOf(item.noticeType) > -1) {
+                        return (
+                            !isRead ?
+                                <div key={item._id} className="list">
+                                    <p className="title">来自 &nbsp;{companyName}<span>{format('yyyy.MM.dd hh:mm', item.createdAt)}</span></p>
+                                    <div className="list-content clearfix margin-top-20">
+                                        <div className="list-avatar">{userIdToInfo.getAvatar(allUsers, item.from) ?
+                                            <img src={userIdToInfo.getAvatar(allUsers, item.from)} />
+                                            : <span className="no-avatar" style={{ background: colors[index % 4] }}>{userIdToInfo.getName(allUsers, item.from).substr(-2, 2)}</span>
+                                        }
+                                        </div>
+                                        <div className="list-desc">
+                                            <p className="title">「{item.noticeType}」— {userIdToInfo.getName(allUsers, item.from)}的{item.noticeType}</p>
+                                            <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
+                                        </div>
+                                        {!item.isRead && <div className="list-pointer"><span /></div>}
+                                    </div>
+                                </div> : null
+                        );
+                    }
+                    return null;
+                })
+            }
+        </div>
+    )
     render() {
-        // console.log('haeder', this.props, fields.getUsername);
-        const { notices, allUsers } = this.props;
+        const { notices, allUsers, companys } = this.props;
         const { isShowNotice } = this.state;
         return (
             <div className="ejianlianHeader">
                 <div className="e-notification-wrap clearfix">
                     {
-                        notices.map(item => (<MyNotification key={item._id} {...item} {...this.props} {...this.context} />))
+                        notices.map((item) => {
+                            let isRead; let rejectRead;
+                            for (let i = 0; i < item.toMembers.length; i++) {
+                                if (item.toMembers[i].userId === Meteor.userId()) {
+                                    isRead = item.toMembers[i].isRead;
+                                    rejectRead = item.toMembers[i].rejectRead;
+                                    break;
+                                }
+                            }
+                            if (!isRead && !rejectRead) {
+                                return <MyNotification key={item._id} {...item} {...this.props} {...this.context} />;
+                            }
+                            return null;
+                        },
+                        )
                     }
                 </div>
                 <div className="ejianlian-header-bar">
@@ -189,35 +284,12 @@ class Header extends Component {
                 <MyModel
                     handleCancel={this.handleCloseNotice}
                     show={isShowNotice}
+                    mask={isShowNotice}
                     footer={<div />}
                     title="通知"
                     height="100%"
                 >
-                    <div className="e-global-notification">
-                        {
-                            notices.map((item, index) => {
-                                if (item.noticeType === '公告') {
-                                    return (
-                                        <div key={item._id} className="list">
-                                            <p className="title">来自{userIdToInfo.getName(allUsers, item.from)}<span>时间</span></p>
-                                            <div className="list-content clearfix margin-top-20">
-                                                <div className="list-avatar">{userIdToInfo.getAvatar(allUsers, item.from) ?
-                                                    <img src={userIdToInfo.getAvatar(allUsers, item.from)} />
-                                                    : <span className="no-avatar" style={{ background: colors[index % 4] }}>{userIdToInfo.getName(allUsers, item.from).substr(-2, 2)}</span>
-                                                }
-                                                </div>
-                                                <div className="list-desc">
-                                                    <p className="title">「{item.noticeType}」— {userIdToInfo.getName(allUsers, item.from)}的{item.noticeType}</p>
-                                                    <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                }
-                                return null;
-                            })
-                        }
-                    </div>
+                    {this.globalModel(notices, allUsers, companys)}
                 </MyModel>
                 {/* <Notice style={{ display: this.state.isShowNotice ? 'block' : 'none' }} handleNotice={this.handleClick} /> */}
             </div>
@@ -232,7 +304,7 @@ export default withTracker(() => {
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
     const userId = Meteor.userId();
     let notices = [];
-    notices = Notice.find({ 'toMembers.userId': userId }).fetch();
+    notices = Notice.find({ 'toMembers.userId': userId }, { sort: { createdAt: -1 } }).fetch();
     notices = notices.filter(item => (item.from !== userId));
     return {
         currentCompanyId,
