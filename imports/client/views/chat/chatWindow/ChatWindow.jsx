@@ -133,7 +133,7 @@ class ChatWindow extends Component {
             clearTimeout(this.onScrollHandle);
         }
         this.onScrollHandle = setTimeout(() => {
-            console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop);
+            // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop);
             if ($messageList.scrollHeight !== $messageList.clientHeight && $messageList.scrollTop < 10) {
                 this.setState({ showHistoryLoading: true });
                 count++;
@@ -616,6 +616,7 @@ export default withTracker(({ to, userId }) => {
     // console.log(787878, messages);
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
+        d.from = PopulateUtil.message(d.from);
         d.showYearMonth = false;
         if (i) {
             const prev = data[i - 1];
