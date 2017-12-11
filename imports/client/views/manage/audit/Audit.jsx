@@ -68,10 +68,8 @@ class Audit extends Component {
         </div>
     )
     render() {
-        const { location } = this.props;
         return (
             <div className="e-mg-audit">
-                {this.tabs(location)}
                 {this.Routes()}
             </div>
         );

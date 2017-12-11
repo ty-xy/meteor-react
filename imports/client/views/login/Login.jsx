@@ -15,11 +15,14 @@ class Login extends Component {
         location: PropTypes.object,
         form: PropTypes.object,
     }
-    componentWillReceiveProps() {
-        if (this.props.location.search) {
-            this.props.history.replace({ pathname: '/login', search: this.props.location.search, state: 'invite' });
-        }
+    componentWillMount() {
+        console.log('componentWillMount', this.props.history);
     }
+    // componentWillReceiveProps() {
+    //     if (this.props.location.search) {
+    //         this.props.history.replace({ pathname: '/login', search: this.props.location.search, state: 'invite' });
+    //     }
+    // }
     gotoRegister = () => {
         this.props.history.push({ pathname: '/register', search: this.props.location.search, state: this.props.location.search && 'invite' });
     }

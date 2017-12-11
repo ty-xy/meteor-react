@@ -26,7 +26,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         componentSelectedUser: [],
     }
     componentWillReceiveProps(nextProps) {
-        const { members = [], deps = [] } = nextProps.companyInfo;
+        const { members = [], deps = [] } = nextProps.companyInfo || {};
         const users = members.filter(item => (item.userId !== Meteor.userId()));
         const _users = [];
         let _deps = deps;
@@ -49,7 +49,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 _deps = [];
                 const companyDep = {
                     ...nextProps.companyInfo,
-                    members: nextProps.companyInfo.members.map(item => (item.userId)),
+                    members: members.map(item => (item.userId)),
                     selected: false,
                     id: nextProps.companyInfo._id,
                     isAutoChat: true,
@@ -89,7 +89,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
             });
             const companyDep = {
                 ...nextProps.companyInfo,
-                members: nextProps.companyInfo.members.map(item => (item.userId)),
+                members: members.map(item => (item.userId)),
                 selected: false,
                 id: nextProps.companyInfo._id,
                 isAutoChat: true,
