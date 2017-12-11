@@ -124,10 +124,9 @@ class Chat extends Component {
     changeTo = (to, userId, type, chatType) => {
         // 有未读消息(有用户所在的群以及发给用户的消息)且不在聊天列表时,创建新的聊天窗口
         if (type && !this.props.chatList.find(item => item[type] === userId)) {
-            Meteor.call('addChatList', userId, type, (err) => {
-                feedback.dealError(err);
-            });
+            Meteor.call('addChatList', userId, type, err => feedback.dealError(err));
         }
+        // 选中与谁的对话框
         this.handleToggle(userId);
         this.setState({ to, userId, chatType });
     }
@@ -199,7 +198,9 @@ class Chat extends Component {
                     {/* 导航部分 */}
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
-                            <SearchChat changeTo={this.changeTo} />
+                            <SearchChat
+                                changeTo={this.changeTo}
+                            />
                         </div>
                         <ul className="chat-type">
                             {

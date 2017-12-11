@@ -121,6 +121,7 @@ class ContactList extends Component {
     renderGroup = (group, lastMessage, time, type, i, unreadMessage) => (
         <div
             onClick={() => {
+                this.props.handleToggle(group._id);
                 this.props.changeTo(group._id, group._id, '', 'message');
             }}
             key={i}
@@ -163,9 +164,7 @@ class ContactList extends Component {
     renderChatListItem = (item, i) => {
         if (item.user) {
             if (item.unreadMessage > 0 && !this.props.chatList.find(j => j.user && j.user._id === item.user._id)) {
-                Meteor.call('addChatList', item.user._id, 'userId', (err) => {
-                    console.log(err);
-                });
+                Meteor.call('addChatList', item.user._id, 'userId', err => feedback.dealError(err));
             }
             return this.renderUser(item.user, item.lastMessage, item.time, item.type, i, item.unreadMessage);
         } else if (item.group) {

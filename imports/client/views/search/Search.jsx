@@ -51,16 +51,21 @@ class SearchAll extends Component {
             });
         });
     }
+    renderAllResult = () => (<div>
+        <SearchUser friends={this.state.friends} />
+        <SearchGroup groups={this.state.groups} />
+        <SearchTask tasks={this.state.tasks} />
+    </div>)
     renderSearchResult = (key) => {
         switch (key) {
         case 'all':
-            return <SearchTask />;
+            return this.renderAllResult();
         case 'user':
             return <SearchUser friends={this.state.friends} />;
         case 'group':
-            return <SearchGroup />;
+            return <SearchGroup groups={this.state.groups} />;
         case 'task':
-            return <SearchTask />;
+            return <SearchTask tasks={this.state.tasks} />;
         default:
             return <span>未知数据</span>;
         }
@@ -87,7 +92,7 @@ class SearchAll extends Component {
                             群组
                         </Menu.Item>
                         <Menu.Item key="task">
-                          任务
+                            任务
                         </Menu.Item>
                     </Menu>
                     <Content>

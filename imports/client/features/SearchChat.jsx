@@ -22,7 +22,6 @@ class SearchChat extends Component {
         };
     }
     getHighlightedText = (text, higlight) => {
-        // Split on higlight term and include term into parts, ignore case
         const parts = text.split(new RegExp(`(${higlight})`, 'gi'));
         return (<span> {parts.map((part, i) =>
             (<span key={i} style={part.toLowerCase() === higlight.toLowerCase() ? { color: '#29b6f6' } : {}}>
@@ -35,7 +34,7 @@ class SearchChat extends Component {
             searchValue: value,
         });
         Meteor.call('searchChat', value, async (err, result) => {
-            console.log(result);
+            // console.log(result);
             this.setState({
                 friends: result.friends,
                 groups: result.groups,
@@ -47,11 +46,10 @@ class SearchChat extends Component {
         });
     }
 
-    closeMenu = (e) => {
+    closeMenu = () => {
         this.setState({
             showSearchResult: false,
         });
-        e.stopProPagation();
         document.removeEventListener('click', this.closeMenu);
     }
     render() {
@@ -83,7 +81,7 @@ class SearchChat extends Component {
                                                             className="user-item-card"
                                                             key={friend._id}
                                                             onClick={() => {
-                                                                this.props.changeTo(IdUtil.merge(Meteor.userId(), friend._id), friend._id, '', 'message');
+                                                                this.props.changeTo(IdUtil.merge(Meteor.userId(), friend._id), friend._id, 'userId', 'message');
                                                             }}
                                                         >
                                                             <Avatar name={friend.profile.name} avatarColor={friend.profile.avatarColor} avatar={friend.profile.avatar} />
@@ -103,7 +101,7 @@ class SearchChat extends Component {
                                                             className="user-item-card"
                                                             key={group._id}
                                                             onClick={() => {
-                                                                this.props.changeTo(group._id, group._id, '', 'message');
+                                                                this.props.changeTo(group._id, group._id, 'groupId', 'message');
                                                             }}
                                                         >
                                                             <Avatar name={group.name} avatar={group.avatar} />
