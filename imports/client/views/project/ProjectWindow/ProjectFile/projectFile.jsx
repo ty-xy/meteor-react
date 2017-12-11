@@ -4,9 +4,10 @@ import pureRender from 'pure-render-decorator';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
-import format from 'date-format';
+// import format from 'date-format';
 
 import feedback from '../../../../../util/feedback';
+import formatDate from '../../../../../util/formatDate';
 import Icon from '../../../../components/Icon';
 import PopulateUtil from '../../../../../util/populate';
 import File from '../../../../../../imports/schema/file';
@@ -202,9 +203,7 @@ class projectTask extends Component {
                                <Col span={8}>时间</Col>
                            </Row>
                        </Col>
-                       <Col span={8} style={{ textAlign: 'center' }}>
-                        筛选
-                       </Col>
+                       <Col span={8} style={{ textAlign: 'center' }} />
                    </Row>
                    <ul>
                        {this.props.projectfile.map((item) => {
@@ -233,7 +232,7 @@ class projectTask extends Component {
                                                    {item.fileFrom}
                                                </Col>
                                                <Col span={8}>
-                                                   {format('yyyy年MM月dd日', item.createTime)}
+                                                   {formatDate.dealMessageTime(item.createdAt)}
                                                </Col>
                                            </Row>
                                        </Col>
