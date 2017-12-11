@@ -250,3 +250,16 @@
  王亚星    refactor: 优化判断消息已读和未读逻辑
  王亚星    feat: 添加通知提示音优化
  zg-xym    build results on build 35
+----------------------------------
+
+2017-12-11 09:51:40,   build 37
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    feature: 员工邀请
+ 王亚星    fix: 联系人群组头像样式bug
+ 王亚星    fix: 消息内容过长换行
+ 王亚星    config: 添加线上环境移除console配置
+ 王亚星    delete: meteor remove reywood:publish-composite
+ zg-xym    build results on build 36
