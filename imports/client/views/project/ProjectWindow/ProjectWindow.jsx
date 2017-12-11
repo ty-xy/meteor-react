@@ -116,7 +116,7 @@ class ProjectWindow extends Component {
 
                 <div className="ejianlian-body-tab">
                     <Tabs defaultActiveKey="1" className="tab-task" >
-                        <TabPane tab="任务流" key="1" style={divStyle.TabStyle}>
+                        <TabPane tab="任务流" key="1" style={divStyle.TabStyle} className="task-scroll-auto">
                             <Board pId={this.state.id} />
                             <ProjectBordAdd pId={this.state.id} />
                         </TabPane>
@@ -126,7 +126,7 @@ class ProjectWindow extends Component {
                         <TabPane tab="文件" key="3">
                             <ProjectFile pId={this.state.id} />
                         </TabPane>
-                        <TabPane tab="群聊" key="4">
+                        <TabPane tab="群聊" key="4" className="task-chat-height">
                             <ProjectChat pId={this.state.id} />
                         </TabPane>
                         <TabPane tab="动态" key="5">

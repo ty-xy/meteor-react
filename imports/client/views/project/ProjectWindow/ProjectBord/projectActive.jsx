@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { Input } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-import format from 'date-format';
+// import format from 'date-format';
 import pureRender from 'pure-render-decorator';
 
 import Avatar from '../../../../components/Avatar';
+import formatDate from '../../../../../util/formatDate';
 // import Task from '../../../../../../imports/schema/task';
 import AvatarSelf from '../../../../components/AvatarSelf';
 import Active from '../../../../../../imports/schema/active';
@@ -131,7 +132,7 @@ class ProjectMembers extends Component {
                                 <div >
                                     <p>{MarkValue.content}</p>
                                     <div style={{ display: 'flex' }}>
-                                        <span>{format('yyyy-MM-dd', MarkValue.createTime)}</span>
+                                        <span>{formatDate.dealMessageTime(MarkValue.createTime)}</span>
                                         {MarkValue.userId === Meteor.userId() ?
                                             <div>
                                                 <span>--</span>

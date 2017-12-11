@@ -129,8 +129,9 @@ class MiniCard extends Component {
     showModal = (e) => {
         this.setState({
             visible: true,
-            left: e.target.offsetLeft,
+            left: e.target.getBoundingClientRect().left,
         });
+        console.log(e.target.offsetLeft, e.target.offsetParent, e.target.getBoundingClientRect().left);
     }
     handleChangeStart =(e) => {
         e.stopPropagation();
@@ -271,7 +272,7 @@ class MiniCard extends Component {
                         onCancel={this.hideModal}
                         onOk={this.hideModal}
                         width="26.25rem"
-                        style={{ top: 220, left: this.state.left + 37, boxShadow: 'none' }}
+                        style={{ top: 230, left: this.state.left + 234, boxShadow: 'none' }}
                         mask={this.state.mask}
                         className="Moal-reset"
                         bodyStyle={{ padding: 0 }}
