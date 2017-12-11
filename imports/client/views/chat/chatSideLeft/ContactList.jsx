@@ -14,7 +14,6 @@ import UserUtil from '../../../../util/user';
 import Icon from '../../../components/Icon';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
-import NoticeSound from '../../../components/NoticeSound';
 import PopulateUtil from '../../../../util/populate';
 
 let lastLength = 0;
@@ -29,18 +28,9 @@ class ContactList extends Component {
         handleNewFriend: PropTypes.func,
         newFriendNotice: PropTypes.array,
     }
-    // constructor(...args) {
-    //     super(...args);
-    //     this.state = {
-    //         isPlay: false,
-    //     };
-    // }
-
     componentWillUpdate(nextProps) {
         if (nextProps.allUnRead && this.props.allUnRead < nextProps.allUnRead) {
             this.sound.play();
-            // console.log(3333, lastLength++);
-            // ui.playSound(false);
         }
     }
     compare = property => (a, b) => b[property] - a[property];
@@ -106,7 +96,6 @@ class ContactList extends Component {
             }}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
-            <NoticeSound isPlay={this.renderSound(unreadMessage)} />
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} />
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
@@ -143,7 +132,6 @@ class ContactList extends Component {
                     :
                     null
             }
-            <NoticeSound isPlay={this.renderSound(unreadMessage)} />
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
             <div className="user-avatar">
                 <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} name="群聊" />

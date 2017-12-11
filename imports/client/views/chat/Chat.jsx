@@ -27,6 +27,7 @@ import Icon from '../../components/Icon';
 
 import InviteModel from '../manage/audit/component/MyModel';
 
+// let count = 1;
 @pureRender
 class Chat extends Component {
     static propTypes = {
@@ -54,6 +55,7 @@ class Chat extends Component {
             currentKey: '',
             currentDeps: '',
             deps: '',
+            count: 1,
         };
     }
     componentWillMount() {
@@ -84,6 +86,14 @@ class Chat extends Component {
                 );
             }
         }
+    }
+    getMoreMessage = () => {
+        let countNum = this.state.count;
+        countNum++;
+        this.setState({
+            count: countNum,
+        });
+        // console.log(`执行函数count${this.state.count}`);
     }
     handleChatType = (chatType) => {
         this.setState({
@@ -126,6 +136,7 @@ class Chat extends Component {
             selectedChat: {
                 [value]: true,
             },
+            count: 1,
         });
     }
     // 邀请提示
@@ -168,6 +179,8 @@ class Chat extends Component {
                 changeTo={this.changeTo}
                 handleToggle={this.handleToggle}
                 handleClick={this.handleClick.bind(this, 1)}
+                getMoreMessage={this.getMoreMessage}
+                count={this.state.count}
             />);
         case 'newFriend':
             return <NewFriend />;

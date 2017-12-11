@@ -25,7 +25,6 @@ import EmptyChat from '../../../components/EmptyChat';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
-let count = 1;
 
 @pureRender
 class ChatWindow extends Component {
@@ -38,6 +37,7 @@ class ChatWindow extends Component {
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
+        getMoreMessage: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -128,7 +128,6 @@ class ChatWindow extends Component {
         });
     }
     handleMessageListScroll = (e) => {
-        // console.log(111);
         const $messageList = e.target;
         if (this.onScrollHandle) {
             clearTimeout(this.onScrollHandle);
@@ -139,7 +138,7 @@ class ChatWindow extends Component {
             // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop, $messageList.scrollHeight !== $messageList.clientHeight, $messageList.scrollTop < 10);
             if ($messageList.scrollHeight !== $messageList.clientHeight && $messageList.scrollTop < 10) {
                 this.setState({ showHistoryLoading: true });
-                count++;
+                this.props.getMoreMessage();
                 setTimeout(() => {
                     this.setState({ showHistoryLoading: false });
                 }, 80);
@@ -585,7 +584,8 @@ class ChatWindow extends Component {
     }
 }
 
-export default withTracker(({ to, userId }) => {
+export default withTracker(({ to, userId, count }) => {
+    // console.log('加载次数', count);
     Meteor.subscribe('message');
     Meteor.subscribe('group');
     Meteor.subscribe('files');
