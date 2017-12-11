@@ -156,13 +156,13 @@ class Register extends Component {
                                     rules: [{
                                         required: true,
                                         pattern: regexp.passwordRe,
-                                        message: '请输入密码!',
+                                        message: regexp.passwordTipInfo,
                                         whitespace: true,
                                     }, {
                                         validator: this.checkConfirm,
                                     }],
                                 })(
-                                    <Input type="password" placeholder="密码由6~12位数字/字母组成" />,
+                                    <Input type="password" placeholder={regexp.passwordTipInfo} />,
                                 )}
                             </FormItem>
 

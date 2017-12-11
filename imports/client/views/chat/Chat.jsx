@@ -22,6 +22,7 @@ import SearchChat from '../../features/SearchChat';
 
 import TeamMembers from './chatSideLeft/TeamMembers';
 import EmptyChat from '../../components/EmptyChat';
+import Icon from '../../components/Icon';
 
 
 import InviteModel from '../manage/audit/component/MyModel';
@@ -197,7 +198,7 @@ class Chat extends Component {
                                         onClick={this.handleClick.bind(this, index + 1)}
                                     >
                                         <p className="type-icon">
-                                            <i className={`iconfont ${item.content}`} />
+                                            <Icon icon={item.content} size={20} />
                                         </p>
                                         <p>{item.name}</p>
                                     </li>

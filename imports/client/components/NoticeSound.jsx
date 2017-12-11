@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import pureRender from 'pure-render-decorator';
 
+@pureRender
 class NoticeSound extends Component {
     static propTypes = {
         playSound: PropTypes.bool,

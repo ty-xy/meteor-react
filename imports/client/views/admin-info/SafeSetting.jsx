@@ -200,7 +200,7 @@ class SafeSetting extends Component {
                                         validator: this.checkConfirm,
                                     }],
                                 })(
-                                    <Input type="password" />,
+                                    <Input type="password" placeholder="请您输入旧密码" />,
                                 )}
                             </FormItem>
                             <FormItem
@@ -210,13 +210,13 @@ class SafeSetting extends Component {
                                 {getFieldDecorator('newPassword', {
                                     rules: [{
                                         required: true,
-                                        message: '请您输入新密码!',
+                                        message: `新${regexp.passwordTipInfo}`,
                                         pattern: regexp.passwordRe,
                                     }, {
                                         validator: this.checkConfirm,
                                     }],
                                 })(
-                                    <Input type="password" />,
+                                    <Input type="password" placeholder={`新${regexp.passwordTipInfo}`} />,
                                 )}
                             </FormItem>
                             <FormItem
@@ -232,7 +232,7 @@ class SafeSetting extends Component {
                                         validator: this.checkPassword,
                                     }],
                                 })(
-                                    <Input type="password" onBlur={this.handleConfirmBlur} />,
+                                    <Input type="password" onBlur={this.handleConfirmBlur} placeholder="请确认你输入的新密码" />,
                                 )}
                             </FormItem>
 

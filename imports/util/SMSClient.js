@@ -9,7 +9,7 @@ const smsClient = new SMSClient({
 });
 
 function createRandomCode() {
-    return Math.round(Math.random() * 10000);
+    return Math.floor(Math.random() * 900000) + 100000;
 }
 // 发送短信验证码
 function sendSMS(PhoneNumbers, TemplateCode) {

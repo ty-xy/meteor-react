@@ -235,3 +235,18 @@
  王亚星    delete: 删除多余log
  zg gwt    feature: 发送日报时只能选择所在公司大群或所在公司的群组
  zg-xym    build results on build 34
+----------------------------------
+
+2017-12-08 17:05:31,   build 36
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    Merge branch 'master' into wyx-chat
+ 王亚星    feat: 限制初始消息渲染条数
+ 王亚星    refactor: 重构消息群组模块ui
+ 王亚星    refactor: 修改短信验证码4位随机数字规则为6位
+ 王亚星    feat: 添加密码规则提示语
+ 王亚星    feat: 重构错误处理函数
+ 王亚星    feat: 添加自己发的消息默认自己已读
+ 王亚星    refactor: 优化判断消息已读和未读逻辑
+ 王亚星    feat: 添加通知提示音优化
+ zg-xym    build results on build 35
