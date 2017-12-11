@@ -263,3 +263,15 @@
  王亚星    config: 添加线上环境移除console配置
  王亚星    delete: meteor remove reywood:publish-composite
  zg-xym    build results on build 36
+----------------------------------
+
+2017-12-11 18:27:00,   build 38
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    refactor: 重构提示音组件
+ 王亚星    feat: 点击logo跳转到消息模块
+ 王亚星    feat: 添加点击搜索到的好友和群组跳到对应的聊天窗口
+ 王亚星    fix: 加载更多消息的时候不自动跳到最后一条消息
+ 王亚星    feat: 添加消息上拉加载更多功能
+ 王亚星    fix: 修复点击聊天窗口无法将未读变为已读状态bug
+ zg-xym    build results on build 37
