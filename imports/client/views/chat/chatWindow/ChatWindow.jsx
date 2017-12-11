@@ -60,8 +60,8 @@ class ChatWindow extends Component {
     }
     componentDidUpdate(prevProps) {
         for (let i = this.props.messages.length - 1; i >= 0; i--) {
-            if (!i.readed) {
-                Meteor.call('readMessage', i._id, Meteor.userId(), (err) => {
+            if (!this.props.messages[i].readed) {
+                Meteor.call('readMessage', this.props.messages[i]._id, Meteor.userId(), (err) => {
                     if (err) {
                         feedback.dealError(err);
                     }
@@ -605,7 +605,7 @@ export default withTracker(({ to, userId }) => {
         });
     }
     const messages = Message.find({ to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
-    // console.log(787878, messages);
+
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.from = PopulateUtil.message(d.from);
@@ -617,7 +617,7 @@ export default withTracker(({ to, userId }) => {
             d.showYearMonth = true;
         }
     });
-
+    // console.log(787878, messages);
     return {
         messages,
         to,
