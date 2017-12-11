@@ -25,7 +25,6 @@ import EmptyChat from '../../../components/EmptyChat';
 
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
-let count = 1;
 
 @pureRender
 class ChatWindow extends Component {
@@ -38,6 +37,8 @@ class ChatWindow extends Component {
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
+        getMoreMessage: PropTypes.func,
+        count: PropTypes.number,
     }
     constructor(...args) {
         super(...args);
@@ -60,8 +61,8 @@ class ChatWindow extends Component {
     }
     componentDidUpdate(prevProps) {
         for (let i = this.props.messages.length - 1; i >= 0; i--) {
-            if (!i.readed) {
-                Meteor.call('readMessage', i._id, Meteor.userId(), (err) => {
+            if (!this.props.messages[i].readed) {
+                Meteor.call('readMessage', this.props.messages[i]._id, Meteor.userId(), (err) => {
                     if (err) {
                         feedback.dealError(err);
                     }
@@ -72,7 +73,7 @@ class ChatWindow extends Component {
         }
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.children.length > 0) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
-            if ($lastMessage) {
+            if ($lastMessage && this.props.count === 1) {
                 // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
                 $lastMessage.scrollIntoView(true);
             }
@@ -128,7 +129,6 @@ class ChatWindow extends Component {
         });
     }
     handleMessageListScroll = (e) => {
-        // console.log(111);
         const $messageList = e.target;
         if (this.onScrollHandle) {
             clearTimeout(this.onScrollHandle);
@@ -139,7 +139,7 @@ class ChatWindow extends Component {
             // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop, $messageList.scrollHeight !== $messageList.clientHeight, $messageList.scrollTop < 10);
             if ($messageList.scrollHeight !== $messageList.clientHeight && $messageList.scrollTop < 10) {
                 this.setState({ showHistoryLoading: true });
-                count++;
+                this.props.getMoreMessage();
                 setTimeout(() => {
                     this.setState({ showHistoryLoading: false });
                 }, 80);
@@ -437,7 +437,7 @@ class ChatWindow extends Component {
                 }
                 {
                     this.state.showHistoryLoading ?
-                        <Spin size="large" />
+                        <Spin />
                         :
                         null
                 }
@@ -585,7 +585,8 @@ class ChatWindow extends Component {
     }
 }
 
-export default withTracker(({ to, userId }) => {
+export default withTracker(({ to, userId, count }) => {
+    // console.log('加载次数', count);
     Meteor.subscribe('message');
     Meteor.subscribe('group');
     Meteor.subscribe('files');
@@ -605,7 +606,7 @@ export default withTracker(({ to, userId }) => {
         });
     }
     const messages = Message.find({ to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
-    // console.log(787878, messages);
+
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.from = PopulateUtil.message(d.from);
@@ -617,7 +618,7 @@ export default withTracker(({ to, userId }) => {
             d.showYearMonth = true;
         }
     });
-
+    // console.log(787878, messages);
     return {
         messages,
         to,
