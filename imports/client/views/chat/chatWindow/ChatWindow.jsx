@@ -26,6 +26,7 @@ import EmptyChat from '../../../components/EmptyChat';
 // import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
 let count = 1;
+
 @pureRender
 class ChatWindow extends Component {
     static propTypes = {
@@ -127,33 +128,24 @@ class ChatWindow extends Component {
         });
     }
     handleMessageListScroll = (e) => {
+        // console.log(111);
         const $messageList = e.target;
-        // console.log($messageList);
         if (this.onScrollHandle) {
             clearTimeout(this.onScrollHandle);
         }
+        // this.tt = Date.now();
         this.onScrollHandle = setTimeout(() => {
-            // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop);
+            // console.log('耗时', Date.now() - this.tt);
+            // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop, $messageList.scrollHeight !== $messageList.clientHeight, $messageList.scrollTop < 10);
             if ($messageList.scrollHeight !== $messageList.clientHeight && $messageList.scrollTop < 10) {
                 this.setState({ showHistoryLoading: true });
                 count++;
-                // const $$group = this.getCurrentGroup();
-                // action.getHistoryMessage(
-                //     $$group.get('_id'),
-                //     'group',
-                //     $$group.get('messages').size,
-                // ).then((res) => {
-                //     this.setState({ showHistoryLoading: false });
-                //     if (res.status === 200 && res.data.length === 0) {
-                //         message.info('没有更多消息了');
-                //     }
-                // });
                 setTimeout(() => {
                     this.setState({ showHistoryLoading: false });
                 }, 80);
             }
             // action.setAutoScroll($messageList.scrollHeight - $messageList.scrollTop - $messageList.clientHeight < $messageList.clientHeight / 2);
-        }, 100);
+        }, 300);
     }
     sendMessage = (content, type) => {
         if (!content) {
