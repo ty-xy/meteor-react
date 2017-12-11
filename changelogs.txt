@@ -275,3 +275,10 @@
  王亚星    feat: 添加消息上拉加载更多功能
  王亚星    fix: 修复点击聊天窗口无法将未读变为已读状态bug
  zg-xym    build results on build 37
+----------------------------------
+
+2017-12-11 18:37:37,   build 39
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg-xym    build results on build 38
