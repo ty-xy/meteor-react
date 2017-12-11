@@ -107,6 +107,8 @@ class Write extends PureComponent {
                     }
                 });
                 const toMembers = peos.map(userId => ({ userId }));
+                fields.content = fields.content.replace(/[\n\r]/g, '<br/>');
+                console.log('fields', fields, fields.plan);
                 Meteor.call(
                     'createNotice',
                     { ...fields, toMembers },
