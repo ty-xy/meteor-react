@@ -38,6 +38,7 @@ class ChatWindow extends Component {
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
         getMoreMessage: PropTypes.func,
+        count: PropTypes.number,
     }
     constructor(...args) {
         super(...args);
@@ -72,7 +73,7 @@ class ChatWindow extends Component {
         }
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.children.length > 0) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
-            if ($lastMessage) {
+            if ($lastMessage && this.props.count === 1) {
                 // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
                 $lastMessage.scrollIntoView(true);
             }
@@ -436,7 +437,7 @@ class ChatWindow extends Component {
                 }
                 {
                     this.state.showHistoryLoading ?
-                        <Spin size="large" />
+                        <Spin />
                         :
                         null
                 }
