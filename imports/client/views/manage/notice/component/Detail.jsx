@@ -2,12 +2,9 @@ import React, { PureComponent, Component } from 'react';
 import { Row, Col } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-import { userIdToInfo } from '../../../../util/user';
-import Notice from '../../../../schema/notice';
-import Log from '../../../../schema/log';
-import File from '../../../../schema/file';
-
-import ImageViewer from '../../../features/ImageViewer';
+import { userIdToInfo } from '../../../../../util/user';
+import Notice from '../../../../../schema/notice';
+import Notifications from '../../../../../schema/notification';
 
 
 class Detail extends (PureComponent || Component) {
@@ -16,8 +13,9 @@ class Detail extends (PureComponent || Component) {
     }
     componentDidMount() {
         const { id } = this.props.match.params || {};
-        const { toMembers } = this.props;
-        toMembers.forEach((item) => {
+        const { notices, notifications } = this.props;
+        console.log('componentDidMount', notifications, notices);
+        notices.forEach((item) => {
             if (item.logId === id) {
                 Meteor.call(
                     'readLog',
@@ -30,25 +28,20 @@ class Detail extends (PureComponent || Component) {
         e.preventDefault();
         this.props.history.goBack();
     }
-    closeImageViewer = (index, bool) => {
-        this.setState({
-            [`showImgViewer${index}`]: bool,
-        });
-    }
     render() {
         const { id } = this.props.match.params || {};
         let logInfo = {};
         let members = [];
-        const { allUsers, toMembers, logs } = this.props;
-
-        logs.forEach((item) => {
+        const { allUsers, notices, notifications } = this.props;
+        // console.log('detail', this.props);
+        notifications.forEach((item) => {
             if (item._id === id) {
                 logInfo = item;
             }
         });
-        const { nickname, finish, plan, help, userId, noticeId, img = [], file = [] } = logInfo;
+        const { title, noticeId, content, userId, username } = logInfo;
         if (noticeId) {
-            toMembers.forEach((item) => {
+            notices.forEach((item) => {
                 if (noticeId === item._id) {
                     members = item.toMembers;
                 }
@@ -76,59 +69,23 @@ class Detail extends (PureComponent || Component) {
             <Row className="e-mg-log-details">
                 <Col span={24} className="e-mg-log-details-header">
                     <a href="" onClick={this.goback}>关闭</a>
-                    <span>{nickname}的日志</span>
+                    <span>{userIdToInfo.getName(allUsers, userId)}发布的公告</span>
                 </Col>
                 <Col span={24} className="e-mg-log-details-content">
                     <Col span={24} className="e-mg-log-details-area">
                         {userIdToInfo.getAvatar(allUsers, userId) ?
                             <img src={userIdToInfo.getAvatar(allUsers, userId) || '无头像'} width="36" />
-                            : <span className="e-mg-log-card-noAvatar">{(nickname || '').substr(-2, 3)}</span>
+                            : <span className="e-mg-log-card-noAvatar">{(username || '').substr(-2, 3)}</span>
                         }
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
-                        <p>今日完成任务</p>
-                        <p>{finish || '暂无输入'}</p>
+                        <p>题目</p>
+                        <p>{title || '暂无内容'}</p>
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
-                        <p>未完成任务</p>
-                        <p>{plan || '暂无输入'}</p>
+                        <p>内容</p>
+                        <p>{content || '暂无内容'}</p>
                     </Col>
-                    <Col span={24} className="e-mg-log-details-area">
-                        <p>需要协调的任务</p>
-                        <p>{help || '暂无输入'}</p>
-                    </Col>
-                    {
-                        img.length ? <Col span={24} className="margin-top-20">
-                            <p>图片</p>
-                            {img.map((item, index) => (<span key={item}>
-                                <span className="margin-right-10">
-                                    <img
-                                        width="80"
-                                        src={`http://oxldjnom8.bkt.clouddn.com/${item}`}
-                                        ref={i => this.img = i}
-                                        onLoad={this.imageLoad}
-                                        onDoubleClick={() => this.closeImageViewer(index, true)}
-                                        onError={() => this.img.src = 'http://oxldjnom8.bkt.clouddn.com/404Img.jpeg'}
-                                    />
-                                </span>
-                                {
-                                    this.state[`showImgViewer${index}`] ?
-                                        <ImageViewer
-                                            download
-                                            image={`http://oxldjnom8.bkt.clouddn.com/${item}`}
-                                            closeImage={() => this.closeImageViewer(index, false)}
-                                        />
-                                        : null
-                                }
-                            </span>))}
-                        </Col> : null
-                    }
-                    {
-                        file.length ? <Col span={24} className="e-mg-log-details-area">
-                            <p>附件</p>
-                            {file.map(item => (<p key={item}><a download href={File.findOne({ _id: item }) && File.findOne({ _id: item }).url}>{File.findOne({ _id: item }) && File.findOne({ _id: item }).name}</a></p>))}
-                        </Col> : null
-                    }
                     <Col span={24} className="e-mg-log-details-footer">
                         <p>{num}人已读</p>
                         <Col span={24} data-peos={members}>
@@ -155,16 +112,18 @@ class Detail extends (PureComponent || Component) {
         );
     }
 }
+Detail.propTypes = {
+
+    // notifications: PropTypes.array,
+};
 export default withTracker(() => {
     Meteor.subscribe('users');
     Meteor.subscribe('notice');
-    Meteor.subscribe('log');
-    Meteor.subscribe('files');
+    Meteor.subscribe('notification');
     return {
         allUsers: Meteor.users.find().fetch(),
-        toMembers: Notice.find().fetch(),
-        logs: Log.find().fetch(),
-        files: File.find().fetch(),
+        notices: Notice.find({ noticeType: '公告' }).fetch(),
+        notifications: Notifications.find().fetch(),
     };
 })(Detail);
 

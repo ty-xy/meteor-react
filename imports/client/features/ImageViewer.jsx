@@ -10,6 +10,7 @@ class ImageViewer extends Component {
     static propTypes = {
         image: PropTypes.string,
         closeImage: PropTypes.func,
+        download: PropTypes.bool,
     };
 
     constructor(...args) {
@@ -19,13 +20,18 @@ class ImageViewer extends Component {
             rotate: 0,
         };
     }
-
+    // 下载
+    handleDownload = (image) => {
+        const a = document.createElement('a');
+        a.href = image;
+        a.setAttribute('download', 'title');
+        a.click();
+    }
     renderImageViewer = () => {
-        const { image } = this.props;
+        const { image, download } = this.props;
         let offsetX = 0;
         let offsetY = 0;
         const { scale, rotate } = this.state;
-
         return (
             <div className="image-viewer container-wrap">
                 <div className="image-title">
@@ -68,6 +74,11 @@ class ImageViewer extends Component {
                     >
                         <Icon icon="icon-xuanzhuan" size={30} iconColor="#fff" />
                     </span>
+                    {download && <span
+                        onClick={() => this.handleDownload(image)}
+                    >
+                        <Icon icon="icon-xiazai" size={30} iconColor="#fff" />
+                    </span>}
                 </div>
             </div>
         );

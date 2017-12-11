@@ -14,7 +14,6 @@ import UserUtil from '../../../../util/user';
 import Icon from '../../../components/Icon';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
-import NoticeSound from '../../../components/NoticeSound';
 import PopulateUtil from '../../../../util/populate';
 
 let lastLength = 0;
@@ -29,45 +28,36 @@ class ContactList extends Component {
         handleNewFriend: PropTypes.func,
         newFriendNotice: PropTypes.array,
     }
-    // constructor(...args) {
-    //     super(...args);
-    //     this.state = {
-    //         isPlay: false,
-    //     };
-    // }
-
     componentWillUpdate(nextProps) {
         if (nextProps.allUnRead && this.props.allUnRead < nextProps.allUnRead) {
             this.sound.play();
-            console.log(3333, lastLength++);
-            // ui.playSound(false);
         }
     }
     compare = property => (a, b) => b[property] - a[property];
     deleteChat = (userId, type, unreadMessage) => {
-        // console.log(111, unreadMessage);
-
         if (unreadMessage > 0) {
-            // console.log(555, this.props.allUnRead);
             Meteor.call('readMessages', this.props.allUnRead.map(x => x._id), Meteor.userId(), (err) => {
-                console.log(333, err);
+                if (err) {
+                    return feedback.dealError(err);
+                }
                 Meteor.call('deleteChat', userId, type, (err2) => {
-                    feedback.dealError(err2);
-                    // console.log(444);
+                    if (err2) {
+                        return feedback.dealError(err2);
+                    }
                     this.props.changeTo('', '');
                 });
             });
         } else {
             Meteor.call('deleteChat', userId, type, (err2) => {
-                feedback.dealError(err2);
-                // console.log(444);
+                if (err2) {
+                    return feedback.dealError(err2);
+                }
                 this.props.changeTo('', '');
             });
         }
     }
 
     renderSound = (unreadMessage) => {
-        // console.log(unreadMessage, lastLength);
         if (unreadMessage > lastLength) {
             lastLength = unreadMessage;
             return true;
@@ -106,7 +96,6 @@ class ContactList extends Component {
             }}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
-            <NoticeSound isPlay={this.renderSound(unreadMessage)} />
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} />
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
@@ -132,6 +121,7 @@ class ContactList extends Component {
     renderGroup = (group, lastMessage, time, type, i, unreadMessage) => (
         <div
             onClick={() => {
+                this.props.handleToggle(group._id);
                 this.props.changeTo(group._id, group._id, '', 'message');
             }}
             key={i}
@@ -143,7 +133,6 @@ class ContactList extends Component {
                     :
                     null
             }
-            <NoticeSound isPlay={this.renderSound(unreadMessage)} />
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
             <div className="user-avatar">
                 <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} name="群聊" />
@@ -175,9 +164,7 @@ class ContactList extends Component {
     renderChatListItem = (item, i) => {
         if (item.user) {
             if (item.unreadMessage > 0 && !this.props.chatList.find(j => j.user && j.user._id === item.user._id)) {
-                Meteor.call('addChatList', item.user._id, 'userId', (err) => {
-                    console.log(err);
-                });
+                Meteor.call('addChatList', item.user._id, 'userId', err => feedback.dealError(err));
             }
             return this.renderUser(item.user, item.lastMessage, item.time, item.type, i, item.unreadMessage);
         } else if (item.group) {
@@ -185,7 +172,6 @@ class ContactList extends Component {
         } else if (item.notice) {
             return this.renderNewFriend(item.notice, i, item.friendFrom);
         }
-        // console.error('不支持的聊天类型', item);
         return null;
     }
     render() {

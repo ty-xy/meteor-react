@@ -62,7 +62,7 @@ class Invite extends PureComponent {
             }
             k = 0;
             this.setState({ nums: [0], ...values, ...req });
-            this.props.postInvite(false, 'inviteModel', phons);
+            this.props.postInvite(false, 'inviteModel', phons, this.urls());
         }
     }
     // 增加输入框

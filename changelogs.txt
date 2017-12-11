@@ -189,3 +189,77 @@
  zg xym    Merge branch 'wyx-chat' into 'master'
  王亚星    refactor: 修改短信验证结果语义化变量
  zg-xym    build results on build 28
+----------------------------------
+
+2017-12-06 15:39:26,   build 30
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    feat:群聊板块初步完成
+ zg-xym    build results on build 29
+----------------------------------
+
+2017-12-07 10:06:43,   build 31
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    feature: header组件添加fields字段过滤
+ zg gwt    feature: 全局通知中增加公告显示， 以及查看详情页面
+ zg gwt    feature: 添加图片预览下载，日志详情中添加图片预览
+ zg-xym    build results on build 30
+----------------------------------
+
+2017-12-07 15:36:16,   build 32
+
+ zg-xym    build results on build 31
+----------------------------------
+
+2017-12-07 17:12:47,   build 33
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    Merge branch 'master' into wyx-chat
+ 王亚星    fix: 修改个人资料部分性别默认值
+ 王亚星    refactor: 重构修改密码部分
+ zg-xym    build results on build 32
+----------------------------------
+
+2017-12-07 18:30:55,   build 34
+
+ zg-xym    build results on build 33
+----------------------------------
+
+2017-12-07 19:18:19,   build 35
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ 王亚星    delete: 删除多余log
+ zg gwt    feature: 发送日报时只能选择所在公司大群或所在公司的群组
+ zg-xym    build results on build 34
+----------------------------------
+
+2017-12-08 17:05:31,   build 36
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    Merge branch 'master' into wyx-chat
+ 王亚星    feat: 限制初始消息渲染条数
+ 王亚星    refactor: 重构消息群组模块ui
+ 王亚星    refactor: 修改短信验证码4位随机数字规则为6位
+ 王亚星    feat: 添加密码规则提示语
+ 王亚星    feat: 重构错误处理函数
+ 王亚星    feat: 添加自己发的消息默认自己已读
+ 王亚星    refactor: 优化判断消息已读和未读逻辑
+ 王亚星    feat: 添加通知提示音优化
+ zg-xym    build results on build 35
+----------------------------------
+
+2017-12-11 09:51:40,   build 37
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    feature: 员工邀请
+ 王亚星    fix: 联系人群组头像样式bug
+ 王亚星    fix: 消息内容过长换行
+ 王亚星    config: 添加线上环境移除console配置
+ 王亚星    delete: meteor remove reywood:publish-composite
+ zg-xym    build results on build 36

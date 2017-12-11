@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Popover, Tooltip, Progress, Modal } from 'antd';
+import { Popover, Tooltip, Progress, Modal, Spin } from 'antd';
 import format from 'date-format';
 
 import Message from '../../../../../imports/schema/message';
@@ -37,6 +37,8 @@ class ChatWindow extends Component {
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
+        getMoreMessage: PropTypes.func,
+        count: PropTypes.number,
     }
     constructor(...args) {
         super(...args);
@@ -55,18 +57,23 @@ class ChatWindow extends Component {
             isNewNotice: false,
             percent: 0,
         };
+        this.onScrollHandle = null;
     }
     componentDidUpdate(prevProps) {
-        this.props.messages.forEach((i) => {
-            if (i.readedMembers && !i.readedMembers.includes(Meteor.userId())) {
-                Meteor.call('readMessage', i._id, Meteor.userId(), (err) => {
-                    console.log(err);
+        for (let i = this.props.messages.length - 1; i >= 0; i--) {
+            if (!this.props.messages[i].readed) {
+                Meteor.call('readMessage', this.props.messages[i]._id, Meteor.userId(), (err) => {
+                    if (err) {
+                        feedback.dealError(err);
+                    }
                 });
+            } else {
+                break;
             }
-        });
+        }
         if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.children.length > 0) {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
-            if ($lastMessage) {
+            if ($lastMessage && this.props.count === 1) {
                 // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
                 $lastMessage.scrollIntoView(true);
             }
@@ -121,7 +128,29 @@ class ChatWindow extends Component {
             isShowGroupSet: !this.state.isShowGroupSet,
         });
     }
+    handleMessageListScroll = (e) => {
+        const $messageList = e.target;
+        if (this.onScrollHandle) {
+            clearTimeout(this.onScrollHandle);
+        }
+        // this.tt = Date.now();
+        this.onScrollHandle = setTimeout(() => {
+            // console.log('耗时', Date.now() - this.tt);
+            // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop, $messageList.scrollHeight !== $messageList.clientHeight, $messageList.scrollTop < 10);
+            if ($messageList.scrollHeight !== $messageList.clientHeight && $messageList.scrollTop < 10) {
+                this.setState({ showHistoryLoading: true });
+                this.props.getMoreMessage();
+                setTimeout(() => {
+                    this.setState({ showHistoryLoading: false });
+                }, 80);
+            }
+            // action.setAutoScroll($messageList.scrollHeight - $messageList.scrollTop - $messageList.clientHeight < $messageList.clientHeight / 2);
+        }, 300);
+    }
     sendMessage = (content, type) => {
+        if (!content) {
+            return feedback.dealWarning('请输入要发送的内容');
+        }
         Meteor.call(
             'insertMessage',
             {
@@ -189,7 +218,10 @@ class ChatWindow extends Component {
 
         reader.onloadend = function () {
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
-                feedback.dealError(err);
+                if (err) {
+                    console.log(err);
+                    feedback.dealError(err);
+                }
                 if (res) {
                     sendMessage(res, 'file');
                 }
@@ -403,7 +435,13 @@ class ChatWindow extends Component {
                             </div>
                         </div>
                 }
-                <div className="chat-message-list" ref={i => this.messageList = i}>
+                {
+                    this.state.showHistoryLoading ?
+                        <Spin />
+                        :
+                        null
+                }
+                <div className="chat-message-list" ref={i => this.messageList = i} onScroll={this.handleMessageListScroll}>
                     {
                         this.props.messages.map((message, index) => (
                             <div
@@ -547,7 +585,8 @@ class ChatWindow extends Component {
     }
 }
 
-export default withTracker(({ to, userId }) => {
+export default withTracker(({ to, userId, count }) => {
+    // console.log('加载次数', count);
     Meteor.subscribe('message');
     Meteor.subscribe('group');
     Meteor.subscribe('files');
@@ -566,9 +605,11 @@ export default withTracker(({ to, userId }) => {
             }
         });
     }
+    const messages = Message.find({ to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
 
-    const messages = Message.find({ to }).fetch();
     messages.forEach((d, i, data) => {
+        d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
+        d.from = PopulateUtil.message(d.from);
         d.showYearMonth = false;
         if (i) {
             const prev = data[i - 1];
@@ -577,6 +618,7 @@ export default withTracker(({ to, userId }) => {
             d.showYearMonth = true;
         }
     });
+    // console.log(787878, messages);
     return {
         messages,
         to,

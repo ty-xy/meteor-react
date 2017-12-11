@@ -4,20 +4,13 @@ import { Meteor } from 'meteor/meteor';
 import { Modal, Select, Row, Tag, Checkbox, Button } from 'antd';
 import { withTracker } from 'meteor/react-meteor-data';
 import Company from '../../schema/company';
-import { userIdToInfo } from '../../util/user';
+import UserUtil, { userIdToInfo } from '../../util/user';
 
 const Option = Select.Option;
 
 
 const colors = [
-    '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
-    '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
-    '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
-    '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
-    '#7986CB', '#4DB6AC', '#9575CD', '#F06292', '#7986CB',
-    '#4DB6AC', '#9575CD', '#F06292', '#7986CB', '#4DB6AC',
-    '#9575CD', '#F06292', '#7986CB', '#4DB6AC', '#9575CD',
-    '#F06292', '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
+    '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
 ];
 
 class ChoosePeopleModel extends (PureComponent || Component) {
@@ -25,21 +18,15 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         visible: false,
         users: [],
         deps: [],
-        companyInfo: {},
+        companyInfo: {
+            members: [],
+            deps: [],
+        },
         leftUsers: [],
         componentSelectedUser: [],
     }
-    componentWillMount() {
-        const { companyInfo } = this.props;
-        const { members = [], deps = [] } = companyInfo;
-        this.setState({
-            users: members.filter(item => (item.userId !== Meteor.userId())),
-            deps,
-            companyInfo,
-        });
-    }
     componentWillReceiveProps(nextProps) {
-        const { members = [], deps = [] } = nextProps.companyInfo;
+        const { members = [], deps = [] } = nextProps.companyInfo || {};
         const users = members.filter(item => (item.userId !== Meteor.userId()));
         const _users = [];
         let _deps = deps;
@@ -60,30 +47,57 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 });
             } else {
                 _deps = [];
+                const companyDep = {
+                    ...nextProps.companyInfo,
+                    members: members.map(item => (item.userId)),
+                    selected: false,
+                    id: nextProps.companyInfo._id,
+                    isAutoChat: true,
+                };
                 deps.forEach((j) => {
                     for (let i = 0, item = nextProps.defaultValue; i < item.length; i++) {
                         if (item[i] === j.id) {
                             j.selected = true;
                             leftUsers.push(item[i]);
                             break;
+                        } else if (item[i] === companyDep.id) {
+                            companyDep.selected = true;
                         } else {
                             j.selected = false;
                         }
                     }
-                    _deps.push(j);
+                    if (j.members.indexOf(Meteor.userId()) > -1) {
+                        _deps.push(j);
+                    }
                 });
+                _deps.unshift(companyDep);
             }
+
             this.setState({
                 users: _users,
                 deps: _deps,
                 leftUsers,
             });
         } else {
+            _deps = [];
             users.forEach((j) => { j.selected = false; });
-            deps.forEach((j) => { j.selected = false; });
+            deps.forEach((j) => {
+                if (j.members.indexOf(Meteor.userId()) > -1) {
+                    j.selected = false;
+                    _deps.push(j);
+                }
+            });
+            const companyDep = {
+                ...nextProps.companyInfo,
+                members: members.map(item => (item.userId)),
+                selected: false,
+                id: nextProps.companyInfo._id,
+                isAutoChat: true,
+            };
+            _deps.unshift(companyDep);
             this.setState({
                 users,
-                deps,
+                deps: _deps,
                 leftUsers,
             });
         }
@@ -261,16 +275,6 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         }
     }
     // 选中的人
-    getTimeSelected = () => {
-        const res = [];
-        this.state.users.forEach((item) => {
-            if (item.selected) {
-                res.push(item.userId);
-            }
-        });
-        return res;
-    }
-    // 选中的人
     getSelected = (keyword) => {
         this.setState({ componentSelectedUser: this.state.leftUsers, visible: false });
         this.props.ok(keyword, this.state.leftUsers);
@@ -281,7 +285,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         if (avatar) {
             return (<img src={avatar} alt="" />);
         }
-        return <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
+        return <span style={{ background: colors[index % 4], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
     }
     // 获取群组avatar
     getDepAvatar = (id) => {
@@ -292,7 +296,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 if (item.avatar) {
                     avatar = (<img src={item.avatar} alt="" />);
                 } else {
-                    avatar = <span style={{ background: colors[index], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{item.name}</span>;
+                    avatar = <span style={{ background: colors[index % 4], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{item.name}</span>;
                 }
             }
         });
@@ -300,7 +304,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
     }
     render() {
         const { allUsers, keyword, isSelecteGroup, modelTitle } = this.props;
-        const { name } = this.props.companyInfo;
+        const { name } = this.props.companyInfo || {};
         const { depVal, users, deps, checked, allNum, leftUsers } = this.state;
         // isSelecteGroup 是否为选择群组
         // 用户列表
@@ -347,7 +351,6 @@ class ChoosePeopleModel extends (PureComponent || Component) {
             }
             return depname;
         };
-        // console.log('stete', this.state);
         return (
             <div>
                 {this.props.children}
@@ -419,16 +422,9 @@ ChoosePeopleModel.propTypes = {
 export default withTracker(() => {
     Meteor.subscribe('company');
     Meteor.subscribe('users');
-    const companys = Company.find().fetch();
-    const mainCompany = Meteor.user() && Meteor.user().profile.mainCompany;
-    let companyInfo = {};
-    companys.forEach((item) => {
-        if (item._id === mainCompany) {
-            companyInfo = item;
-        }
-    });
+    const companys = Company.find({ _id: UserUtil.getMainCompany() }).fetch();
     return {
-        companyInfo,
+        companyInfo: Company.findOne({ _id: UserUtil.getMainCompany() }),
         companys,
         allUsers: Meteor.users.find().fetch(),
     };

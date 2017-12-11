@@ -2,31 +2,36 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
+import { Form, Input, Row, Col, Button, Modal } from 'antd';
+import { Accounts } from 'meteor/accounts-base';
 
-import Icon from '../../components/Icon';
 import feedback from '../../../util/feedback';
+import regexp from '../../../util/regexp';
 
-
+const FormItem = Form.Item;
 class SafeSetting extends Component {
     static propTypes = {
         user: PropTypes.object,
+        form: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
         this.state = {
             isShowEditAccount: false,
-            isShowEditAccountStep2: false,
+            countDownNum: 60,
+            sendBtnStatus: 0,
+            BizId: '',
+            confirmDirty: false,
         };
     }
-    handleEditAccount = () => {
+    showEditAccount = () => {
         this.setState({
-            isShowEditAccount: !this.state.isShowEditAccount,
+            isShowEditAccount: true,
         });
     }
-    handleShowEditAccountStep2 = () => {
+    closeEditAccount = () => {
         this.setState({
             isShowEditAccount: false,
-            isShowEditAccountStep2: !this.state.isShowEditAccountStep2,
         });
     }
     saveChangeUserName = () => {
@@ -38,37 +43,138 @@ class SafeSetting extends Component {
             feedback.dealSuccess('用户名修改成功');
         });
         this.setState({
-            isShowEditAccount: false,
             isShowEditAccountStep2: false,
         });
     }
-    saveChangePassword = () => {
-        if (this.$newPassword.value && this.$newRePassword.value && this.$oldPassword.value) {
-            if (this.$newPassword.value !== this.$newRePassword.value) {
-                feedback.dealWarning('两次输入的密码不一致');
-                return;
-            }
-            Meteor.call('changeUserPassword', this.$oldPassword.value, this.$newPassword.value, (err) => {
-                if (err) {
-                    feedback.dealError(err);
-                    return;
-                }
+    sendMessage = async () => {
+        const form = this.props.form;
+        const username = form.getFieldValue('username');
+        if (!username) {
+            return feedback.dealWarning('请输入正确的手机号');
+        }
 
+        this.setState({
+            sendBtnStatus: 1,
+        });
+        let countDownNum = this.state.countDownNum;
+        const countDownDate = setInterval(() => {
+            countDownNum--;
+            this.setState({
+                countDownNum,
+            });
+            if (countDownNum <= 0) {
+                this.setState({
+                    sendBtnStatus: 2,
+                    countDownNum: 60,
+                });
+                clearInterval(countDownDate);
+            }
+        }, 1000);
+        const result = await Meteor.callPromise('sendRegisterSMS', username);
+        this.setState({
+            BizId: result.BizId,
+        });
+    }
+    hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
+    changeUsername = async (e) => {
+        e.preventDefault();
+        const form = this.props.form;
+        if (this.state.countDownNum <= 0 && this.state.countDownNum >= 60) {
+            return feedback.dealWarning('请重新接受验证码');
+        }
+        form.validateFieldsAndScroll(async (err, values) => {
+            if (!err) {
+                console.log(err);
+            }
+            if (!values.verificationCode) {
+                return feedback.dealWarning('请输入验证码');
+            }
+            const queryResult = await Meteor.callPromise('queryDetail', values.username, this.state.BizId, Number(values.verificationCode));
+            if (!queryResult) {
+                return feedback.dealWarning('请输入正确的验证码');
+            }
+            Meteor.call('changeUserName', values.username, (error) => {
+                if (error) {
+                    return feedback.dealError(error);
+                }
+                feedback.dealSuccess('用户名修改成功');
+            });
+            this.setState({
+                isShowEditAccount: false,
+                isShowEditAccountStep2: false,
+            });
+        });
+    }
+    saveChangePassword = (e) => {
+        e.preventDefault();
+        const form = this.props.form;
+
+        form.validateFieldsAndScroll(async (err, values) => {
+            Accounts.changePassword(values.oldPassword, values.newPassword, (error) => {
+                if (error) {
+                    if (error.error === 403) {
+                        return feedback.dealWarning('请输入正确的初始登录密码');
+                    }
+                    return feedback.dealError(error);
+                }
                 feedback.dealSuccess('密码修改成功');
             });
+        });
+    }
+    checkPassword = (rule, value, callback) => {
+        const form = this.props.form;
+        if (value && value !== form.getFieldValue('newPassword')) {
+            callback('两次密码输入不一致!');
         } else {
-            feedback.dealWarning('请输入密码');
+            callback();
         }
+    }
+    checkConfirm = (rule, value, callback) => {
+        const form = this.props.form;
+        if (value && this.state.confirmDirty) {
+            form.validateFields(['confirmPassword'], { force: true });
+        }
+        callback();
+    }
+    handleConfirmBlur = (e) => {
+        const value = e.target.value;
+        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
     }
     render() {
         const { username } = this.props.user;
+        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+        const userNameError = isFieldTouched('username') && getFieldError('username');
+        const verificationCodeError = isFieldTouched('verificationCode') && getFieldError('verificationCode');
+
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 8 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 16 },
+            },
+        };
+        const tailFormItemLayout = {
+            wrapperCol: {
+                xs: {
+                    span: 24,
+                    offset: 0,
+                },
+                sm: {
+                    span: 16,
+                    offset: 8,
+                },
+            },
+        };
         return (
             <div className="safe-setting">
                 <div className="login-account">
                     <div className="login-account-edit">
                         <p className="login-title">登录账号</p>
                         <p>{username} &nbsp;
-                            <span className="change-account" onClick={this.handleEditAccount}>修改</span>
+                            <button className="change-account" onClick={this.showEditAccount}>修改</button>
                         </p>
                     </div>
                     <div className="edit-login-tip">
@@ -79,20 +185,61 @@ class SafeSetting extends Component {
                     <li>
                         <label htmlFor="editPassword">修改密码</label>
                     </li>
-                    <li>
-                        <label htmlFor="oldPassword">旧密码</label>
-                        <input type="password" placeholder="请您输入旧密码" ref={i => this.$oldPassword = i} />
-                    </li>
-                    <li>
-                        <label htmlFor="newPassword">新密码</label>
-                        <input type="password" placeholder="请您输入新密码" ref={i => this.$newPassword = i} />
-                    </li>
-                    <li>
-                        <label htmlFor="newPassword">确认密码</label>
-                        <input type="password" placeholder="请您再次输入新密码" ref={i => this.$newRePassword = i} />
-                    </li>
-                    <li className="save-btn">
-                        <button onClick={this.saveChangePassword}>保存</button>
+                    <li >
+                        <Form onSubmit={this.saveChangePassword}>
+                            <FormItem
+                                {...formItemLayout}
+                                label="旧密码"
+                            >
+                                {getFieldDecorator('oldPassword', {
+                                    rules: [{
+                                        required: true,
+                                        message: '请您输入旧密码!',
+                                        pattern: regexp.passwordRe,
+                                    }, {
+                                        validator: this.checkConfirm,
+                                    }],
+                                })(
+                                    <Input type="password" placeholder="请您输入旧密码" />,
+                                )}
+                            </FormItem>
+                            <FormItem
+                                {...formItemLayout}
+                                label="新密码"
+                            >
+                                {getFieldDecorator('newPassword', {
+                                    rules: [{
+                                        required: true,
+                                        message: `新${regexp.passwordTipInfo}`,
+                                        pattern: regexp.passwordRe,
+                                    }, {
+                                        validator: this.checkConfirm,
+                                    }],
+                                })(
+                                    <Input type="password" placeholder={`新${regexp.passwordTipInfo}`} />,
+                                )}
+                            </FormItem>
+                            <FormItem
+                                {...formItemLayout}
+                                label="确认密码"
+                            >
+                                {getFieldDecorator('confirmPassword', {
+                                    rules: [{
+                                        required: true,
+                                        message: '请确认你输入的新密码!',
+                                        pattern: regexp.passwordRe,
+                                    }, {
+                                        validator: this.checkPassword,
+                                    }],
+                                })(
+                                    <Input type="password" onBlur={this.handleConfirmBlur} placeholder="请确认你输入的新密码" />,
+                                )}
+                            </FormItem>
+
+                            <FormItem {...tailFormItemLayout} className="confirm-btn">
+                                <Button disabled={this.hasErrors(getFieldsError())} type="primary" htmlType="submit" >完成</Button>
+                            </FormItem>
+                        </Form>
                     </li>
                 </ul>
                 <ul>
@@ -112,46 +259,84 @@ class SafeSetting extends Component {
                         <p className="bind-btn">解除绑定</p>
                     </li>
                 </ul>
-                <div className="container-wrap" style={{ display: this.state.isShowEditAccount ? 'block' : 'none' }}>
-                    <div className="container-middle container-content edit-account-block1" >
-                        <div className="container-title">
-                            修改登录账号
-                            <Icon icon="icon-guanbi icon-close" size={20} onClick={this.handleEditAccount} />
-                        </div>
-                        <div className="edit-step-tip">
-                            <img src="/editAccount1.png" alt="" />
-                        </div>
-                        <div>
-                            <input type="password" placeholder="请输入登录密码" className="input-password" />
-                        </div>
-                        <div className="next-btn" onClick={this.handleShowEditAccountStep2}>下一步</div>
-                    </div>
-                </div>
-                <div className="container-wrap" style={{ display: this.state.isShowEditAccountStep2 ? 'block' : 'none' }} >
-                    <div className="container-middle container-content edit-account-block">
-                        <div className="container-title">
-                            修改登录账号
-                            <Icon icon="icon-guanbi icon-close" size={20} onClick={this.handleShowEditAccountStep2} />
-                        </div>
-                        <div className="edit-step-tip">
-                            <img src="/editAccount2.png" alt="" />
-                        </div>
-                        <div>
-                            <input type="number" placeholder="请输入手机号" className="input-password" ref={i => this.$newUserName = i} />
-                        </div>
-                        <div className="code-container">
-                            <input type="number" placeholder="请您输入验证码" className="code" />
-                            <p>获取验证码</p>
-                        </div>
-                        <div className="next-btn" onClick={this.saveChangeUserName}>完成</div>
-                    </div>
-                </div>
+                {
+                    this.state.isShowEditAccount ?
+                        <Modal
+                            title="修改登录账号"
+                            visible
+                            onCancel={this.closeEditAccount}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <Form onSubmit={this.changeUsername} style={{ width: '85%' }}>
+                                <FormItem
+                                    {...formItemLayout}
+                                    label="手机号"
+                                    validateStatus={userNameError ? 'error' : ''}
+                                    help={userNameError || ''}
+                                >
+                                    {getFieldDecorator('username', {
+                                        rules: [{
+                                            required: true,
+                                            pattern: regexp.phoneRe,
+                                            message: '请输入正确的手机号!',
+                                        }],
+                                    })(
+                                        <Input placeholder="请输入新手机号" />,
+                                    )}
+                                </FormItem>
+
+                                <FormItem
+                                    {...formItemLayout}
+                                    label="验证码"
+                                    validateStatus={verificationCodeError ? 'error' : ''}
+                                    help={verificationCodeError || ''}
+                                >
+                                    <Row gutter={8}>
+                                        <Col span={12}>
+                                            {getFieldDecorator('verificationCode', {
+                                                rules: [{ required: true, message: '请输入正确的短信验证码' }],
+                                            })(
+                                                <Input placeholder="短信验证码" />,
+                                            )}
+                                        </Col>
+                                        <Col span={12}>
+                                            {
+                                                this.state.sendBtnStatus === 0 ?
+                                                    <Button className="obtainCode" onClick={this.sendMessage}>获取验证码</Button>
+                                                    :
+                                                    null
+                                            }
+                                            {
+                                                this.state.sendBtnStatus === 1 ?
+                                                    <Button className="countDownBtn" >剩余{this.state.countDownNum}秒</Button>
+                                                    :
+                                                    null
+                                            }
+                                            {
+                                                this.state.sendBtnStatus === 2 ?
+                                                    <Button className="obtainCode" onClick={this.sendMessage}>重新发送</Button>
+                                                    :
+                                                    null
+                                            }
+                                        </Col>
+                                    </Row>
+                                </FormItem>
+
+                                <FormItem {...tailFormItemLayout}>
+                                    <Button disabled={this.hasErrors(getFieldsError())} type="primary" htmlType="submit" className="confim-btn">完成</Button>
+                                </FormItem>
+                            </Form>
+                        </Modal>
+                        :
+                        null
+                }
             </div>
         );
     }
 }
 
 
-export default withTracker(() => ({
+export default Form.create()(withTracker(() => ({
     user: Meteor.user() || {},
-}))(SafeSetting);
+}))(SafeSetting));

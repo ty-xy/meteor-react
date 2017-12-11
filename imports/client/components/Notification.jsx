@@ -32,7 +32,6 @@ class Notification extends Component {
     gotoLook = (e, _id, arg) => {
         e.preventDefault();
         const { nickname, plan, finish, help, num, toMembers, logId } = arg;
-        console.log('arg', arg);
         const types = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
         Meteor.call(
             'readLog',
@@ -41,6 +40,8 @@ class Notification extends Component {
                 if (!err) {
                     if (types.indexOf(arg.noticeType) > -1) {
                         this.context.history.push('/manage/audit/approvaling');
+                    } else if (arg.noticeType === '公告') {
+                        this.context.history.push(`/manage/notice/detail/${logId}`);
                     } else {
                         this.context.history.push({ pathname: `/manage/logging/detail/${logId}`, state: { nickname, plan, finish, _id, help, num, toMembers } });
                     }
@@ -51,14 +52,6 @@ class Notification extends Component {
     render() {
         // const { isRead } = this.state;
         const { _id, toMembers = [], companys, userCompany, from, allUsers, ...arg } = this.props;
-        let isRead; let rejectRead;
-        for (let i = 0; i < toMembers.length; i++) {
-            if (toMembers[i].userId === Meteor.userId()) {
-                isRead = toMembers[i].isRead;
-                rejectRead = toMembers[i].rejectRead;
-                break;
-            }
-        }
         let companyName = '';
         for (let i = 0; i < companys.length; i++) {
             if (companys[i]._id === userCompany) {
@@ -67,19 +60,17 @@ class Notification extends Component {
             }
         }
         return (
-            !isRead && !rejectRead ?
-                <div className="e-notification">
-                    <i className="iconfont icon-guanbi e-notification-close" onClick={() => this.hideNotification(_id)} />
-                    <p>来自 {companyName}</p>
-                    <div className="e-notification-content clearfix margin-top-20">
-                        <div className="e-notification-avatar"><img src="/start.png" /></div>
-                        <div className="e-notification-desc">
-                            <p className="title">「{arg.noticeType}」— {userIdToInfo.getName(allUsers, from)}的{arg.noticeType}</p>
-                            <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, from)}向您提交了{arg.noticeType}，<a href="" onClick={e => this.gotoLook(e, _id, { toMembers, companys, userCompany, from, allUsers, ...arg })}>点击前往查看</a></p>
-                        </div>
+            <div className="e-notification">
+                <i className="iconfont icon-guanbi e-notification-close" onClick={() => this.hideNotification(_id)} />
+                <p>来自 {companyName}</p>
+                <div className="e-notification-content clearfix margin-top-20">
+                    <div className="e-notification-avatar"><img src="/start.png" /></div>
+                    <div className="e-notification-desc">
+                        <p className="title">「{arg.noticeType}」— {userIdToInfo.getName(allUsers, from)}的{arg.noticeType}</p>
+                        <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, from)}提交了{arg.noticeType}，<a href="" onClick={e => this.gotoLook(e, _id, { toMembers, companys, userCompany, from, allUsers, ...arg })}>点击前往查看</a></p>
                     </div>
                 </div>
-                : <div />
+            </div>
         );
     }
 }

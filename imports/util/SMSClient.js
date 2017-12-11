@@ -9,9 +9,9 @@ const smsClient = new SMSClient({
 });
 
 function createRandomCode() {
-    return Math.round(Math.random() * 10000);
+    return Math.floor(Math.random() * 900000) + 100000;
 }
-// 发送短信
+// 发送短信验证码
 function sendSMS(PhoneNumbers, TemplateCode) {
     const currentSMSCode = createRandomCode();
     return new Promise((resolve, reject) => {
@@ -26,11 +26,34 @@ function sendSMS(PhoneNumbers, TemplateCode) {
             const { Code } = res;
             if (Code === 'OK') {
             // 处理返回参数
-                console.log(res);
+                // console.log(res);
                 resolve(res);
             }
         }, (err) => {
-            console.log(err);
+            // console.log(err);
+            reject(err);
+        });
+    });
+}
+// 发送短信通知（邀请通知）
+function sendSMSNotice(PhoneNumbers, urls, name, company, TemplateCode) {
+    return new Promise((resolve, reject) => {
+        smsClient.sendSMS(
+            {
+                PhoneNumbers,
+                SignName: '知工网络科技',
+                TemplateCode,
+                TemplateParam: `{"urls":${urls},"product":"知工网络科技", "name":${company},"urls":${company},}`,
+            },
+        ).then((res) => {
+            const { Code } = res;
+            if (Code === 'OK') {
+            // 处理返回参数
+                // console.log(res);
+                resolve(res);
+            }
+        }, (err) => {
+            // console.log(err);
             reject(err);
         });
     });
@@ -51,12 +74,12 @@ function queryDetail(PhoneNumber, BizId, SendDate) {
             } = res;
             if (Code === 'OK') {
                 // 处理发送详情内容
-                console.log(SmsSendDetailDTOs);
+                // console.log(SmsSendDetailDTOs);
                 resolve(SmsSendDetailDTOs);
             }
         }, (err) => {
             // 处理错误
-            console.log(err);
+            // console.log(err);
             reject(err);
         });
     });
@@ -65,4 +88,5 @@ function queryDetail(PhoneNumber, BizId, SendDate) {
 module.exports = {
     sendSMS,
     queryDetail,
+    sendSMSNotice,
 };

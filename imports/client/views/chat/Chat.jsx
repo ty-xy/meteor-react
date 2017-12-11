@@ -22,10 +22,12 @@ import SearchChat from '../../features/SearchChat';
 
 import TeamMembers from './chatSideLeft/TeamMembers';
 import EmptyChat from '../../components/EmptyChat';
+import Icon from '../../components/Icon';
 
 
 import InviteModel from '../manage/audit/component/MyModel';
 
+// let count = 1;
 @pureRender
 class Chat extends Component {
     static propTypes = {
@@ -53,12 +55,11 @@ class Chat extends Component {
             currentKey: '',
             currentDeps: '',
             deps: '',
-            // inviteModel: true,
+            count: 1,
         };
     }
     componentWillMount() {
         const { history } = this.props;
-        // console.log('chat', 'componentWillMount');
         if (history.location.search && history.location.state === 'invite') {
             const search = location.search.slice(1).split('&');
             const searchs = {};
@@ -85,6 +86,14 @@ class Chat extends Component {
                 );
             }
         }
+    }
+    getMoreMessage = () => {
+        let countNum = this.state.count;
+        countNum++;
+        this.setState({
+            count: countNum,
+        });
+        // console.log(`执行函数count${this.state.count}`);
     }
     handleChatType = (chatType) => {
         this.setState({
@@ -115,20 +124,18 @@ class Chat extends Component {
     changeTo = (to, userId, type, chatType) => {
         // 有未读消息(有用户所在的群以及发给用户的消息)且不在聊天列表时,创建新的聊天窗口
         if (type && !this.props.chatList.find(item => item[type] === userId)) {
-            Meteor.call('addChatList', userId, type, (err) => {
-                feedback.dealError(err);
-            });
+            Meteor.call('addChatList', userId, type, err => feedback.dealError(err));
         }
-        console.log(to);
+        // 选中与谁的对话框
         this.handleToggle(userId);
         this.setState({ to, userId, chatType });
     }
     handleToggle = (value) => {
-        // console.log(89898, value);
         this.setState({
             selectedChat: {
                 [value]: true,
             },
+            count: 1,
         });
     }
     // 邀请提示
@@ -163,16 +170,16 @@ class Chat extends Component {
         handleClick={this.handleClick.bind(this, 1)}
     />)
     renderChatType = (chatType) => {
-        // console.log(chatType);
         switch (chatType) {
         case 'message':
-            // console.log('aaa', this);
             return (<ChatWindow
                 to={this.state.to}
                 userId={this.state.userId}
                 changeTo={this.changeTo}
                 handleToggle={this.handleToggle}
                 handleClick={this.handleClick.bind(this, 1)}
+                getMoreMessage={this.getMoreMessage}
+                count={this.state.count}
             />);
         case 'newFriend':
             return <NewFriend />;
@@ -183,7 +190,6 @@ class Chat extends Component {
         }
     }
     render() {
-        // console.log(111, this.state.chatType);
         return (
             <div className="ejianlian-chat">
                 <div className="left">
@@ -192,7 +198,9 @@ class Chat extends Component {
                     {/* 导航部分 */}
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
-                            <SearchChat changeTo={this.changeTo} />
+                            <SearchChat
+                                changeTo={this.changeTo}
+                            />
                         </div>
                         <ul className="chat-type">
                             {
@@ -204,7 +212,7 @@ class Chat extends Component {
                                         onClick={this.handleClick.bind(this, index + 1)}
                                     >
                                         <p className="type-icon">
-                                            <i className={`iconfont ${item.content}`} />
+                                            <Icon icon={item.content} size={20} />
                                         </p>
                                         <p>{item.name}</p>
                                     </li>

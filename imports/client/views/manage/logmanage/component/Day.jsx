@@ -73,6 +73,11 @@ class Day extends (React.PureComponent || React.Component) {
                             peos = peos.concat(deps[i].members);
                             break;
                         }
+                        if (depId === companyInfo._id) {
+                            const companyMember = companyInfo.members.map(item => (item.userId));
+                            peos = peos.concat(companyMember);
+                            break;
+                        }
                     }
                 });
             }
@@ -84,7 +89,7 @@ class Day extends (React.PureComponent || React.Component) {
             });
             const toMembers = peos.map(userId => ({ userId }));
             // 创建日志
-            this.tabSubmit({ ...fields, peo, type: logType, img, file, group, toMembers });
+            this.tabSubmit({ ...fields, peo: peos, type: logType, img, file, group, toMembers });
         });
     }
     // 写日志
@@ -128,19 +133,11 @@ class Day extends (React.PureComponent || React.Component) {
     }
     // 图片id返回
     changeUpdate = (name, imgs) => {
-        // const img = [];
-        // const file = [];
-        console.log('changeUpdate', name, imgs);
-        // const { img, file } = this.state;
         if (name === 'img') {
-            this.setState({ img: imgs }, () => {
-                // this.handleblur();
-            });
+            this.setState({ img: imgs });
         }
         if (name === 'file') {
-            this.setState({ file: imgs }, () => {
-                // this.handleblur();
-            });
+            this.setState({ file: imgs });
         }
     }
     // 删除图片

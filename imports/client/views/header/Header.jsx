@@ -6,17 +6,25 @@ import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
+import format from 'date-format';
 
 import AvatarSelf from '../../components/AvatarSelf';
 import SelectBackendTeam from '../../features/SelectBackendTeam';
 import feedback from '../../../util/feedback';
-import UserUtil from '../../../util/user';
+import UserUtil, { userIdToInfo } from '../../../util/user';
+import fields from '../../../util/fields';
 import Company from '../../../schema/company';
 import Notice from '../../../schema/notice';
 import MyNotification from '../../components/Notification';
+import MyModel from '../manage/audit/component/MyModel';
 
 
 // import Notice from './Notice';
+const colors = ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'];
+const auditTypes = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
+
+const logTypes = ['日报', '月报', '周报'];
+
 
 @pureRender
 class Header extends Component {
@@ -27,6 +35,8 @@ class Header extends Component {
     static propTypes = {
         currentCompanyId: PropTypes.string,
         notices: PropTypes.array,
+        allUsers: PropTypes.array,
+        companys: PropTypes.array,
     }
     constructor(...args) {
         super(...args);
@@ -39,7 +49,13 @@ class Header extends Component {
     }
     handleClick = () => {
         this.setState({
-            isShowNotice: !this.state.isShowNotice,
+            isShowNotice: true,
+        });
+    }
+    // 关闭全局提醒
+    handleCloseNotice = () => {
+        this.setState({
+            isShowNotice: false,
         });
     }
     handleShowAccount = () => {
@@ -69,8 +85,7 @@ class Header extends Component {
         }
         this.context.history.push('/companySetting');
     }
-    handleCancel = (e) => {
-        console.log(e);
+    handleCancel = () => {
         this.setState({
             isShowBackend: false,
         });
@@ -84,19 +99,142 @@ class Header extends Component {
             this.context.history.push('/companySetting');
         });
     }
+    // 前往查看
+    gotoLook = (e, arg) => {
+        e.preventDefault();
+        const { logId, _id, noticeType } = arg;
+        this.setState({ isShowNotice: false }, () => {
+            Meteor.call(
+                'readLog',
+                (_id),
+                (err) => {
+                    if (!err) {
+                        if (auditTypes.indexOf(noticeType) > -1) {
+                            this.context.history.push('/manage/audit/approvaling');
+                        } else if (noticeType === '公告') {
+                            this.context.history.push(`/manage/notice/detail/${logId}`);
+                        } else {
+                            this.context.history.push({ pathname: `/manage/logging/detail/${logId}` });
+                        }
+                    }
+                },
+            );
+        });
+    }
+    // 全局消息model
+    globalModel = (notices, allUsers, companys) => (
+        <div className="e-global-notification">
+            {
+                notices.map((item, index) => {
+                    const { userCompany, toMembers } = item;
+                    let companyName = '';
+                    let isRead;
+                    for (let i = 0; i < toMembers.length; i++) {
+                        if (toMembers[i].userId === Meteor.userId()) {
+                            isRead = toMembers[i].isRead;
+                            break;
+                        }
+                    }
+                    for (let i = 0; i < companys.length; i++) {
+                        if (companys[i]._id === userCompany) {
+                            companyName = companys[i].name;
+                            break;
+                        }
+                    }
+
+                    if (item.noticeType === '公告') {
+                        return (
+                            <div key={item._id} className="list">
+                                <p className="title">来自 &nbsp;{companyName}<span>{format('yyyy.MM.dd hh:mm', item.createdAt)}</span></p>
+                                <div className="list-content clearfix margin-top-20">
+                                    <div className="list-avatar">
+                                        {userIdToInfo.getAvatar(allUsers, item.from) ?
+                                            <img src={userIdToInfo.getAvatar(allUsers, item.from)} />
+                                            : <span className="no-avatar" style={{ background: colors[index % 4] }}>{userIdToInfo.getName(allUsers, item.from).substr(-2, 2)}</span>
+                                        }
+                                    </div>
+                                    <div className="list-desc">
+                                        <p className="title">「{item.noticeType}」— {userIdToInfo.getName(allUsers, item.from)}的{item.noticeType}</p>
+                                        <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
+                                    </div>
+                                    {!isRead && <div className="list-pointer"><span /></div>}
+                                </div>
+                            </div>
+                        );
+                    }
+                    return null;
+                })
+            }
+            {
+                notices.map((item, index) => {
+                    const { toMembers = [], userCompany } = item;
+                    let isRead;
+                    for (let i = 0; i < toMembers.length; i++) {
+                        if (toMembers[i].userId === Meteor.userId()) {
+                            isRead = toMembers[i].isRead;
+                            break;
+                        }
+                    }
+                    let companyName = '';
+                    for (let i = 0; i < companys.length; i++) {
+                        if (companys[i]._id === userCompany) {
+                            companyName = companys[i].name;
+                            break;
+                        }
+                    }
+                    const logAuditTypes = [...logTypes, ...auditTypes];
+                    if (logAuditTypes.indexOf(item.noticeType) > -1) {
+                        return (
+                            !isRead ?
+                                <div key={item._id} className="list">
+                                    <p className="title">来自 &nbsp;{companyName}<span>{format('yyyy.MM.dd hh:mm', item.createdAt)}</span></p>
+                                    <div className="list-content clearfix margin-top-20">
+                                        <div className="list-avatar">{userIdToInfo.getAvatar(allUsers, item.from) ?
+                                            <img src={userIdToInfo.getAvatar(allUsers, item.from)} />
+                                            : <span className="no-avatar" style={{ background: colors[index % 4] }}>{userIdToInfo.getName(allUsers, item.from).substr(-2, 2)}</span>
+                                        }
+                                        </div>
+                                        <div className="list-desc">
+                                            <p className="title">「{item.noticeType}」— {userIdToInfo.getName(allUsers, item.from)}的{item.noticeType}</p>
+                                            <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
+                                        </div>
+                                        {!item.isRead && <div className="list-pointer"><span /></div>}
+                                    </div>
+                                </div> : null
+                        );
+                    }
+                    return null;
+                })
+            }
+        </div>
+    )
     render() {
-        // console.log('haeder', this.props.notices);
-        const { notices } = this.props;
+        const { notices, allUsers, companys } = this.props;
+        const { isShowNotice } = this.state;
         return (
             <div className="ejianlianHeader">
                 <div className="e-notification-wrap clearfix">
                     {
-                        notices.map(item => (<MyNotification key={item._id} {...item} {...this.props} {...this.context} />))
+                        notices.map((item) => {
+                            let isRead; let rejectRead;
+                            for (let i = 0; i < item.toMembers.length; i++) {
+                                if (item.toMembers[i].userId === Meteor.userId()) {
+                                    isRead = item.toMembers[i].isRead;
+                                    rejectRead = item.toMembers[i].rejectRead;
+                                    break;
+                                }
+                            }
+                            if (!isRead && !rejectRead) {
+                                return <MyNotification key={item._id} {...item} {...this.props} {...this.context} />;
+                            }
+                            return null;
+                        },
+                        )
                     }
                 </div>
                 <div className="ejianlian-header-bar">
                     <div className="ejianlian-header-logo">
-                        <Link to="/"><img style={{ width: '80px', margin: '12px 20px' }} src="/logo.png" /></Link>
+                        <Link to="/chat"><img style={{ width: '80px', margin: '12px 20px' }} src="/logo.png" /></Link>
                     </div>
                     <div className="ejianlian-header-bar-tab">
                         <ul className="header-bar-tab">
@@ -153,6 +291,16 @@ class Header extends Component {
                 >
                     <SelectBackendTeam selectBackendTeam={this.selectBackendTeam} />
                 </Modal>
+                <MyModel
+                    handleCancel={this.handleCloseNotice}
+                    show={isShowNotice}
+                    mask={isShowNotice}
+                    footer={<div />}
+                    title="通知"
+                    height="100%"
+                >
+                    {this.globalModel(notices, allUsers, companys)}
+                </MyModel>
                 {/* <Notice style={{ display: this.state.isShowNotice ? 'block' : 'none' }} handleNotice={this.handleClick} /> */}
             </div>
         );
@@ -164,17 +312,15 @@ export default withTracker(() => {
     Meteor.subscribe('notices');
     Meteor.subscribe('users');
     const currentCompanyId = UserUtil.getCurrentBackendCompany();
-    const companys = Company.find().fetch();
     const userId = Meteor.userId();
     let notices = [];
-    notices = Notice.find({ 'toMembers.userId': userId }).fetch();
-
+    notices = Notice.find({ 'toMembers.userId': userId }, { sort: { createdAt: -1 } }).fetch();
     notices = notices.filter(item => (item.from !== userId));
     return {
         currentCompanyId,
         notices,
-        companys,
-        allUsers: Meteor.users.find().fetch(),
+        companys: Company.find({}, { fields: fields.createdcompany }).fetch(),
+        allUsers: Meteor.users.find({}, { fields: fields.getUsername }).fetch(),
     };
 })(Header);
 
