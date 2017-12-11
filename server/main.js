@@ -1,9 +1,6 @@
 import {
     Meteor,
 } from 'meteor/meteor';
-import {
-    publishComposite,
-} from 'meteor/reywood:publish-composite';
 import http from 'http';
 import socketIO from 'socket.io';
 
@@ -51,43 +48,13 @@ Meteor.startup(() => {
 });
 
 
-publishComposite('message', {
-    find() {
-        return Message.find({});
-    },
-    children: [{
-        find(message) {
-            message.from = Meteor.users.findOne(
-                { _id: message.from },
-                {
-                    fields: fields.user,
-                },
-            );
-        },
-    }],
-});
-// 公司
-// publishComposite('company', {
-//     find() {
-//         return Company.find({});
-//     },
-//     children: [{
-//         find(company) {
-//             company.members = company.members.map(item => Meteor.users.findOne(
-//                 { _id: item.userId },
-//                 { fields: fields.user },
-//             ));
-//         },
-//     }],
-// });
-
 Meteor.publish('users', () => Meteor.users.find(
     {},
     {
         fields: fields.user,
     },
 ));
-
+Meteor.publish('message', () => Message.find({}));
 Meteor.publish('group', () => Group.find({}));
 Meteor.publish('files', () => File.find({}));
 

@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import Files from '../schema/file';
+import fields from './fields';
 
 const PopulateUtil = {
     group(group) {
@@ -19,6 +20,16 @@ const PopulateUtil = {
     user(user) {
         if (user) {
             return Meteor.users.findOne({ _id: user });
+        }
+    },
+    message(messageFrom) {
+        if (messageFrom) {
+            return Meteor.users.findOne(
+                { _id: messageFrom },
+                {
+                    fields: fields.user,
+                },
+            );
         }
     },
 };
