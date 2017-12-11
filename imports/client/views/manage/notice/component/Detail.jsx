@@ -13,7 +13,8 @@ class Detail extends (PureComponent || Component) {
     }
     componentDidMount() {
         const { id } = this.props.match.params || {};
-        const { notices } = this.props;
+        const { notices, notifications } = this.props;
+        console.log('componentDidMount', notifications, notices);
         notices.forEach((item) => {
             if (item.logId === id) {
                 Meteor.call(

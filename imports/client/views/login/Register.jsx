@@ -57,10 +57,10 @@ class Register extends Component {
         const { history } = this.props;
         if (history.location && history.location.search && history.location.state === 'invite') {
             const search = `${history.location.search}&userId=${userId}`;
-            history.push({ pathname: '/chat', search, state: history.location.state });
+            history.push({ pathname: '/login', search, state: history.location.state });
             feedback.dealSuccess('注册成功');
         } else {
-            history.push('/chat');
+            history.push('/login');
         }
     }
     handleRegister = async (e) => {

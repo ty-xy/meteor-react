@@ -7,21 +7,25 @@ import pureRender from 'pure-render-decorator';
 class Index extends Component {
     static propTypes = {
         history: PropTypes.object,
+        location: PropTypes.object,
     }
     componentWillMount() {
         Meteor.autorun(() => {
             const user = Meteor.user();
-            const { history } = this.props;
+            const { history, location } = this.props;
             if (!user && this.isLogin === true) {
                 this.isLogin = false;
-                this.props.history.push('/login');
+                if (location.search && location.search.indexOf('companyId')) {
+                    history.push({ pathname: '/login', search: location.search, state: 'invite' });
+                } else {
+                    history.push('/login');
+                }
             } else if (user && this.isLogin === false) {
                 this.isLogin = true;
-                if (history.location.search && history.location.state === 'invite') {
-                    console.log('history', history);
-                    this.props.history.push({ pathname: '/chat', search: history.location.search, state: history.location.state });
+                if (location.search && location.state === 'invite') {
+                    history.push({ pathname: '/chat', search: location.search, state: location.state });
                 } else {
-                    this.props.history.push('/chat');
+                    history.push('/chat');
                 }
             }
         });

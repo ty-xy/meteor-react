@@ -128,8 +128,7 @@ class Organization extends PureComponent {
         Meteor.call(
             'addDepartment',
             { ...info, _id, id, members },
-            (err, result) => {
-                console.log('postAddDep', result);
+            (err) => {
                 if (err) {
                     feedback.dealError('添加失败');
                     return false;
@@ -287,7 +286,6 @@ class Organization extends PureComponent {
             }
         });
         const _this = this;
-        console.log('batchSetDep', companyId, _users, groupId, oldgroup, depActive);
         Meteor.call(
             'batchSetDep',
             { companyId, _users, groupId, oldgroup, oldDep: depActive },
@@ -481,9 +479,21 @@ class Organization extends PureComponent {
         );
     }
     // 邀请员工发送短信
-    postInvite = (bool, name, fields) => {
-        console.log('fields', fields);
-        this.setState({ [name]: bool });
+    postInvite = (bool, name, fields, urls) => {
+        console.log('fields', fields, urls);
+        const _this = this;
+        // (async function () {
+        //     for (let i = 0; i < fields.length; i++) {
+        //         const res = await Meteor.callPromise('inviteMembers', fields[i], urls);
+        //         if (res.BizId) {
+        //             feedback.successToastFb('发送邀请成功！', () => {
+        _this.setState({ [name]: bool });
+        //             });
+        //         } else {
+        //             feedback.dealError('邀请失败！');
+        //         }
+        //     }
+        // }());
     }
     render() {
         const { deps = [] } = this.props.company;
@@ -495,7 +505,6 @@ class Organization extends PureComponent {
         } else {
             data = users.filter(item => (!item.dep));
         }
-        console.log('render', this.state);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">

@@ -92,6 +92,11 @@ class Write extends PureComponent {
                                 peos = peos.concat(companyInfo.deps[i].members);
                                 break;
                             }
+                            if (depId === companyInfo._id) {
+                                const companyMember = companyInfo.members.map(item => (item.userId));
+                                peos = peos.concat(companyMember);
+                                break;
+                            }
                         }
                     });
                 }

@@ -11,7 +11,7 @@ const smsClient = new SMSClient({
 function createRandomCode() {
     return Math.floor(Math.random() * 900000) + 100000;
 }
-// 发送短信
+// 发送短信验证码
 function sendSMS(PhoneNumbers, TemplateCode) {
     const currentSMSCode = createRandomCode();
     return new Promise((resolve, reject) => {
@@ -21,6 +21,29 @@ function sendSMS(PhoneNumbers, TemplateCode) {
                 SignName: '知工网络科技',
                 TemplateCode,
                 TemplateParam: `{"code":${currentSMSCode},"product":"知工网络科技"}`,
+            },
+        ).then((res) => {
+            const { Code } = res;
+            if (Code === 'OK') {
+            // 处理返回参数
+                // console.log(res);
+                resolve(res);
+            }
+        }, (err) => {
+            // console.log(err);
+            reject(err);
+        });
+    });
+}
+// 发送短信通知（邀请通知）
+function sendSMSNotice(PhoneNumbers, urls, name, company, TemplateCode) {
+    return new Promise((resolve, reject) => {
+        smsClient.sendSMS(
+            {
+                PhoneNumbers,
+                SignName: '知工网络科技',
+                TemplateCode,
+                TemplateParam: `{"urls":${urls},"product":"知工网络科技", "name":${company},"urls":${company},}`,
             },
         ).then((res) => {
             const { Code } = res;
@@ -65,4 +88,5 @@ function queryDetail(PhoneNumber, BizId, SendDate) {
 module.exports = {
     sendSMS,
     queryDetail,
+    sendSMSNotice,
 };

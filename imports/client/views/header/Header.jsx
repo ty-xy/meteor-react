@@ -126,14 +126,22 @@ class Header extends Component {
         <div className="e-global-notification">
             {
                 notices.map((item, index) => {
-                    const { userCompany } = item;
+                    const { userCompany, toMembers } = item;
                     let companyName = '';
+                    let isRead;
+                    for (let i = 0; i < toMembers.length; i++) {
+                        if (toMembers[i].userId === Meteor.userId()) {
+                            isRead = toMembers[i].isRead;
+                            break;
+                        }
+                    }
                     for (let i = 0; i < companys.length; i++) {
                         if (companys[i]._id === userCompany) {
                             companyName = companys[i].name;
                             break;
                         }
                     }
+
                     if (item.noticeType === '公告') {
                         return (
                             <div key={item._id} className="list">
@@ -149,14 +157,15 @@ class Header extends Component {
                                         <p className="title">「{item.noticeType}」— {userIdToInfo.getName(allUsers, item.from)}的{item.noticeType}</p>
                                         <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
                                     </div>
-                                    {!item.isRead && <div className="list-pointer"><span /></div>}
+                                    {!isRead && <div className="list-pointer"><span /></div>}
                                 </div>
                             </div>
                         );
                     }
                     return null;
                 })
-            }{
+            }
+            {
                 notices.map((item, index) => {
                     const { toMembers = [], userCompany } = item;
                     let isRead;
@@ -173,7 +182,8 @@ class Header extends Component {
                             break;
                         }
                     }
-                    if (logTypes.indexOf(item.noticeType) > -1) {
+                    const logAuditTypes = [...logTypes, ...auditTypes];
+                    if (logAuditTypes.indexOf(item.noticeType) > -1) {
                         return (
                             !isRead ?
                                 <div key={item._id} className="list">

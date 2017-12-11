@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
+import SMSClient from '../../imports/util/SMSClient';
 // import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
@@ -449,5 +450,16 @@ Meteor.methods({
                 },
             },
         );
+    },
+    // 邀请员工
+    // sendSMS
+    inviteMembers(phoneNumber, urls, name, company) {
+        return new Promise((resolve, reject) => {
+            SMSClient.sendSMSNotice(phoneNumber, urls, name, company, 'SMS_116590607').then((reponse) => {
+                resolve(reponse);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     },
 });
