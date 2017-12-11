@@ -234,7 +234,7 @@ class Header extends Component {
                 </div>
                 <div className="ejianlian-header-bar">
                     <div className="ejianlian-header-logo">
-                        <Link to="/"><img style={{ width: '80px', margin: '12px 20px' }} src="/logo.png" /></Link>
+                        <Link to="/chat"><img style={{ width: '80px', margin: '12px 20px' }} src="/logo.png" /></Link>
                     </div>
                     <div className="ejianlian-header-bar-tab">
                         <ul className="header-bar-tab">
