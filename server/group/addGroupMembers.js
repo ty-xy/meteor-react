@@ -4,16 +4,19 @@ import Group from '../../imports/schema/group';
 
 Meteor.methods({
     addGroupMembers({ groupId, newMemberIds }) {
-        newMemberIds.map(userId =>
-            Group.update(
-                { _id: groupId },
-                {
-                    $push: {
-                        members: userId,
+        const groups = Group.findOne({ _id: groupId }) || { members: [] };
+        newMemberIds.forEach((userId) => {
+            if (groups.members.indexOf(userId) === -1) {
+                Group.update(
+                    { _id: groupId },
+                    {
+                        $push: {
+                            members: userId,
+                        },
                     },
-                },
-            ),
-        );
+                );
+            }
+        });
         newMemberIds.map((userId =>
             Meteor.users.update(
                 { _id: userId },

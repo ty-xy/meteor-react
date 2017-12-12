@@ -4,8 +4,10 @@ import Company from '../../imports/schema/company';
 
 Meteor.methods({
     deleteMember(groupId, memberId, companyId) {
-        const groups = Group.findOne({ _id: groupId }) || {};
-        if ((groups.members && groups.members.length) === 1) {
+        const groups = Group.findOne({ _id: groupId }) || { members: [] };
+        const groupmembers = groups.members.length ? groups.members : [];
+        // 如果删除群聊只剩一个人且等于要移除的人
+        if ((groupmembers.length === 1) && (groupmembers[0] === memberId)) {
             // 当删除的人员后群聊没有人员， 则删除群聊
             Group.remove({ _id: groupId }, (err, res) => {
                 if (res) {

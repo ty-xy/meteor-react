@@ -397,6 +397,14 @@ Meteor.methods({
             pos,
         };
         console.log('editMember', userId, '旧部', oldDep, '新群聊', groupId, '就群聊', oldgroup);
+        // 删除旧部
+        await Company.update(
+            { _id: companyId, 'deps.id': oldDep },
+            {
+                $pull: { 'deps.$.members': userId },
+            },
+        );
+        // 判断是否选择部门
         if (dep) {
             console.log('dep', dep);
             await Company.update(
@@ -405,24 +413,18 @@ Meteor.methods({
                     $set: { 'members.$': member },
                 },
             );
-            // 删除旧部
-            await Company.update(
-                { _id: companyId, 'deps.id': oldDep },
-                {
-                    $pull: { 'deps.$.members': userId },
-                },
-            );
-            // 新曾新部
+            // 添加到目标
             await Company.update(
                 { _id: companyId, 'deps.id': dep },
                 {
                     $push: { 'deps.$.members': userId },
                 },
             );
+
             // 删除之前群聊
             await Meteor.call(
                 'deleteMember',
-                oldgroup, userId,
+                oldgroup, userId, companyId,
             );
             if (!groupId) {
                 // 新增群聊
@@ -474,6 +476,11 @@ Meteor.methods({
                 );
             }
         } else {
+            // 删除之前群聊
+            await Meteor.call(
+                'deleteMember',
+                oldgroup, userId, companyId,
+            );
             await Company.update(
                 { _id: companyId, 'members.userId': userId },
                 {
