@@ -7,6 +7,7 @@ import { Cascader, Select, Form, Input, Button } from 'antd';
 import AvatarSelf from '../../components/AvatarSelf';
 import feedback from '../../../util/feedback';
 import pcaData from '../../../util/pcaData';
+import PopulateUtil from '../../../util/populate';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -67,6 +68,10 @@ class InfoSetting extends Component {
         return [province, city, area];
         //  return `${province}/${city}/${area}`;
     }
+    renderCompany = (companyIds) => {
+        const companyList = companyIds.map(companyId => PopulateUtil.company(companyId));
+        return companyList.map(company => company && <p key={company._id}>{company.name}</p>);
+    }
     render() {
         const { formLayout } = this.state;
         const formItemLayout = formLayout === 'horizontal' ? {
@@ -78,10 +83,8 @@ class InfoSetting extends Component {
         } : null;
         const { getFieldDecorator } = this.props.form;
         const { profile = {}, username = '' } = this.props.user;
-        const { name = '', signature = '', age = '', sex = 'male', address = [] } = profile;
+        const { name = '', signature = '', age = '', sex = 'male', address = [], company = [] } = profile;
         const userAddress = this.convertAddress(address);
-        // console.log(userAddress);
-
         return (
             <ul className="info-setting">
                 <Form layout={formLayout} onSubmit={this.handleSubmit}>
@@ -188,6 +191,20 @@ class InfoSetting extends Component {
                             />,
                         )}
                     </FormItem>
+                    {
+                        company.length ?
+                            <FormItem
+                                {...formItemLayout}
+                                label="所在公司"
+                            >
+                                {
+                                    this.renderCompany(company)
+                                }
+                            </FormItem>
+                            :
+                            null
+                    }
+
                     <FormItem {...buttonItemLayout}>
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
