@@ -38,7 +38,7 @@ Meteor.methods({
             console.error(err);
         });
     },
-    changeUserBaseInfo(name, signature = '', sex = '', age = '', province = '', city = '', area = '') {
+    changeUserBaseInfo({ name, signature = '', sex = '', age = '', address = [] }) {
         Meteor.users.update(
             Meteor.userId(),
             {
@@ -47,9 +47,7 @@ Meteor.methods({
                     'profile.signature': signature,
                     'profile.sex': sex,
                     'profile.age': age,
-                    'address.province': province,
-                    'address.city': city,
-                    'address.area': area,
+                    'profile.address': address,
                 },
             },
         );

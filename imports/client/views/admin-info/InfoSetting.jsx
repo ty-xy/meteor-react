@@ -2,45 +2,25 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
-import { Cascader, Select } from 'antd';
+import { Cascader, Select, Form, Input, Button } from 'antd';
 
 import AvatarSelf from '../../components/AvatarSelf';
 import feedback from '../../../util/feedback';
+import pcaData from '../../../util/pcaData';
 
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 class InfoSetting extends Component {
     static propTypes = {
         user: PropTypes.object,
+        form: PropTypes.object,
     }
     constructor(...args) {
         super(...args);
         this.state = {
-            isShowNotice: false,
-            sex: 'male',
-            options: [{
-                value: 'zhejiang',
-                label: 'Zhejiang',
-                children: [{
-                    value: 'hangzhou',
-                    label: 'Hangzhou',
-                    children: [{
-                        value: 'xihu',
-                        label: 'West Lake',
-                    }],
-                }],
-            }, {
-                value: 'jiangsu',
-                label: 'Jiangsu',
-                children: [{
-                    value: 'nanjing',
-                    label: 'Nanjing',
-                    children: [{
-                        value: 'zhonghuamen',
-                        label: 'Zhong Hua Men',
-                    }],
-                }],
-            }],
+            residences: pcaData.pca,
+            formLayout: 'horizontal',
         };
     }
     handleUploadImg = (e) => {
@@ -48,9 +28,7 @@ class InfoSetting extends Component {
         if (!image) {
             return;
         }
-
         const reader = new FileReader();
-
         const { _id = '' } = this.props.user;
 
         reader.onloadend = function () {
@@ -63,86 +41,164 @@ class InfoSetting extends Component {
         };
         reader.readAsDataURL(image);
     }
-    handleUserArea = (value) => {
-        console.log(value);
-    }
-    handleUserSex = (value) => {
-        this.setState({
-            sex: value,
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFieldsAndScroll(async (err, formValues) => {
+            if (!err) {
+                Meteor.call('changeUserBaseInfo', formValues, (error) => {
+                    if (error) {
+                        return feedback.dealError('修改成功');
+                    }
+                    return feedback.dealSuccess('修改成功');
+                });
+            }
         });
     }
-    handleSaveInfo = () => {
-        if (!this.$username.value) {
-            feedback.dealError('姓名不能为空');
+    convertAddress = (address) => {
+        if (!address.length) {
             return;
         }
-        Meteor.call('changeUserBaseInfo', this.$username.value, this.$signature.value, this.state.sex, this.$age.value, (err) => {
-            console.log(err);
-            feedback.dealSuccess('修改成功');
-        });
+        const currentProvince = this.state.residences.find(n => n.value === address[0]);
+        const province = currentProvince.label || '';
+        const currentCity = currentProvince.children.find(n => n.value === address[1]);
+        const city = currentCity.label || '';
+        const currentArea = currentCity.children.find(n => n.value === address[2]);
+        const area = currentArea.label || '';
+        return [province, city, area];
+        //  return `${province}/${city}/${area}`;
     }
     render() {
+        const { formLayout } = this.state;
+        const formItemLayout = formLayout === 'horizontal' ? {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 14 },
+        } : null;
+        const buttonItemLayout = formLayout === 'horizontal' ? {
+            wrapperCol: { span: 14, offset: 4 },
+        } : null;
+        const { getFieldDecorator } = this.props.form;
         const { profile = {}, username = '' } = this.props.user;
-        const { name = '', company = [], signature = '', age = '', sex = 'male' } = profile;
+        const { name = '', signature = '', age = '', sex = 'male', address = [] } = profile;
+        const userAddress = this.convertAddress(address);
+        // console.log(userAddress);
+
         return (
             <ul className="info-setting">
-                <li>
-                    <label htmlFor="avatar">头像</label>
-                    <AvatarSelf />
-                    <p className="edit-avatar">修改头像
-                        <input type="file" id="avatar" onChange={this.handleUploadImg} />
-                    </p>
-                </li>
-                <li>
-                    <label htmlFor="nickname">姓名</label>
-                    <input type="text" id="nickname" placeholder="请您输入姓名" defaultValue={name} ref={i => this.$username = i} />
-                </li>
-                <li>
-                    <label htmlFor="phone">手机号</label>
-                    <input type="number" id="phone" value={username} disabled="true " style={{ border: 0 }} />
-                </li>
-                <li>
-                    <label htmlFor="signature">签名</label>
-                    <input type="text" id="signature" placeholder="请您输入签名" defaultValue={signature} ref={i => this.$signature = i} />
-                </li>
-                <li>
-                    <label htmlFor="sex">性别</label>
-                    <Select defaultValue={sex} onChange={this.handleUserSex} style={{ width: 255 }}>
-                        <Option value="male" style={{ width: 255 }}>男</Option>
-                        <Option value="female" style={{ width: 255 }}>女</Option>
-                    </Select>
-                </li>
-                <li>
-                    <label htmlFor="age" >年龄</label>
-                    <input type="number" id="age" placeholder="请您输入年龄" min={0} max={200} ref={i => this.$age = i} defaultValue={age} />
-                </li>
-                <li>
-                    <label htmlFor="avatar">所在地</label>
-                    <Cascader options={this.state.options} placeholder="请选择地区" className="area-input" onChange={this.handleUserArea} />
-                </li>
-                {
-                    company.length > 0 ?
-                        <div>
-                            <li>
-                                <label htmlFor="company">企业</label>
-                                <input type="text" id="company" disabled="true " style={{ border: 0 }} />
-                            </li>
-                            <li>
-                                <label htmlFor="career">职业</label>
-                                <input type="职业" id="career" disabled="true " style={{ border: 0 }} />
-                            </li>
+                <Form layout={formLayout} onSubmit={this.handleSubmit}>
+                    <FormItem
+                        label="头像"
+                        {...formItemLayout}
+                    >
+                        <div className="change-self-avatar">
+                            <AvatarSelf />
+                            <p className="edit-avatar">修改头像
+                                <input type="file" id="avatar" onChange={this.handleUploadImg} ref={i => this.fileInput = i} />
+                            </p>
                         </div>
-                        :
-                        null
-                }
-                <li>
-                    <button onClick={this.handleSaveInfo}>保存</button>
-                </li>
+                    </FormItem>
+                    <FormItem
+                        label="姓名"
+                        {...formItemLayout}
+                    >
+                        {getFieldDecorator('name', {
+                            rules: [{
+                                type: 'string', message: '类型为string!',
+                            }, {
+                                required: true, message: '姓名必填!',
+                            }],
+                            initialValue: name,
+                        })(
+
+                            <Input placeholder="团队名称" />,
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label="手机号"
+                        {...formItemLayout}
+                    >
+                        {getFieldDecorator('username', {
+                            rules: [{
+                                type: 'string', message: '类型为string!',
+                            }, {
+                                required: true, message: '手机号必填!',
+                            }],
+                            initialValue: username,
+                        })(
+
+                            <Input placeholder="手机号" disabled />,
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label="签名"
+                        {...formItemLayout}
+                    >
+                        {getFieldDecorator('signature', {
+                            rules: [{
+                                type: 'string', message: '类型为string!',
+                            }, {
+                            }],
+                            initialValue: signature,
+                        })(
+
+                            <Input placeholder="签名" />,
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label="性别"
+                        {...formItemLayout}
+                    >
+                        {getFieldDecorator('sex', {
+                            rules: [{
+                                type: 'string', message: '类型为string!',
+                            }, {
+                            }],
+                            initialValue: sex,
+                        })(
+                            <Select placeholder="性别" >
+                                <Option value="male" >男</Option>
+                                <Option value="female">女</Option>
+                            </Select>,
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label="年龄"
+                        {...formItemLayout}
+                    >
+                        {getFieldDecorator('age', {
+                            rules: [{
+                                type: 'string', message: '类型为string!',
+                            }, {
+                            }],
+                            initialValue: age,
+                        })(
+
+                            <Input placeholder="年龄" />,
+                        )}
+                    </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label="所在地区"
+                    >
+                        {getFieldDecorator('address', {
+                            initialValue: userAddress,
+                        })(
+                            <Cascader
+                                options={this.state.residences}
+                                placeholder="请选择地区"
+                            />,
+                        )}
+                    </FormItem>
+                    <FormItem {...buttonItemLayout}>
+                        <Button type="primary" htmlType="submit">保存</Button>
+                    </FormItem>
+                </Form>
             </ul>
         );
     }
 }
 
-export default withTracker(() => ({
-    user: Meteor.user() || {},
-}))(InfoSetting);
+export default Form.create({})(
+    withTracker(() => ({
+        user: Meteor.user() || {},
+    }))(InfoSetting),
+);
