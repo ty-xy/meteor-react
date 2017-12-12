@@ -282,3 +282,11 @@
  zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
  zg xy    Merge branch 'master' into feature/project_ty
  zg-xym    build results on build 38
+----------------------------------
+
+2017-12-12 10:15:43,   build 40
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    merge master
+ zg gwt    fix: 日志弹出框徐娜人bug; 替换iconfont； 跳过短信验证
+ zg-xym    build results on build 39
