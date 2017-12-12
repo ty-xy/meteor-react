@@ -87,6 +87,7 @@ class Invite extends PureComponent {
     // urls
     urls = () => {
         const { companyId, dep, departmentGroupId, companyGroupId } = this.props;
+        console.log('urls', companyId, dep, departmentGroupId, companyGroupId);
         const { origin } = window.location;
         const pathname = '/login';
         const w = `${origin}${pathname}`;

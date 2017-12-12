@@ -177,10 +177,6 @@ Meteor.methods({
         );
 
         if (isAutoChat) {
-            await Meteor.call(
-                'deleteGroup',
-                groupId,
-            );
             await Company.update(
                 { _id: companyId },
                 {
@@ -193,7 +189,35 @@ Meteor.methods({
     },
     // 批量设置部门人员
     batchSetDep({ companyId, _users, groupId, oldgroup, oldDep }) {
-        console.log('oldDep', oldDep);
+        console.log('batchSetDep', companyId, _users, groupId, oldgroup, oldDep);
+        let name = '';
+        const company = Company.findOne({ _id: companyId }) || {};
+        (company.deps || []).forEach((item) => {
+            if (item.id === _users[0].dep) {
+                name = item.name;
+            }
+        });
+        if (!groupId) {
+            Meteor.call(
+                'createGroup',
+                { name, members: [], type: 'team', admin: _users[0].userId, superiorId: companyId },
+                (err, groupid) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                    groupId = groupid;
+                    Company.update(
+                        { _id: companyId, 'deps.id': _users[0].dep },
+                        {
+                            $set: { 'deps.$.groupId': groupId },
+                            $push: {
+                                subGroupIds: groupId,
+                            },
+                        },
+                    );
+                },
+            );
+        }
         _users.forEach((item) => {
             Company.update(
                 { _id: companyId, 'members.userId': item.userId },
@@ -202,24 +226,27 @@ Meteor.methods({
                 },
                 (err, res) => {
                     if (res && item.dep) {
-                        console.log('deleteMember', oldgroup, item.userId);
-                        Meteor.call(
-                            'deleteMember',
-                            oldgroup,
-                            item.userId,
-                        );
-                        Meteor.call(
-                            'addGroupMembers',
-                            {
-                                groupId,
-                                newMemberIds: [item.userId],
-                            },
-                        );
+                        console.log('deleteMember', groupId, oldgroup, item.userId);
                         // 删除旧部中的userid
                         Company.update(
                             { _id: companyId, 'deps.id': oldDep },
                             {
                                 $pull: { 'deps.$.members': item.userId },
+                            },
+                        );
+                        // 移除群聊中的人
+                        Meteor.call(
+                            'deleteMember',
+                            oldgroup,
+                            item.userId,
+                            companyId,
+                        );
+                        // 添加到新的群聊
+                        Meteor.call(
+                            'addGroupMembers',
+                            {
+                                groupId,
+                                newMemberIds: [item.userId],
                             },
                         );
                         // 更新修改后的部门的 userID
@@ -236,7 +263,7 @@ Meteor.methods({
     },
     // 公司添加人员
     async addMember({ companyId, userId, dep = '', departmentGroupId, pos, companyGroupId }) {
-        console.log('addMember', companyId, userId, departmentGroupId, pos, companyGroupId);
+        console.log('addMember', companyId, dep, userId, departmentGroupId, pos, companyGroupId);
         const member = {
             userId,
             dep,
@@ -283,6 +310,7 @@ Meteor.methods({
                 (err, r) => (err ? reject(0) : resolve(r)));
         });
         const rr = await pro();
+        console.log('pro', rr, membersNum, isAutoChat, departmentGroupId);
         if (rr) {
             if (dep) {
                 // 更新部门人员
@@ -438,7 +466,7 @@ Meteor.methods({
         if (departmentGroupId) {
             await Meteor.call(
                 'deleteMember',
-                departmentGroupId, userId,
+                departmentGroupId, userId, companyId,
             );
         }
         // 从公司大群聊中删除

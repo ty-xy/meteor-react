@@ -506,7 +506,6 @@ class Organization extends PureComponent {
         } else {
             data = users.filter(item => (!item.dep));
         }
-        console.log('stet', this.state);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">

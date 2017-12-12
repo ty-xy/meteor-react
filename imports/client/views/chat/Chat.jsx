@@ -62,14 +62,12 @@ class Chat extends Component {
         const { history } = this.props;
         if (history.location.search && history.location.state === 'invite') {
             const search = location.search.slice(1).split('&');
-            console.log('search', search);
             const searchs = {};
             search.forEach((item) => {
                 searchs[item.split('=')[0]] = item.split('=')[1];
             });
             if (searchs.companyId) {
                 const { companyId, departmentGroupId, dep, userId, companyGroupId } = searchs;
-                console.log('searchs', searchs);
                 Meteor.call(
                     'addMember',
                     { userId: Meteor.userId() || userId, companyId, dep, departmentGroupId, pos: '', companyGroupId, invite: true },
