@@ -93,19 +93,6 @@ class CreateTeam extends Component {
             showSelect: false,
         });
     }
-    convertAddress = (address) => {
-        if (!address.length) {
-            return;
-        }
-        const currentProvince = this.state.residences.find(n => n.value === address[0]);
-        const province = currentProvince.label || '';
-        const currentCity = currentProvince.children.find(n => n.value === address[1]);
-        const city = currentCity.label || '';
-        const currentArea = currentCity.children.find(n => n.value === address[2]);
-        const area = currentArea.label || '';
-        return [province, city, area];
-        //  return `${province}/${city}/${area}`;
-    }
     render() {
         const { formLayout } = this.state;
         const formItemLayout = formLayout === 'horizontal' ? {
@@ -117,8 +104,6 @@ class CreateTeam extends Component {
         } : null;
         const { getFieldDecorator } = this.props.form;
         const { name = '', logo = this.state.teamLogo, industryType = '', residence = [] } = this.props.currentCompany || {};
-        const companyResidence = this.convertAddress(residence);
-        // console.log(companyResidence);
         return (
             <div>
                 <Form layout={formLayout} onSubmit={this.handleSubmit}>
@@ -175,7 +160,7 @@ class CreateTeam extends Component {
                         label="所在地区"
                     >
                         {getFieldDecorator('residence', {
-                            initialValue: companyResidence,
+                            initialValue: residence,
                             rules: [{ type: 'array' }],
                         })(
                             <Cascader options={this.state.residences} placeholder="请选择地区" />,
