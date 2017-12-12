@@ -20,5 +20,4 @@ less@2.7.11
 accounts-password@1.5.0
 react-meteor-data
 aldeed:simple-schema
-reywood:publish-composite
 deanius:promise

@@ -23,6 +23,11 @@ class projectChat extends Component {
         pId: PropTypes.string,
 
     }
+    componentDidUpdate() {
+        if (this.props.pId) {
+            this.$message.addEventListener('keydown', this.handleSendMessage);
+        }
+    }
     handleChatUser = (fromId, toId, groupId) => {
         if (fromId === Meteor.userId()) {
             return;
@@ -150,17 +155,18 @@ class projectChat extends Component {
                         ))
                     }
                 </div>
-                <div className="project-chat-nav">
-                    <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
-                        <Icon icon="icon-biaoqing icon" size={20} />
-                    </Popover>
-                    {/* <Icon icon="icon-wenjian icon" size={20} /> */}
+                <div className="project-bottom-input">
+                    <div className="project-chat-nav">
+                        <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
+                            <Icon icon="icon-biaoqing icon" size={20} />
+                        </Popover>
+                        {/* <Icon icon="icon-wenjian icon" size={20} /> */}
+                    </div>
+                    <div className="project-chat-input">
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
+                        <p className="chat-send-message" onClick={this.sendText}>发送</p>
+                    </div>
                 </div>
-                <div className="project-chat-input">
-                    <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
-                    <p className="chat-send-message" onClick={this.sendText}>发送</p>
-                </div>
-
             </div>
         );
     }

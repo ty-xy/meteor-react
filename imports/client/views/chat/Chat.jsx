@@ -27,6 +27,7 @@ import Icon from '../../components/Icon';
 
 import InviteModel from '../manage/audit/component/MyModel';
 
+// let count = 1;
 @pureRender
 class Chat extends Component {
     static propTypes = {
@@ -54,6 +55,7 @@ class Chat extends Component {
             currentKey: '',
             currentDeps: '',
             deps: '',
+            count: 1,
         };
     }
     componentWillMount() {
@@ -85,6 +87,14 @@ class Chat extends Component {
             }
         }
     }
+    getMoreMessage = () => {
+        let countNum = this.state.count;
+        countNum++;
+        this.setState({
+            count: countNum,
+        });
+        // console.log(`执行函数count${this.state.count}`);
+    }
     handleChatType = (chatType) => {
         this.setState({
             chatType,
@@ -114,10 +124,9 @@ class Chat extends Component {
     changeTo = (to, userId, type, chatType) => {
         // 有未读消息(有用户所在的群以及发给用户的消息)且不在聊天列表时,创建新的聊天窗口
         if (type && !this.props.chatList.find(item => item[type] === userId)) {
-            Meteor.call('addChatList', userId, type, (err) => {
-                feedback.dealError(err);
-            });
+            Meteor.call('addChatList', userId, type, err => feedback.dealError(err));
         }
+        // 选中与谁的对话框
         this.handleToggle(userId);
         this.setState({ to, userId, chatType });
     }
@@ -126,6 +135,7 @@ class Chat extends Component {
             selectedChat: {
                 [value]: true,
             },
+            count: 1,
         });
     }
     // 邀请提示
@@ -168,6 +178,8 @@ class Chat extends Component {
                 changeTo={this.changeTo}
                 handleToggle={this.handleToggle}
                 handleClick={this.handleClick.bind(this, 1)}
+                getMoreMessage={this.getMoreMessage}
+                count={this.state.count}
             />);
         case 'newFriend':
             return <NewFriend />;
@@ -186,7 +198,9 @@ class Chat extends Component {
                     {/* 导航部分 */}
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
-                            <SearchChat changeTo={this.changeTo} />
+                            <SearchChat
+                                changeTo={this.changeTo}
+                            />
                         </div>
                         <ul className="chat-type">
                             {

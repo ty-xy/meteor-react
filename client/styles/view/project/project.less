@@ -1,7 +1,7 @@
 .ejianlian-project{
     display: flex;
     flex: 1;
-    padding: 50px 0px 30px 30px;
+    padding: 50px 30px 30px 30px;
     font-size:10px;
     box-sizing: border-box;
     &>.left {
@@ -19,7 +19,8 @@
     }
     .ejianlian-project-window{
         max-width:100%;
-        overflow:auto;
+        overflow-x:auto;
+        overflow-y:hidden;
         max-height: 100%;
          flex: 1;
          .ant-tabs:not(.ant-tabs-vertical) > .ant-tabs-content {
@@ -33,11 +34,14 @@
             flex-shrink: 0;
             width: 100%; 
             // width: auto;
-            overflow-x: auto; 
+           // overflow-x: auto; 
             -webkit-transition: opacity .45s;
             transition: opacity .45s;
             opacity: 1;
            
+        }
+        .task-scroll-auto{
+            overflow-x: auto;
         }
        // justify-content: stretch;
     }
