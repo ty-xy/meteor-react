@@ -193,6 +193,8 @@ export default withTracker(({ to, userId, pId }) => {
     console.log(pId);
     const messages = Message.find({ to: pId }).fetch();
     messages.forEach((d, i, data) => {
+        d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
+        d.from = PopulateUtil.message(d.from);
         d.showYearMonth = false;
         if (i) {
             const prev = data[i - 1];

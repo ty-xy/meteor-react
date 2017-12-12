@@ -66,7 +66,7 @@ class ProjectBordAdd extends Component {
 
     render() {
         return (
-            <div style={{ marginLeft: '30px', marginTop: '10px' }}>
+            <div style={{ marginLeft: '30px' }}>
                 <div className="ejianlian-add-item-bar" onClick={this.handleClick}>
                     <MyIcon icon="icon-jiahao" size={14} iconColor="#999" />
                     <p>添加任务版</p>

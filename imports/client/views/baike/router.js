@@ -9,11 +9,13 @@ import BaikeFile from './BaikeWindow/BaikeFile';
 import BaikeAnswer from './BaikeWindow/BaikeAnswer';
 import BaikeCompany from './BaikeWindow/BaikeCompany';
 import BaikeCompanyDetail from './BaikeWindow/BaikeCompanyDetail';
+import BaikeSearch from './BaikeWindow/BaikeSearch';
 
 
 export default () => (
     <div className="baike-window-total">
         <Route exact path="/baike" component={BaikeFirst} />
+        <Route path="/baike/search" component={BaikeSearch} />
         <Route path="/baike/people" component={BaikePeople} />
         <Route path="/baike/detail" component={BaikePeopleDetail} />
         <Route path="/baike/file" component={BaikeFile} />

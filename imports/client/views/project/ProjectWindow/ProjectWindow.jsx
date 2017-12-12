@@ -6,7 +6,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 
 import Icon from '../../../components/Icon';
-import ProjectBordAdd from './ProjectBord/ProjectBordAdd';
+// import ProjectBordAdd from './ProjectBord/ProjectBordAdd';
 import ProjectLender from './ProjectBord/projectLender';
 import ProjectFile from './ProjectFile/projectFile';
 import ProjectChat from './projectChat/projectChat';
@@ -118,7 +118,7 @@ class ProjectWindow extends Component {
                     <Tabs defaultActiveKey="1" className="tab-task" >
                         <TabPane tab="任务流" key="1" style={divStyle.TabStyle} className="task-scroll-auto">
                             <Board pId={this.state.id} />
-                            <ProjectBordAdd pId={this.state.id} />
+                            {/* <ProjectBordAdd pId={this.state.id} /> */}
                         </TabPane>
                         <TabPane tab="日历" key="2">
                             <ProjectLender />
