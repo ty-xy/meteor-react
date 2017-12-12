@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import Company from '../../imports/schema/company';
 import Group from '../../imports/schema/group';
 import SMSClient from '../../imports/util/SMSClient';
-// import UserUtil from '../../imports/util/user';
+import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
@@ -262,7 +262,7 @@ Meteor.methods({
         });
     },
     // 公司添加人员
-    async addMember({ companyId, userId, dep = '', departmentGroupId, pos, companyGroupId }) {
+    async addMember({ companyId = UserUtil.getCurrentBackendCompany(), userId, dep = '', departmentGroupId, pos, companyGroupId }) {
         console.log('addMember', companyId, dep, userId, departmentGroupId, pos, companyGroupId);
         const member = {
             userId,
@@ -390,14 +390,15 @@ Meteor.methods({
         return Company.findOne({ _id: companyId }) ? Company.findOne({ _id: companyId }).name : '邀请出错';
     },
     // 修改人员
-    async editMember({ companyId, userId, dep = '', oldDep, groupId, oldgroup, pos }) {
+    async editMember({ companyId = UserUtil.getCurrentBackendCompany(), userId, dep = '', oldDep, groupId, oldgroup, pos }) {
         const member = {
             userId,
             dep,
             pos,
         };
-        // console.log('editMember', companyId, member);
+        console.log('editMember', userId, '旧部', oldDep, '新群聊', groupId, '就群聊', oldgroup);
         if (dep) {
+            console.log('dep', dep);
             await Company.update(
                 { _id: companyId, 'members.userId': userId },
                 {
@@ -423,14 +424,55 @@ Meteor.methods({
                 'deleteMember',
                 oldgroup, userId,
             );
-            // 添加到移入的群聊
-            await Meteor.call(
-                'addGroupMembers',
-                {
-                    groupId,
-                    newMemberIds: [userId],
-                },
-            );
+            if (!groupId) {
+                // 新增群聊
+                console.log('新增群聊');
+                let name = '';
+                const company = Company.findOne({ _id: companyId }) || {};
+                (company.deps || []).forEach((item) => {
+                    if (item.id === dep) {
+                        name = item.name;
+                    }
+                });
+                Meteor.call(
+                    'createGroup',
+                    { name, members: [userId], type: 'team', admin: userId, superiorId: companyId },
+                    (err, groupid) => {
+                        if (err) {
+                            console.error(err);
+                            return false;
+                        }
+                        Company.update(
+                            { _id: companyId, 'deps.id': dep },
+                            {
+                                $set: { 'deps.$.groupId': groupid },
+                                $push: {
+                                    subGroupIds: groupid,
+                                },
+                            },
+                        );
+                        Company.update(
+                            { _id: companyId, 'deps.id': oldDep },
+                            {
+                                $set: { 'deps.$.groupId': '' },
+                                $pull: {
+                                    subGroupIds: groupId,
+                                },
+                            },
+                        );
+                    },
+                );
+            } else {
+                // 添加到移入的群聊
+                console.log('添加到群聊');
+                await Meteor.call(
+                    'addGroupMembers',
+                    {
+                        groupId,
+                        newMemberIds: [userId],
+                    },
+                );
+            }
         } else {
             await Company.update(
                 { _id: companyId, 'members.userId': userId },

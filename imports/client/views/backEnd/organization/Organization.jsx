@@ -194,7 +194,6 @@ class Organization extends PureComponent {
     );
     // 新增人员提交
     handleSubmitMember = (res, editMemberInfo, oldgroup) => {
-        const companyId = UserUtil.getCurrentBackendCompany();
         const { allUsers, users, company } = this.props;
         const companyGroupId = company.groupId;
         let isNot = false;
@@ -221,7 +220,7 @@ class Organization extends PureComponent {
         if (editMemberInfo) {
             Meteor.call(
                 'editMember',
-                { ...res, userId: editMemberInfo, companyId, groupId, oldgroup, oldDep },
+                { ...res, userId: editMemberInfo, groupId, oldgroup, oldDep },
                 (err) => {
                     if (err) {
                         feedback.dealError('编辑失败');
@@ -246,7 +245,7 @@ class Organization extends PureComponent {
             if (bool) {
                 Meteor.call(
                     'addMember',
-                    { ...res, companyId, departmentGroupId: groupId, companyGroupId },
+                    { ...res, departmentGroupId: groupId, companyGroupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('添加失败');
