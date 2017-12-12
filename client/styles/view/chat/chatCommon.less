@@ -1,3 +1,4 @@
+@import '../util/util.less';
 // 聊天信息/公告信息列表
 .chat-message-file-wrap {
     overflow: scroll;
@@ -16,7 +17,7 @@
     }
     .chat-user-pannel:hover {
         background-color: #e3f2fd;
-        & > .icon-chuyidong {
+        & > .icon-guanbi {
             opacity: 1;
         }
     }
@@ -31,11 +32,12 @@
         background-color: #fff;
         position: relative;
         cursor: pointer;
-        & > .icon-chuyidong {
+        & > .icon-guanbi {
             margin: 0 -10px;
-            margin-top: 30px;
+            margin-top: 25px;
             display: block;
             opacity: 0;
+            color: @color66;
         }
         .work-notice-redDot {
             width: 10px;
