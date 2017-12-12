@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
+
 import InfoSetting from './InfoSetting';
 import SafeSetting from './SafeSetting';
 import SystemSetting from './SystemSetting';
+import Icon from '../../components/Icon';
 
 @pureRender
 class AdminInfo extends Component {
@@ -39,8 +41,8 @@ class AdminInfo extends Component {
                                 style={{ color: this.state.selected === index + 1 ? '#29B6F6' : '#333' }}
                                 onClick={this.handleClick.bind(this, index + 1)}
                             >
-                                <p className="setting-icon" style={{ backgroundColor: this.state.selected === index + 1 ? '#fff' : '#fff' }}>
-                                    <i className={`iconfont ${item.content}`} />
+                                <p className="setting-icon" style={{ backgroundColor: this.state.selected === index + 1 ? '#29B6F6' : '#ccc' }}>
+                                    <Icon icon={item.content} size={20} iconColor="#fff" />
                                 </p>
                                 <p>{item.name}</p>
                             </li>
@@ -48,9 +50,25 @@ class AdminInfo extends Component {
                     }
                 </ul>
                 <div className="setting-detail-wrap">
-                    <InfoSetting style={{ display: this.state.selected === 1 ? 'block' : 'none' }} />
-                    <SafeSetting style={{ display: this.state.selected === 2 ? 'block' : 'none' }} />
-                    <SystemSetting style={{ display: this.state.selected === 3 ? 'block' : 'none' }} />
+                    {
+                        this.state.selected === 1 ?
+                            <InfoSetting />
+                            :
+                            null
+                    }
+                    {
+                        this.state.selected === 2 ?
+                            <SafeSetting />
+                            :
+                            null
+                    }
+                    {
+                        this.state.selected === 3 ?
+                            <SystemSetting />
+                            :
+                            null
+                    }
+
                 </div>
             </div>
         );

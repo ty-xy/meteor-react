@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import Files from '../schema/file';
 import fields from './fields';
+import Company from '../schema/company';
 
 const PopulateUtil = {
     group(group) {
@@ -28,6 +29,16 @@ const PopulateUtil = {
                 { _id: messageFrom },
                 {
                     fields: fields.user,
+                },
+            );
+        }
+    },
+    company(companyId) {
+        if (companyId) {
+            return Company.findOne(
+                { _id: companyId },
+                {
+                    fields: fields.companyName,
                 },
             );
         }
