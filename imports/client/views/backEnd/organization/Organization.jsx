@@ -458,7 +458,7 @@ class Organization extends PureComponent {
     }
     // ---- 邀请员工 ----
     pleaseInvite = () => {
-        const { members, deps = [] } = this.props.company;
+        const { members, deps = [], groupId } = this.props.company;
         const { inviteModel, depActive } = this.state;
         let depGroupId = '';
         deps.forEach((item) => {
@@ -473,8 +473,9 @@ class Organization extends PureComponent {
                 modelDep={inviteModel}
                 deps={members || []}
                 companyId={UserUtil.getCurrentBackendCompany()}
+                companyGroupId={groupId}
                 dep={depActive}
-                groupId={depActive ? depGroupId : UserUtil.getCompanyGrounpId()}
+                departmentGroupId={depGroupId}
             />
         );
     }

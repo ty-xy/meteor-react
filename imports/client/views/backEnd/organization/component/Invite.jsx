@@ -13,7 +13,8 @@ class Invite extends PureComponent {
         modelDep: PropTypes.bool,
         companyId: PropTypes.string,
         dep: PropTypes.string,
-        groupId: PropTypes.string,
+        departmentGroupId: PropTypes.string,
+        companyGroupId: PropTypes.string,
     }
     constructor(props) {
         super(props);
@@ -85,18 +86,18 @@ class Invite extends PureComponent {
     }
     // urls
     urls = () => {
-        const { companyId, dep, groupId } = this.props;
+        const { companyId, dep, departmentGroupId, companyGroupId } = this.props;
         const { origin } = window.location;
         const pathname = '/login';
         const w = `${origin}${pathname}`;
-        if (companyId && dep && groupId) {
-            return `${w}?companyId=${companyId}&dep=${dep}&groupId=${groupId}`;
-        } else if (companyId && groupId) {
-            return `${w}?companyId=${companyId}&groupId=${groupId}`;
-        } else if (companyId) {
-            return `${w}?companyId=${companyId}`;
+        if (companyId && dep && departmentGroupId) {
+            return `${w}?companyId=${companyId}&dep=${dep}&departmentGroupId=${departmentGroupId}&companyGroupId=${companyGroupId}`;
+        } else if (companyId && departmentGroupId) {
+            return `${w}?companyId=${companyId}&departmentGroupId=${departmentGroupId}&companyGroupId=${companyGroupId}`;
         } else if (companyId && dep) {
-            return `${w}?companyId=${companyId}&dep=${dep}`;
+            return `${w}?companyId=${companyId}&dep=${dep}&companyGroupId=${companyGroupId}`;
+        } else if (companyId) {
+            return `${w}?companyId=${companyId}&companyGroupId=${companyGroupId}`;
         }
     }
     render() {
