@@ -7,8 +7,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Avatar from '../components/Avatar';
 import AvatarSelf from '../components/AvatarSelf';
 import Icon from '../components/Icon';
-// import feedback from '../../util/feedback';
-// import AddGroup from '../views/chat/chatSideLeft/addChat/AddGroup';
+import feedback from '../../util/feedback';
 import SelectMembers from '../features/SelectMembers';
 import Company from '../../schema/company';
 import UserUtil from '../../util/user';
@@ -59,12 +58,11 @@ class CreateTeam extends Component {
         const changeAvatar = this.changeAvatar;
         reader.onloadend = function () {
             Meteor.call('uploadImg', this.result, (err, result) => {
-                console.log(101010, result);
-                changeAvatar(result);
                 if (err) {
-                    return console.error(err.reason);
+                    return feedback.dealError(err);
                 }
-                console.log('修改头像成功');
+                changeAvatar(result);
+                return feedback.successToast('修改头像成功');
             });
         };
         reader.readAsDataURL(image);
@@ -85,7 +83,6 @@ class CreateTeam extends Component {
         });
     }
     confirmSelected = (members) => {
-        // console.log('选择加入的人员', members);
         const selectMembers = members;
         this.setState({
             selectMembersId: members,
