@@ -102,7 +102,7 @@ class ContactList extends Component {
             <div className="user-message">
                 <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
-                    <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
+                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
                     {
                         unreadMessage !== 0 ?
                             <span className="notice-red-dot">
@@ -149,7 +149,6 @@ class ContactList extends Component {
                             null
 
                     }
-                    <span>{group.isDisturb}</span>
                     {
                         group.isDisturb ?
                             <Icon icon="icon-icon-yxj-no-disturbing" size={8} iconColor="#b2b2b2" />
