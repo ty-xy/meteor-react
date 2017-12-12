@@ -122,12 +122,10 @@ class Organization extends PureComponent {
             commentModel: false,
         });
         const _id = UserUtil.getCurrentBackendCompany();
-        const members = [];
-        members.push(Meteor.user()._id);
         const id = uuid();
         Meteor.call(
             'addDepartment',
-            { ...info, _id, id, members },
+            { ...info, _id, id },
             (err) => {
                 if (err) {
                     feedback.dealError('添加失败');
@@ -237,12 +235,14 @@ class Organization extends PureComponent {
         } else if (isNot) {
             feedback.dealWarning('该人员已存在公司中， 请注意查看');
         } else {
+            // 判断是否为新成员
             allUsers.forEach((item) => {
                 if (item.username === res.phone) {
                     bool = true;
                     res.userId = item._id;
                 }
             });
+            console.log('rs', res);
             if (bool) {
                 Meteor.call(
                     'addMember',
@@ -505,6 +505,7 @@ class Organization extends PureComponent {
         } else {
             data = users.filter(item => (!item.dep));
         }
+        console.log('stet', this.state);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">

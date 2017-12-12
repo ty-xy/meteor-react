@@ -47,10 +47,10 @@ class Register extends Component {
                 clearInterval(countDownDate);
             }
         }, 1000);
-        const result = await Meteor.callPromise('sendRegisterSMS', username);
-        this.setState({
-            BizId: result.BizId,
-        });
+        // const result = await Meteor.callPromise('sendRegisterSMS', username);
+        // this.setState({
+        //     BizId: result.BizId,
+        // });
     }
     hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
     login = (userId) => {
@@ -77,13 +77,13 @@ class Register extends Component {
             if (!values.agreement) {
                 return feedback.dealWarning('请先同意用户协议');
             }
-            if (!values.verificationCode) {
-                return feedback.dealWarning('请输入验证码');
-            }
-            const queryResult = await Meteor.callPromise('queryDetail', values.username, this.state.BizId, Number(values.verificationCode));
-            if (!queryResult) {
-                return feedback.dealWarning('请输入正确的验证码');
-            }
+            // if (!values.verificationCode) {
+            //     return feedback.dealWarning('请输入验证码');
+            // }
+            // const queryResult = await Meteor.callPromise('queryDetail', values.username, this.state.BizId, Number(values.verificationCode));
+            // if (!queryResult) {
+            //     return feedback.dealWarning('请输入正确的验证码');
+            // }
             Meteor.call('register', values, (error, userId) => {
                 if (error) {
                     return feedback.dealError(error);
