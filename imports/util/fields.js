@@ -45,6 +45,9 @@ export default {
         name: 1,
         logo: 1,
     },
+    companyName: {
+        name: 1,
+    },
     // 选择人员时的团队
     searchCompany: {
         name: 1,

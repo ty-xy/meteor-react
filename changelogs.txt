@@ -290,3 +290,13 @@
  zg gwt    merge master
  zg gwt    fix: 日志弹出框徐娜人bug; 替换iconfont； 跳过短信验证
  zg-xym    build results on build 39
+----------------------------------
+
+2017-12-12 21:12:50,   build 41
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    feat: 添加个人资料公司显示数据
+ 王亚星    feat: 添加地区选择数据
+ 王亚星    fix: 修复最后一条消息过长样式问题
+ 王亚星    fix: 修复图标问题
+ zg-xym    build results on build 40

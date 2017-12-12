@@ -7,7 +7,7 @@ import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
-    async createCompany({ name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [] }) {
+    async createCompany({ name, industryType, residence = [], logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [] }) {
         // 创建完团队,自动创建公司的群聊
         const newCompany = {
             createdAt: new Date(),
