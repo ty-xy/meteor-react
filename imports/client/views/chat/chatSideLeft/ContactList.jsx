@@ -15,6 +15,7 @@ import Icon from '../../../components/Icon';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
 import PopulateUtil from '../../../../util/populate';
+import NoticeSound from '../../../../util/sound';
 
 let lastLength = 0;
 @pureRender
@@ -30,7 +31,7 @@ class ContactList extends Component {
     }
     componentWillUpdate(nextProps) {
         if (nextProps.allUnRead && this.props.allUnRead < nextProps.allUnRead) {
-            this.sound.play();
+            NoticeSound.play();
         }
     }
     compare = property => (a, b) => b[property] - a[property];
@@ -193,14 +194,6 @@ class ContactList extends Component {
 
         return (
             <div className="ejianlian-chat-message-list">
-                <audio
-                    ref={sound => this.sound = sound}
-                    className="notice-sound"
-                >
-                    <source src="/sounds/message_sound.mp3" type="audio/mp3" />
-                    <source src="/sounds/message_sound.ogg'" type="audio/ogg" />
-                    <source src="/sounds/message_sound.wav" type="audio/wav" />
-                </audio>
                 {
                     sortedChatList.length > 0 ?
                         sortedChatList.map((item, i) => this.renderChatListItem(item, i))
