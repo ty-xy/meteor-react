@@ -91,7 +91,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 ...nextProps.companyInfo,
                 members: members.map(item => (item.userId)),
                 selected: false,
-                id: nextProps.companyInfo._id,
+                id: nextProps.companyInfo && nextProps.companyInfo._id,
                 isAutoChat: true,
             };
             _deps.unshift(companyDep);
