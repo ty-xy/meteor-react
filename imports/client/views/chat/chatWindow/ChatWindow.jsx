@@ -170,7 +170,7 @@ class ChatWindow extends Component {
     }
     // 发送文字和表情
     sendText = () => {
-        this.sendMessage(this.$message.value, 'text');
+        this.sendMessage(this.$message.value.replace(/\n|\r\n/g, '<br/>'), 'text');
     }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
@@ -467,7 +467,6 @@ class ChatWindow extends Component {
                                             this.renderContent(message.type, message.content)
                                         }
                                     </div>
-                                    {/* <div>{message.from._id !== Meteor.userId() ? '' : (message.readedMembers.includes(message.to) ? '(已读)' : '(未读)')}</div> */}
                                 </div>
                             </div>
                         ))
@@ -491,12 +490,6 @@ class ChatWindow extends Component {
                                 />
                             </Tooltip>
                         </p>
-                        {/* <p className="skill-icon">
-                            <Icon icon="icon-card icon" />
-                        </p> */}
-                        {/* <p className="skill-icon">
-                            <Icon icon="icon-dakaishipin icon" size={20} onClick={this.sendVideo} />
-                        </p> */}
                     </div>
                     <div className="chat-message-input">
                         <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
