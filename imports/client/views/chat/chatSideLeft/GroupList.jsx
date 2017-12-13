@@ -10,6 +10,7 @@ import Avatar from '../../../components/Avatar';
 import UserUtil from '../../../../util/user';
 import Group from '../../../../schema/group';
 import Company from '../../../../schema/company';
+import avatarUrl from '../../../../util/avatarUrl';
 
 const SubMenu = Menu.SubMenu;
 @pureRender
@@ -107,7 +108,7 @@ class GroupList extends Component {
                                             }}
                                         >
                                             <p>
-                                                <Avatar name={item.name} avatar={item.avatar ? item.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} />
+                                                <Avatar name={item.name} avatar={item.avatar ? item.avatar : avatarUrl.avatarGroup} />
                                             </p>
                                             <p className={this.props.selfGroups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}({item.members.length})</p>
                                         </div>

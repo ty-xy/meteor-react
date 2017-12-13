@@ -3,11 +3,13 @@ import { Meteor } from 'meteor/meteor';
 import Company from '../../imports/schema/company';
 import Group from '../../imports/schema/group';
 import SMSClient from '../../imports/util/SMSClient';
-// import UserUtil from '../../imports/util/user';
+import avatarUrl from '../../imports/util/avatarUrl';
+
+const avatarTeam = avatarUrl.avatarTeam;
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
-    async createCompany({ name, industryType, residence = [], logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [] }) {
+    async createCompany({ name, industryType, residence = [], logo = avatarTeam, members = [] }) {
         // 创建完团队,自动创建公司的群聊
         const newCompany = {
             createdAt: new Date(),
@@ -56,7 +58,7 @@ Meteor.methods({
         return companyId;
     },
     // 修改公司/团队信息
-    changeCompanyInfo(companyId, { name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png' }) {
+    changeCompanyInfo(companyId, { name, industryType, residence, logo = avatarTeam }) {
         Company.update(
             { _id: companyId },
             {

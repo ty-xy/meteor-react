@@ -14,6 +14,7 @@ import SelectMembers from '../../../features/SelectMembers';
 import Company from '../../../../schema/company';
 import fields from '../../../../util/fields';
 import Group from '../../../../schema/group';
+import avatarUrl from '../../../../util/avatarUrl';
 
 @pureRender
 class GroupSetting extends Component {
@@ -182,7 +183,7 @@ class GroupSetting extends Component {
                     <div className="group-info">
                         <div className="group-base-info">
                             <div className="group-avatar-wrap">
-                                <Avatar avatar={this.props.avatar ? this.props.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} name="群聊" />
+                                <Avatar avatar={this.props.avatar ? this.props.avatar : avatarUrl.avatarGroup} name="群聊" />
                                 {
                                     this.props.admin === Meteor.userId() ?
                                         <div className="choose-new-avatar">

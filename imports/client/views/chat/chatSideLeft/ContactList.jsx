@@ -16,6 +16,7 @@ import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
 import PopulateUtil from '../../../../util/populate';
 import NoticeSound from '../../../../util/sound';
+import avatarUrl from '../../../../util/avatarUrl';
 
 let lastLength = 0;
 @pureRender
@@ -135,7 +136,7 @@ class ContactList extends Component {
             }
             <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
             <div className="user-avatar">
-                <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} name="群聊" />
+                <Avatar avatar={group.avatar ? group.avatar : avatarUrl.avatarGroup} name="群聊" />
             </div>
             <div className="user-message">
                 <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
