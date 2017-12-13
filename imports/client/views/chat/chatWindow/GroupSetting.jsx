@@ -214,7 +214,7 @@ class GroupSetting extends Component {
                         <p>群成员{this.props.groupMembers.length}人</p>
                         <p className="all">全部成员</p>
                     </div>
-                    <div className="members-avatar">
+                    <div className="members-avatars">
                         {
                             this.props.groupMembers.map((item, i) =>
                                 (item.profile ?
