@@ -12,33 +12,11 @@ import Icon from '../components/Icon';
 import SelectMembers from '../features/SelectMembers';
 import Company from '../../schema/company';
 import UserUtil from '../../util/user';
+import pcaData from '../../util/pcaData';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const residences = [{
-    value: 'zhejiang',
-    label: 'Zhejiang',
-    children: [{
-        value: 'hangzhou',
-        label: 'Hangzhou',
-        children: [{
-            value: 'xihu',
-            label: 'West Lake',
-        }],
-    }],
-}, {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-    children: [{
-        value: 'nanjing',
-        label: 'Nanjing',
-        children: [{
-            value: 'zhonghuamen',
-            label: 'Zhong Hua Men',
-        }],
-    }],
-}];
 class CreateTeam extends Component {
     static propTypes = {
         form: PropTypes.object,
@@ -55,6 +33,7 @@ class CreateTeam extends Component {
             teamLogo: 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png',
             selectMembers: [],
             selectMembersId: [],
+            residences: pcaData.pca,
         };
     }
     handleSubmit = (e) => {
@@ -114,6 +93,19 @@ class CreateTeam extends Component {
             showSelect: false,
         });
     }
+    convertAddress = (address) => {
+        if (!address.length) {
+            return;
+        }
+        const currentProvince = this.state.residences.find(n => n.value === address[0]);
+        const province = currentProvince.label || '';
+        const currentCity = currentProvince.children.find(n => n.value === address[1]);
+        const city = currentCity.label || '';
+        const currentArea = currentCity.children.find(n => n.value === address[2]);
+        const area = currentArea.label || '';
+        return [province, city, area];
+        //  return `${province}/${city}/${area}`;
+    }
     render() {
         const { formLayout } = this.state;
         const formItemLayout = formLayout === 'horizontal' ? {
@@ -125,6 +117,8 @@ class CreateTeam extends Component {
         } : null;
         const { getFieldDecorator } = this.props.form;
         const { name = '', logo = this.state.teamLogo, industryType = '', residence = [] } = this.props.currentCompany || {};
+        const companyResidence = this.convertAddress(residence);
+        // console.log(companyResidence);
         return (
             <div>
                 <Form layout={formLayout} onSubmit={this.handleSubmit}>
@@ -181,10 +175,10 @@ class CreateTeam extends Component {
                         label="所在地区"
                     >
                         {getFieldDecorator('residence', {
-                            initialValue: residence,
+                            initialValue: companyResidence,
                             rules: [{ type: 'array' }],
                         })(
-                            <Cascader options={residences} />,
+                            <Cascader options={this.state.residences} placeholder="请选择地区" />,
                         )}
                     </FormItem>
                     {

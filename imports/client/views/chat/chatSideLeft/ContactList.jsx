@@ -73,7 +73,6 @@ class ContactList extends Component {
                 this.props.handleNewFriend('newFriend');
             }}
         >
-            {/* <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} /> */}
             <div className="user-avatar new-friend-notice">
                 <Icon icon="icon-icon15 icon" />
             </div>
@@ -96,14 +95,14 @@ class ContactList extends Component {
             }}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
-            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} />
+            <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} />
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
             </div>
             <div className="user-message">
                 <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
-                    <span>{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
+                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
                     {
                         unreadMessage !== 0 ?
                             <span className="notice-red-dot">
@@ -133,7 +132,7 @@ class ContactList extends Component {
                     :
                     null
             }
-            <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
+            <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
             <div className="user-avatar">
                 <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} name="群聊" />
             </div>
@@ -150,7 +149,6 @@ class ContactList extends Component {
                             null
 
                     }
-                    <span>{group.isDisturb}</span>
                     {
                         group.isDisturb ?
                             <Icon icon="icon-icon-yxj-no-disturbing" size={8} iconColor="#b2b2b2" />

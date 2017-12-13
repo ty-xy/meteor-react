@@ -1,12 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 
 import Company from '../../imports/schema/company';
+import Group from '../../imports/schema/group';
 import SMSClient from '../../imports/util/SMSClient';
 // import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
     // 创建公司/团队 必传字段: name,industryType
-    async createCompany({ name, industryType, residence, logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [] }) {
+    async createCompany({ name, industryType, residence = [], logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [] }) {
         // 创建完团队,自动创建公司的群聊
         const newCompany = {
             createdAt: new Date(),
@@ -122,7 +123,7 @@ Meteor.methods({
         );
     },
     // 创建部门且创建群聊
-    addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '', members }) {
+    addDepartment({ _id, id, name, isAutoChat, admin = '', avatar = '' }) {
         const newDep = {
             id,
             name,
@@ -135,29 +136,6 @@ Meteor.methods({
             { _id },
             {
                 $push: { deps: newDep },
-            },
-            (error, res) => {
-                if (res && isAutoChat) {
-                    Meteor.call(
-                        'createGroup',
-                        { name, members, type: 'team', superiorId: _id },
-                        (err, groupId) => {
-                            if (err) {
-                                return false;
-                            }
-                            newDep.groupId = groupId;
-                            Company.update(
-                                { _id, 'deps.id': id },
-                                {
-                                    $set: { 'deps.$': newDep },
-                                    $push: {
-                                        subGroupIds: groupId,
-                                    },
-                                },
-                            );
-                        },
-                    );
-                }
             },
         );
     },
@@ -257,17 +235,17 @@ Meteor.methods({
         });
     },
     // 公司添加人员
-    addMember({ companyId, userId, dep = '', departmentGroupId, pos, invite, companyGroupId }) {
-        console.log('addMember', Meteor.userId(), userId, companyId, dep, departmentGroupId, pos, invite, companyGroupId);
+    async addMember({ companyId, userId, dep = '', departmentGroupId, pos, companyGroupId }) {
         const member = {
             userId,
             dep,
             pos,
         };
-        // if (invite) {
+
         const company = Company.findOne({ _id: companyId }) || {};
-        const { members = [] } = company;
+        const { members = [], deps } = company;
         const res = {};
+
         (members || []).forEach((item) => {
             if (item.userId === userId) {
                 res.done = '你已存在该团队中';
@@ -276,51 +254,109 @@ Meteor.methods({
         if (res.done) {
             return res;
         }
-        // }
-        Company.update(
-            { _id: companyId },
-            {
-                $push: { members: member },
-            },
-            (err, r) => {
-                if (r) {
-                    if (dep) {
-                        // 加入部门
-                        Company.update(
-                            { _id: companyId, 'deps.id': dep },
-                            {
-                                $push: { 'deps.$.members': userId },
-                            },
-                        );
-                        // 加入公司部门群聊
-                        Meteor.call(
-                            'addGroupMembers',
-                            {
-                                groupId: departmentGroupId,
-                                newMemberIds: [userId],
-                            },
-                        );
-                    }
-                    // 加入公司大群聊
+
+        /*
+            membersNum： 部门人数决定是默认和创建群聊
+            name: 生成群聊的名称
+            isAutoChat：是否创建群聊
+            如果部门人数为空， 默认添加的第一个人为群聊的群主
+        */
+        let membersNum = 0;
+        let name = '';
+        let isAutoChat = false;
+        deps.forEach((item) => {
+            if (item.id === dep) {
+                name = item.name;
+                membersNum = item.members.length;
+                isAutoChat = item.isAutoChat;
+            }
+        });
+
+        // 更新部门人员
+        const pro = () => new Promise((resolve, reject) => {
+            Company.update(
+                { _id: companyId },
+                {
+                    $push: { members: member },
+                },
+                (err, r) => (err ? reject(0) : resolve(r)));
+        });
+        const rr = await pro();
+        if (rr) {
+            if (dep) {
+                // 更新部门人员
+                Company.update(
+                    { _id: companyId, 'deps.id': dep },
+                    {
+                        $push: { 'deps.$.members': userId },
+                    },
+                );
+                // 如果允许创建允许、部门人员为空和群聊不存在, 则创建部门对应的群聊
+                // console.log(membersNum, isAutoChat, departmentGroupId);
+                if (!membersNum && isAutoChat && !departmentGroupId) {
+                    Meteor.call(
+                        'createGroup',
+                        { name, members: [userId], type: 'team', admin: userId, superiorId: companyId },
+                        (err, groupId) => {
+                            if (err) {
+                                console.error(err);
+                            }
+                            Company.update(
+                                { _id: companyId, 'deps.id': dep },
+                                {
+                                    $set: { 'deps.$.groupId': groupId },
+                                    $push: {
+                                        subGroupIds: groupId,
+                                    },
+                                },
+                            );
+                        },
+                    );
+                } else if (!membersNum && isAutoChat && departmentGroupId) {
+                    // 部门成员全部被删除后重新添加成员时
                     Meteor.call(
                         'addGroupMembers',
                         {
-                            groupId: companyGroupId,
+                            groupId: departmentGroupId,
                             newMemberIds: [userId],
                         },
                     );
-                    // 更新人员所在公司
-                    Meteor.users.update(
-                        { _id: userId },
+                    Group.update(
+                        { _id: departmentGroupId },
                         {
-                            $push: {
-                                'profile.company': companyId,
+                            $set: {
+                                admin: userId,
                             },
                         },
                     );
+                } else if (membersNum && isAutoChat && departmentGroupId) {
+                    Meteor.call(
+                        'addGroupMembers',
+                        {
+                            groupId: departmentGroupId,
+                            newMemberIds: [userId],
+                        },
+                    );
                 }
-            },
-        );
+            }
+            // 加入公司大群聊
+            Meteor.call(
+                'addGroupMembers',
+                {
+                    groupId: companyGroupId,
+                    newMemberIds: [userId],
+                },
+            );
+            // 更新人员所在公司
+            Meteor.users.update(
+                { _id: userId },
+                {
+                    $push: {
+                        'profile.company': companyId,
+                    },
+                },
+            );
+        }
 
         return Company.findOne({ _id: companyId }) ? Company.findOne({ _id: companyId }).name : '邀请出错';
     },
@@ -353,10 +389,12 @@ Meteor.methods({
                     $push: { 'deps.$.members': userId },
                 },
             );
+            // 删除之前群聊
             await Meteor.call(
                 'deleteMember',
                 oldgroup, userId,
             );
+            // 添加到移入的群聊
             await Meteor.call(
                 'addGroupMembers',
                 {

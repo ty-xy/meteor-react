@@ -25,7 +25,7 @@ class App extends Component {
     )
     // 路由
     Routes = () => (
-        <div style={{ height: '100%' }}>
+        <div style={{ height: '100%', overflow: 'auto' }}>
             <Route exact path="/manage/notice" component={Write} />
             <Route path="/manage/notice/list" component={Read} />
             <Route path="/manage/notice/detail/:id" component={Detail} />

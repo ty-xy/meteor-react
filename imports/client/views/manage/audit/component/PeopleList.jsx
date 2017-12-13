@@ -71,7 +71,7 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
                 ))
             }
             <span className="e-mg-audit-seleted-img">
-                <MyIcon icon="icon-tianjia3" size={35} onClick={e => showModal(e, keyword)} />
+                <MyIcon icon="icon-tianjia" size={38} iconColor="#999" onClick={e => showModal(e, keyword)} />
                 <p style={{ marginTop: '8px' }}>{iconTitle}</p>
                 {required ?
                     <span

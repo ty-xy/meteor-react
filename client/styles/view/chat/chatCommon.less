@@ -1,3 +1,4 @@
+@import '../util/util.less';
 // 聊天信息/公告信息列表
 .chat-message-file-wrap {
     overflow: scroll;
@@ -16,7 +17,7 @@
     }
     .chat-user-pannel:hover {
         background-color: #e3f2fd;
-        & > .icon-chuyidong {
+        & > .icon-guanbi {
             opacity: 1;
         }
     }
@@ -31,11 +32,12 @@
         background-color: #fff;
         position: relative;
         cursor: pointer;
-        & > .icon-chuyidong {
+        & > .icon-guanbi {
             margin: 0 -10px;
-            margin-top: 30px;
+            margin-top: 25px;
             display: block;
             opacity: 0;
+            color: @color66;
         }
         .work-notice-redDot {
             width: 10px;
@@ -114,21 +116,26 @@
                 font-size: 16px;
             }
             .last-message {
-                width: 100%;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                position: relative;
+                display: flex;
+                justify-content: space-between;
+                margin: 0;
                 margin-top: 15px;
-                font-size: 14px;
-                color: #666;
+                & > .last-content {
+                    width: 300px;
+                    display: block;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    font-size: 14px;
+                    color: #666;
+                }
                 .notice-red-dot {
                     padding: 0px 5px;
                     height: 20px;
                     min-width: 10px;
                     background-color: #EF5350;
                     border-radius: 20px;
-                    float: right;
-                    margin-right: 20px;
                     text-align: center;
                     line-height: 20px;
                     color: #fff;
@@ -138,7 +145,7 @@
                     height: 10px;
                     border-radius: 50%;
                     background-color: #EF5350;
-                    margin-top: 4px;
+                    margin-top: 6px;
                 }
                 & > i {
                     position: absolute;
