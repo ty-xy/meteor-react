@@ -89,7 +89,7 @@ class Day extends (React.PureComponent || React.Component) {
             });
             const toMembers = peos.map(userId => ({ userId }));
             // 创建日志
-            this.tabSubmit({ ...fields, peo: peos, type: logType, img, file, group, toMembers });
+            this.tabSubmit({ ...fields, peo, type: logType, img, file, group, toMembers });
         });
     }
     // 写日志
@@ -258,11 +258,12 @@ class Day extends (React.PureComponent || React.Component) {
     }
     render() {
         const { visiblepeo, visiblegroup, textShow, requireGroupNotice, group, img = [], file = [], peo = [], finish, plan, help } = this.state;
+        console.log('peo', peo);
         return (
             <Form onSubmit={this.formSubmit} id="formDiv" ref={i => this.$formDiv = i}>
-                <InputArea defaultValue={finish} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} {...this.props} />
-                <InputArea defaultValue={plan} title={textShow === '日' ? '明日工作计划' : `下${textShow}工作计划`} keyword="plan" required requiredErr="工作计划必填" onChange={this.handlechange} {...this.props} />
-                <InputArea defaultValue={help} title="需要协调与帮助：" keyword="help" marginBottom="20px" onChange={this.handlechange} {...this.props} />
+                <InputArea defaultValue={(finish || '').replace(/<br\/>/g, '\r\n')} title={textShow === '日' ? '今日工作总结' : `本${textShow}工作总结`} keyword="finish" required requiredErr="工作总结必填" onChange={this.handlechange} {...this.props} />
+                <InputArea defaultValue={(plan || '').replace(/<br\/>/g, '\r\n')} title={textShow === '日' ? '明日工作计划' : `下${textShow}工作计划`} keyword="plan" required requiredErr="工作计划必填" onChange={this.handlechange} {...this.props} />
+                <InputArea defaultValue={(help || '').replace(/<br\/>/g, '\r\n')} title="需要协调与帮助：" keyword="help" marginBottom="20px" onChange={this.handlechange} {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                 <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
                 <ChoosePeopleModel

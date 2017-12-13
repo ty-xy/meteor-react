@@ -7,7 +7,7 @@ const colors = [
     '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
 ];
 
-const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, required, requiredErr, companyInfo, allUsers, showModal, handlePeopleChange }) => {
+const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, required, requiredErr, companyInfo = {}, allUsers, showModal, handlePeopleChange }) => {
     const getAvatar = (userId, index) => {
         const avatar = userIdToInfo.getAvatar(allUsers, userId);
         const name = userIdToInfo.getName(allUsers, userId);
@@ -17,7 +17,7 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
         return <span style={{ background: colors[index % 4], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{(name || '').substr(-2, 3)}</span>;
     };
     // 获取群组avatar
-    const getDepAvatar = (data, id) => {
+    const getDepAvatar = (data = {}, id) => {
         let avatar = '';
         if (data._id === id) {
             if (data.avatar) {
@@ -26,7 +26,7 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
                 avatar = <span style={{ background: colors[0], color: '#FFF' }} className="e-mg-audit-deps-people-per-img e-mg-audit-deps-people-per-span">{data.name}</span>;
             }
         } else {
-            data.deps.forEach((item, index) => {
+            (data.deps || []).forEach((item, index) => {
                 if (item.id === id) {
                     if (item.avatar) {
                         avatar = (<img src={item.avatar} alt="" />);
@@ -41,7 +41,7 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
     // 获取depname
     const getDepartmentName = (id) => {
         let depname = '';
-        const dep = companyInfo.deps;
+        const dep = companyInfo.deps || [];
         for (let i = 0; i < dep.length; i++) {
             if (dep[i].id === id) {
                 depname = dep[i].name;
