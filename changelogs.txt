@@ -315,3 +315,8 @@
  zg gwt    Merge branch 'master' into feature/management_gwt
  zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
  zg-xym    build results on build 41
+----------------------------------
+
+2017-12-13 14:12:21,   build 43
+
+ zg-xym    build results on build 42
