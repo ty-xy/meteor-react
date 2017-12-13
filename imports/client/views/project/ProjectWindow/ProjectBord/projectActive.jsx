@@ -100,7 +100,7 @@ class ProjectMembers extends Component {
         console.log(Meteor.userId());
         return (
             <div className="detail-list-common detail-comment">
-                <p className="comment-title">活动</p>
+                <p className="comment-title title-common-detail">活动</p>
                 <div>
                     <div style={{ display: 'flex' }}>
                         <div className="person-size" style={{ marginRight: '12px' }}>

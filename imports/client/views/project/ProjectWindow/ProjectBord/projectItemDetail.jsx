@@ -28,6 +28,7 @@ class ProjectItemDetail extends Component {
         textId: PropTypes.string,
         tasks: PropTypes.arrayOf(PropTypes.object),
         delete: PropTypes.func,
+        cancel: PropTypes.func,
         tasklists: PropTypes.arrayOf(PropTypes.object),
         taskchild: PropTypes.arrayOf(PropTypes.object),
         iddd: PropTypes.array,
@@ -625,6 +626,7 @@ class ProjectItemDetail extends Component {
                 </Menu.Item>
             </Menu>
         );
+        // console.log(this.props.cancel);
         return (
             <div className="ejian-lian-project-detail">
                 <div className="detail-title detail-common">
@@ -646,11 +648,14 @@ class ProjectItemDetail extends Component {
                                     />
                                 </div>}
                         </Col>
-                        <Col span={4} onClick={this.handleCop}>
+                        <Col span={2} onClick={this.handleCop} style={{ textAlign: 'center' }}>
                             <div className="try try-out" style={{ display: this.state.showCopyCard ? 'block' : 'none' }} />
                             <Dropdown overlay={menu} trigger={['click']}>
-                                <Icon icon="icon-gengduo1" />
+                                <Icon icon="icon-gengduo1" iconColor="#999" size={16} />
                             </Dropdown>
+                        </Col>
+                        <Col span={2} style={{ textAlign: 'center' }}>
+                            <Icon icon="icon-guanbi" iconColor="#999" size={16} onClick={this.props.cancel} />
                         </Col>
                     </Row>
                 </div>
@@ -715,7 +720,7 @@ class ProjectItemDetail extends Component {
                         </div>
                     </div>
                     <div className="detail-list-common detail-list-decription">
-                        <p>
+                        <p className="title-common-detail">
                             描述
                         </p>
                         {
@@ -734,16 +739,18 @@ class ProjectItemDetail extends Component {
                                     />
                                 </div>
                                 :
-                                <input
-                                    type="button"
-                                    value={this.props.tasks[0] && this.props.tasks[0].describe ? this.props.tasks[0].describe : '编辑'}
-                                    className="input-decription"
-                                    onClick={this.handleChangeS}
-                                />
+                                <div className="ready-task">
+                                    <input
+                                        type="button"
+                                        value={this.props.tasks[0] && this.props.tasks[0].describe ? this.props.tasks[0].describe : '编辑'}
+                                        className="input-decription"
+                                        onClick={this.handleChangeS}
+                                    />
+                                </div>
                         }
                     </div>
                     <div className="detail-list-common">
-                        <p>清单</p>
+                        <p className="title-common-detail">清单</p>
                         {this.props.tasklists.map((tasklist, index) => (
                             <div key={tasklist._id} >
                                 {!this.state[`fatherList${tasklist.listId}`] ?
@@ -795,8 +802,8 @@ class ProjectItemDetail extends Component {
                                                 onConcel={() => this.handleRTaskList(tasklist.listId)}
                                             />
                                         </div> :
-                                        <p onClick={() => this.handldetaskList(tasklist.listId)}>
-                                            <Icon icon="icon-tianjia1" />
+                                        <p onClick={() => this.handldetaskList(tasklist.listId)} className="ready-task">
+                                            <Icon icon="icon-jiahao icon-add" size={18} iconColor="#bdbdbd" />
                                             扩充清单
                                         </p>
                                     }
@@ -806,7 +813,7 @@ class ProjectItemDetail extends Component {
                         }
                         {this.state.shownR ?
                             <p className="ready-task" onClick={this.handleChangeR}>
-                                <Icon icon="icon-tianjia1" />
+                                <Icon icon="icon-jiahao icon-add" size={18} iconColor="#bdbdbd" />
                                 添加待办事项
                             </p> :
                             <div
@@ -829,7 +836,7 @@ class ProjectItemDetail extends Component {
                         <div>
                             <Row>
                                 <Col span={18}>
-                                    <p>添加附件</p>
+                                    <p className="title-common-detail">添加附件</p>
                                 </Col>
                                 <Col span={3}>
                                     <Icon
@@ -847,7 +854,7 @@ class ProjectItemDetail extends Component {
                                 </Col>
                                 <Col span={3}>
                                     <Icon
-                                        icon="icon-weizhiwenjian"
+                                        icon="icon-biaodan1"
                                         size={20}
                                         iconColor="#bdbdbd"
                                     />

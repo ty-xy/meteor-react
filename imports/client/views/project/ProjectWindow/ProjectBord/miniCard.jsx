@@ -276,10 +276,12 @@ class MiniCard extends Component {
                         mask={this.state.mask}
                         className="Moal-reset"
                         bodyStyle={{ padding: 0 }}
+                        closable={false}
                     >
                         <ProjectItemDetail
                             item={this.props.value}
                             Id={this.props.idIndex}
+                            cancel={this.hideModal}
                             textId={this.props.textId}
                             projectId={this.props.projectId}
                             delete={this.props.deleteCard}
