@@ -140,19 +140,12 @@ Meteor.methods({
         );
     },
     // 更新部门名称
-    editCompanyDep({ companyId, name, id, isAutoChat, admin = '', groupId, avatar = '' }) {
-        const dep = {
-            name,
-            isAutoChat,
-            admin,
-            avatar,
-            id,
-            groupId,
-        };
+    editCompanyDep({ companyId, name, id, isAutoChat, admin, groupId }) {
+        console.log('admin', admin, name, groupId);
         Company.update(
             { _id: companyId, 'deps.id': id },
             {
-                $set: { 'deps.$': dep },
+                $set: { 'deps.$.name': name, 'deps.$.admin': admin },
             },
             (err, result) => {
                 if (err) {
@@ -162,6 +155,10 @@ Meteor.methods({
                     Meteor.call(
                         'changeGroupName',
                         groupId, name,
+                    );
+                    Meteor.call(
+                        'changeAdmin',
+                        groupId, admin,
                     );
                 }
             },
@@ -295,7 +292,7 @@ Meteor.methods({
         deps.forEach((item) => {
             if (item.id === dep) {
                 name = item.name;
-                membersNum = item.members.length;
+                membersNum = (item.members && item.members.length) || 0;
                 isAutoChat = item.isAutoChat;
             }
         });
@@ -506,6 +503,19 @@ Meteor.methods({
                 $pull: { members: { userId } },
             },
         );
+        // 如果删除的是部门主管， 则admin值空
+        companyInfo.deps.forEach((item) => {
+            if (item.admin === userId) {
+                Company.update(
+                    { _id: companyId, 'deps.id': dep },
+                    {
+                        $set: { 'deps.$.admin': '' },
+                    },
+                );
+            }
+        });
+
+
         await Company.update(
             { _id: companyId, 'deps.id': dep },
             {
