@@ -93,7 +93,6 @@ class Chat extends Component {
         this.setState({
             count: countNum,
         });
-        // console.log(`执行函数count${this.state.count}`);
     }
     handleChatType = (chatType) => {
         this.setState({
@@ -249,6 +248,7 @@ class Chat extends Component {
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
                                 handleNewFriend={this.handleChatType}
+                                handleToggle={this.handleToggle}
                             /> : null}
                         {this.state.selectedLinkMan === 2 && this.state.selected === 2 ?
                             <GroupList

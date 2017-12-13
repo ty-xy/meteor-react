@@ -22,7 +22,6 @@ class GroupNotice extends Component {
         this.state = {
             isEdit: false,
             showNotice: this.props.notice.length > 0,
-
         };
     }
     editNotice = () => {
@@ -60,9 +59,7 @@ class GroupNotice extends Component {
                                         this.state.isEdit ?
                                             <textarea name="" id="" cols="30" rows="10" className="notice" defaultValue={notice} ref={i => this.$notice = i} />
                                             :
-                                            <div className="notice">
-                                                {notice}
-                                            </div>
+                                            <textarea name="" id="" cols="30" rows="10" className="notice" defaultValue={notice} disabled />
                                     }
                                 </div>
                             </div>

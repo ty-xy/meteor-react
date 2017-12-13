@@ -7,6 +7,7 @@ import pureRender from 'pure-render-decorator';
 import Avatar from '../../../components/Avatar';
 import feedback from '../../../../util/feedback';
 import IdUtil from '../../../../util/id';
+import avatarUrl from '../../../../util/avatarUrl';
 
 @pureRender
 class ChatFriendInfo extends Component {
@@ -93,13 +94,18 @@ class ChatFriendInfo extends Component {
         const isFriend = userProfile && userProfile.friends && userProfile.friends.includes(_id);
         const { name = '', avatarColor = '', avatar = '', company = [], isHideInfo = false } = profile;
         const { temporaryChat = false } = this.props;
+        const bgUrl = avatar || avatarUrl.avatarBg;
+        const divStyle = {
+            backgroundImage: `url(${bgUrl})`,
+        };
         return (
             <div className="container-wrap friend-data-block">
                 <div className="opacity" onClick={this.props.handleFriendInfo} />
                 <div className="container-middle container-content">
                     <div className="friend-data-content">
+                        <div className="content-bg" style={divStyle} />
+                        <div className="content-bg1" />
                         <p className="close-wrap"><i className="icon-guanbi iconfont" onClick={this.props.handleFriendInfo} /></p>
-
                         <ul className="friend-info">
                             <li className="friend-base-info">
                                 <Avatar name={name} avatarColor={avatarColor} avatar={avatar} />
