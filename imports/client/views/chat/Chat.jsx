@@ -67,10 +67,10 @@ class Chat extends Component {
                 searchs[item.split('=')[0]] = item.split('=')[1];
             });
             if (searchs.companyId) {
-                const { companyId, groupId, dep, userId } = searchs;
+                const { companyId, departmentGroupId, dep, userId, companyGroupId } = searchs;
                 Meteor.call(
                     'addMember',
-                    { userId: Meteor.userId() || userId, companyId, dep, departmentGroupId: groupId, pos: '', invite: true },
+                    { userId: Meteor.userId() || userId, companyId, dep, departmentGroupId, pos: '', companyGroupId, invite: true },
                     (e, r) => {
                         if (e) {
                             feedback.dealError('添加失败');

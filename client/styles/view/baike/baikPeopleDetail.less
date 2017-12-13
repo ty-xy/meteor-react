@@ -1,16 +1,19 @@
 .ejianlian-baike-people-body{
     // padding:50px;
     display:flex;
-    justify-content:space-between;  
+    justify-content:flex-end;  
     .ejianlian-baike-detail-left{
-        margin-right:38px;
+       // margin-right:38px;
         overflow-y: auto;
+        width:80%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;     
         img{
             width:974px;
             height:265.7px;
         }
         .wangshupeng-detail{
-         width:974px;
          margin-top:22px;
         
          &>p{
@@ -22,7 +25,7 @@
 
         }
         .wangshupeng-detail-c{
-            width:974px;
+            // width:974px;
             margin-top:46px;
             h4{
                 font-family: PingFangSC-Regular;

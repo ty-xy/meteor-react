@@ -44,7 +44,7 @@ class Organization extends PureComponent {
         });
     }
     // 修改部门
-    handleDepSetting = ({ name }, id) => {
+    handleDepSetting = ({ name, admin }, id) => {
         const companyId = UserUtil.getCurrentBackendCompany();
         const { deps } = this.props.company;
         const _this = this;
@@ -52,7 +52,7 @@ class Organization extends PureComponent {
         const DEV = visitedDep.length ? visitedDep[0] : {};
         Meteor.call(
             'editCompanyDep',
-            { companyId, ...DEV, id, name },
+            { companyId, ...DEV, id, name, admin },
             (err) => {
                 if (err) {
                     feedback.dealError('修改失败');
@@ -194,7 +194,6 @@ class Organization extends PureComponent {
     );
     // 新增人员提交
     handleSubmitMember = (res, editMemberInfo, oldgroup) => {
-        const companyId = UserUtil.getCurrentBackendCompany();
         const { allUsers, users, company } = this.props;
         const companyGroupId = company.groupId;
         let isNot = false;
@@ -221,7 +220,7 @@ class Organization extends PureComponent {
         if (editMemberInfo) {
             Meteor.call(
                 'editMember',
-                { ...res, userId: editMemberInfo, companyId, groupId, oldgroup, oldDep },
+                { ...res, userId: editMemberInfo, groupId, oldgroup, oldDep },
                 (err) => {
                     if (err) {
                         feedback.dealError('编辑失败');
@@ -242,11 +241,10 @@ class Organization extends PureComponent {
                     res.userId = item._id;
                 }
             });
-            console.log('rs', res);
             if (bool) {
                 Meteor.call(
                     'addMember',
-                    { ...res, companyId, departmentGroupId: groupId, companyGroupId },
+                    { ...res, departmentGroupId: groupId, companyGroupId },
                     (err) => {
                         if (err) {
                             feedback.dealError('添加失败');
@@ -311,6 +309,7 @@ class Organization extends PureComponent {
                 modelMember={this.state.depsettingModel}
                 data={visitedDep.length ? visitedDep[0] : {}}
                 handleDepDel={this.handleDepDel}
+                allUsers={this.props.allUsers}
             />
         );
     }
@@ -418,8 +417,8 @@ class Organization extends PureComponent {
                 dataIndex: '',
                 render: record => (
                     <span className="">
-                        <i className="iconfont icon-bianji1 margin-right-20" onClick={() => this.editMember(record)} title="编辑" />
-                        <Icon type="close" title="删除" onClick={() => this.delCompanyMember(record.userId, record)} />
+                        <i className="iconfont icon-bianji1 margin-right-20" style={{ fontSize: '20px' }} onClick={() => this.editMember(record)} title="编辑" />
+                        <Icon type="close" style={{ fontSize: '20px', color: '#F45353' }} title="删除" onClick={() => this.delCompanyMember(record.userId, record)} />
                     </span>
                 ),
             },
@@ -458,7 +457,7 @@ class Organization extends PureComponent {
     }
     // ---- 邀请员工 ----
     pleaseInvite = () => {
-        const { members, deps = [] } = this.props.company;
+        const { members, deps = [], groupId } = this.props.company;
         const { inviteModel, depActive } = this.state;
         let depGroupId = '';
         deps.forEach((item) => {
@@ -473,8 +472,9 @@ class Organization extends PureComponent {
                 modelDep={inviteModel}
                 deps={members || []}
                 companyId={UserUtil.getCurrentBackendCompany()}
+                companyGroupId={groupId}
                 dep={depActive}
-                groupId={depActive ? depGroupId : UserUtil.getCompanyGrounpId()}
+                departmentGroupId={depGroupId}
             />
         );
     }
@@ -505,7 +505,6 @@ class Organization extends PureComponent {
         } else {
             data = users.filter(item => (!item.dep));
         }
-        console.log('stet', this.state);
         return (
             <div className="e-mg-organization">
                 <Row gutter={30} type="flex" justify="space-between" align="stretch">

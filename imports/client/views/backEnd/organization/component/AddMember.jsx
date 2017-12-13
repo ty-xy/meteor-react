@@ -59,6 +59,7 @@ class AddMembers extends PureComponent {
                 return false;
             }
             handleSubmitMember(fields, editMemberInfo.userId, editMemberInfo.dep);
+            form.resetFields();
         });
     }
     render() {
@@ -73,7 +74,7 @@ class AddMembers extends PureComponent {
                 animation="vertical"
                 mask={modelMember}
                 footer={<div />}
-                height="370px"
+                height="340px"
             >
                 <Form onSubmit={this.handleCommentbtn}>
                     <InputReg onChange={this.onChange} disabled={!!editMemberInfo.userId} keyword="phone" defaultValue={editMemberInfo.username} required label="手机" placeholder="请输入手机" {...this.props} regs={reg} typeErr="请填写正确的手机号" requiredErr="手机号必填" />

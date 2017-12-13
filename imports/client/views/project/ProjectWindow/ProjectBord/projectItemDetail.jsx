@@ -720,7 +720,7 @@ class ProjectItemDetail extends Component {
                         </p>
                         {
                             this.state.shown ?
-                                <div onClick={e => this.handleClose(e)} >
+                                <div onClick={e => this.handleClose(e)} className="input-detail-miaoshu">
                                     <div className="try try-out" style={{ display: this.state.shown ? 'block' : 'none' }} />
                                     <ProjectInput
                                         input="添加"
@@ -730,6 +730,7 @@ class ProjectItemDetail extends Component {
                                         value={this.state.tValue}
                                         onChange={e => this.handleChangeTry('tValue', e)}
                                         onConcel={this.handleClose}
+
                                     />
                                 </div>
                                 :
@@ -831,7 +832,12 @@ class ProjectItemDetail extends Component {
                                     <p>添加附件</p>
                                 </Col>
                                 <Col span={3}>
-                                    <Icon icon="icon-fujian1" onClick={this.sendFile} />
+                                    <Icon
+                                        icon="icon-fujian1"
+                                        size={20}
+                                        iconColor="#bdbdbd"
+                                        onClick={this.sendFile}
+                                    />
                                     <input
                                         className="input-file"
                                         type="file"
@@ -840,7 +846,11 @@ class ProjectItemDetail extends Component {
                                     />
                                 </Col>
                                 <Col span={3}>
-                                    <Icon icon="icon-weizhiwenjian" />
+                                    <Icon
+                                        icon="icon-weizhiwenjian"
+                                        size={20}
+                                        iconColor="#bdbdbd"
+                                    />
                                 </Col>
                             </Row>
                         </div>
