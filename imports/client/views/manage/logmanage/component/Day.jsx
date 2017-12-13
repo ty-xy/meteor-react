@@ -94,11 +94,15 @@ class Day extends (React.PureComponent || React.Component) {
     }
     // 写日志
     tabSubmit = (fields) => {
+        const { plan, finish, help } = this.state;
         const _this = this;
         fields.userId = Meteor.userId();
         fields.nickname = UserUtil.getName();
         fields.company = UserUtil.getMainCompany();
         fields.cache = false;
+        fields.help = help;
+        fields.plan = plan;
+        fields.finish = finish;
         const { state = {} } = this.props.location;
         const { firstCache } = this.state;
         if (state.edit || state.handleTab || firstCache) {
@@ -177,8 +181,8 @@ class Day extends (React.PureComponent || React.Component) {
     }
     // handlechange input改变缓存
     handlechange = (e, keyword) => {
-        // console.log('handlechange', e.target.value, keyword);
-        this.setState({ [keyword]: e.target.value });
+        const content = (e.target.value || '').replace(/\n/g, '<br/>');
+        this.setState({ [keyword]: content });
         // this.handleblur();
     }
     handleblur = () => {

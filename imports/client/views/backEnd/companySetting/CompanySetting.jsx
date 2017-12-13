@@ -89,25 +89,25 @@ class CompanySetting extends Component {
                         >
                             <Menu.Item key="baseInfo">
                                 <div className="set-tab">
-                                    <Icon icon="icon-jibenxinxi" size={20} />
+                                    <Icon icon="icon-jibenxinxi" size={32} />
                                     <p>基本信息</p>
                                 </div>
                             </Menu.Item>
                             <Menu.Item key="mainManage">
                                 <div className="set-tab">
-                                    <Icon icon="icon-guanliyuan1" size={20} />
+                                    <Icon icon="icon-guanliyuan1" size={32} />
                                     <p>主管理员</p>
                                 </div>
                             </Menu.Item>
                             <Menu.Item key="subManage">
                                 <div className="set-tab">
-                                    <Icon icon="icon-guanliyuan" size={20} />
+                                    <Icon icon="icon-guanliyuan" size={32} />
                                     <p>子管理员</p>
                                 </div>
                             </Menu.Item>
                             <Menu.Item key="task">
                                 <div className="set-tab">
-                                    <Icon icon="icon-jiesanqiye" size={20} />
+                                    <Icon icon="icon-jiesanqiye" size={32} />
                                     <p>解散团队</p>
                                 </div>
                             </Menu.Item>
