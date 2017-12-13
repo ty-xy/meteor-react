@@ -1,8 +1,8 @@
 @import '../util/util.less';
 
 .e-mg-organization{
-    margin: 40px 30px;
-    height: calc(100% - 13);
+    padding: 2.5rem 1.875rem 1.875rem 1.875rem;
+    height: 100%;
     >.ant-row-flex{
         height: 100%;
         margin-right: 0px !important;
@@ -17,7 +17,6 @@
     display: flex;
     justify-content: flex-start;
     align-items: stretch;
-    margin-bottom: 15px;
 }
 .e-mg-organization-content{
     width: 100%;
@@ -35,6 +34,10 @@
         cursor: pointer;
     }
 }
+.e-mg-organization-left{
+    display: flex !important;
+    flex-direction: column;
+}
 .e-mg-organization-left-dep{
     width: 100%;
     min-height: 400px;
@@ -42,6 +45,7 @@
     background: #fff;
     border-radius: 4px;
     padding: 15px 0;
+    flex: auto;
     .e-mg-organization-company{
         display: block;
         width: 100%;
@@ -155,7 +159,7 @@
             background: #fff;
             padding: 30px 0;
             .form-buttom{
-                margin-top: 80px;
+                margin-top: 30px;
             }
         }
     }
