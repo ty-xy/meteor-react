@@ -23,7 +23,6 @@ import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 import EmptyChat from '../../../components/EmptyChat';
 
-// import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
 
 @pureRender
