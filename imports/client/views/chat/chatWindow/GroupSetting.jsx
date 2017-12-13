@@ -214,7 +214,7 @@ class GroupSetting extends Component {
                         <p>群成员{this.props.groupMembers.length}人</p>
                         <p className="all">全部成员</p>
                     </div>
-                    <div className="members-avatars">
+                    <div className="members-avatar">
                         {
                             this.props.groupMembers.map((item, i) =>
                                 (item.profile ?
@@ -240,8 +240,7 @@ class GroupSetting extends Component {
                                     null),
                             )
                         }
-
-                        <div className="avatar avatar-add" onClick={this.handleAddMembers}>+</div>
+                        <Icon icon="icon-tianjia" size={32} onClick={this.handleAddMembers} iconColor="#ddd" />
                     </div>
                     <div className="group-members">
                         <p>消息免打扰</p>
