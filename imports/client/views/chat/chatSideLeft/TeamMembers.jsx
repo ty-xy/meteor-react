@@ -60,8 +60,7 @@ class TeamMembers extends Component {
             visible: true,
         });
     }
-    handleCancel = (e) => {
-        console.log(e);
+    handleCancel = () => {
         this.setState({
             visible: false,
         });
@@ -70,8 +69,7 @@ class TeamMembers extends Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll(async (err, formValues) => {
             if (err) {
-                feedback.dealWarning('请选择离开原因');
-                throw err;
+                return feedback.dealWarning('请选择离开原因');
             }
             console.log(555, formValues);
             await Meteor.callPromise('deleteCompanyMember', {
@@ -90,7 +88,7 @@ class TeamMembers extends Component {
                     null
             }
         </p>
-        <Icon icon="icon-tuichu" onClick={this.quitTeam} />
+        <Icon icon="icon-tuichu" onClick={this.quitTeam} size={20} />
     </div>)
 
     render() {
