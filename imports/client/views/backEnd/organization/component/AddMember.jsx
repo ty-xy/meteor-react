@@ -59,6 +59,7 @@ class AddMembers extends PureComponent {
                 return false;
             }
             handleSubmitMember(fields, editMemberInfo.userId, editMemberInfo.dep);
+            form.resetFields();
         });
     }
     render() {
