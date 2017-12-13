@@ -67,10 +67,10 @@ class Chat extends Component {
                 searchs[item.split('=')[0]] = item.split('=')[1];
             });
             if (searchs.companyId) {
-                const { companyId, groupId, dep, userId } = searchs;
+                const { companyId, departmentGroupId, dep, userId, companyGroupId } = searchs;
                 Meteor.call(
                     'addMember',
-                    { userId: Meteor.userId() || userId, companyId, dep, departmentGroupId: groupId, pos: '', invite: true },
+                    { userId: Meteor.userId() || userId, companyId, dep, departmentGroupId, pos: '', companyGroupId, invite: true },
                     (e, r) => {
                         if (e) {
                             feedback.dealError('添加失败');
@@ -93,7 +93,6 @@ class Chat extends Component {
         this.setState({
             count: countNum,
         });
-        // console.log(`执行函数count${this.state.count}`);
     }
     handleChatType = (chatType) => {
         this.setState({
@@ -249,6 +248,7 @@ class Chat extends Component {
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
                                 handleNewFriend={this.handleChatType}
+                                handleToggle={this.handleToggle}
                             /> : null}
                         {this.state.selectedLinkMan === 2 && this.state.selected === 2 ?
                             <GroupList

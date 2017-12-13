@@ -261,7 +261,7 @@ class Header extends Component {
                             <i className="iconfont icon-ejianlain-search icon-sousuo" />
                         </li>
                         <li className="icon-all-notice" onClick={this.handleClick}>
-                            <p className="icon-notice-redDot" />
+                            {(notices && notices.length) ? <p className="icon-notice-redDot" /> : null}
                             <i className="iconfont icon-ejianlain-notice icon-tongzhi" />
                         </li>
                         <li onClick={this.showModal}>

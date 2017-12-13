@@ -7,12 +7,12 @@ import { withTracker } from 'meteor/react-meteor-data';
 import Avatar from '../components/Avatar';
 import AvatarSelf from '../components/AvatarSelf';
 import Icon from '../components/Icon';
-// import feedback from '../../util/feedback';
-// import AddGroup from '../views/chat/chatSideLeft/addChat/AddGroup';
+import feedback from '../../util/feedback';
 import SelectMembers from '../features/SelectMembers';
 import Company from '../../schema/company';
 import UserUtil from '../../util/user';
 import pcaData from '../../util/pcaData';
+import avatarUrlTeam from '../../util/avatarUrl';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -30,7 +30,7 @@ class CreateTeam extends Component {
         this.state = {
             formLayout: 'horizontal',
             showSelect: false,
-            teamLogo: 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png',
+            teamLogo: avatarUrlTeam.avatarTeam,
             selectMembers: [],
             selectMembersId: [],
             residences: pcaData.pca,
@@ -59,12 +59,11 @@ class CreateTeam extends Component {
         const changeAvatar = this.changeAvatar;
         reader.onloadend = function () {
             Meteor.call('uploadImg', this.result, (err, result) => {
-                console.log(101010, result);
-                changeAvatar(result);
                 if (err) {
-                    return console.error(err.reason);
+                    return feedback.dealError(err);
                 }
-                console.log('修改头像成功');
+                changeAvatar(result);
+                return feedback.successToast('修改头像成功');
             });
         };
         reader.readAsDataURL(image);
@@ -85,26 +84,12 @@ class CreateTeam extends Component {
         });
     }
     confirmSelected = (members) => {
-        // console.log('选择加入的人员', members);
         const selectMembers = members;
         this.setState({
             selectMembersId: members,
             selectMembers: selectMembers.map(_id => Meteor.users.findOne({ _id })),
             showSelect: false,
         });
-    }
-    convertAddress = (address) => {
-        if (!address.length) {
-            return;
-        }
-        const currentProvince = this.state.residences.find(n => n.value === address[0]);
-        const province = currentProvince.label || '';
-        const currentCity = currentProvince.children.find(n => n.value === address[1]);
-        const city = currentCity.label || '';
-        const currentArea = currentCity.children.find(n => n.value === address[2]);
-        const area = currentArea.label || '';
-        return [province, city, area];
-        //  return `${province}/${city}/${area}`;
     }
     render() {
         const { formLayout } = this.state;
@@ -117,8 +102,6 @@ class CreateTeam extends Component {
         } : null;
         const { getFieldDecorator } = this.props.form;
         const { name = '', logo = this.state.teamLogo, industryType = '', residence = [] } = this.props.currentCompany || {};
-        const companyResidence = this.convertAddress(residence);
-        // console.log(companyResidence);
         return (
             <div>
                 <Form layout={formLayout} onSubmit={this.handleSubmit}>
@@ -175,7 +158,7 @@ class CreateTeam extends Component {
                         label="所在地区"
                     >
                         {getFieldDecorator('residence', {
-                            initialValue: companyResidence,
+                            initialValue: residence,
                             rules: [{ type: 'array' }],
                         })(
                             <Cascader options={this.state.residences} placeholder="请选择地区" />,

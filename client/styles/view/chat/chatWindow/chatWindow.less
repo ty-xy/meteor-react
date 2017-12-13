@@ -79,6 +79,8 @@
                 padding: 5px 10px;
                 min-width: 40px;
                 min-height: 35px;
+                max-width: 640px;
+                line-height: 30px;
                 border: 1px solid #ddd;
                 border-radius: 4px;
                 margin-top: 10px;
@@ -130,6 +132,10 @@
             flex-direction: row-reverse;
             margin-bottom: 30px;
             .user-message {
+                min-width: 40px;
+                min-height: 35px;
+                max-width: 640px;
+                line-height: 30px;
                 margin-right: 20px;
                 padding: 5px 10px;
                 border: 1px solid #ddd;
@@ -267,7 +273,6 @@
         }
     }
     .chat-window-bottom {
-        height: 160px;
         width: 100%;
         .chat-send-skill {
             height: 60px;
@@ -295,19 +300,20 @@
         .chat-message-input {
             display: flex;
             justify-content: space-between;
-            height: 100px;
+            height: 150px;
             & > textarea {
                 border: 0;
                 width: 80%;
                 padding: 20px;
                 font-size: 14px;
+                height: 150px;
             }
             & > .chat-send-message {
                 width: 15%;
                 text-align: center;
                 background-color: #29B6F6;
                 float: right;
-                line-height: 100px;
+                line-height: 150px;
                 color: #fff;
                 font-size: 18px;
             }

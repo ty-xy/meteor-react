@@ -300,3 +300,40 @@
  王亚星    fix: 修复最后一条消息过长样式问题
  王亚星    fix: 修复图标问题
  zg-xym    build results on build 40
+----------------------------------
+
+2017-12-13 10:13:30,   build 42
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    fix:项目版样式的更改
+ 王亚星    delete: 删除addGroup.jsx
+ 王亚星    refactor: 重构提示音逻辑
+ 王亚星    fix: 显示不出用户之前设置的地区bug
+ zg gwt    Merge branch 'master' into feature/management_gwt
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg-xym    build results on build 41
+----------------------------------
+
+2017-12-13 14:12:21,   build 43
+
+ zg-xym    build results on build 42
+----------------------------------
+
+2017-12-13 14:32:44,   build 44
+
+ zg-xym    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
+ zg-xym    build results on build 43
+----------------------------------
+
+2017-12-13 16:25:31,   build 45
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    feat: 解决冲突
+ 王亚星    feat: merge master
+ 王亚星    fix: 群设置人员头像显示问题
+ 王亚星    feat: 添加公告部分换行处理
+ 王亚星    feat: 添加发送消息shift+enter换行功能
+ zg-xym    build results on build 44

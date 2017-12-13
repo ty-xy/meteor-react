@@ -15,8 +15,9 @@ import Icon from '../../../components/Icon';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
 import PopulateUtil from '../../../../util/populate';
+import NoticeSound from '../../../../util/sound';
+import avatarUrl from '../../../../util/avatarUrl';
 
-let lastLength = 0;
 @pureRender
 class ContactList extends Component {
     static propTypes = {
@@ -30,7 +31,7 @@ class ContactList extends Component {
     }
     componentWillUpdate(nextProps) {
         if (nextProps.allUnRead && this.props.allUnRead < nextProps.allUnRead) {
-            this.sound.play();
+            NoticeSound.play();
         }
     }
     compare = property => (a, b) => b[property] - a[property];
@@ -55,14 +56,6 @@ class ContactList extends Component {
                 this.props.changeTo('', '');
             });
         }
-    }
-
-    renderSound = (unreadMessage) => {
-        if (unreadMessage > lastLength) {
-            lastLength = unreadMessage;
-            return true;
-        }
-        return false;
     }
     renderNewFriend = (notice, index, friendFrom) => (
         <div
@@ -102,7 +95,7 @@ class ContactList extends Component {
             <div className="user-message">
                 <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
-                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
+                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                     {
                         unreadMessage !== 0 ?
                             <span className="notice-red-dot">
@@ -134,12 +127,12 @@ class ContactList extends Component {
             }
             <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
             <div className="user-avatar">
-                <Avatar avatar={group.avatar ? group.avatar : 'http://oxldjnom8.bkt.clouddn.com/groupAvatar.png'} name="群聊" />
+                <Avatar avatar={group.avatar ? group.avatar : avatarUrl.avatarGroup} name="群聊" />
             </div>
             <div className="user-message">
                 <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
-                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
+                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                     {
                         unreadMessage !== 0 ?
                             <span className={group.isDisturb ? 'notice-red-dot-no notice-red-dot' : 'notice-red-dot'}>
@@ -193,14 +186,6 @@ class ContactList extends Component {
 
         return (
             <div className="ejianlian-chat-message-list">
-                <audio
-                    ref={sound => this.sound = sound}
-                    className="notice-sound"
-                >
-                    <source src="/sounds/message_sound.mp3" type="audio/mp3" />
-                    <source src="/sounds/message_sound.ogg'" type="audio/ogg" />
-                    <source src="/sounds/message_sound.wav" type="audio/wav" />
-                </audio>
                 {
                     sortedChatList.length > 0 ?
                         sortedChatList.map((item, i) => this.renderChatListItem(item, i))

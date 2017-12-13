@@ -23,7 +23,6 @@ import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 import EmptyChat from '../../../components/EmptyChat';
 
-// import messageTool from '../../../../util/message';
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
 
 @pureRender
@@ -164,14 +163,14 @@ class ChatWindow extends Component {
             });
     }
     handleSendMessage = (e) => {
-        if (e.keyCode === 13) {
+        if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault();
             this.sendText();
         }
     }
     // 发送文字和表情
     sendText = () => {
-        this.sendMessage(this.$message.value, 'text');
+        this.sendMessage(this.$message.value.replace(/\n|\r\n/g, '<br/>'), 'text');
     }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
@@ -219,8 +218,7 @@ class ChatWindow extends Component {
         reader.onloadend = function () {
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 if (err) {
-                    console.log(err);
-                    feedback.dealError(err);
+                    return feedback.dealError(err);
                 }
                 if (res) {
                     sendMessage(res, 'file');
@@ -247,7 +245,6 @@ class ChatWindow extends Component {
         }
         if (toId === groupId) {
             // 是一个群里的成员,允许创建临时会话
-            // console.log('是一个群里的成员,允许创建临时会话');
             this.setState({
                 temporaryChat: true,
             });
@@ -291,7 +288,6 @@ class ChatWindow extends Component {
     )
 
     renderFile = (content) => {
-        // console.log(99999, content);
         const result = PopulateUtil.file(content);
         if (!result) {
             return;
@@ -468,7 +464,6 @@ class ChatWindow extends Component {
                                             this.renderContent(message.type, message.content)
                                         }
                                     </div>
-                                    {/* <div>{message.from._id !== Meteor.userId() ? '' : (message.readedMembers.includes(message.to) ? '(已读)' : '(未读)')}</div> */}
                                 </div>
                             </div>
                         ))
@@ -492,15 +487,9 @@ class ChatWindow extends Component {
                                 />
                             </Tooltip>
                         </p>
-                        {/* <p className="skill-icon">
-                            <Icon icon="icon-card icon" />
-                        </p> */}
-                        {/* <p className="skill-icon">
-                            <Icon icon="icon-dakaishipin icon" size={20} onClick={this.sendVideo} />
-                        </p> */}
                     </div>
                     <div className="chat-message-input">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
                         <p className="chat-send-message" onClick={this.sendText}>发送</p>
                     </div>
                 </div>
