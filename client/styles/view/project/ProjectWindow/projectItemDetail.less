@@ -4,6 +4,9 @@
   height:732px;
   overflow:auto;
   // position:relative;
+  .ant-calendar-picker-clear, .ant-calendar-picker-icon{
+    opacity: 0;
+  }
   .common-title-set{
     width :206px;
     height:24px;
@@ -101,7 +104,8 @@
              }
              .circle-icon{
                font-size:32px;
-               color: #BDBDBD; 
+               color: #BDBDBD;
+               margin-left:8px; 
              }
              .circle-icon-l{
                 font-size:30px;
@@ -119,14 +123,17 @@
               font-size:12px;
               color:#fff;
               text-align:center;
+              margin-top:6px;
             }
             .none-time{
               height:24px;
-              width:100px;
+              margin-top:6px;
+              width:120px;
               background: #DDDDDD;
               border-radius: 3px;
               font-size:11px;
               color:#fff;
+              margin-bottom:20px;
             }
          }
      }
@@ -145,8 +152,10 @@
         }
      }
      .detail-list-decription{
-        min-height:50px;
-         width:100%;
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: #666666;
+      letter-spacing: 0.17px;
          p{
             font-family: PingFangSC-Regular;
             font-size: 14px;
@@ -155,7 +164,7 @@
             height:17px;
          }
          .input-decription{
-           height:30px;
+           height:38px;
            padding:2px;
            font-family: PingFangSC-Regular;
            font-size: 14px;
@@ -164,6 +173,11 @@
            width:380px;
            text-align: left;
            border-bottom:1px solid #ddd;
+           margin-top:6px;
+           // margin-bottom:10px;
+         }
+         .input-detail-miaoshu{
+           margin-top:18px; 
          }
      }
    &>.detail-title {
@@ -196,12 +210,21 @@
     line-height:32px;
     }
 }
+.avatar-name{
+  padding-top:10px;
+  margin-left:8px;
+  .avatar{
+    width:32px;
+    height:32px;
+    line-height:32px;
+  }
+}
 .comment-button{
   background: #29B6F6;
   border-radius: 3px;
   width:48px;
   height:22px;
-  margin-left:36px;
+  margin-left:48px;
   margin-top:2px;
 }
 

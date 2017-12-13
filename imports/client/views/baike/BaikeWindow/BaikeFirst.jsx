@@ -2,22 +2,30 @@ import React, { Component } from 'react';
 import { Input } from 'antd';
 import { Link } from 'react-router-dom';
 import pureRender from 'pure-render-decorator';
-
+import PropTypes from 'prop-types';
 
 import Icon from '../../../components/Icon';
 
 const Search = Input.Search;
 @pureRender
 class BaikeFirst extends Component {
+    static propTypes = {
+        history: PropTypes.object,
+    }
+    handleSearch=() => {
+        const pathname = '/baike/search';
+        this.props.history.push({ pathname });
+    }
     render() {
+        console.log(this.props);
         return (
             <div className="ejianlian-baike-window">
                 <div className="ejianlian-baike-fist-page">
                     <Search
                         placeholder="请输入关键词..."
                         size="large"
-                        onSearch={value => console.log(value)}
-                        style={{ width: 900, height: 76 }}
+                        onSearch={this.handleSearch}
+                        style={{ width: 900 }}
                         className="baike-search"
                     />
                     <div className="hot-search-word">

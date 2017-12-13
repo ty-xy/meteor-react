@@ -9,11 +9,13 @@ import { DragDropContext } from 'react-dnd';
 import ProjectBordItem from './projectBordItem';
 // import CustomDragLayer from './CustomDragLayer';
 import TaskBoard from '../../../../../schema/taskBoard';
+import ProjectBordAdd from './ProjectBordAdd';
 
 @pureRender
 class Board extends Component {
     static propTypes = {
         taskF: PropTypes.arrayOf(PropTypes.object),
+        pId: PropTypes.string,
     }
     render() {
         const divStyle = {
@@ -33,6 +35,7 @@ class Board extends Component {
                         projectId={text.projectId}
                     />
                 ))}
+                <ProjectBordAdd pId={this.props.pId} />
             </div>
         );
     }
