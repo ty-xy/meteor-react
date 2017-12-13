@@ -18,7 +18,6 @@ import PopulateUtil from '../../../../util/populate';
 import NoticeSound from '../../../../util/sound';
 import avatarUrl from '../../../../util/avatarUrl';
 
-let lastLength = 0;
 @pureRender
 class ContactList extends Component {
     static propTypes = {
@@ -58,14 +57,6 @@ class ContactList extends Component {
             });
         }
     }
-
-    renderSound = (unreadMessage) => {
-        if (unreadMessage > lastLength) {
-            lastLength = unreadMessage;
-            return true;
-        }
-        return false;
-    }
     renderNewFriend = (notice, index, friendFrom) => (
         <div
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[notice._id] })}
@@ -104,7 +95,7 @@ class ContactList extends Component {
             <div className="user-message">
                 <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
-                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
+                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                     {
                         unreadMessage !== 0 ?
                             <span className="notice-red-dot">
@@ -141,7 +132,7 @@ class ContactList extends Component {
             <div className="user-message">
                 <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
-                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content) : '可以开始聊天了'}</span>
+                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                     {
                         unreadMessage !== 0 ?
                             <span className={group.isDisturb ? 'notice-red-dot-no notice-red-dot' : 'notice-red-dot'}>

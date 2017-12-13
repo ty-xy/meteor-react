@@ -163,7 +163,7 @@ class ChatWindow extends Component {
             });
     }
     handleSendMessage = (e) => {
-        if (e.keyCode === 13) {
+        if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault();
             this.sendText();
         }
@@ -218,8 +218,7 @@ class ChatWindow extends Component {
         reader.onloadend = function () {
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 if (err) {
-                    console.log(err);
-                    feedback.dealError(err);
+                    return feedback.dealError(err);
                 }
                 if (res) {
                     sendMessage(res, 'file');
@@ -246,7 +245,6 @@ class ChatWindow extends Component {
         }
         if (toId === groupId) {
             // 是一个群里的成员,允许创建临时会话
-            // console.log('是一个群里的成员,允许创建临时会话');
             this.setState({
                 temporaryChat: true,
             });
@@ -290,7 +288,6 @@ class ChatWindow extends Component {
     )
 
     renderFile = (content) => {
-        // console.log(99999, content);
         const result = PopulateUtil.file(content);
         if (!result) {
             return;
@@ -492,7 +489,7 @@ class ChatWindow extends Component {
                         </p>
                     </div>
                     <div className="chat-message-input">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
                         <p className="chat-send-message" onClick={this.sendText}>发送</p>
                     </div>
                 </div>
