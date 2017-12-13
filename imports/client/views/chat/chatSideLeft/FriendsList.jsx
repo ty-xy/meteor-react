@@ -8,7 +8,7 @@ import pinyin from 'pinyin';
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
 import UserUtil from '../../../../util/user';
-import IdUtil from '../../../../util/id';
+import ChatFriendInfo from '../chatWindow/ChatFriendInfo';
 
 @pureRender
 class FriendsList extends Component {
@@ -17,7 +17,26 @@ class FriendsList extends Component {
         changeTo: PropTypes.func,
         handleClick: PropTypes.func,
         handleNewFriend: PropTypes.func,
+        handleToggle: PropTypes.func,
     };
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            isShowFriendInfo: false,
+            chatFriendId: '',
+        };
+    }
+    handleFriendInfo = () => {
+        this.setState({
+            isShowFriendInfo: false,
+        });
+    }
+    showFriendInfo = (friendId) => {
+        this.setState({
+            isShowFriendInfo: true,
+            chatFriendId: friendId,
+        });
+    }
     render() {
         return (
             <div className="ejianlian-chat-friend-list">
@@ -45,10 +64,7 @@ class FriendsList extends Component {
                                     }
                                     <div
                                         className="friend-pannel-list"
-                                        onClick={() => {
-                                            this.props.changeTo(IdUtil.merge(Meteor.userId(), item.user._id), item.user._id, 'userId', 'message');
-                                            this.props.handleClick();
-                                        }}
+                                        onClick={() => this.showFriendInfo(item.user._id)}
                                     >
                                         <p className={this.props.users.length - 1 !== index ? 'user-info' : 'user-info user-info-last'}>
                                             <Avatar avatarColor={item.user.profile.avatarColor} name={item.user.profile.name} avatar={item.user.profile.avatar} />
@@ -61,6 +77,20 @@ class FriendsList extends Component {
                         ))
                     }
                 </div>
+                {
+                    this.state.isShowFriendInfo ?
+                        <ChatFriendInfo
+                            handleFriendInfo={this.handleFriendInfo}
+                            friendId={this.state.chatFriendId}
+                            temporaryChat
+                            changeTo={this.props.changeTo}
+                            handleClick={this.props.handleClick}
+                            handleToggle={this.props.handleToggle}
+                        />
+                        :
+                        null
+
+                }
             </div>
         );
     }
