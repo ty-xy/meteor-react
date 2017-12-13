@@ -326,3 +326,14 @@
 
  zg-xym    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
  zg-xym    build results on build 43
+----------------------------------
+
+2017-12-13 16:25:31,   build 45
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    feat: 解决冲突
+ 王亚星    feat: merge master
+ 王亚星    fix: 群设置人员头像显示问题
+ 王亚星    feat: 添加公告部分换行处理
+ 王亚星    feat: 添加发送消息shift+enter换行功能
+ zg-xym    build results on build 44
