@@ -103,7 +103,7 @@ class ProjectMembers extends Component {
                 <p className="comment-title">活动</p>
                 <div>
                     <div style={{ display: 'flex' }}>
-                        <div className="person-size">
+                        <div className="person-size" style={{ marginRight: '12px' }}>
                             <AvatarSelf />
                         </div>
                         <TextArea

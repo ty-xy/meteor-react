@@ -27,7 +27,7 @@ export default class DefaultProject extends Component {
         return (
             <div className="list-item" onMouseEnter={this.onMouseEnter} onMouseOut={this.onmouseout}>
                 <p className="project-icon-avatar">
-                    <MyIcon icon="icon-yanshi icon" />
+                    <MyIcon icon="icon-yanshi icon" size={20} />
                 </p>
                 <p>项目示例</p>
                 {this.state.showClose ?
