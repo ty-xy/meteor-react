@@ -68,7 +68,7 @@ class ProjectMembers extends Component {
             'createActive',
             {
                 userId: Meteor.userId(),
-                content: this.state.commentMark,
+                content: this.state.commentMark.replace(/\n|\r\n/g, '<br/>'),
                 taskId: this.props.Id.Id,
             },
             (err) => {
@@ -117,7 +117,6 @@ class ProjectMembers extends Component {
                 </div>
                 {this.props.activities.map((MarkValue) => {
                     const user = Meteor.users.findOne(MarkValue.userId);
-                    console.log(user.profile);
                     return (
                         <div style={{ display: 'flex' }} className="comment-talk" key={MarkValue._id} >
                             <div className="person-size">
@@ -129,8 +128,8 @@ class ProjectMembers extends Component {
                                 />
                             </div>
                             {!this.state[`shownCreadite${MarkValue._id}`] ?
-                                <div >
-                                    <p>{MarkValue.content}</p>
+                                <div style={{ marginLeft: '10px' }}>
+                                    <p dangerouslySetInnerHTML={{ __html: MarkValue.content }} />
                                     <div style={{ display: 'flex' }}>
                                         <span>{formatDate.dealMessageTime(MarkValue.createTime)}</span>
                                         {MarkValue.userId === Meteor.userId() ?

@@ -203,7 +203,7 @@ class ProjectItemDetail extends Component {
     // 创建任务的方法
     createTask = () => {
         Meteor.call(
-            'changeTask', this.props.Id.Id, this.state.tValue,
+            'changeTask', this.props.Id.Id, this.state.tValue.replace(/\n|\r\n/g, '<br/>'),
             (err) => {
                 console.log(err);
             },
@@ -223,7 +223,7 @@ class ProjectItemDetail extends Component {
     }
     handleChangeTitleQ = () => {
         Meteor.call(
-            'changeName', this.props.Id.Id, this.state.titleValue,
+            'changeName', this.props.Id.Id, this.state.titleValue.replace(/\n|\r\n/g, '<br/>'),
             (err) => {
                 console.log(err);
             },
@@ -633,7 +633,8 @@ class ProjectItemDetail extends Component {
                     <Row>
                         <Col span={20}>
                             {this.state.titleShow ?
-                                <h1 onClick={this.handleTitle}>{this.props.item }</h1> :
+                                <h1 onClick={this.handleTitle} dangerouslySetInnerHTML={{ __html: this.props.item }} />
+                                :
                                 <div onClick={this.handleTitle} >
                                     <div className="try try-out" style={{ display: !this.state.titleShow ? 'block' : 'none' }} />
                                     <ProjectInput
@@ -740,9 +741,10 @@ class ProjectItemDetail extends Component {
                                 </div>
                                 :
                                 <div className="ready-task">
-                                    <input
+                                    <div
                                         type="button"
-                                        value={this.props.tasks[0] && this.props.tasks[0].describe ? this.props.tasks[0].describe : '编辑'}
+                                        /* value={this.props.tasks[0] && this.props.tasks[0].describe ? this.props.tasks[0].describe : '编辑'} */
+                                        dangerouslySetInnerHTML={{ __html: this.props.tasks[0] && this.props.tasks[0].describe ? this.props.tasks[0].describe : '编辑' }}
                                         className="input-decription"
                                         onClick={this.handleChangeS}
                                     />

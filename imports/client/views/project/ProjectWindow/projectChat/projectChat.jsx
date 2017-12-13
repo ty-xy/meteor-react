@@ -42,7 +42,7 @@ class projectChat extends Component {
         }
     }
     handleSendMessage = (e) => {
-        if (e.keyCode === 13) {
+        if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault();
             this.sendText();
         }
@@ -61,7 +61,7 @@ class projectChat extends Component {
             });
     }
     sendText = () => {
-        this.sendMessage(this.$message.value, 'text');
+        this.sendMessage(this.$message.value.replace(/\n|\r\n/g, '<br/>'), 'text');
     }
     convertExpression = txt => ({
         __html: txt.replace(
@@ -163,7 +163,7 @@ class projectChat extends Component {
                         {/* <Icon icon="icon-wenjian icon" size={20} /> */}
                     </div>
                     <div className="project-chat-input">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} />
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
                         <p className="chat-send-message" onClick={this.sendText}>发送</p>
                     </div>
                 </div>
