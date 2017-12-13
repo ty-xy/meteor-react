@@ -44,7 +44,7 @@ class Organization extends PureComponent {
         });
     }
     // 修改部门
-    handleDepSetting = ({ name }, id) => {
+    handleDepSetting = ({ name, admin }, id) => {
         const companyId = UserUtil.getCurrentBackendCompany();
         const { deps } = this.props.company;
         const _this = this;
@@ -52,7 +52,7 @@ class Organization extends PureComponent {
         const DEV = visitedDep.length ? visitedDep[0] : {};
         Meteor.call(
             'editCompanyDep',
-            { companyId, ...DEV, id, name },
+            { companyId, ...DEV, id, name, admin },
             (err) => {
                 if (err) {
                     feedback.dealError('修改失败');
@@ -241,7 +241,6 @@ class Organization extends PureComponent {
                     res.userId = item._id;
                 }
             });
-            console.log('rs', res);
             if (bool) {
                 Meteor.call(
                     'addMember',
@@ -310,6 +309,7 @@ class Organization extends PureComponent {
                 modelMember={this.state.depsettingModel}
                 data={visitedDep.length ? visitedDep[0] : {}}
                 handleDepDel={this.handleDepDel}
+                allUsers={this.props.allUsers}
             />
         );
     }
@@ -417,8 +417,8 @@ class Organization extends PureComponent {
                 dataIndex: '',
                 render: record => (
                     <span className="">
-                        <i className="iconfont icon-bianji1 margin-right-20" onClick={() => this.editMember(record)} title="编辑" />
-                        <Icon type="close" title="删除" onClick={() => this.delCompanyMember(record.userId, record)} />
+                        <i className="iconfont icon-bianji1 margin-right-20" style={{ fontSize: '20px' }} onClick={() => this.editMember(record)} title="编辑" />
+                        <Icon type="close" style={{ fontSize: '20px', color: '#F45353' }} title="删除" onClick={() => this.delCompanyMember(record.userId, record)} />
                     </span>
                 ),
             },
