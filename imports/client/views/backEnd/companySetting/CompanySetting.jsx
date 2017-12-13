@@ -16,7 +16,7 @@ import EmptyChat from '../../../components/EmptyChat';
 
 import UserUtil from '../../../../util/user';
 import Company from '../../../../schema/company';
-// import fields from '../../../../util/fields';
+import avatarUrl from '../../../../util/avatarUrl';
 
 @pureRender
 class CompanySetting extends Component {
@@ -49,7 +49,8 @@ class CompanySetting extends Component {
         }
     }
     render() {
-        const { name = '', logo = 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png', members = [], deps = [] } = this.props.currentCompany || {};
+        const teamLogo = avatarUrl.avatarTeam;
+        const { name = '', logo = teamLogo, members = [], deps = [] } = this.props.currentCompany || {};
         return (
             <div className="company-setting">
                 <div className="company-main-page">

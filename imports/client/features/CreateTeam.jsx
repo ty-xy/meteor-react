@@ -12,6 +12,7 @@ import SelectMembers from '../features/SelectMembers';
 import Company from '../../schema/company';
 import UserUtil from '../../util/user';
 import pcaData from '../../util/pcaData';
+import avatarUrlTeam from '../../util/avatarUrl';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -29,7 +30,7 @@ class CreateTeam extends Component {
         this.state = {
             formLayout: 'horizontal',
             showSelect: false,
-            teamLogo: 'http://oxldjnom8.bkt.clouddn.com/companyLogo.png',
+            teamLogo: avatarUrlTeam.avatarTeam,
             selectMembers: [],
             selectMembersId: [],
             residences: pcaData.pca,
