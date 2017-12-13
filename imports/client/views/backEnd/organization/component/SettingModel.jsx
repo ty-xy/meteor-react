@@ -96,6 +96,7 @@ class AddMembers extends PureComponent {
                     <FormItem
                         {...formItemLayout}
                         label={<span style={{ color: '#F45353' }}>* 注意</span>}
+                        style={{ color: '#F45353' }}
                     >
                         部门主管即部门群聊群主
                     </FormItem>

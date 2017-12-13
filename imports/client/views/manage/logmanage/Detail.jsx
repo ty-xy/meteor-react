@@ -87,15 +87,15 @@ class Detail extends (PureComponent || Component) {
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
                         <p>今日完成任务</p>
-                        <p>{finish || '暂无输入'}</p>
+                        {finish ? <div dangerouslySetInnerHTML={{ __html: finish }} /> : <p>暂无输入</p>}
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
                         <p>未完成任务</p>
-                        <p>{plan || '暂无输入'}</p>
+                        {plan ? <div dangerouslySetInnerHTML={{ __html: plan }} /> : <p>暂无输入</p>}
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
                         <p>需要协调的任务</p>
-                        <p>{help || '暂无输入'}</p>
+                        {help ? <div dangerouslySetInnerHTML={{ __html: help }} /> : <p>暂无输入</p>}
                     </Col>
                     {
                         img.length ? <Col span={24} className="margin-top-20">

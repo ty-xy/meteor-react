@@ -53,7 +53,8 @@ class Write extends PureComponent {
     formSubmit = (e) => {
         e.preventDefault();
         const { form, location, companyInfo } = this.props;
-        const { img, file, group, groupRequire, isSecrecy } = this.state;
+        const { img, file, group, groupRequire, isSecrecy, noticeId } = this.state;
+        console.log('this.state', this.state);
         form.validateFields((err, fields) => {
             if (err) {
                 return false;
@@ -63,6 +64,8 @@ class Write extends PureComponent {
             fields.img = img;
             fields.file = file;
             fields.group = group;
+            fields.noticeId = noticeId;
+            fields.content = fields.content.replace(/[\n\r]/g, '<br/>');
             if (groupRequire) {
                 if (group.length === 0) {
                     this.setState({ requireGroupNotice: true });
@@ -85,6 +88,7 @@ class Write extends PureComponent {
                 );
             } else {
                 let peos = [];
+                console.log('title', fields);
                 if (group && group.length) {
                     group.forEach((depId) => {
                         for (let i = 0; i < companyInfo.deps.length; i++) {
@@ -107,8 +111,6 @@ class Write extends PureComponent {
                     }
                 });
                 const toMembers = peos.map(userId => ({ userId }));
-                fields.content = fields.content.replace(/[\n\r]/g, '<br/>');
-                console.log('fields', fields, fields.plan);
                 Meteor.call(
                     'createNotice',
                     { ...fields, toMembers },
@@ -219,7 +221,7 @@ class Write extends PureComponent {
                     </ChoosePeopleModel>
                 </Col>
                 <InputType title="标题：" required requiredErr="请填写公告标题" keyword="title" editData={editData} {...this.props} />
-                <InputArea title="正文：" required requiredErr="请填写公告正文" className="margin-bottom-20" defaultValue={content} keyword="content" {...this.props} />
+                <InputArea title="正文：" required requiredErr="请填写公告正文" className="margin-bottom-20" defaultValue={(content || '').replace(/<br\/>/g, '\r\n')} keyword="content" {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                 <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
                 <MyRadio title="设为保密公告" subtitle="接收人只能查看，消息不可转发；公告详情页有接收人真实姓名水印，防止截图发送" keyword="isSecrecy" handleSwitch={this.handleSwitch} editData={editData} {...this.props} />
