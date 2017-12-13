@@ -8,22 +8,24 @@ class BaikePeopleDetail extends Component {
             <div className="ejianlian-baike-body">
                 <div className="ejianlian-baike-people-body">
                     <div className="ejianlian-baike-detail-left">
-                        <div className="ejianlian-baike-detail-title">
-                            <h3>王树鹏</h3>
-                            <p>（普利兹克建筑奖首位中国籍得主）</p>
-                        </div>
-                        <div className="wangshupeng-detail">
-                            <p>
+                        <div>
+                            <div className="ejianlian-baike-detail-title">
+                                <h3>王澍</h3>
+                                <p>（普利兹克建筑奖首位中国籍得主）</p>
+
+                            </div>
+                            <div className="wangshupeng-detail">
+                                <p>
                     王澍，汉族，1963年11月4日出生于新疆乌鲁木齐市，建筑师。东南大学（原南京工学院）建筑系的本科以及硕士毕业 ，
                     2000年获同济大学建筑学博士。现为中国美术学院建筑艺术学院院长、博士生导师、建筑学学科带头人、浙江省高校中青年学科带头人。
-                            </p>
-                            <p >
+                                </p>
+                                <p >
                    2012年2月27日获得了普利兹克建筑奖（Pritzker Architecture Prize），成为获得该奖项的第一个中国人。
-                            </p>
-                            <p>
+                                </p>
+                                <p>
                    2016年4月，王澍入选2015年度“长江学者奖励计划”特聘教授名单。
-                            </p>
-
+                                </p>
+                            </div>
                         </div>
                         <div>
                             <img src="/王澍_介绍.png" />
@@ -59,8 +61,8 @@ class BaikePeopleDetail extends Component {
                             </p>
                         </div>
                     </div>
-                    <div>
-                        <img src="/王澍.png" />
+                    <div >
+                        <img src="/王澍.png" style={{ width: '268px', height: '379px', marginLeft: '24px' }} />
                     </div>
                 </div>
             </div>

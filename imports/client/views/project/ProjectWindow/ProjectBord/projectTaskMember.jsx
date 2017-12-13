@@ -77,17 +77,19 @@ class projectMembers extends Component {
                     {
                         this.props.allMembers.length > 0 && this.props.allMembers.map(user => (
                             user ?
-                                <Avatar
-                                    key={user._id}
-                                    avatarColor={user.profile && user.profile.avatarColor}
-                                    name={user.profile && user.profile.name}
-                                    avatar={user.profile && user.profile.avatar}
-                                />
+                                <div className="avatar-name">
+                                    <Avatar
+                                        key={user._id}
+                                        avatarColor={user.profile && user.profile.avatarColor}
+                                        name={user.profile && user.profile.name}
+                                        avatar={user.profile && user.profile.avatar}
+                                    />
+                                </div>
                                 :
                                 null
                         ))
                     }
-                    <Icon icon="icon-tianjia circle-icon" onClick={this.handleAddMembers} />
+                    <Icon icon="icon-tianjia circle-icon" onClick={this.handleAddMembers} size={28} />
                 </div>
                 {
                     this.state.showSelect ?

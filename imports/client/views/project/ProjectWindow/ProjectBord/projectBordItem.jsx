@@ -237,7 +237,7 @@ class ProjectBordItem extends Component {
             connectDropTarget,
         } = this.props;
         return connectDropTarget(
-            <div className="ejianlian-project-item-list">
+            <div className="ejianlian-project-item-list" >
                 <div className="list-title">
                     <Row>
                         <Col span={21} style={{ display: 'flex' }}>

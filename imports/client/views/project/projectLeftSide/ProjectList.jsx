@@ -58,7 +58,7 @@ class ProjectList extends Component {
                                         <Link to={`/project/task/${value.uprojectId}`} key={value._id}>
                                             <li className="list-item" key={value._id}>
                                                 <div className="list-img-icon">
-                                                    {<MyIcon icon={`${value.headPortrait} icon`} size={30} iconColor="#ddd" />}
+                                                    {<MyIcon icon={`${value.headPortrait} icon`} size={24} iconColor="#fff" />}
                                                 </div>
                                                 <div className="list-right">
                                                     <p>{value.name}</p>
