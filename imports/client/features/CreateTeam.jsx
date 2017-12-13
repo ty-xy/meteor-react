@@ -171,7 +171,7 @@ class CreateTeam extends Component {
                                 {...formItemLayout}
                             >
                                 <br />
-                                <div className="members-avatar">
+                                <div className="team-members-avatar">
                                     <div className="avatar-wrap">
                                         <AvatarSelf />
                                         {
@@ -183,9 +183,7 @@ class CreateTeam extends Component {
                                             ))
                                         }
                                     </div>
-                                    <div className="add-members" onClick={this.handleAddMembers}>
-                                        <Icon icon="icon-tianjia3 icon" size={35} />
-                                    </div>
+                                    <Icon icon="icon-tianjia" size={40} onClick={this.handleAddMembers} iconColor="#ddd" />
                                 </div>
                             </FormItem>
                             :

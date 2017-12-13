@@ -24,9 +24,9 @@ const CardLog = ({ edit, delLog, editLog, finish, plan, type, index, nickname, h
             <Col span={8} className="e-mg-log-card-header-right">{type}</Col>
         </div>
         <div className="e-mg-log-card-body">
-            <p><span>已完成工作：</span>{finish}</p>
-            <p><span>未完成工作：</span>{plan}</p>
-            <p><span>需协调工作：</span>{help}</p>
+            <p><span>已完成工作：</span>{finish ? finish.replace(/<br\/>/g, '') : '暂无输入'}</p>
+            <p><span>未完成工作：</span>{plan ? plan.replace(/<br\/>/g, '') : '暂无输入'}</p>
+            <p><span>需协调工作：</span>{help ? help.replace(/<br\/>/g, '') : '暂无输入'}</p>
         </div>
         <div className="e-mg-log-card-footer">
             <Col span={12}>{format('yyyy-MM-dd', createdAt)}</Col>

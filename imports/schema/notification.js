@@ -9,13 +9,13 @@ notification.schema = new SimpleSchema({
     username: {
         type: String,
     },
+    title: {
+        type: String,
+    },
     userId: {
         type: String,
     },
     company: {
-        type: String,
-    },
-    title: {
         type: String,
     },
     content: {
@@ -46,5 +46,6 @@ notification.schema = new SimpleSchema({
         optional: true,
     },
 });
+
 
 export default notification;
