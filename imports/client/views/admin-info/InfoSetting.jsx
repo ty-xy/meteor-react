@@ -55,19 +55,6 @@ class InfoSetting extends Component {
             }
         });
     }
-    convertAddress = (address) => {
-        if (!address.length) {
-            return;
-        }
-        const currentProvince = this.state.residences.find(n => n.value === address[0]);
-        const province = currentProvince.label || '';
-        const currentCity = currentProvince.children.find(n => n.value === address[1]);
-        const city = currentCity.label || '';
-        const currentArea = currentCity.children.find(n => n.value === address[2]);
-        const area = currentArea.label || '';
-        return [province, city, area];
-        //  return `${province}/${city}/${area}`;
-    }
     renderCompany = (companyIds) => {
         const companyList = companyIds.map(companyId => PopulateUtil.company(companyId));
         return companyList.map(company => company && <p key={company._id}>{company.name}</p>);
@@ -84,7 +71,6 @@ class InfoSetting extends Component {
         const { getFieldDecorator } = this.props.form;
         const { profile = {}, username = '' } = this.props.user;
         const { name = '', signature = '', age = '', sex = 'male', address = [], company = [] } = profile;
-        const userAddress = this.convertAddress(address);
         return (
             <ul className="info-setting">
                 <Form layout={formLayout} onSubmit={this.handleSubmit}>
@@ -183,7 +169,7 @@ class InfoSetting extends Component {
                         label="所在地区"
                     >
                         {getFieldDecorator('address', {
-                            initialValue: userAddress,
+                            initialValue: address,
                         })(
                             <Cascader
                                 options={this.state.residences}
