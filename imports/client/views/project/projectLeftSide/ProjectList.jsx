@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
+import { Spin } from 'antd';
 import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
@@ -71,7 +72,11 @@ class ProjectList extends Component {
                             })
 
                         }
-                    </ul> : null}
+                    </ul> :
+                    <div className="example">
+                        <Spin tip="Loading..." />
+                    </div>
+                }
             </div >
         );
     }
