@@ -37,8 +37,7 @@ class TeamList extends Component {
             visible: true,
         });
     }
-    handleCancel = (e) => {
-        console.log(e);
+    handleCancel = () => {
         this.setState({
             visible: false,
         });
