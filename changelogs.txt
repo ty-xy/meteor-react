@@ -337,3 +337,13 @@
  王亚星    feat: 添加公告部分换行处理
  王亚星    feat: 添加发送消息shift+enter换行功能
  zg-xym    build results on build 44
+----------------------------------
+
+2017-12-13 17:56:50,   build 46
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    fix: 群头像显示bug 创建团队添加成员icon缺失
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    fix: 管理换行符； 日志和公告的一些bug
+ zg-xym    build results on build 45
