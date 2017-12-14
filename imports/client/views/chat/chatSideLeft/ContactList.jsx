@@ -110,8 +110,9 @@ class ContactList extends Component {
             </div>
         </div>
     )
-    renderGroup = (group, lastMessage, time, type, i, unreadMessage) => (
-        <div
+    renderGroup = (group, lastMessage, time, type, i, unreadMessage) => {
+        const isMyDisturb = group.isDisturb && group.isDisturb.includes(Meteor.userId());
+        return (<div
             onClick={() => {
                 this.props.handleToggle(group._id);
                 this.props.changeTo(group._id, group._id, '', 'message');
@@ -135,15 +136,15 @@ class ContactList extends Component {
                     <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                     {
                         unreadMessage !== 0 ?
-                            <span className={group.isDisturb ? 'notice-red-dot-no notice-red-dot' : 'notice-red-dot'}>
-                                {group.isDisturb ? '' : unreadMessage}
+                            <span className={isMyDisturb ? 'notice-red-dot-no notice-red-dot' : 'notice-red-dot'}>
+                                {isMyDisturb ? '' : unreadMessage}
                             </span>
                             :
                             null
 
                     }
                     {
-                        group.isDisturb ?
+                        isMyDisturb ?
                             <Icon icon="icon-icon-yxj-no-disturbing" size={8} iconColor="#b2b2b2" />
                             :
                             null
@@ -151,7 +152,8 @@ class ContactList extends Component {
                 </p>
             </div>
         </div>
-    )
+        );
+    }
     renderChatListItem = (item, i) => {
         if (item.user) {
             if (item.unreadMessage > 0 && !this.props.chatList.find(j => j.user && j.user._id === item.user._id)) {

@@ -28,7 +28,7 @@ Meteor.methods({
             admin,
             notice: '',
             noticeTime: new Date(),
-            isDisturb: false,
+            isDisturb: [],
             stickTop: {
                 value: false,
                 createdAt: new Date(),

@@ -25,7 +25,7 @@ class GroupSetting extends Component {
         groupMemberIds: PropTypes.array,
         groupId: PropTypes.string,
         admin: PropTypes.string,
-        isDisturb: PropTypes.bool,
+        isDisturb: PropTypes.array,
         stickTop: PropTypes.object,
         avatar: PropTypes.string,
         changeTo: PropTypes.func,
@@ -44,10 +44,11 @@ class GroupSetting extends Component {
         };
     }
     setNotDisturb = (checked) => {
-        // console.log('设置了消息免打扰', checked);
-        Meteor.call('changeGroupDisturb', this.props.groupId, checked, (err) => {
-            feedback.dealError(err);
-        });
+        if (checked) {
+            Meteor.call('setGroupDisturb', this.props.groupId, err => feedback.dealError(err));
+        } else {
+            Meteor.call('cancelGroupDisturb', this.props.groupId, err => feedback.dealError(err));
+        }
     }
     setGroupFirst = (checked) => {
         // console.log('设置了当前群聊置顶', checked);
@@ -76,7 +77,7 @@ class GroupSetting extends Component {
         });
         Meteor.call('changeAdmin', this.props.groupId, newAdminId, (err) => {
             if (err) {
-                console.error(err.reason);
+                return feedback.dealError(err);
             }
             feedback.dealSuccess('修改成功');
         });
@@ -101,7 +102,7 @@ class GroupSetting extends Component {
             },
             (err) => {
                 if (err) {
-                    console.error(err.reason);
+                    return feedback.dealError(err);
                 }
                 feedback.dealSuccess('添加成功');
             },
@@ -110,7 +111,7 @@ class GroupSetting extends Component {
     deleteMember = (memberId, content) => {
         Meteor.call('deleteMember', this.props.groupId, memberId, (err) => {
             if (err) {
-                console.error(err.reason);
+                return feedback.dealError(err);
             }
             feedback.dealSuccess(content);
         });
@@ -120,7 +121,7 @@ class GroupSetting extends Component {
         feedback.dealDelete('解散群聊', '您确定解散该群聊?', () => {
             Meteor.call('deleteGroup', this.props.groupId, (err) => {
                 if (err) {
-                    console.error(err.reason);
+                    return feedback.dealError(err);
                 }
                 feedback.dealSuccess('解散群聊成功');
                 this.props.showGroupSet();
@@ -141,10 +142,9 @@ class GroupSetting extends Component {
     // 退出群聊
     exitGroupChat = () => {
         if (this.props.admin === Meteor.userId()) {
-            feedback.dealWarning('您需要先转让群主，才可退出该群聊');
-        } else {
-            feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.confirmExit());
+            return feedback.dealWarning('您需要先转让群主，才可退出该群聊');
         }
+        return feedback.dealDelete('退出群聊', '您确定退出该群聊?', () => this.confirmExit());
     }
     editGroupName = () => {
         this.setState({
@@ -153,7 +153,9 @@ class GroupSetting extends Component {
     }
     saveChangeName = () => {
         Meteor.call('changeGroupName', this.props.groupId, this.newGroupName.value, (err) => {
-            console.log(err);
+            if (err) {
+                return feedback.dealError(err);
+            }
         });
     }
     chooseNewGroupAvatar = (e) => {
@@ -169,9 +171,9 @@ class GroupSetting extends Component {
         reader.onloadend = function () {
             Meteor.call('changeGroupAvatar', this.result, groupId, (err) => {
                 if (err) {
-                    return console.error(err.reason);
+                    return feedback.dealError(err);
                 }
-                console.log('修改头像成功');
+                return feedback.dealSuccess('修改头像成功');
             });
         };
         reader.readAsDataURL(image);
@@ -244,7 +246,7 @@ class GroupSetting extends Component {
                     </div>
                     <div className="group-members">
                         <p>消息免打扰</p>
-                        <p><Switch defaultChecked={this.props.isDisturb} onChange={this.setNotDisturb} /></p>
+                        <p><Switch defaultChecked={this.props.isDisturb.includes(Meteor.userId())} onChange={this.setNotDisturb} /></p>
                     </div>
                     <div className="group-members">
                         <p>群聊置顶</p>

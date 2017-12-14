@@ -27,7 +27,8 @@ Group.schema = new SimpleSchema({
         type: Date,
     },
     isDisturb: {
-        type: Boolean,
+        type: [String],
+        regEx: SimpleSchema.RegEx.Id,
     },
     stickTop: {
         type: Object,

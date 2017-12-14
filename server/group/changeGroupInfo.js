@@ -40,13 +40,26 @@ Meteor.methods({
                 },
             )));
     },
-    // 消息免打扰
-    changeGroupDisturb(groupId, isDisturb) {
+    // 设置消息免打扰
+    setGroupDisturb(groupId) {
+        console.log('设置', groupId);
         Group.update(
             { _id: groupId },
             {
-                $set: {
-                    isDisturb,
+                $push: {
+                    isDisturb: Meteor.userId(),
+                },
+            },
+        );
+    },
+    // 取消消息免打扰
+    cancelGroupDisturb(groupId) {
+        console.log('取消', groupId);
+        Group.update(
+            { _id: groupId },
+            {
+                $pull: {
+                    isDisturb: Meteor.userId(),
                 },
             },
         );
