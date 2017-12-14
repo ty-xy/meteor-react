@@ -70,11 +70,13 @@ class CheckBill extends Component {
                 const amount = fieldsValue[`amount-${i}`];
                 const category = fieldsValue[`category-${i}`];
                 const reason = fieldsValue[`reason-${i}`];
-                details.push({
-                    amount,
-                    category,
-                    reason,
-                });
+                if (amount) {
+                    details.push({
+                        amount,
+                        category,
+                        reason,
+                    });
+                }
             }
             const res = {
                 userId: Meteor.user()._id,

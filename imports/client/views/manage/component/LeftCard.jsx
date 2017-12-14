@@ -7,8 +7,10 @@ import CompanySelect from './CompanySelect';
 
 const LeftCard = props => (
     <Col span={6} className="e-mg-left">
-        <Card bordered={false}>
+        <Card bordered={false} className="e-mg-left-company">
             <CompanySelect {...props} />
+        </Card>
+        <Card bordered={false} className="e-mg-left-category">
             <Row><Category {...props} /></Row>
         </Card>
     </Col>
