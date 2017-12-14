@@ -364,3 +364,8 @@
  zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
  zg gwt    fix: project add notices
  zg-xym    build results on build 47
+----------------------------------
+
+2017-12-14 12:38:43,   build 49
+
+ zg-xym    build results on build 48
