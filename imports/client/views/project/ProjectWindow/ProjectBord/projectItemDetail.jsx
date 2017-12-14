@@ -146,6 +146,9 @@ class ProjectItemDetail extends Component {
         this.createTask();
         this.handleClose();
     }
+    handleChangeSs=() => {
+        this.createTask();
+    }
     // 评论框变化获得值
     handleChangeR = () => {
         this.setState({
@@ -729,25 +732,33 @@ class ProjectItemDetail extends Component {
                                 <div onClick={e => this.handleClose(e)} className="input-detail-miaoshu">
                                     <div className="try try-out" style={{ display: this.state.shown ? 'block' : 'none' }} />
                                     <ProjectInput
-                                        input="添加"
+                                        input="编辑"
                                         onClick={this.handleChangeS}
                                         onPop={e => this.handleClick(e)}
                                         onKeyDown={e => this.handleSendMessage(e, this.handleChangeS)}
                                         value={this.state.tValue}
                                         onChange={e => this.handleChangeTry('tValue', e)}
                                         onConcel={this.handleClose}
-
                                     />
                                 </div>
                                 :
                                 <div className="ready-task">
-                                    <div
-                                        type="button"
-                                        /* value={this.props.tasks[0] && this.props.tasks[0].describe ? this.props.tasks[0].describe : '编辑'} */
-                                        dangerouslySetInnerHTML={{ __html: this.props.tasks[0] && this.props.tasks[0].describe ? this.props.tasks[0].describe : '编辑' }}
-                                        className="input-decription"
-                                        onClick={this.handleChangeS}
-                                    />
+                                    {this.props.tasks[0] && this.props.tasks[0].describe ?
+                                        <div
+                                            type="button"
+                                            dangerouslySetInnerHTML={{ __html: this.props.tasks[0].describe }}
+                                            className="input-decription"
+                                            onClick={this.handleChangeS}
+                                        /> : <ProjectInput
+                                            input="编辑"
+                                            onClick={this.handleChangeSs}
+                                            onPop={e => this.handleClick(e)}
+                                            onKeyDown={e => this.handleSendMessage(e, this.handleChangeS)}
+                                            value={this.state.tValue}
+                                            onChange={e => this.handleChangeTry('tValue', e)}
+                                            bool={false}
+                                            Top={10}
+                                        />}
                                 </div>
                         }
                     </div>
@@ -932,7 +943,6 @@ export default withTracker((Id) => {
         const length = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: id.listId }, { checkble: 1 }] }).fetch();
         return length;
     });
-    console.log(Id);
     const iddd = idd.map(element => (element.length));
     const cId = checkId.map(element => (element.length));
     return {
