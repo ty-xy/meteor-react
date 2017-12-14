@@ -88,7 +88,12 @@ class TeamMembers extends Component {
                     null
             }
         </p>
-        <Icon icon="icon-tuichu" onClick={this.quitTeam} size={20} />
+        {
+            this.props.currentCompany && this.props.currentCompany.admin !== Meteor.userId() ?
+                <Icon icon="icon-tuichu" onClick={this.quitTeam} size={18} />
+                :
+                null
+        }
     </div>)
 
     render() {
