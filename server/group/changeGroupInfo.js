@@ -42,7 +42,6 @@ Meteor.methods({
     },
     // 设置消息免打扰
     setGroupDisturb(groupId) {
-        console.log('设置', groupId);
         Group.update(
             { _id: groupId },
             {
@@ -54,7 +53,6 @@ Meteor.methods({
     },
     // 取消消息免打扰
     cancelGroupDisturb(groupId) {
-        console.log('取消', groupId);
         Group.update(
             { _id: groupId },
             {

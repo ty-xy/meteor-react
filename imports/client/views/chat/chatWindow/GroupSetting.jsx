@@ -72,9 +72,7 @@ class GroupSetting extends Component {
     }
     // 确认选择新的群主
     confirmChange = (newAdminId) => {
-        this.setState({
-            isShowSeleteAdmin: false,
-        });
+        this.closeSeleteAdmin();
         Meteor.call('changeAdmin', this.props.groupId, newAdminId, (err) => {
             if (err) {
                 return feedback.dealError(err);
@@ -95,6 +93,7 @@ class GroupSetting extends Component {
     }
     // 添加更多群成员
     addMembers = (newMemberIds) => {
+        this.closeAddMembers();
         Meteor.call('addGroupMembers',
             {
                 groupId: this.props.groupId,
@@ -275,32 +274,42 @@ class GroupSetting extends Component {
                         }
                     </div>
                 </div>
-                <Modal
-                    title="添加人员"
-                    visible={this.state.isShowAddMembers}
-                    onCancel={this.closeAddMembers}
-                    width={430}
-                    wrapClassName="create-team-mask"
-                    footer={null}
-                >
-                    <SelectMembers
-                        confirmSelected={this.addMembers}
-                        team={this.props.team}
-                    />
-                </Modal>
-                <Modal
-                    title="管理员设置"
-                    visible={this.state.isShowSeleteAdmin}
-                    onCancel={this.closeSeleteAdmin}
-                    width={430}
-                    wrapClassName="create-team-mask"
-                    footer={null}
-                >
-                    <SelectOne
-                        teamMemberIds={this.state.teamMemberIds}
-                        confirmChange={this.confirmChange}
-                    />
-                </Modal>
+                {
+                    this.state.isShowAddMembers ?
+                        <Modal
+                            title="添加人员"
+                            visible
+                            onCancel={this.closeAddMembers}
+                            width={430}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <SelectMembers
+                                confirmSelected={this.addMembers}
+                                team={this.props.team}
+                            />
+                        </Modal>
+                        :
+                        null
+                }
+                {
+                    this.state.isShowSeleteAdmin ?
+                        <Modal
+                            title="管理员设置"
+                            visible
+                            onCancel={this.closeSeleteAdmin}
+                            width={430}
+                            wrapClassName="create-team-mask"
+                            footer={null}
+                        >
+                            <SelectOne
+                                teamMemberIds={this.state.teamMemberIds}
+                                confirmChange={this.confirmChange}
+                            />
+                        </Modal>
+                        :
+                        null
+                }
             </div>
         );
     }
