@@ -28,6 +28,7 @@ class ProjectItemDetail extends Component {
         textId: PropTypes.string,
         tasks: PropTypes.arrayOf(PropTypes.object),
         delete: PropTypes.func,
+        cancel: PropTypes.func,
         tasklists: PropTypes.arrayOf(PropTypes.object),
         taskchild: PropTypes.arrayOf(PropTypes.object),
         iddd: PropTypes.array,
@@ -145,6 +146,9 @@ class ProjectItemDetail extends Component {
         this.createTask();
         this.handleClose();
     }
+    handleChangeSs=() => {
+        this.createTask();
+    }
     // 评论框变化获得值
     handleChangeR = () => {
         this.setState({
@@ -202,7 +206,7 @@ class ProjectItemDetail extends Component {
     // 创建任务的方法
     createTask = () => {
         Meteor.call(
-            'changeTask', this.props.Id.Id, this.state.tValue,
+            'changeTask', this.props.Id.Id, this.state.tValue.replace(/\n|\r\n/g, '<br/>'),
             (err) => {
                 console.log(err);
             },
@@ -222,7 +226,7 @@ class ProjectItemDetail extends Component {
     }
     handleChangeTitleQ = () => {
         Meteor.call(
-            'changeName', this.props.Id.Id, this.state.titleValue,
+            'changeName', this.props.Id.Id, this.state.titleValue.replace(/\n|\r\n/g, '<br/>'),
             (err) => {
                 console.log(err);
             },
@@ -625,13 +629,15 @@ class ProjectItemDetail extends Component {
                 </Menu.Item>
             </Menu>
         );
+        // console.log(this.props.cancel);
         return (
             <div className="ejian-lian-project-detail">
                 <div className="detail-title detail-common">
                     <Row>
                         <Col span={20}>
                             {this.state.titleShow ?
-                                <h1 onClick={this.handleTitle}>{this.props.item }</h1> :
+                                <h1 onClick={this.handleTitle} dangerouslySetInnerHTML={{ __html: this.props.item }} />
+                                :
                                 <div onClick={this.handleTitle} >
                                     <div className="try try-out" style={{ display: !this.state.titleShow ? 'block' : 'none' }} />
                                     <ProjectInput
@@ -646,11 +652,14 @@ class ProjectItemDetail extends Component {
                                     />
                                 </div>}
                         </Col>
-                        <Col span={4} onClick={this.handleCop}>
+                        <Col span={2} onClick={this.handleCop} style={{ textAlign: 'center' }}>
                             <div className="try try-out" style={{ display: this.state.showCopyCard ? 'block' : 'none' }} />
                             <Dropdown overlay={menu} trigger={['click']}>
-                                <Icon icon="icon-gengduo1" />
+                                <Icon icon="icon-gengduo1" iconColor="#999" size={16} />
                             </Dropdown>
+                        </Col>
+                        <Col span={2} style={{ textAlign: 'center' }}>
+                            <Icon icon="icon-guanbi" iconColor="#999" size={16} onClick={this.props.cancel} />
                         </Col>
                     </Row>
                 </div>
@@ -715,7 +724,7 @@ class ProjectItemDetail extends Component {
                         </div>
                     </div>
                     <div className="detail-list-common detail-list-decription">
-                        <p>
+                        <p className="title-common-detail">
                             描述
                         </p>
                         {
@@ -723,27 +732,38 @@ class ProjectItemDetail extends Component {
                                 <div onClick={e => this.handleClose(e)} className="input-detail-miaoshu">
                                     <div className="try try-out" style={{ display: this.state.shown ? 'block' : 'none' }} />
                                     <ProjectInput
-                                        input="添加"
+                                        input="编辑"
                                         onClick={this.handleChangeS}
                                         onPop={e => this.handleClick(e)}
                                         onKeyDown={e => this.handleSendMessage(e, this.handleChangeS)}
                                         value={this.state.tValue}
                                         onChange={e => this.handleChangeTry('tValue', e)}
                                         onConcel={this.handleClose}
-
                                     />
                                 </div>
                                 :
-                                <input
-                                    type="button"
-                                    value={this.props.tasks[0] && this.props.tasks[0].describe ? this.props.tasks[0].describe : '编辑'}
-                                    className="input-decription"
-                                    onClick={this.handleChangeS}
-                                />
+                                <div className="ready-task">
+                                    {this.props.tasks[0] && this.props.tasks[0].describe ?
+                                        <div
+                                            type="button"
+                                            dangerouslySetInnerHTML={{ __html: this.props.tasks[0].describe }}
+                                            className="input-decription"
+                                            onClick={this.handleChangeS}
+                                        /> : <ProjectInput
+                                            input="编辑"
+                                            onClick={this.handleChangeSs}
+                                            onPop={e => this.handleClick(e)}
+                                            onKeyDown={e => this.handleSendMessage(e, this.handleChangeS)}
+                                            value={this.state.tValue}
+                                            onChange={e => this.handleChangeTry('tValue', e)}
+                                            bool={false}
+                                            Top={10}
+                                        />}
+                                </div>
                         }
                     </div>
                     <div className="detail-list-common">
-                        <p>清单</p>
+                        <p className="title-common-detail">清单</p>
                         {this.props.tasklists.map((tasklist, index) => (
                             <div key={tasklist._id} >
                                 {!this.state[`fatherList${tasklist.listId}`] ?
@@ -795,8 +815,8 @@ class ProjectItemDetail extends Component {
                                                 onConcel={() => this.handleRTaskList(tasklist.listId)}
                                             />
                                         </div> :
-                                        <p onClick={() => this.handldetaskList(tasklist.listId)}>
-                                            <Icon icon="icon-tianjia1" />
+                                        <p onClick={() => this.handldetaskList(tasklist.listId)} className="ready-task">
+                                            <Icon icon="icon-jiahao icon-add" size={18} iconColor="#bdbdbd" />
                                             扩充清单
                                         </p>
                                     }
@@ -806,7 +826,7 @@ class ProjectItemDetail extends Component {
                         }
                         {this.state.shownR ?
                             <p className="ready-task" onClick={this.handleChangeR}>
-                                <Icon icon="icon-tianjia1" />
+                                <Icon icon="icon-jiahao icon-add" size={18} iconColor="#bdbdbd" />
                                 添加待办事项
                             </p> :
                             <div
@@ -829,7 +849,7 @@ class ProjectItemDetail extends Component {
                         <div>
                             <Row>
                                 <Col span={18}>
-                                    <p>添加附件</p>
+                                    <p className="title-common-detail">添加附件</p>
                                 </Col>
                                 <Col span={3}>
                                     <Icon
@@ -847,7 +867,7 @@ class ProjectItemDetail extends Component {
                                 </Col>
                                 <Col span={3}>
                                     <Icon
-                                        icon="icon-weizhiwenjian"
+                                        icon="icon-biaodan1"
                                         size={20}
                                         iconColor="#bdbdbd"
                                     />
@@ -923,7 +943,6 @@ export default withTracker((Id) => {
         const length = TaskList.find({ $and: [{ textId: Id.textId }, { fatherId: id.listId }, { checkble: 1 }] }).fetch();
         return length;
     });
-    console.log(Id);
     const iddd = idd.map(element => (element.length));
     const cId = checkId.map(element => (element.length));
     return {

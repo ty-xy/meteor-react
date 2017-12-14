@@ -326,3 +326,57 @@
 
  zg-xym    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
  zg-xym    build results on build 43
+----------------------------------
+
+2017-12-13 16:25:31,   build 45
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    feat: 解决冲突
+ 王亚星    feat: merge master
+ 王亚星    fix: 群设置人员头像显示问题
+ 王亚星    feat: 添加公告部分换行处理
+ 王亚星    feat: 添加发送消息shift+enter换行功能
+ zg-xym    build results on build 44
+----------------------------------
+
+2017-12-13 17:56:50,   build 46
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    fix: 群头像显示bug 创建团队添加成员icon缺失
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    fix: 管理换行符； 日志和公告的一些bug
+ zg-xym    build results on build 45
+----------------------------------
+
+2017-12-13 18:42:17,   build 47
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    fix： 修改卡片的样式，添加描述部分，活动部分换行处理
+ zg-xym    build results on build 46
+----------------------------------
+
+2017-12-14 10:48:03,   build 48
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    fix: addChat members undefined bug
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    fix: project add notices
+ zg-xym    build results on build 47
+----------------------------------
+
+2017-12-14 12:38:43,   build 49
+
+ zg-xym    build results on build 48
+----------------------------------
+
+2017-12-14 13:09:16,   build 50
+
+ zg-xym    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
+ zg-xym    build results on build 49
+----------------------------------
+
+2017-12-14 13:54:58,   build 51
+
+ zg-xym    build results on build 50

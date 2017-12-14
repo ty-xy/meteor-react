@@ -367,7 +367,7 @@ export default withTracker(({ groupMemberIds, groupType, groupId }) => {
     ));
     if (companyList[0]) {
         const teams = companyList.map((company) => {
-            const comapanyMembers = company.members;
+            const comapanyMembers = company.members || [];
             const name = company.name;
             const memberIds = [];
             for (const value of Object.values(comapanyMembers)) {

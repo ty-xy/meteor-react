@@ -18,9 +18,9 @@ Meteor.methods({
             up,
             company: UserUtil.getMainCompany(),
         };
+        // console.log('newLog', newLog);
         notice.schema.validate(newLog);
         const _id = notice.insert(newLog);
-        console.log('toMembers', toMembers, _id);
         if (_id) {
             const res = {
                 from: Meteor.userId(),
@@ -29,7 +29,6 @@ Meteor.methods({
                 noticeType: '公告',
                 logId: _id,
             };
-            console.log('res', res);
             Meteor.call(
                 'createGlobalNotice',
                 (res),
@@ -43,25 +42,31 @@ Meteor.methods({
         }
     },
     // 修改
-    updateNotice({ _id, username, title, content, group, author, file, img, up, isSecrecy, company }) {
+    updateNotice({ _id, username = UserUtil.getName(), title, userId = Meteor.userId(), noticeId, content, group, file, img, up, isSecrecy, company = UserUtil.getMainCompany() }) {
         const updateLog = {
             createdAt: new Date(),
             username,
             title,
             content,
             group,
-            author,
             file,
             img,
             isSecrecy,
             up,
             company,
+            userId,
+            noticeId,
         };
+        // console.log('updateNotice', updateLog, _id);
         notice.schema.validate(updateLog);
+
         notice.update(
             { _id },
             {
                 $set: updateLog,
+            },
+            (err, res) => {
+                console.log('err', err, res);
             },
         );
     },

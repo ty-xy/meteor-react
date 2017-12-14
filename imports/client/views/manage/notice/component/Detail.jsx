@@ -83,7 +83,7 @@ class Detail extends (PureComponent || Component) {
                     </Col>
                     <Col span={24} className="e-mg-log-details-area">
                         <p>内容</p>
-                        <p>{content || '暂无内容'}</p>
+                        {content ? <div dangerouslySetInnerHTML={{ __html: content }} /> : <p>暂无内容</p>}
                     </Col>
                     <Col span={24} className="e-mg-log-details-footer">
                         <p>{num}人已读</p>

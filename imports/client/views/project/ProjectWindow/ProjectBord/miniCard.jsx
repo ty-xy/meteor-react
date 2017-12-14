@@ -20,14 +20,13 @@ const ItemTypes = {
 };
 const source = {
     beginDrag(props) {
-        console.log(props.textId, props.index);
         return { _id: props.textId, index: props.index };
     },
     endDrag(props, monitor) {
         const item = monitor.getItem();
         const dropResult = monitor.getDropResult();
-        const currentOffset = monitor.getSourceClientOffset();
-        console.log(item, dropResult, currentOffset);
+        //  const currentOffset = monitor.getSourceClientOffset();
+        //  console.log(item, dropResult, currentOffset);
         if (dropResult) {
             if (item.index !== dropResult.listName) {
                 Meteor.call('changeArray', dropResult.listName, item._id, dropResult.y, (err) => {
@@ -131,7 +130,7 @@ class MiniCard extends Component {
             visible: true,
             left: e.target.getBoundingClientRect().left,
         });
-        console.log(e.target.offsetLeft, e.target.offsetParent, e.target.getBoundingClientRect().left);
+        // console.log(e.target.offsetLeft, e.target.offsetParent, e.target.getBoundingClientRect().left);
     }
     handleChangeStart =(e) => {
         e.stopPropagation();
@@ -276,10 +275,12 @@ class MiniCard extends Component {
                         mask={this.state.mask}
                         className="Moal-reset"
                         bodyStyle={{ padding: 0 }}
+                        closable={false}
                     >
                         <ProjectItemDetail
                             item={this.props.value}
                             Id={this.props.idIndex}
+                            cancel={this.hideModal}
                             textId={this.props.textId}
                             projectId={this.props.projectId}
                             delete={this.props.deleteCard}
