@@ -138,7 +138,7 @@ class projectMembers extends Component {
                                     <div
                                         style={{ marginLeft: '210px', lineHeight: '70px' }}
                                     >
-                                        {/* <Dropdown overlay={menu} trigger={['click']}> */}
+
                                         <Icon icon="icon-gengduo" onClick={() => this.handleShowList(user._id)} />
                                         {this.state[`showList${user._id}`] ?
                                             <div className="members-delete-total">
@@ -147,7 +147,7 @@ class projectMembers extends Component {
                                             移除项目成员
                                                 </div>
                                             </div> : null}
-                                        {/* </Dropdown > */}
+
                                     </div> : null}
                             </li>))
                         : null
@@ -199,16 +199,13 @@ export default withTracker((member) => {
     const projectType = exsitMember ? exsitMember.memberType : '';
     const friendIds = UserUtil.getFriends();
     const companyIds = UserUtil.getCompanyList();
-    const companyList = companyIds.map(_id =>
-        Company.findOne({ _id }),
-    );
+    const companyList = companyIds.map(_id => Company.findOne({ _id }));
     const teamValueL = companyList.map((item) => {
         const teamValue = {};
         const members = [];
         for (const value of Object.values(item.members)) {
             members.push(value.userId);
         }
-        console.log(members);
         teamValue.name = item.name;
         teamValue.members = members;
         teamValue.department = [];
@@ -222,7 +219,6 @@ export default withTracker((member) => {
     const team = teamValueL;
     const { profile = {} } = Meteor.users.findOne({ _id: projectBuilder.member }) || {};
     const { name = '', avatarColor = '', avatar = '' } = profile;
-    console.log(profile, projectMember, projectBuilder, projectMemberList, projectType);
     return {
         name,
         team,
