@@ -138,7 +138,7 @@ class projectTask extends Component {
    render() {
        return (
            <div>
-               <Row className="project-file-wenjian">
+               <Row className="project-file-wenjian" style={{ minWidth: '1024px', overflowx: 'auto' }}>
                    <Col span={16}>
                        <p className="wenjian-name">
                  项目文件
@@ -167,11 +167,11 @@ class projectTask extends Component {
                        />
                    </Col>
                </Row>
-               <div className="file-detail">
-                   <Row className="file-detail-title">
+               <div className="file-detail" style={{ minWidth: '1024px', overflow: 'auto' }}>
+                   <Row className="file-detail-title" style={{ minWidth: '1024px', overflow: 'auto' }}>
                        <Col span={8}>
                            <Row>
-                               <Col span={4}>
+                               <Col span={5}>
                                    <Checkbox
                                        onChange={this.onCheckAllChange}
                                        checked={this.state.checkAll}
@@ -205,7 +205,11 @@ class projectTask extends Component {
                        {this.props.projectfile.map((item) => {
                            console.log('');
                            return (
-                               <li className="detail-list-wenjian" key={item._id}>
+                               <li
+                                   className="detail-list-wenjian"
+                                   key={item._id}
+                                   style={{ minWidth: '1024px', overflow: 'auto' }}
+                               >
                                    <Row className="file-detail-title" key={item._id}>
                                        <Col span={8}>
                                            <Row>
