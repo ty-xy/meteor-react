@@ -388,3 +388,11 @@
  王亚星    fix: 修改members为undefined bug
  王亚星    feat: 主管理员不显示退出团队按钮
  zg-xym    build results on build 51
+----------------------------------
+
+2017-12-14 17:22:07,   build 53
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    fix：从某个项目切换到另一个项目的时候，应该默认进入该项目的任务流页面
+ zg xy    fix:项目上传，展示是从上往下
+ zg-xym    build results on build 52
