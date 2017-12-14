@@ -46,6 +46,7 @@ checkbill.schema = new SimpleSchema({
     },
     'details.$.reason': {
         type: String,
+        optional: true,
     },
     img: {
         type: [String],

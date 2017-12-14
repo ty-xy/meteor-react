@@ -2,10 +2,12 @@
 
 .e-mg-left{
     height: 100%;
-    // overflow: auto;
+    display: flex !important;
+    flex-flow: wrap column;
+    width: 450px !important;
     .e-mg-left-per {
         text-align: center;
-        margin-top: 48px;
+        margin-bottom: 48px;
         .e-mg-left-btn {
             width: 88px !important;
             height: 88px !important;
@@ -15,6 +17,7 @@
             color: @blueBtn !important;
             background: #fff !important;
             margin-bottom: 15px;
+            padding: 0;
             > a{
                 text-decoration: none;
             }
@@ -29,34 +32,59 @@
         }
     }
     .e-mg-left-company{
-        margin-top: 30px;
-        text-align: center;
         color: @blueBtn;
-        span{
-            color: @blueBtn;
+        .ant-card-body{
+            padding: 20px;
         }
-        .ant-select-open{
-            .ant-select-selection{
-                border: none !important;
-                outline: none !important;
-                box-shadow: none !important;
+        .e-mg-left-link{
+            .e-mg-left-link-img{
+                display: inline-block;
+                float: left;
+                width: 15%;
+            }
+            .e-mg-left-company-select{
+                color: @blueBtn;
+                padding: 15px 0 0 10px;
+                float: left;
+                width: 85%;
+                span{
+                    color: @blueBtn;
+                }
+                .ant-select-open{
+                    .ant-select-selection{
+                        border: none !important;
+                        outline: none !important;
+                        box-shadow: none !important;
+                    }
+                }
+                > .ant-select-selection{
+                    border: none !important;
+                }
+                > .ant-select-selection:active{
+                    border: none !important;
+                    outline: none !important;
+                    box-shadow: none !important;
+                }
+                > .ant-select-selection:focus{
+                    border: none !important;
+                    outline: none !important;
+                    box-shadow: none !important;
+                }
+                .ant-select-arrow:before {
+                    content: "\E606";
+                }
             }
         }
-        > .ant-select-selection{
-            border: none !important;
-        }
-        > .ant-select-selection:active{
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-        }
-        > .ant-select-selection:focus{
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
-        }
     }
-    > .ant-card{
-        height: 100%;
+    .e-mg-left-category{
+        margin-top: 30px;
+        flex:  1;
+    }
+}
+.ant-card{
+    &:hover{
+        outline: none !important;
+        border: none !important;
+        box-shadow: none !important;
     }
 }

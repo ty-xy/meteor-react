@@ -91,10 +91,14 @@ class ProjectMembers extends Component {
         e.nativeEvent.stopImmediatePropagation();
     }
     handleMark = () => {
-        this.createActive();
-        this.setState({
-            commentMark: '',
-        });
+        if (this.state.commentMark.length === 0) {
+            feedback.dealWarning('请输入评论内容');
+        } else {
+            this.createActive();
+            this.setState({
+                commentMark: '',
+            });
+        }
     }
     render() {
         console.log(Meteor.userId());
