@@ -79,6 +79,7 @@ class ProjectList extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('project');
+    Meteor.subscribe('notice');
     Meteor.subscribe('projectmember');
     const projectId = ProjectMember.find({ member: Meteor.userId() }).fetch();
     console.log(projectId);
