@@ -380,3 +380,11 @@
 2017-12-14 13:54:58,   build 51
 
  zg-xym    build results on build 50
+----------------------------------
+
+2017-12-14 16:28:43,   build 52
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    fix: 修改members为undefined bug
+ 王亚星    feat: 主管理员不显示退出团队按钮
+ zg-xym    build results on build 51
