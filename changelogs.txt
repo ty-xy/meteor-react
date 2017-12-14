@@ -369,3 +369,9 @@
 2017-12-14 12:38:43,   build 49
 
  zg-xym    build results on build 48
+----------------------------------
+
+2017-12-14 13:09:16,   build 50
+
+ zg-xym    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
+ zg-xym    build results on build 49
