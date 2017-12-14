@@ -167,7 +167,7 @@ class projectTask extends Component {
                        />
                    </Col>
                </Row>
-               <div className="file-detail" style={{ minWidth: '1024px', overflow: 'auto' }}>
+               <div className="file-detail" >
                    <Row className="file-detail-title" style={{ minWidth: '1024px', overflow: 'auto' }}>
                        <Col span={8}>
                            <Row>
@@ -268,7 +268,7 @@ export default withTracker((Id) => {
         files.push(item.fileId);
         return files;
     });
-    const projectfile = File.find({ _id: { $in: files } }).fetch();
+    const projectfile = File.find({ _id: { $in: files } }, { sort: { createdAt: -1 } }).fetch();
     if (projectfile[0]) {
         projectfile.forEach((d) => {
             d.fileFrom = PopulateUtil.user(d.from).profile.name;
