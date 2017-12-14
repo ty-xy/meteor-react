@@ -355,3 +355,12 @@
  zg xy    Merge branch 'master' into feature/project_ty
  zg xy    fix： 修改卡片的样式，添加描述部分，活动部分换行处理
  zg-xym    build results on build 46
+----------------------------------
+
+2017-12-14 10:48:03,   build 48
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    fix: addChat members undefined bug
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    fix: project add notices
+ zg-xym    build results on build 47
