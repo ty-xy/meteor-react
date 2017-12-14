@@ -49,7 +49,6 @@ class projectTask extends Component {
             checkAll: this.checkList.length === this.props.projectfile.length,
             length: this.checkList.length,
         });
-        console.log(`checked = ${e.target.checked}`, this.checkList);
     }
       onCheckAllChange = (e) => {
           this.setState({
@@ -84,7 +83,6 @@ class projectTask extends Component {
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 feedback.dealError(err);
                 if (res) {
-                    console.log(res);
                     createProjectFile(res);
                 }
             });
@@ -115,7 +113,6 @@ class projectTask extends Component {
     }
     handleRemoveTotal = () => {
         if (this.state.checkAll === true) {
-            console.log('删除全部', this.checkList);
             this.checkList.forEach((value) => {
                 if (value) {
                     this.handleRemoveFile(value);
@@ -139,7 +136,6 @@ class projectTask extends Component {
    }
 
    render() {
-       //    console.log(this.handleDown());
        return (
            <div>
                <Row className="project-file-wenjian">
@@ -207,7 +203,7 @@ class projectTask extends Component {
                    </Row>
                    <ul>
                        {this.props.projectfile.map((item) => {
-                           console.log(item.url);
+                           console.log('');
                            return (
                                <li className="detail-list-wenjian" key={item._id}>
                                    <Row className="file-detail-title" key={item._id}>
@@ -272,10 +268,9 @@ export default withTracker((Id) => {
     if (projectfile[0]) {
         projectfile.forEach((d) => {
             d.fileFrom = PopulateUtil.user(d.from).profile.name;
-            console.log(d.createdAt, d);
         });
     }
-    console.log(projectfile, file);
+
     return {
         projectfile,
     };
