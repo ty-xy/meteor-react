@@ -41,6 +41,16 @@ class projectMembers extends Component {
             showSelect: true,
         });
     }
+    handleRemoveMembers= (e, id) => {
+        e.preventDefault();
+        console.log(this.props.TaskMembers);
+        const memberArrays = this.props.TaskMembers.filter(item => item !== id);
+        Meteor.call(
+            'changeTaskMembers', this.props.textId, memberArrays, (err) => {
+                console.log(err);
+            },
+        );
+    }
     closeSelect = () => {
         this.setState({
             showSelect: false,
@@ -77,7 +87,7 @@ class projectMembers extends Component {
                     {
                         this.props.allMembers.length > 0 && this.props.allMembers.map(user => (
                             user ?
-                                <div className="avatar-name">
+                                <div className="avatar-name" onClick={e => this.handleRemoveMembers(e, user._id)}>
                                     <Avatar
                                         key={user._id}
                                         avatarColor={user.profile && user.profile.avatarColor}
@@ -115,8 +125,10 @@ class projectMembers extends Component {
 export default withTracker((member) => {
     Meteor.subscribe('users');
     Meteor.subscribe('project');
-    const TaskMembers = Task.findOne({ textId: member.textId }).taskMembers;
+    const TaskMembers = Task.findOne({ textId: member.textId }) ? Task.findOne({ textId: member.textId }).taskMembers : [];
+    const creater = Project.findOne({ uprojectId: member.projectId }).creater;
     const Members = Project.findOne({ uprojectId: member.projectId }).members;
+    Members.unshift(creater);
     const team = [
         {
             name: '选择人员',
@@ -124,7 +136,7 @@ export default withTracker((member) => {
             department: [], // 不存在的时候需要传一个空数组
         },
     ];
-    console.log(member, TaskMembers);
+    console.log(member, TaskMembers, creater);
     const { profile = {} } = Meteor.users.findOne({ _id: member.memberId }) || {};
     const { name = '', avatarColor = '', avatar = '' } = profile;
     return {
@@ -132,7 +144,7 @@ export default withTracker((member) => {
         team,
         avatarColor,
         avatar,
-        TaskMembers: TaskMembers.length ? TaskMembers : [],
-        allMembers: TaskMembers.length ? Meteor.users.find({ _id: { $in: TaskMembers } }).fetch() : '',
+        TaskMembers: TaskMembers.length > 0 ? TaskMembers : [],
+        allMembers: TaskMembers.length > 0 ? Meteor.users.find({ _id: { $in: TaskMembers } }).fetch() : '',
     };
 })(projectMembers);

@@ -68,7 +68,7 @@ class ProjectMembers extends Component {
             'createActive',
             {
                 userId: Meteor.userId(),
-                content: this.state.commentMark,
+                content: this.state.commentMark.replace(/\n|\r\n/g, '<br/>'),
                 taskId: this.props.Id.Id,
             },
             (err) => {
@@ -91,16 +91,20 @@ class ProjectMembers extends Component {
         e.nativeEvent.stopImmediatePropagation();
     }
     handleMark = () => {
-        this.createActive();
-        this.setState({
-            commentMark: '',
-        });
+        if (this.state.commentMark.length === 0) {
+            feedback.dealWarning('请输入评论内容');
+        } else {
+            this.createActive();
+            this.setState({
+                commentMark: '',
+            });
+        }
     }
     render() {
         console.log(Meteor.userId());
         return (
             <div className="detail-list-common detail-comment">
-                <p className="comment-title">活动</p>
+                <p className="comment-title title-common-detail">活动</p>
                 <div>
                     <div style={{ display: 'flex' }}>
                         <div className="person-size" style={{ marginRight: '12px' }}>
@@ -117,7 +121,6 @@ class ProjectMembers extends Component {
                 </div>
                 {this.props.activities.map((MarkValue) => {
                     const user = Meteor.users.findOne(MarkValue.userId);
-                    console.log(user.profile);
                     return (
                         <div style={{ display: 'flex' }} className="comment-talk" key={MarkValue._id} >
                             <div className="person-size">
@@ -129,8 +132,8 @@ class ProjectMembers extends Component {
                                 />
                             </div>
                             {!this.state[`shownCreadite${MarkValue._id}`] ?
-                                <div >
-                                    <p>{MarkValue.content}</p>
+                                <div style={{ marginLeft: '10px' }}>
+                                    <p dangerouslySetInnerHTML={{ __html: MarkValue.content }} />
                                     <div style={{ display: 'flex' }}>
                                         <span>{formatDate.dealMessageTime(MarkValue.createTime)}</span>
                                         {MarkValue.userId === Meteor.userId() ?

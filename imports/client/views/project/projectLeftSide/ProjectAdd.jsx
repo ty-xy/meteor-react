@@ -104,9 +104,11 @@ class ProjectAdd extends Component {
     }
     confirmSelected = (members) => {
         // console.log('选择加入的人员', members);
-        const selectMembers = members;
+        const seletLength = this.state.selectMembersId;
+        const selectMembers = seletLength && seletLength.length > 0 ? Array.from(new Set(seletLength.concat(members))) : members;
+        // const nSelect = Array.from(new Set(seletLength.concat(members)));
         this.setState({
-            selectMembersId: members,
+            selectMembersId: selectMembers,
             selectMembers: selectMembers.map(_id => Meteor.users.findOne({ _id })),
             showSelect: false,
         });
@@ -187,11 +189,13 @@ class ProjectAdd extends Component {
         this.setState({ [keyword]: leftUsers, [`visible${keyword}`]: false, requireGroupNotice: false });
     }
     // 选中后删除
-    handlePeopleChange = (e, id, keyword) => {
+    handlePeopleChange = (e, id) => {
         e.preventDefault();
-        const res = this.state[keyword];
-        const peos = res.filter(item => (item !== id));
-        this.setState({ [keyword]: peos });
+        const res = this.state.selectMembers;
+        const resp = this.state.selectMembersId;
+        const peos = res.filter(item => (item._id !== id));
+        const peoI = resp.filter(value => (value !== id));
+        this.setState({ selectMembers: peos, selectMembersId: peoI });
     }
     // 图片id返回
     changeUpdate = (name, imgs) => {
@@ -214,7 +218,8 @@ class ProjectAdd extends Component {
         const divStyle = {
             background: this.state.color[j],
         };
-        console.log(this.state.selectMembersId);
+        // console.log(this.state.selectMembersId);
+        //  console.log(this.state.selectMembers);
         return (
             <div className="ejianlian-project-add" >
                 <div id="title-f">
@@ -287,24 +292,33 @@ class ProjectAdd extends Component {
                         <AvatarSelf />
                     </div>
                     <div>
-                        <div className="add-members common-type" onClick={this.handleAddMembers}>
+                        <div className="add-members common-type" >
                             <div> 项目成员:</div>
-                            <div style={{ display: 'flex' }}>
+                            <div style={{ display: 'flex', textAlign: 'center' }}>
                                 {
                                     this.state.selectMembers && this.state.selectMembers.map(user => (
                                         user ?
-                                            <Avatar
-                                                style={{ marginRight: '5px' }}
-                                                key={user._id}
-                                                avatarColor={user.profile && user.profile.avatarColor}
-                                                name={user.profile && user.profile.name}
-                                                avatar={user.profile && user.profile.avatar}
-                                            />
+                                            <div onClick={e => this.handlePeopleChange(e, user._id)} style={{ cursor: 'pointer' }}>
+                                                <Avatar
+                                                    style={{ marginRight: '5px' }}
+                                                    key={user._id}
+                                                    avatarColor={user.profile && user.profile.avatarColor}
+                                                    name={user.profile && user.profile.name}
+                                                    avatar={user.profile && user.profile.avatar}
+
+                                                />
+                                            </div>
                                             :
                                             null
                                     ))
                                 }
-                                <MyIcon icon="icon-tianjia3 icon" size={35} />
+                                <MyIcon
+                                    icon="icon-tianjia icon icon-add-people-list"
+                                    size={46}
+                                    iconColor="#999"
+                                    onClick={this.handleAddMembers}
+                                    style={{ height: '46px', lineHeight: '46px' }}
+                                />
                             </div>
                             {
                                 this.state.showSelect ?
