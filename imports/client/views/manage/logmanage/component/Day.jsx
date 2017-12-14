@@ -73,11 +73,10 @@ class Day extends (React.PureComponent || React.Component) {
                             peos = peos.concat(deps[i].members);
                             break;
                         }
-                        if (depId === companyInfo._id) {
-                            const companyMember = companyInfo.members.map(item => (item.userId));
-                            peos = peos.concat(companyMember);
-                            break;
-                        }
+                    }
+                    if (depId === companyInfo._id) {
+                        const companyMember = companyInfo.members.map(item => (item.userId));
+                        peos = peos.concat(companyMember);
                     }
                 });
             }

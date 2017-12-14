@@ -88,19 +88,18 @@ class Write extends PureComponent {
                 );
             } else {
                 let peos = [];
-                console.log('title', fields);
+                console.log('title', fields, companyInfo);
                 if (group && group.length) {
                     group.forEach((depId) => {
-                        for (let i = 0; i < companyInfo.deps.length; i++) {
+                        for (let i = 0; i < (companyInfo.deps && companyInfo.deps.length) || 0; i++) {
                             if (depId === companyInfo.deps[i].id) {
                                 peos = peos.concat(companyInfo.deps[i].members);
                                 break;
                             }
-                            if (depId === companyInfo._id) {
-                                const companyMember = companyInfo.members.map(item => (item.userId));
-                                peos = peos.concat(companyMember);
-                                break;
-                            }
+                        }
+                        if (depId === companyInfo._id) {
+                            const companyMember = companyInfo.members.map(item => (item.userId));
+                            peos = peos.concat(companyMember);
                         }
                     });
                 }
@@ -110,6 +109,7 @@ class Write extends PureComponent {
                         peoRes.push(item);
                     }
                 });
+                console.log('peoRes', peos, peoRes);
                 const toMembers = peos.map(userId => ({ userId }));
                 Meteor.call(
                     'createNotice',
@@ -236,7 +236,7 @@ class Write extends PureComponent {
                     footer={null}
                     className="e-mg-notice-preview"
                 >   <p className="margin-bottom-10 font18">{getFieldsValue().title}<span style={{ marginLeft: '10px', color: 'rgba(0, 0, 0, 0.4)', fontSize: '12px' }}>{format('yyyy-MM-dd hh:mm', new Date())}</span></p>
-                    <p>{(getFieldsValue().content || '').replace(/\n/g, '\n')}</p>
+                    <div dangerouslySetInnerHTML={{ __html: (getFieldsValue().content || '').replace(/\n/g, '<br/>') }} />
                     <p style={{ textAlign: 'right' }}>{`${year}年${month}月${day}日`}</p>
                 </Modal>
             </Form>
