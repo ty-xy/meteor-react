@@ -408,3 +408,13 @@
  zg xy    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
  zg xy    fix：头像上传图片的样式
  zg-xym    build results on build 53
+----------------------------------
+
+2017-12-15 11:42:17,   build 55
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy     feat：添加样式
+ zg xy    Merge remote-tracking branch 'origin/master' into feature/project_ty
+ zg xy    fix:项目没有项目的时候，一直loading状态
+ zg xy    fix：项目百科的样式
+ zg-xym    build results on build 54
