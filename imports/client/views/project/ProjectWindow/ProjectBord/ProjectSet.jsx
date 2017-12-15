@@ -129,7 +129,7 @@ class ProjectSet extends Component {
             return (<img
                 src={`http://oxldjnom8.bkt.clouddn.com//${item}`}
                 alt=""
-                style={{ width: '60px', height: '60px', borderRadius: '50%' }}
+                style={{ width: '50px', height: '50px', borderRadius: '50%' }}
             />);
         }
         return (
