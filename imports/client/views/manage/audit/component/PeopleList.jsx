@@ -47,10 +47,6 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
                 depname = dep[i].name;
                 break;
             }
-            if (companyInfo._id === id) {
-                depname = dep[i].name;
-                break;
-            }
         }
         return depname;
     };
@@ -65,6 +61,7 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
         }
         return depname;
     };
+    console.log('componentSelectedUser', componentSelectedUser);
     return (
         <div style={{ position: 'relative' }}>
             {isSelecteGroup ?
