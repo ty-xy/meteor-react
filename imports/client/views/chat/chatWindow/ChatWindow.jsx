@@ -379,7 +379,7 @@ class ChatWindow extends Component {
         const notice = this.props.chatGroup ? this.props.chatGroup.notice : '';
         const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
         const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : [];
-        const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop : {};
+        const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
         return this.props.to ?

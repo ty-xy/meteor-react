@@ -62,14 +62,29 @@ Meteor.methods({
             },
         );
     },
-    // 群聊置顶
-    changeGroupStickTop(groupId, stickTop) {
+    // 设置群聊置顶
+    setGroupStickTop(groupId) {
         Group.update(
             { _id: groupId },
             {
-                $set: {
-                    'stickTop.value': stickTop,
-                    'stickTop.createdAt': new Date(),
+                $push: {
+                    stickTop: {
+                        userId: Meteor.userId(),
+                        createdAt: new Date(),
+                    },
+                },
+            },
+        );
+    },
+    // 删除群聊置顶
+    cancelGroupStickTop(groupId) {
+        Group.update(
+            { _id: groupId },
+            {
+                $pull: {
+                    stickTop: {
+                        userId: Meteor.userId(),
+                    },
                 },
             },
         );

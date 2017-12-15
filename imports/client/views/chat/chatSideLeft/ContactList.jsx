@@ -112,6 +112,8 @@ class ContactList extends Component {
     )
     renderGroup = (group, lastMessage, time, type, i, unreadMessage) => {
         const isMyDisturb = group.isDisturb && group.isDisturb.includes(Meteor.userId());
+        const selfStickTop = group.stickTop.find(x => x.userId && x.userId === Meteor.userId());
+        // console.log(9090, selfStickTop);
         return (<div
             onClick={() => {
                 this.props.handleToggle(group._id);
@@ -121,7 +123,7 @@ class ContactList extends Component {
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[group._id] })}
         >
             {
-                group.stickTop.value ?
+                selfStickTop && selfStickTop.userId === Meteor.userId() ?
                     <div className="triangle-topleft" />
                     :
                     null
@@ -170,22 +172,20 @@ class ContactList extends Component {
     render() {
         const chatList = this.props.chatList;
         // 设置置顶的聊天列表
-        const stickTopChat = chatList.filter(x => x.group && x.group.stickTop.value);
+        const stickTopChat = chatList.filter(x => x.group && x.group.stickTop.find(s => s.userId && s.userId === Meteor.userId()));
         stickTopChat.forEach((x) => {
-            x.stickTime = x.group.stickTop.createdAt;
+            x.stickTime = x.group.stickTop[0].createdAt;
         });
         const newStickTopChat = stickTopChat.sort(this.compare('stickTime'));
         // 剩下没有设置置顶的聊天列表
-        const defaultTopChat = chatList.filter(x => x.user || (x.group && !x.group.stickTop.value));
+        const defaultTopChat = chatList.filter(x => x.user || (x.group && !x.group.stickTop.find(s => s.userId && s.userId === Meteor.userId())));
         // 找出最新的好友通知
         if (this.props.newFriendNotice.length > 0) {
             const lastNewFriendNotice = this.props.newFriendNotice.sort(this.compare('sortTime'))[0];
             defaultTopChat.push(lastNewFriendNotice);
         }
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
-
         const sortedChatList = [...newStickTopChat, ...newDefaultTopChat];
-
         return (
             <div className="ejianlian-chat-message-list">
                 {

@@ -52,9 +52,11 @@ class GroupSetting extends Component {
     }
     setGroupFirst = (checked) => {
         // console.log('设置了当前群聊置顶', checked);
-        Meteor.call('changeGroupStickTop', this.props.groupId, checked, (err) => {
-            feedback.dealError(err);
-        });
+        if (checked) {
+            Meteor.call('setGroupStickTop', this.props.groupId, err => feedback.dealError(err));
+        } else {
+            Meteor.call('cancelGroupStickTop', this.props.groupId, err => feedback.dealError(err));
+        }
     }
     // 选择新的群主
     selectAdmin = () => {
@@ -249,7 +251,7 @@ class GroupSetting extends Component {
                     </div>
                     <div className="group-members">
                         <p>群聊置顶</p>
-                        <p><Switch defaultChecked={this.props.stickTop.value} onChange={this.setGroupFirst} /></p>
+                        <p><Switch defaultChecked={this.props.stickTop && this.props.stickTop.userId === Meteor.userId()} onChange={this.setGroupFirst} /></p>
                     </div>
                     <div>
                         {
