@@ -7,7 +7,7 @@ const colors = [
     '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
 ];
 
-const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, required, requiredErr, companyInfo = {}, allUsers, showModal, handlePeopleChange }) => {
+const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, required, requiredErr, companyInfo = {}, companys, allUsers, showModal, handlePeopleChange }) => {
     const getAvatar = (userId, index) => {
         const avatar = userIdToInfo.getAvatar(allUsers, userId);
         const name = userIdToInfo.getName(allUsers, userId);
@@ -47,20 +47,28 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
                 depname = dep[i].name;
                 break;
             }
-            if (companyInfo._id === id) {
-                depname = dep[i].name;
+        }
+        return depname;
+    };
+    // 获取depname
+    const getCompanyName = (id) => {
+        let depname = '';
+        for (let i = 0; i < companys.length; i++) {
+            if (companys[i]._id === id) {
+                depname = companys[i].name;
                 break;
             }
         }
         return depname;
     };
+    console.log('componentSelectedUser', componentSelectedUser);
     return (
         <div style={{ position: 'relative' }}>
             {isSelecteGroup ?
                 componentSelectedUser.map(item => (
                     <a href="" key={item} onClick={e => handlePeopleChange(e, item, keyword)} className="e-mg-audit-seleted-img">
                         {getDepAvatar(companyInfo, item)}
-                        <p>{getDepartmentName(item)}</p>
+                        <p>{getDepartmentName(item) || getCompanyName(item)}</p>
                     </a>
                 )) :
                 componentSelectedUser.map((item, index) => (
@@ -72,7 +80,7 @@ const MyInput = ({ iconTitle, componentSelectedUser, isSelecteGroup, keyword, re
             }
             <span className="e-mg-audit-seleted-img">
                 <MyIcon icon="icon-tianjia" size={38} iconColor="#999" onClick={e => showModal(e, keyword)} />
-                <p style={{ marginTop: '8px' }}>{iconTitle}</p>
+                <p>{iconTitle}</p>
                 {required ?
                     <span
                         style={{ position: 'absolute',
@@ -96,5 +104,6 @@ MyInput.propTypes = {
     required: PropTypes.bool,
     isSelecteGroup: PropTypes.bool,
     iconTitle: PropTypes.string,
+    companys: PropTypes.array,
 };
 export default MyInput;

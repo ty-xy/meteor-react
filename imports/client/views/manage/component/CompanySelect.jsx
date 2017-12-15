@@ -15,11 +15,20 @@ const CompanySelect = ({ users, changeCompany, allCompanys }) => {
             }
         }
     });
-    const mainCompany = (users.profile && users.profile.mainCompany) || '暂无公司';
+    const { mainCompany } = profile || {};
+    let logo = '';
+    for (let i = 0; i < companys.length; i++) {
+        if (mainCompany === companys[i]._id) {
+            logo = companys[i].logo;
+            break;
+        }
+    }
+    const defaultValue = mainCompany || '暂无公司';
+    // console.log('mainCompany', mainCompany, defaultValue, allCompanys);
     return (
         <Row className="e-mg-left-link clearfix">
-            <div className="e-mg-left-link-img"><img src="/start.jpg" width="40" /></div>
-            <Select value={mainCompany} className="e-mg-left-company-select" onChange={changeCompany}>
+            <div className="e-mg-left-link-img"><img src={logo} width="40" /></div>
+            <Select value={defaultValue} className="e-mg-left-company-select" onChange={changeCompany}>
                 {companys.map(item => (<Option value={item._id} key={item._id}>{item.name}</Option>))}
             </Select>
         </Row>

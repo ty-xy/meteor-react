@@ -31,6 +31,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         const _users = [];
         let _deps = deps;
         const leftUsers = [];
+        console.log('defaultValue', nextProps.defaultValue, nextProps.isSelecteGroup);
         if (nextProps.defaultValue.length) {
             if (!nextProps.isSelecteGroup) {
                 users.forEach((j) => {
@@ -62,6 +63,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                             break;
                         } else if (item[i] === companyDep.id) {
                             companyDep.selected = true;
+                            leftUsers.push(companyDep.id);
                         } else {
                             j.selected = false;
                         }
@@ -71,8 +73,9 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                     }
                 });
                 _deps.unshift(companyDep);
+                console.log('deps', deps, _deps);
             }
-
+            console.log('leftUsers', leftUsers);
             this.setState({
                 users: _users,
                 deps: _deps,
@@ -94,6 +97,10 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 id: nextProps.companyInfo && nextProps.companyInfo._id,
                 isAutoChat: true,
             };
+            // if (nextProps.companyInfo._id === j.id) {
+            //     nextProps.companyInfo.selected = true;
+            //     _deps.push(nextProps.companyInfo);
+            // }
             _deps.unshift(companyDep);
             this.setState({
                 users,
@@ -336,7 +343,10 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                 <a key={item.name} href="" className="e-mg-audit-deps-people-per" onClick={e => this.handleGroupChange(e, item.id)}>
                     {this.getDepAvatar(item.id)}
                     {item.selected ? <i className="iconfont icon-xuanze e-mg-audit-deps-people-icon" /> : null}
-                    <span>{item.name}</span>
+                    {!item.industryType ?
+                        <span>{item.name}</span>
+                        : <span>{item.name} <span className="e-mg-audit-deps-people-org">全员</span></span>
+                    }
                 </a>
             ))
         );
@@ -351,6 +361,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
             }
             return depname;
         };
+        console.log('leftUsers', leftUsers);
         return (
             <div>
                 {this.props.children}
