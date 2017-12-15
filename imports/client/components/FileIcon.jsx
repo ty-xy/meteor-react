@@ -34,6 +34,8 @@ class componentName extends Component {
             return <Icon icon="icon-exe icon" iconColor="#5C6BC0" />;
         case 'txt':
             return <Icon icon="icon-wenjiangeshi-txt icon" iconColor="#8D6E63" />;
+        case 'svg':
+            return <Icon icon="icon-gif icon" iconColor="#29B6F6" />;
         default:
             return <Icon icon="icon-weizhiwenjian icon" iconColor="#C1C5D2" />;
         }
