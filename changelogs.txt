@@ -418,3 +418,11 @@
  zg xy    fix:项目没有项目的时候，一直loading状态
  zg xy    fix：项目百科的样式
  zg-xym    build results on build 54
+----------------------------------
+
+2017-12-15 13:20:00,   build 56
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    merge master
+ zg gwt    fix: 日志提醒但是收不到的bug，
+ zg-xym    build results on build 55
