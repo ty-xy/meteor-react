@@ -144,7 +144,7 @@ class Header extends Component {
 
                     if (item.noticeType === '公告') {
                         return (
-                            <div key={item._id} className="list">
+                            <div key={item._id} className="list list-notice">
                                 <p className="title">来自 &nbsp;{companyName}<span>{format('yyyy.MM.dd hh:mm', item.createdAt)}</span></p>
                                 <div className="list-content clearfix margin-top-20">
                                     <div className="list-avatar">

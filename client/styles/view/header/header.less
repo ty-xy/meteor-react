@@ -206,11 +206,7 @@
     padding: 0 0 15px 0;
     height: 94%;
     overflow: auto;
-    .list{
-        position: relative;
-        border-bottom: 1px solid #eee;
-        padding: 10px 30px 5px;
-        // margin-bottom: 10px;
+    .list-notice{
         &:before{
             display: block;
             content: '';
@@ -224,6 +220,12 @@
             transform: rotateZ(-135deg);
             border-style: solid;
         }
+    }
+    .list{
+        position: relative;
+        border-bottom: 1px solid #eee;
+        padding: 10px 30px 5px;
+        // margin-bottom: 10px;
         >.title{
             span{
                 float: right;
