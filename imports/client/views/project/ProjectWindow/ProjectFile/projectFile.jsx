@@ -49,7 +49,6 @@ class projectTask extends Component {
             checkAll: this.checkList.length === this.props.projectfile.length,
             length: this.checkList.length,
         });
-        console.log(`checked = ${e.target.checked}`, this.checkList);
     }
       onCheckAllChange = (e) => {
           this.setState({
@@ -84,7 +83,6 @@ class projectTask extends Component {
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 feedback.dealError(err);
                 if (res) {
-                    console.log(res);
                     createProjectFile(res);
                 }
             });
@@ -115,7 +113,6 @@ class projectTask extends Component {
     }
     handleRemoveTotal = () => {
         if (this.state.checkAll === true) {
-            console.log('删除全部', this.checkList);
             this.checkList.forEach((value) => {
                 if (value) {
                     this.handleRemoveFile(value);
@@ -139,10 +136,9 @@ class projectTask extends Component {
    }
 
    render() {
-       //    console.log(this.handleDown());
        return (
            <div>
-               <Row className="project-file-wenjian">
+               <Row className="project-file-wenjian" style={{ minWidth: '1024px', overflowx: 'auto' }}>
                    <Col span={16}>
                        <p className="wenjian-name">
                  项目文件
@@ -171,11 +167,11 @@ class projectTask extends Component {
                        />
                    </Col>
                </Row>
-               <div className="file-detail">
-                   <Row className="file-detail-title">
+               <div className="file-detail" >
+                   <Row className="file-detail-title" style={{ minWidth: '1024px', overflow: 'auto' }}>
                        <Col span={8}>
                            <Row>
-                               <Col span={4}>
+                               <Col span={5}>
                                    <Checkbox
                                        onChange={this.onCheckAllChange}
                                        checked={this.state.checkAll}
@@ -207,9 +203,13 @@ class projectTask extends Component {
                    </Row>
                    <ul>
                        {this.props.projectfile.map((item) => {
-                           console.log(item.url);
+                           console.log('');
                            return (
-                               <li className="detail-list-wenjian" key={item._id}>
+                               <li
+                                   className="detail-list-wenjian"
+                                   key={item._id}
+                                   style={{ minWidth: '1024px', overflow: 'auto' }}
+                               >
                                    <Row className="file-detail-title" key={item._id}>
                                        <Col span={8}>
                                            <Row>
@@ -268,14 +268,13 @@ export default withTracker((Id) => {
         files.push(item.fileId);
         return files;
     });
-    const projectfile = File.find({ _id: { $in: files } }).fetch();
+    const projectfile = File.find({ _id: { $in: files } }, { sort: { createdAt: -1 } }).fetch();
     if (projectfile[0]) {
         projectfile.forEach((d) => {
             d.fileFrom = PopulateUtil.user(d.from).profile.name;
-            console.log(d.createdAt, d);
         });
     }
-    console.log(projectfile, file);
+
     return {
         projectfile,
     };

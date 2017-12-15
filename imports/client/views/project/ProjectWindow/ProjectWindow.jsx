@@ -72,10 +72,10 @@ class ProjectWindow extends Component {
             },
         };
         return (
-            <div className="ejianlian-project-window-show">
-                {this.props.projectL.map((project, index) => {
+            <div className="ejianlian-project-window-show" key={Math.random()}>
+                {this.props.projectL.map((project) => {
                     console.log('');
-                    return (<div className="window-title" key={index} >
+                    return (<div className="window-title" key={project._id} >
                         <Row>
                             <Col span={22}><p>{project.name}</p></Col>
                             <Col span={1}> <Icon icon="icon-qunzu icon-one" onClick={this.showMo} size={20} />

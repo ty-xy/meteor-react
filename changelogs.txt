@@ -364,3 +364,35 @@
  zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
  zg gwt    fix: project add notices
  zg-xym    build results on build 47
+----------------------------------
+
+2017-12-14 12:38:43,   build 49
+
+ zg-xym    build results on build 48
+----------------------------------
+
+2017-12-14 13:09:16,   build 50
+
+ zg-xym    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
+ zg-xym    build results on build 49
+----------------------------------
+
+2017-12-14 13:54:58,   build 51
+
+ zg-xym    build results on build 50
+----------------------------------
+
+2017-12-14 16:28:43,   build 52
+
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    fix: 修改members为undefined bug
+ 王亚星    feat: 主管理员不显示退出团队按钮
+ zg-xym    build results on build 51
+----------------------------------
+
+2017-12-14 17:22:07,   build 53
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    fix：从某个项目切换到另一个项目的时候，应该默认进入该项目的任务流页面
+ zg xy    fix:项目上传，展示是从上往下
+ zg-xym    build results on build 52

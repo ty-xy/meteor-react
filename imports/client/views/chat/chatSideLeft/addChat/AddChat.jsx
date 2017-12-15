@@ -147,8 +147,8 @@ export default withTracker(() => {
         { _id: companyId },
         { fields: fields.searchCompany },
     ));
-    if (companyList[0]) {
-        const teams = companyList.map((company) => {
+    if (companyList[0] !== undefined) {
+        const teams = companyList.filter(company => !(!company)).map((company) => {
             const members = company.members || [];
             const name = company.name;
             const memberIds = [];

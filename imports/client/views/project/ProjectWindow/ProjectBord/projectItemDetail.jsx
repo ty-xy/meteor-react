@@ -33,7 +33,10 @@ class ProjectItemDetail extends Component {
         taskchild: PropTypes.arrayOf(PropTypes.object),
         iddd: PropTypes.array,
         cId: PropTypes.array,
-        files: PropTypes.string,
+        files: PropTypes.oneOfType([
+            PropTypes.arrayOf(PropTypes.object),
+            PropTypes.string,
+        ]),
         projectId: PropTypes.string,
         memberId: PropTypes.string,
     }
@@ -878,18 +881,20 @@ class ProjectItemDetail extends Component {
                             <div>{
                                 this.props.files.map(value => (
                                     <Row key={value._id}>
-                                        <Col style={{ display: 'flex' }} span={14} >
+                                        <Col style={{ display: 'flex' }} span={13} >
                                             <Col span={2}><Icon icon="icon-wenjiangeshi-jpg" /></Col>
-                                            <Col span={12} style={{ marginLeft: '10px' }}>
+                                            <Col span={11} style={{ marginLeft: '10px' }}>
                                                 <p >
                                                     {value.name.slice(0, 8)}
                                                 </p>
                                             </Col>
-                                            <Col span={7} style={{ textAlign: 'center' }}><p>{value.size}</p></Col>
+                                            <Col span={5} style={{ textAlign: 'center' }}><p>{value.size}</p></Col>
                                         </Col>
-                                        <Col span={3} >下载</Col>
+                                        <Col span={3} >
+                                            <a href={value.url} download={value.name} style={{ color: '#6f6f6f' }}>下载</a>
+                                        </Col>
                                         <Col span={3} onClick={() => this.handleRemoveFile(value._id)}>删除</Col>
-                                        <Col span={4}>10月20</Col>
+                                        <Col span={5}>{format('MM月dd日', value.createdAt)}</Col>
                                     </Row>))}</div> : null}
                     </div>
                     <ProjectActive {...this.props} />
