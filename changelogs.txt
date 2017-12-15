@@ -396,3 +396,15 @@
  zg xy    fix：从某个项目切换到另一个项目的时候，应该默认进入该项目的任务流页面
  zg xy    fix:项目上传，展示是从上往下
  zg-xym    build results on build 52
+----------------------------------
+
+2017-12-15 11:21:43,   build 54
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    fix: 日志默认选择人bug， 复制邀请链接
+ zg xy    fix:任务流导航栏的样式
+ zg xy    feat:修改头像的样式
+ zg xy    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
+ zg xy    fix：头像上传图片的样式
+ zg-xym    build results on build 53
