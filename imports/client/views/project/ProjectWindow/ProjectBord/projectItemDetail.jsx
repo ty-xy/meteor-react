@@ -18,6 +18,7 @@ import ProjectCopy from './ProjectCopy';
 import TaskBoard from '../../../../../../imports/schema/taskBoard';
 import ProjectTaskMember from './projectTaskMember';
 import ProjectActive from './projectActive';
+import FileIcon from '../../../../components/FileIcon';
 
 @pureRender
 class ProjectItemDetail extends Component {
@@ -882,7 +883,9 @@ class ProjectItemDetail extends Component {
                                 this.props.files.map(value => (
                                     <Row key={value._id}>
                                         <Col style={{ display: 'flex' }} span={13} >
-                                            <Col span={2}><Icon icon="icon-wenjiangeshi-jpg" /></Col>
+                                            <Col span={2}>
+                                                <FileIcon type={value.type} />
+                                            </Col>
                                             <Col span={11} style={{ marginLeft: '10px' }}>
                                                 <p >
                                                     {value.name.slice(0, 8)}
