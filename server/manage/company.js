@@ -264,7 +264,7 @@ Meteor.methods({
     },
     // 公司添加人员
     async addMember({ companyId = UserUtil.getCurrentBackendCompany(), userId, dep = '', departmentGroupId, pos, companyGroupId }) {
-        console.log('addMember', companyId, dep, userId, departmentGroupId, pos, companyGroupId);
+        // console.log('addMember', companyId, dep, userId, departmentGroupId, pos, companyGroupId);
         const member = {
             userId,
             dep,
@@ -272,7 +272,7 @@ Meteor.methods({
         };
 
         const company = Company.findOne({ _id: companyId }) || {};
-        const { members = [], deps } = company;
+        const { members = [], deps = [] } = company;
         const res = {};
 
         (members || []).forEach((item) => {
@@ -378,14 +378,29 @@ Meteor.methods({
                 },
             );
             // 更新人员所在公司
-            Meteor.users.update(
-                { _id: userId },
-                {
-                    $push: {
-                        'profile.company': companyId,
+            const userInfo = Meteor.users.findOne({ _id: userId });
+            if (userInfo && userInfo.profile && !userInfo.profile.mainCompany) {
+                Meteor.users.update(
+                    { _id: userId },
+                    {
+                        $push: {
+                            'profile.company': companyId,
+                        },
+                        $set: {
+                            'profile.mainCompany': companyId,
+                        },
                     },
-                },
-            );
+                );
+            } else {
+                Meteor.users.update(
+                    { _id: userId },
+                    {
+                        $push: {
+                            'profile.company': companyId,
+                        },
+                    },
+                );
+            }
         }
 
         return Company.findOne({ _id: companyId }) ? Company.findOne({ _id: companyId }).name : '邀请出错';
@@ -407,7 +422,6 @@ Meteor.methods({
         );
         // 判断是否选择部门
         if (dep) {
-            console.log('dep', dep);
             await Company.update(
                 { _id: companyId, 'members.userId': userId },
                 {

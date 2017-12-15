@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Col, Row, Button, Input, Icon } from 'antd';
+import { Col, Row, Button, Input, Icon, message } from 'antd';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -83,6 +83,8 @@ class Invite extends PureComponent {
     copyText = () => {
         this.yourForm.focus();
         this.yourForm.select();
+        document.execCommand('Copy');
+        message.success('已复制');
     }
     // urls
     urls = () => {

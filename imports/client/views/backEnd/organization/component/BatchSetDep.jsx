@@ -40,7 +40,7 @@ class BatchSetDep extends PureComponent {
                 animation="vertical"
                 mask={modelMember}
                 footer={<div />}
-                height="210px"
+                height="175px"
             >
                 <Form onSubmit={this.handleCommentbtn}>
                     <Select required userId keyword="dep" label="部门" placeholder="请选择部门" {...this.props} data={data} />

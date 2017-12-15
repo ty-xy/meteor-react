@@ -241,7 +241,7 @@ class Header extends Component {
                             <li
                                 className={classnames('header-tab chat', { active: this.context.location.pathname === '/chat' })}
                                 onClick={this.clickTab.bind(this, '/chat')}
-                            >消息</li>
+                            ><i className="iconfont icon-mimiliwu" />消息</li>
                             <li
                                 className={classnames('header-tab chat', { active: this.context.location.pathname === '/project' })}
                                 onClick={this.clickTab.bind(this, '/project')}

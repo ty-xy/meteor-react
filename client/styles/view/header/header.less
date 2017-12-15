@@ -203,14 +203,27 @@
 // 全局按钮通知组件
 .e-global-notification{
     background: #fff;
-    padding: 15px 0;
+    padding: 0 0 15px 0;
     height: 94%;
     overflow: auto;
     .list{
         position: relative;
         border-bottom: 1px solid #eee;
-        padding: 0 30px 5px;
-        margin-bottom: 10px;
+        padding: 10px 30px 5px;
+        // margin-bottom: 10px;
+        &:before{
+            display: block;
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: -15px;
+            width: 0px;
+            height: 0px;
+            border-width: 15px;
+            border-color:transparent transparent transparent #29B6F6 ;
+            transform: rotateZ(-135deg);
+            border-style: solid;
+        }
         >.title{
             span{
                 float: right;
