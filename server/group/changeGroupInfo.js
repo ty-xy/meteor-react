@@ -40,25 +40,51 @@ Meteor.methods({
                 },
             )));
     },
-    // 消息免打扰
-    changeGroupDisturb(groupId, isDisturb) {
+    // 设置消息免打扰
+    setGroupDisturb(groupId) {
         Group.update(
             { _id: groupId },
             {
-                $set: {
-                    isDisturb,
+                $push: {
+                    isDisturb: Meteor.userId(),
                 },
             },
         );
     },
-    // 群聊置顶
-    changeGroupStickTop(groupId, stickTop) {
+    // 取消消息免打扰
+    cancelGroupDisturb(groupId) {
         Group.update(
             { _id: groupId },
             {
-                $set: {
-                    'stickTop.value': stickTop,
-                    'stickTop.createdAt': new Date(),
+                $pull: {
+                    isDisturb: Meteor.userId(),
+                },
+            },
+        );
+    },
+    // 设置群聊置顶
+    setGroupStickTop(groupId) {
+        Group.update(
+            { _id: groupId },
+            {
+                $push: {
+                    stickTop: {
+                        userId: Meteor.userId(),
+                        createdAt: new Date(),
+                    },
+                },
+            },
+        );
+    },
+    // 删除群聊置顶
+    cancelGroupStickTop(groupId) {
+        Group.update(
+            { _id: groupId },
+            {
+                $pull: {
+                    stickTop: {
+                        userId: Meteor.userId(),
+                    },
                 },
             },
         );

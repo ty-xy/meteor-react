@@ -55,7 +55,12 @@ class GroupList extends Component {
         return (
             <div className="ejianlian-chat-group-list">
                 <div className="chat-friend-pannel">
-                    <div className="friend-pannel-type" />
+                    {
+                        this.props.teamGroups[0] ?
+                            <div className="friend-pannel-type" />
+                            :
+                            null
+                    }
                     <div className="team-organization">
                         <Menu
                             onClick={this.handleClick}
@@ -109,7 +114,7 @@ class GroupList extends Component {
                                             <p>
                                                 <Avatar name={item.name} avatar={item.avatar ? item.avatar : avatarUrl.avatarGroup} />
                                             </p>
-                                            <p className={this.props.selfGroups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}({item.members.length})</p>
+                                            <p className={this.props.selfGroups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}</p>
                                         </div>
                                         :
                                         null

@@ -74,7 +74,7 @@ class ChatWindow extends Component {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage && this.props.count === 1) {
                 // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
-                $lastMessage.scrollIntoView(true);
+                $lastMessage.scrollIntoView({ block: 'end', behavior: 'smooth' });
             }
         }
         if (this.props.to) {
@@ -378,8 +378,8 @@ class ChatWindow extends Component {
         const admin = this.props.chatGroup ? this.props.chatGroup.admin : '';
         const notice = this.props.chatGroup ? this.props.chatGroup.notice : '';
         const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
-        const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : false;
-        const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop : {};
+        const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : [];
+        const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
         return this.props.to ?

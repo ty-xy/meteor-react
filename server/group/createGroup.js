@@ -28,11 +28,8 @@ Meteor.methods({
             admin,
             notice: '',
             noticeTime: new Date(),
-            isDisturb: false,
-            stickTop: {
-                value: false,
-                createdAt: new Date(),
-            },
+            isDisturb: [],
+            stickTop: [],
             type,
             companyId,
             superiorId,
