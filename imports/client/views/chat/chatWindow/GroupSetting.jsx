@@ -44,7 +44,7 @@ class GroupSetting extends Component {
         };
     }
     setNotDisturb = (checked) => {
-        // console.log('设置了消息免打扰', checked);
+        console.log('设置了消息免打扰', checked, this.props.groupId);
         Meteor.call('changeGroupDisturb', this.props.groupId, checked, (err) => {
             feedback.dealError(err);
         });

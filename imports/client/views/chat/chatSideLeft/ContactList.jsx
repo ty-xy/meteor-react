@@ -183,7 +183,7 @@ class ContactList extends Component {
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
 
         const sortedChatList = [...newStickTopChat, ...newDefaultTopChat];
-
+        console.log('renderChatListItem', this.props, sortedChatList);
         return (
             <div className="ejianlian-chat-message-list">
                 {
