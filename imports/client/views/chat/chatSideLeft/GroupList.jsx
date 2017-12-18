@@ -45,8 +45,7 @@ class GroupList extends Component {
 
     renderSubMenu = (departments) => {
         if (departments && departments.length) {
-            return departments.map(department =>
-                department && <Menu.Item key={department._id}>{department.name}<span className="department-mask">部门</span></Menu.Item>,
+            return departments.map(department => (department.members.indexOf(Meteor.userId())) > -1 && <Menu.Item key={department._id}>{department.name}<span className="department-mask">部门</span></Menu.Item>,
             );
         }
     }
