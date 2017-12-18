@@ -58,7 +58,7 @@ const CardAudit = ({ handlerAudit, type, reason, daynum, createdAt, status, user
             }
 
         </div>
-        <div className="e-mg-log-card-footer">
+        <div className="e-mg-log-card-footer clearfix">
             <Col span={12}>{format('MM月dd日', createdAt)}</Col>
             <Col span={12} className="right">
                 <a onClick={e => handlerAudit(e, _id)} href="">

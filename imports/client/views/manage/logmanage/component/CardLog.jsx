@@ -13,7 +13,7 @@ const colors = [
 
 const CardLog = ({ edit, delLog, editLog, finish, plan, type, index, nickname, help, _id, createdAt = new Date(), allUsers }) => (
     <Col className="e-mg-log-card">
-        <div className="e-mg-log-card-header">
+        <div className="e-mg-log-card-header clearfix">
             <Col span={16}>
                 {userIdToInfo.getAvatar(allUsers, Meteor.userId()) ?
                     <img src={userIdToInfo.getAvatar(allUsers, Meteor.userId()) || '无头像'} width="36" />
@@ -28,7 +28,7 @@ const CardLog = ({ edit, delLog, editLog, finish, plan, type, index, nickname, h
             <p><span>未完成工作：</span>{plan ? plan.replace(/<br\/>/g, '') : '暂无输入'}</p>
             <p><span>需协调工作：</span>{help ? help.replace(/<br\/>/g, '') : '暂无输入'}</p>
         </div>
-        <div className="e-mg-log-card-footer">
+        <div className="e-mg-log-card-footer clearfix">
             <Col span={12}>{format('yyyy-MM-dd', createdAt)}</Col>
             {
                 edit ? (<Col span={12} className="right">
