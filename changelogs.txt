@@ -434,3 +434,12 @@
  王亚星    style: 删除多余的log
  王亚星    fix: 修改样式上的小bug
  zg-xym    build results on build 56
+----------------------------------
+
+2017-12-18 13:38:37,   build 58
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    fix: 聊天石墨bug
+ zg gwt    style: 修改style
+ zg-xym    build results on build 57
