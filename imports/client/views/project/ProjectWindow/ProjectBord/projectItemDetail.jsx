@@ -749,7 +749,7 @@ class ProjectItemDetail extends Component {
                                 <div className="ready-task">
                                     {this.props.tasks[0] && this.props.tasks[0].describe ?
                                         <div
-                                            type="button"
+                                            /* ／*type="button"*／ */
                                             dangerouslySetInnerHTML={{ __html: this.props.tasks[0].describe }}
                                             className="input-decription"
                                             onClick={this.handleChangeS}

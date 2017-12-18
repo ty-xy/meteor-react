@@ -41,6 +41,7 @@ class ProjectList extends Component {
                     <ul >
                         {
                             this.props.project.map((value) => {
+                                console.log(value.headPortrait);
                                 if (value.headPortrait && value.headPortrait.indexOf('icon') === -1 && value.pigeonhole === 1) {
                                     return (
                                         <Link to={`/project/task/${value.uprojectId}`} key={value._id}>
