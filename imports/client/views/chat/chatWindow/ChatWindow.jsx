@@ -74,7 +74,7 @@ class ChatWindow extends Component {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage && this.props.count === 1) {
                 // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
-                $lastMessage.scrollIntoView(true);
+                $lastMessage.scrollIntoView({ block: 'end', behavior: 'smooth' });
             }
         }
         if (this.props.to) {
