@@ -443,3 +443,23 @@
  zg gwt    fix: 聊天石墨bug
  zg gwt    style: 修改style
  zg-xym    build results on build 57
+----------------------------------
+
+2017-12-19 10:04:22,   build 59
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    feat:进度条显示的基本功能
+ zg xym    Merge branch 'wyx-chat' into 'master'
+ 王亚星    fix: 修改团队logo无法修改bug
+ zg gwt    fix: bug  merge
+ 王亚星    refactor: 删除多余提示音资源 压缩图片
+ zg xy    fix:修改聊天的样式，修改添加项目头像的功能
+ zg gwt    merge
+ zg-xym    build results on build 58
+----------------------------------
+
+2017-12-19 18:20:31,   build 60
+
+ zg-xym    build results on build 59

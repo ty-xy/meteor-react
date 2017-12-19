@@ -113,7 +113,7 @@ class ContactList extends Component {
     renderGroup = (group, lastMessage, time, type, i, unreadMessage) => {
         const isMyDisturb = group.isDisturb && group.isDisturb.includes(Meteor.userId());
         const selfStickTop = group.stickTop.find(x => x.userId && x.userId === Meteor.userId());
-        // console.log(9090, selfStickTop);
+        // console.log(9090, isMyDisturb, unreadMessage);
         return (<div
             onClick={() => {
                 this.props.handleToggle(group._id);
