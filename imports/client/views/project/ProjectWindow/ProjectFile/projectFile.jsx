@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Checkbox } from 'antd';
+import { Row, Col, Input, Checkbox, Progress } from 'antd';
 import pureRender from 'pure-render-decorator';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
@@ -29,6 +29,7 @@ class projectTask extends Component {
             checkAll: false,
             checkedList: false,
             length: '',
+            percent: 0,
         };
         this.checkList = [];
     }
@@ -72,13 +73,33 @@ class projectTask extends Component {
         if (!file) {
             return;
         }
+        const me = this;
         const reader = new FileReader();
         const name = file.name;
         const fileType = file.type;
+        me.loaded = 0;
+        const handlePercent = this.handlePercent;
+        // 每次读取1M
+        // me.step = 1024 * 1024;
+        // me.times = 0;
+        me.progress = document.getElementById('Progress');
         const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
         const size = file.size;
         const createProjectFile = this.createProjectFile;
-
+        reader.onprogress = function (e) {
+            console.log(e.loaded);
+            me.loaded += e.loaded;
+            //  console.log(e.loaded, me.loaded, file.size);
+            // 更新进度条
+            me.progress = (me.loaded / file.size) * 100;
+            // console.log((me.loaded / file.size) * 100);
+            handlePercent(me.progress);
+        };
+        // reader.onload = function () {
+        //     me.setState({
+        //         percent: 0,
+        //     });
+        // };
         reader.onloadend = function () {
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 feedback.dealError(err);
@@ -88,6 +109,8 @@ class projectTask extends Component {
             });
         };
         reader.readAsDataURL(file);
+
+        console.log(this.state.percent);
     }
     handleRemoveFile=(id) => {
         Meteor.call(
@@ -95,6 +118,11 @@ class projectTask extends Component {
                 console.log(err);
             },
         );
+    }
+    handlePercent=(percent) => {
+        this.setState({
+            percent,
+        });
     }
     handleRList = (id) => {
         feedback.dealDelete('提示', '确定要删除该文件吗?', () => this.handleRemoveFile(id));
@@ -251,6 +279,15 @@ class projectTask extends Component {
                            ;
                        },
                        )}
+                       <li>
+                           <Progress
+                               value="0"
+                               max="100"
+                               id="progress"
+                               style={{ height: '20px', width: '100%' }}
+                               percent={this.state.percent}
+                           />
+                       </li>
                    </ul>
                </div>
            </div>

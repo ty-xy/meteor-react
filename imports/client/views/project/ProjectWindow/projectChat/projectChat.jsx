@@ -21,11 +21,23 @@ class projectChat extends Component {
     static propTypes = {
         messages: PropTypes.arrayOf(PropTypes.object),
         pId: PropTypes.string,
-
     }
-    componentDidUpdate() {
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            count: 1 };
+    }
+
+    componentDidUpdate(prevProps) {
         if (this.props.pId) {
             this.$message.addEventListener('keydown', this.handleSendMessage);
+        }
+        if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.children.length > 0) {
+            const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
+            if ($lastMessage && this.state.count) {
+                // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
+                $lastMessage.scrollIntoView(true);
+            }
         }
     }
     handleChatUser = (fromId, toId, groupId) => {
@@ -48,6 +60,9 @@ class projectChat extends Component {
         }
     }
     sendMessage = (content, type) => {
+        if (!content) {
+            return feedback.dealWarning('请输入要发送的内容');
+        }
         Meteor.call(
             'insertMessage',
             {
@@ -190,8 +205,8 @@ export default withTracker(({ to, userId, pId }) => {
             }
         });
     }
-    console.log(pId);
-    const messages = Message.find({ to: pId }).fetch();
+    // const messages = Message.find({ to: pId }).fetch();
+    const messages = Message.find({ to: pId }, { sort: { createdAt: -1 }, limit: 30 * 1 }).fetch().reverse();
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.from = PopulateUtil.message(d.from);
