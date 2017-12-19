@@ -11,8 +11,9 @@ import uuid from 'uuid';
 import MyIcon from '../../../components/Icon';
 import Company from '../../../../schema/company';
 import UserUtil from '../../../../util/user';
-import ImgUp from '../ProjectWindow/ProjectBord/component/imgUp';
+// import ImgUp from '../ProjectWindow/ProjectBord/component/imgUp';
 import Avatar from '../../../components/Avatar';
+import feedback from '../../../../util/feedback';
 import AvatarSelf from '../../../components/AvatarSelf';
 import SelectMembers from '../../../features/SelectMembers';
 // import ChoosePeopleModel from '../../../components/ChoosePeopleModel';
@@ -47,6 +48,7 @@ class ProjectAdd extends Component {
             showName: false,
             showIntro: false,
             showSelect: false,
+            teamLogo: '',
         };
     }
     componentWillMount() {
@@ -150,7 +152,7 @@ class ProjectAdd extends Component {
                 name: this.state.temperature,
                 intro: this.state.intro,
                 affiliation: this.state.affiliation,
-                headPortrait: this.state.showImage ? this.state.icon[j] : this.state.img[0],
+                headPortrait: this.state.teamLogo.length === 0 ? this.state.icon[j] : this.state.teamLogo.slice(28),
                 members: this.state.selectMembersId,
                 uprojectId: this.state.uuids,
                 creater: Meteor.userId(),
@@ -161,7 +163,7 @@ class ProjectAdd extends Component {
                     return false;
                 }
                 const pathname = `/project/task/${_this.state.uuids}`;
-                _this.props.history.push({ pathname });
+                this.props.history.push({ pathname });
                 _this.setState({
                     temperature: '',
                     intro: '',
@@ -170,6 +172,11 @@ class ProjectAdd extends Component {
                 });
             },
         );
+    }
+    changeAvatar = (avatarUrl) => {
+        this.setState({
+            teamLogo: avatarUrl,
+        });
     }
     showModal = (e, keyword) => {
         e.preventDefault();
@@ -197,6 +204,25 @@ class ProjectAdd extends Component {
         const peoI = resp.filter(value => (value !== id));
         this.setState({ selectMembers: peos, selectMembersId: peoI });
     }
+    handleUploadImg = (e) => {
+        console.log(e);
+        const image = e.target.files[0];
+        if (!image) {
+            return;
+        }
+        const reader = new FileReader();
+        const changeAvatar = this.changeAvatar;
+        reader.onloadend = function () {
+            Meteor.call('uploadImg', this.result, (err, result) => {
+                if (err) {
+                    return feedback.dealError(err);
+                }
+                changeAvatar(result);
+                return feedback.successToast('修改头像成功');
+            });
+        };
+        reader.readAsDataURL(image);
+    }
     // 图片id返回
     changeUpdate = (name, imgs) => {
         // const img = [];
@@ -218,8 +244,6 @@ class ProjectAdd extends Component {
         const divStyle = {
             background: this.state.color[j],
         };
-        // console.log(this.state.selectMembersId);
-        //  console.log(this.state.selectMembers);
         return (
             <div className="ejianlian-project-add" >
                 <div id="title-f">
@@ -229,11 +253,17 @@ class ProjectAdd extends Component {
                     <div className="common-type person-type">
                         <span>项目头像：</span >
                         <Tooltip placement="right" title={text}>
-                            {this.state.showImage ?
+                            {this.state.teamLogo.length === 0 ?
                                 <p className="icon-person" style={divStyle} onClick={this.changeUpdateTitle}>
-                                    <MyIcon icon={this.state.icon[j]} size={30} iconColor="#fff" />
-                                </p> :
-                                <ImgUp keyword="img" className="img-title" fileList={[]} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload}{...this.props} />}
+                                    <MyIcon
+                                        icon={this.state.icon[j]}
+                                        size={30}
+                                        iconColor="#fff"
+                                    />
+                                    <input type="file" id="avatar" onChange={this.handleUploadImg} />
+                                </p>
+                                : <Avatar avatar={this.state.teamLogo} name="团队" key={this.state.teamLogo} />
+                            }
                         </Tooltip>
                     </div>
                     <div className="common-type ">
@@ -298,7 +328,11 @@ class ProjectAdd extends Component {
                                 {
                                     this.state.selectMembers && this.state.selectMembers.map(user => (
                                         user ?
-                                            <div onClick={e => this.handlePeopleChange(e, user._id)} style={{ cursor: 'pointer' }}>
+                                            <div
+                                                onClick={e => this.handlePeopleChange(e, user._id)}
+                                                key={user._id}
+                                                style={{ cursor: 'pointer' }}
+                                            >
                                                 <Avatar
                                                     style={{ marginRight: '5px' }}
                                                     key={user._id}
@@ -314,10 +348,10 @@ class ProjectAdd extends Component {
                                 }
                                 <MyIcon
                                     icon="icon-tianjia icon icon-add-people-list"
-                                    size={46}
+                                    size={42}
                                     iconColor="#999"
                                     onClick={this.handleAddMembers}
-                                    style={{ height: '46px', lineHeight: '46px' }}
+                                    style={{ height: '42px', lineHeight: '42px' }}
                                 />
                             </div>
                             {

@@ -21,7 +21,6 @@ Meteor.methods({
             friends,
             groups,
         };
-        // console.log(searchResult);
         return searchResult;
     },
 });

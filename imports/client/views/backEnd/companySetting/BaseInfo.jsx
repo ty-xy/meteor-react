@@ -14,8 +14,10 @@ class BaseInfo extends Component {
         currentCompanyId: PropTypes.string,
     }
     handleUpdateTeam = (formValues) => {
-        Meteor.call('changeCompanyInfo', formValues, (error, result) => {
-            feedback.dealError(error);
+        Meteor.call('changeCompanyInfo', this.props.currentCompanyId, formValues, (error, result) => {
+            if (error) {
+                return feedback.dealError(error);
+            }
             if (result) {
                 feedback.dealSuccess('修改成功');
             }
