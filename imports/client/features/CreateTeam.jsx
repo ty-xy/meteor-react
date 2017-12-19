@@ -106,7 +106,6 @@ class CreateTeam extends Component {
             <div>
                 <Form layout={formLayout} onSubmit={this.handleSubmit}>
                     <FormItem>
-
                         <div className="upload-team-avatar">
                             <Avatar avatar={logo} name="团队" />
                             <p className="edit-avatar">修改头像

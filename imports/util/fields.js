@@ -41,6 +41,11 @@ export default {
         from: 1,
         url: 1,
     },
+    searchTask: {
+        name: 1,
+        createTime: 1,
+        memberId: 1,
+    },
     createdcompany: {
         name: 1,
         logo: 1,

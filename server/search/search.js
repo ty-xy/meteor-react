@@ -19,15 +19,14 @@ Meteor.methods({
             { fields: fields.searchAllGroup },
         ).fetch();
         const tasks = Task.find(
-            { name: { $regex: `${pattern}` }, members: Meteor.userId() },
-            { fields: fields.searchAllFile },
+            { name: { $regex: `${pattern}` }, taskMembers: Meteor.userId() },
+            { fields: fields.searchTask },
         ).fetch();
         const searchResult = {
             friends,
             groups,
             tasks,
         };
-        // console.log(searchResult);
         return searchResult;
     },
 });
