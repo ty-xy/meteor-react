@@ -40,7 +40,7 @@ class FriendsList extends Component {
     render() {
         return (
             <div className="ejianlian-chat-friend-list">
-                <div className="chat-friend-pannel" onClick={this.props.handleNewFriend}>
+                <div className="chat-friend-pannel" onClick={() => this.props.handleNewFriend('newFriend')}>
                     <div className="friend-pannel-type" />
                     <div className="new-friend-pannel">
                         <p className="new-friend">

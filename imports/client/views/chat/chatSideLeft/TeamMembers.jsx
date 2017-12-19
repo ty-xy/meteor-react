@@ -35,11 +35,11 @@ class TeamMembers extends Component {
             chatFriendId: '',
             columns: [{
                 title: '',
-                dataIndex: 'profile',
-                render: profile => (
-                    <div className="team-memebers-info" onClick={() => this.showFriendInfo(profile._id)}>
-                        <Avatar name={profile.name} avatarColor={profile.avatarColor} avatar={profile.avatar} />
-                        <p>{profile.name}</p>
+                dataIndex: '',
+                render: row => (
+                    <div className="team-memebers-info" onClick={() => this.showFriendInfo(row.userId)}>
+                        <Avatar name={row.profile.name} avatarColor={row.profile.avatarColor} avatar={row.profile.avatar} />
+                        <p>{row.profile.name}</p>
                     </div>),
             }],
         };

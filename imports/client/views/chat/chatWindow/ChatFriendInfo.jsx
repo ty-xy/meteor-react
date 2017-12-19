@@ -98,6 +98,7 @@ class ChatFriendInfo extends Component {
         const divStyle = {
             backgroundImage: `url(${bgUrl})`,
         };
+        console.log('chatINfo', this.props);
         return (
             <div className="container-wrap friend-data-block">
                 <div className="opacity" onClick={this.props.handleFriendInfo} />

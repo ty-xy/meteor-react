@@ -27,15 +27,21 @@ Group.schema = new SimpleSchema({
         type: Date,
     },
     isDisturb: {
-        type: Boolean,
+        type: [String],
+        regEx: SimpleSchema.RegEx.Id,
     },
     stickTop: {
-        type: Object,
+        type: [Object],
+        optional: true,
     },
-    'stickTop.value': {
+    'stickTop.$.userId': {
+        type: String,
+        regEx: SimpleSchema.RegEx.Id,
+    },
+    'stickTop.$.value': {
         type: Boolean,
     },
-    'stickTop.createdAt': {
+    'stickTop.$.createdAt': {
         type: Date,
     },
     type: {

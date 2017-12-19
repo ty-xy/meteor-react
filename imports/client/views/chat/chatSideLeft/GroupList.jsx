@@ -45,8 +45,7 @@ class GroupList extends Component {
 
     renderSubMenu = (departments) => {
         if (departments && departments.length) {
-            return departments.map(department =>
-                department && <Menu.Item key={department._id}>{department.name}<span className="department-mask">部门</span></Menu.Item>,
+            return departments.map(department => (department.members.indexOf(Meteor.userId())) > -1 && <Menu.Item key={department._id}>{department.name}<span className="department-mask">部门</span></Menu.Item>,
             );
         }
     }
@@ -56,7 +55,12 @@ class GroupList extends Component {
         return (
             <div className="ejianlian-chat-group-list">
                 <div className="chat-friend-pannel">
-                    <div className="friend-pannel-type" />
+                    {
+                        this.props.teamGroups[0] ?
+                            <div className="friend-pannel-type" />
+                            :
+                            null
+                    }
                     <div className="team-organization">
                         <Menu
                             onClick={this.handleClick}
@@ -110,7 +114,7 @@ class GroupList extends Component {
                                             <p>
                                                 <Avatar name={item.name} avatar={item.avatar ? item.avatar : avatarUrl.avatarGroup} />
                                             </p>
-                                            <p className={this.props.selfGroups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}({item.members.length})</p>
+                                            <p className={this.props.selfGroups.length - 1 !== index ? 'friend-name' : 'friend-name last-type-name'}>{item.name}</p>
                                         </div>
                                         :
                                         null
