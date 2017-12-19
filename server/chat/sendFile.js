@@ -8,6 +8,7 @@ import assert from '../../imports/util/assert';
 
 Meteor.methods({
     insertFile(name, type, size, fileBase64) {
+        // console.log(fileBase64);
         assert(size < 100 * 1024 * 1024, 400, '只能发送小于100M的文件');
         let unit = 'B';
         if (size > 1024) {
@@ -28,10 +29,11 @@ Meteor.methods({
                 name,
                 type,
                 size: fileSize,
-                url: fileBase64,
+                url: '',
             };
             Files.schema.validate(newFile);
             const fileId = Files.insert(newFile);
+            console.log(fileId);
             resolve(fileId);
             qiniu.uploadBytes(`file_${Date.now()}_${name}`, imageBinary)
                 .then(Meteor.bindEnvironment((imageKey) => {
