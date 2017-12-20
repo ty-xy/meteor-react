@@ -61,4 +61,18 @@ Meteor.methods({
                 );
         });
     },
+    clientInsertFile(name, type, size, url) {
+        console.log('clientInsertFile', name, type, size, url);
+        const newFile = {
+            createdAt: new Date(),
+            from: Meteor.userId(),
+            name,
+            type,
+            size,
+            url,
+        };
+        Files.schema.validate(newFile);
+        const fileId = Files.insert(newFile);
+        return fileId;
+    },
 });
