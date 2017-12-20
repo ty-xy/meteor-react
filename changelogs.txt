@@ -458,3 +458,14 @@
  zg xy    fix:修改聊天的样式，修改添加项目头像的功能
  zg gwt    merge
  zg-xym    build results on build 58
+----------------------------------
+
+2017-12-19 18:20:31,   build 60
+
+ zg-xym    build results on build 59
+----------------------------------
+
+2017-12-19 19:55:03,   build 61
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg-xym    build results on build 60
