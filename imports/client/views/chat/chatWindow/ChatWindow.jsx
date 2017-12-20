@@ -28,7 +28,7 @@ import EmptyChat from '../../../components/EmptyChat';
 
 // require('qiniu-js/src/plupload/moxie');
 // require('qiniu-js/src/plupload/plupload.dev');
-require('qiniu-js/dist/qiniu.min');
+// require('qiniu-js/dist/qiniu.min');
 
 
 // require('qiniu-js');
@@ -220,25 +220,25 @@ class ChatWindow extends Component {
         if (!file) {
             return;
         }
-        const name = file.name;
-        const reader = new FileReader();
+        // const name = file.name;
+        // const reader = new FileReader();
         const fileType = file.type;
         const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
         const size = file.size;
         const sendMessage = this.sendMessage;
         // const _this = this;
-        reader.onloadend = function () {
-            Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
-                if (err) {
-                    return feedback.dealError(err);
-                }
-                if (res) {
-                    sendMessage(res, 'file');
-                }
-            });
-        };
-        reader.readAsDataURL(file);
-    }
+        Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
+            if (err) {
+                return feedback.dealError(err);
+            }
+            if (res) {
+                sendMessage(res, 'file');
+            }
+        });
+    };
+    // reader.readAsDataURL(file);
+    //     })
+    // }
     // 发起视频
     sendVideo = () => {
         this.setState({

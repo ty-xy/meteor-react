@@ -90,3 +90,4 @@ ecosystem.json
 pm2.json
 settings.json
 package-lock.json
+public/plupload.min.js
