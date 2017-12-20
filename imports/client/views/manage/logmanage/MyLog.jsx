@@ -112,7 +112,7 @@ class MyLog extends PureComponent {
             <Row gutter={25} className="e-mg-log-filter" type="flex" justify="start">
                 <Col span={24} className="margin-bottom-20">
                     <Form className="margin-top-20 border-bottom-eee clearfix">
-                        <Col span={7}><Select keyword="type" label="查看模板" onChange={this.filterChange} placeholder="请选择审批类型" width="150" {...this.props} data={TYPE} /></Col>
+                        <Col span={7}><Select keyword="type" label="查看类型" onChange={this.filterChange} placeholder="请选择审批类型" width="150" {...this.props} data={TYPE} /></Col>
                         <Col span={7}><DatePicker keyword="time" label="查询日期" onChange={this.filterChange} placeholder={['开始时间', '结束时间']} width="300" {...this.props} /></Col>
                     </Form>
                 </Col>

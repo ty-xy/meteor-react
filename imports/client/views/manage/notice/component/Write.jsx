@@ -191,8 +191,8 @@ class Write extends PureComponent {
         const day = date.getDate();
         const { getFieldsValue } = this.props.form;
         return (
-            <Form onSubmit={this.formSubmit} style={{ height: '100%', overflow: 'auto' }}>
-                <Col span={24} style={{ marginTop: '20px', marginBottom: '10px' }}>
+            <Form onSubmit={this.formSubmit} className="e-mg-notice-write-form">
+                <Col span={24}>
                     <ChoosePeopleModel
                         visible={visiblegroup}
                         cancel={this.handleCancel}
@@ -221,11 +221,11 @@ class Write extends PureComponent {
                     </ChoosePeopleModel>
                 </Col>
                 <InputType title="标题：" required requiredErr="请填写公告标题" keyword="title" editData={editData} {...this.props} />
-                <InputArea title="正文：" required requiredErr="请填写公告正文" className="margin-bottom-20" defaultValue={(content || '').replace(/<br\/>/g, '\r\n')} keyword="content" {...this.props} />
+                <InputArea title="正文：" required requiredErr="请填写公告正文" defaultValue={(content || '').replace(/<br\/>/g, '\r\n')} keyword="content" {...this.props} />
                 <ImgUpload title="添加图片：（支持.jpg, .jpeg, .bmp, .gif, .png类型文件， 5M以内）" keyword="img" fileList={img || []} changeUpdate={this.changeUpdate} removeUpload={this.removeUpload} {...this.props} />
                 <FileUpload title="添加附件：（支持.doc, .docx, .xls, .xlsx, .ppt, .pptx, .zip, .rar类型文件， 5M以内）" keyword="file" fileList={file || []} removeUpload={this.removeUpload} changeUpdate={this.changeUpdate} {...this.props} />
                 <MyRadio title="设为保密公告" subtitle="接收人只能查看，消息不可转发；公告详情页有接收人真实姓名水印，防止截图发送" keyword="isSecrecy" handleSwitch={this.handleSwitch} editData={editData} {...this.props} />
-                <Col span={24} className="margin-top-20">
+                <Col span={24} style={{ marginTop: '40px' }}>
                     <Button htmlType="submit" className="e-mg-button-primary margin-right-20">保存</Button>
                     <Button className="e-mg-button-default" onClick={() => this.handlePreviewCancel(true)}>预览</Button>
                 </Col>

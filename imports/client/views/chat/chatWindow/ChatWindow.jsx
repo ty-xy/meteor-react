@@ -7,7 +7,7 @@ import { Popover, Tooltip, Progress, Modal, Spin } from 'antd';
 import format from 'date-format';
 // import 'qiniu-js/src/plupload/plupload.dev';
 
-
+import userInfo from '../../../../util/user';
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
 import PopulateUtil from '../../../../util/populate';
@@ -234,6 +234,7 @@ class ChatWindow extends Component {
                         // 其中uptoken是直接提供上传凭证，uptoken_url是提供了获取上传凭证的地址，如果需要定制获取uptoken的过程则可以设置uptoken_func
                         uptoken: res.token, // uptoken是上传凭证，由其他程序生成
                         get_new_uptoken: false, // 设置上传文件的时候是否每次都重新获取新的uptoken
+                        multi_selection: false,
                         // downtoken_url: '/downtoken',
                         // Ajax请求downToken的Url，私有空间时使用，JS-SDK将向该地址POST文件的key和domain，服务端返回的JSON必须包含url字段，url值为该文件的下载地址
                         unique_names: false, // 默认false，key为文件名。若开启该选项，JS-SDK会为每个文件自动生成key（文件名）
@@ -257,9 +258,7 @@ class ChatWindow extends Component {
                                 console.log('filedAdd', file);
                                 reader.readAsDataURL(files);
                                 reader.onload = function () {
-                                    console.log('this.result', _this.imgPreview);
-                                    _this.imgPreview.setAttribute('src', this.result);
-                                    // _this.setState({ uploadLoadding: true });
+                                    _this.setState({ uploadLoadding: true });
                                 };
                                 // console.log('FilesAdded', file);
                                 // _this.setState({ uploadLoadding: true });
@@ -472,7 +471,7 @@ class ChatWindow extends Component {
         const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
-        // const { uploadLoadImg, uploadLoadding } = this.state;
+        const { uploadLoadImg, uploadLoadding } = this.state;
         return this.props.to ?
             <div className="ejianlian-chat-window">
                 {
@@ -560,9 +559,17 @@ class ChatWindow extends Component {
                         ))
                     }
                     {
-                        <div className="user-message-wrap">
-                            <img width="100" src="" ref={i => this.imgPreview = i} />
-                            <Progress percent={this.state.percent} className="img-progress" />
+                        uploadLoadding && <div className="self-message">
+                            <p className="user-avatar">
+                                <span className="avatar" style={{ backgroundColor: 'rgb(245, 91, 137)' }}>文涛</span>
+                            </p>
+                            <div className="user-message-wrap">
+                                <p className="user-nickname">{userInfo.getName()}</p>
+                                <div className="user-img">
+                                    <img src={uploadLoadImg} ref={i => this.imgPreview = i} />
+                                    <Progress percent={this.state.percent} className="img-progress" />
+                                </div>
+                            </div>
                         </div>
                     }
                 </div>

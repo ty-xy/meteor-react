@@ -102,7 +102,7 @@ class FileUpload extends (PureComponent || Component) {
             fileList: _fileList,
         };
         return (
-            <div className="clearfix margin-bottom-30 e-mg-fileUpload">
+            <div className="ant-col-24 e-mg-fileUpload" style={{ marginBottom: '24px' }}>
                 <p style={{ marginBottom: '10px' }}>{this.props.title}</p>
                 <Upload {...props}>
                     <Button>

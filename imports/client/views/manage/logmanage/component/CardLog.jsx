@@ -34,9 +34,9 @@ const CardLog = ({ edit, delLog, editLog, finish, plan, type, index, nickname, h
                 edit ? (<Col span={12} className="right">
                     <a href="" onClick={e => delLog(e, _id)}>删除</a>
                     <a href="" onClick={e => editLog(e, _id, type)} className="margin-left-10">修改</a>
-                    <Link className="margin-left-10" to={{ pathname: `/manage/logging/detail/${_id}` }}>查看详情</Link>
+                    <Link className="margin-left-10" to={{ pathname: `/manage/logging/detail/${_id}` }}>详情</Link>
                 </Col>)
-                    : (<Col span={12} className="right"><Link to={{ pathname: `/manage/logging/detail/${_id}` }}>查看详情</Link></Col>)
+                    : (<Col span={12} className="right"><Link to={{ pathname: `/manage/logging/detail/${_id}` }}>详情</Link></Col>)
             }
         </div>
     </Col>
