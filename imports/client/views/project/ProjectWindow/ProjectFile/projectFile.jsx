@@ -29,7 +29,8 @@ class projectTask extends Component {
             checkAll: false,
             checkedList: false,
             length: '',
-            percent: 0,
+            // percent: 0,
+            show: false,
         };
         this.checkList = [];
     }
@@ -88,28 +89,30 @@ class projectTask extends Component {
         const createProjectFile = this.createProjectFile;
         reader.onprogress = function (e) {
             console.log(e.loaded);
+            console.log(name);
             me.loaded += e.loaded;
-            //  console.log(e.loaded, me.loaded, file.size);
-            // 更新进度条
-            me.progress = (me.loaded / file.size) * 100;
-            // console.log((me.loaded / file.size) * 100);
+            me.progress = (e.loaded / e.total) * 100;
+            console.log((e.loaded / e.total) * 100);
+            console.log(me.progress);
             handlePercent(me.progress);
+            me.setState({
+                show: true,
+            });
         };
-        // reader.onload = function () {
-        //     me.setState({
-        //         percent: 0,
-        //     });
-        // };
         reader.onloadend = function () {
+            // console.log(this.result);
             Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 feedback.dealError(err);
                 if (res) {
                     createProjectFile(res);
+                    me.setState({
+                        show: false,
+                    });
                 }
             });
         };
         reader.readAsDataURL(file);
-
+        // reader.readAsBinaryString(file);
         console.log(this.state.percent);
     }
     handleRemoveFile=(id) => {
@@ -121,7 +124,7 @@ class projectTask extends Component {
     }
     handlePercent=(percent) => {
         this.setState({
-            percent,
+            percent: percent.toFixed(2),
         });
     }
     handleRList = (id) => {
@@ -167,10 +170,20 @@ class projectTask extends Component {
        return (
            <div>
                <Row className="project-file-wenjian" style={{ minWidth: '1024px', overflowx: 'auto' }}>
-                   <Col span={16}>
+                   <Col span={16} style={{ display: 'flex' }}>
                        <p className="wenjian-name">
                  项目文件
-                       </p>
+                       </p> <Progress
+                           value="0"
+                           max="100"
+                           id="progress"
+                           style={{ height: '20px',
+                               width: '100%',
+                               marginLeft: '20px',
+                               display: this.state.show ? 'block' : 'none',
+                           }}
+                           percent={this.state.percent}
+                       />
                    </Col>
                    <Col span={6} style={{ textAlign: 'right' }}>
                        <Search
@@ -279,15 +292,17 @@ class projectTask extends Component {
                            ;
                        },
                        )}
-                       <li>
+                       {/* <li>
                            <Progress
                                value="0"
                                max="100"
                                id="progress"
-                               style={{ height: '20px', width: '100%' }}
+                               style={{ height: '20px',
+                                   width: '80%',
+                               }}
                                percent={this.state.percent}
                            />
-                       </li>
+                       </li> */}
                    </ul>
                </div>
            </div>

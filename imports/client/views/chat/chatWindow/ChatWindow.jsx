@@ -5,14 +5,16 @@ import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Popover, Tooltip, Progress, Modal, Spin } from 'antd';
 import format from 'date-format';
-// import 'qiniu-js/src/plupload/plupload.dev';
+// import qiniu from 'qiniu-js';
+// /* global Qiniu */
+// /* global plupload */
 
-import userInfo from '../../../../util/user';
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
 import PopulateUtil from '../../../../util/populate';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
+import userInfo from '../../../../util/user';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -28,8 +30,6 @@ import EmptyChat from '../../../components/EmptyChat';
 import { lazy, throttle } from '../../../../util/throttle';
 // import { generateShowHourMinuteSecond } from 'antd/lib/time-picker';
 
-require('qiniu-js/dist/qiniu.min');
-
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
 
 @pureRender
@@ -43,7 +43,7 @@ class ChatWindow extends Component {
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
-        getMoreMessage: PropTypes.func,
+        // getMoreMessage: PropTypes.func,
         count: PropTypes.number,
     }
     constructor(...args) {
@@ -62,6 +62,7 @@ class ChatWindow extends Component {
             isNewFriend: false,
             isNewNotice: false,
             percent: 0,
+            uploadLoadImg: '',
         };
         this.onScrollHandle = null;
     }
@@ -137,27 +138,27 @@ class ChatWindow extends Component {
     handleMessageListScroll = (e) => {
         const $messageList = e.target;
         function d() {
-            console.log('======');
+            console.log('======', lazy);
         }
-        console.log('scrollHeight-clientHeight-scrollTop', $messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop);
-        $messageList.addEventListener('scroll', throttle(lazy($messageList, d), 500, 1000), false);
-
-        if (this.onScrollHandle) {
-            clearTimeout(this.onScrollHandle);
-        }
+        console.log('scrollHeight-clientHeight-scrollTop', $messageList.scrollHeight, $messageList.clientHeight + $messageList.scrollTop, $messageList.clientHeight, $messageList.scrollTop);
+        // $messageList.addEventListener('scroll', throttle(lazy($messageList), 500, 1000), false);
+        // if (this.onScrollHandle) {
+        //     clearTimeout(this.onScrollHandle);
+        // }
         // this.tt = Date.now();
-        this.onScrollHandle = setTimeout(() => {
-            // console.log('耗时', Date.now() - this.tt);
-            // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop, $messageList.scrollHeight !== $messageList.clientHeight, $messageList.scrollTop < 10);
-            if ($messageList.scrollHeight !== $messageList.clientHeight && $messageList.scrollTop < 10) {
-                this.setState({ showHistoryLoading: true });
-                this.props.getMoreMessage();
-                setTimeout(() => {
-                    this.setState({ showHistoryLoading: false });
-                }, 80);
-            }
-            // action.setAutoScroll($messageList.scrollHeight - $messageList.scrollTop - $messageList.clientHeight < $messageList.clientHeight / 2);
-        }, 300);
+        // this.onScrollHandle = setTimeout(() => {
+        //     // console.log('耗时', Date.now() - this.tt);
+        //     // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop, $messageList.scrollHeight !== $messageList.clientHeight, $messageList.scrollTop < 10);
+        if ($messageList.scrollTop < 15) {
+            $messageList.addEventListener('scroll', throttle(d, 500, 1000), false);
+            // this.setState({ showHistoryLoading: true });
+            // this.props.getMoreMessage();
+            // setTimeout(() => {
+            //     this.setState({ showHistoryLoading: false });
+            // }, 80);
+        }
+        //     // action.setAutoScroll($messageList.scrollHeight - $messageList.scrollTop - $messageList.clientHeight < $messageList.clientHeight / 2);
+        // }, 300);
     }
     sendMessage = (content, type) => {
         if (!content) {
@@ -217,115 +218,62 @@ class ChatWindow extends Component {
         this.fileInput.click();
     }
     selectFile = () => {
-        const files = this.fileInput.files[0];
-        if (!files) {
+        const file = this.fileInput.files[0];
+        console.log('files', this.fileInput.files, file);
+        if (!file) {
             return;
         }
-        console.log('files', this.fileInput.files, files);
-        const name = files.name;
-        const fileType = files.type;
+        const name = file.name;
+        const reader = new FileReader();
+        const fileType = file.type;
         const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
-        const size = files.size;
+        const size = file.size;
+        const me = this;
         const sendMessage = this.sendMessage;
-        const _this = this;
-        Meteor.call(
-            'createToken',
-            (err, res) => {
+        const handlePercent = this.handlePercent;
+        reader.onprogress = function (e) {
+            console.log(e.loaded);
+            console.log(name);
+            me.loaded += e.loaded;
+            me.progress = (e.loaded / e.total) * 100;
+            console.log((e.loaded / e.total) * 100);
+            console.log(me.progress);
+            setTimeout(() => {
+                handlePercent(me.progress);
+            }, 80);
+            // me.setState({
+            //     show: true,
+            // });
+        };
+        reader.onloadend = function () {
+            Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
                 if (err) {
-                    console.log(err);
-                } else {
-                    console.log('createToken');
-                    const option1 = {
-                        runtimes: 'html5,flash,html', // 上传模式，依次退化
-                        browse_button: this.fileInput, // 上传选择的点选按钮，必需
-                        // 在初始化时，uptoken，uptoken_url，uptoken_func三个参数中必须有一个被设置
-                        // 切如果提供了多个，其优先级为uptoken > uptoken_url > uptoken_func
-                        // 其中uptoken是直接提供上传凭证，uptoken_url是提供了获取上传凭证的地址，如果需要定制获取uptoken的过程则可以设置uptoken_func
-                        uptoken: res.token, // uptoken是上传凭证，由其他程序生成
-                        get_new_uptoken: false, // 设置上传文件的时候是否每次都重新获取新的uptoken
-                        multi_selection: false,
-                        // downtoken_url: '/downtoken',
-                        // Ajax请求downToken的Url，私有空间时使用，JS-SDK将向该地址POST文件的key和domain，服务端返回的JSON必须包含url字段，url值为该文件的下载地址
-                        unique_names: false, // 默认false，key为文件名。若开启该选项，JS-SDK会为每个文件自动生成key（文件名）
-                        save_key: false, // 默认false。若在服务端生成uptoken的上传策略中指定了sava_key，则开启，SDK在前端将不对key进行任何处理
-                        domain: 'http://up-z1.qiniu.com', // bucket域名，下载资源时用到，必需
-                        container: this.$message, // 上传区域DOM ID，默认是browser_button的父元素
-                        max_file_size: '100mb', // 最大文件体积限制
-                        flash_swf_url: 'path/of/plupload/Moxie.swf', // 引入flash，相对路径
-                        max_retries: 0, // 上传失败最大重试次数
-                        dragdrop: true, // 开启可拖曳上传
-                        drop_element: this.$message, // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-                        chunk_size: '4mb', // 分块上传时，每块的体积
-                        auto_start: true, // 选择文件后自动上传，若关闭需要自己绑定事件触发上传
-                        init: {
-                            FilesAdded(up, file) {
-                                // plupload.each(files, (file) => {
-                                //     // 文件添加进队列后，处理相关的事情
-                                // });
-                                const reader = new FileReader();
-                                file[0].name = Math.random().toString(16).substring(2);
-                                console.log('filedAdd', file);
-                                reader.readAsDataURL(files);
-                                reader.onload = function () {
-                                    _this.setState({ uploadLoadding: true });
-                                };
-                                // console.log('FilesAdded', file);
-                                // _this.setState({ uploadLoadding: true });
-                            },
-                            BeforeUpload() {
-                                // 每个文件上传前，处理相关的事情
-                                console.log('BeforeUpload');
-                            },
-                            UploadProgress(up, file) {
-                                // 每个文件上传时，处理相关的事情
-                                _this.setState({ percent: file.percent });
-                            },
-                            FileUploaded(up, file, info) {
-                                // 每个文件上传成功后，处理相关的事情
-                                // 其中info.response是文件上传成功后，服务端返回的json，形式如：
-                                // {
-                                //    "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
-                                //    "key": "gogopher.jpg"
-                                //  }
-                                // 查看简单反馈
-                                // var domain = up.getOption('domain');
-                                // var res = parseJSON(info.response);
-                                // var sourceLink = domain +"/"+ res.key; 获取上传成功后的文件的Url
-                                _this.setState({ uploadLoadding: false });
-                                const filesize = (size || 0).toString();
-                                const resInfo = JSON.parse(info.response);
-                                const url = `http://oxldjnom8.bkt.clouddn.com/${resInfo.key}`;
-                                console.log('uploaded', up, file, resInfo);
-                                Meteor.call('clientInsertFile', name, type, filesize, url, (err_, fileId) => {
-                                    if (err_) {
-                                        return feedback.dealError(err_);
-                                    }
-                                    if (res) {
-                                        sendMessage(fileId, 'file');
-                                    }
-                                });
-                            },
-                            Error() {
-                                // 上传出错时，处理相关的事情
-                            },
-                            UploadComplete() {
-                                // 队列文件处理完毕后，处理相关的事情
-                            },
-                            // Key() {
-                            //     // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
-                            //     // 该配置必须要在unique_names: false，save_key: false时才生效
-                            //     const key = '';
-                            //     // do something with key here
-                            //     return key;
-                            // },
-                        },
-                    };
-                    window.Qiniu.uploader(option1);
+                    return feedback.dealError(err);
                 }
-            },
-        );
-    }
+                if (res) {
+                    sendMessage(res, 'file');
+                }
+            });
+        };
+        reader.readAsDataURL(file);
+    };
+    // reader.readAsDataURL(file);
+    //     })
+    // }
     // 发起视频
+    handlePercent=(percent) => {
+        if (percent === 100) {
+            this.setState({
+                percent: percent.toFixed(2),
+                uploadLoadding: false,
+            });
+        } else {
+            this.setState({
+                percent: percent.toFixed(2),
+                uploadLoadding: true,
+            });
+        }
+    }
     sendVideo = () => {
         this.setState({
             isShowVideo: !this.state.isShowVideo,
@@ -425,36 +373,35 @@ class ChatWindow extends Component {
             </div>
         );
     }
-    renderImage = (url) => {
-        const base64regex = /data:/;
-        if (base64regex.test(url)) {
-            setInterval(() => {
-                let percent = this.state.percent + 10;
-                if (percent > 99 || !base64regex.test(url)) {
-                    percent = 99;
-                    clearInterval(this.timer);
-                }
-                this.setState({ percent });
-            }, 200);
-        }
-        return (
+    renderImage = url =>
+        // const base64regex = /data:/;
+        // if (base64regex.test(url)) {
+        //     setInterval(() => {
+        //         let percent = this.state.percent + 10;
+        //         if (percent > 99 || !base64regex.test(url)) {
+        //             percent = 99;
+        //             clearInterval(this.timer);
+        //         }
+        //         this.setState({ percent });
+        //     }, 200);
+        // }
+        (
             <div className="user-img">
                 <img
-                    src=""
+                    src={url}
                     data-src={url}
                     ref={i => this.img = i}
                     onLoad={this.imageLoad}
                     onDoubleClick={() => this.handleImageDoubleClick(url)}
-                    onError={() => this.img.src = 'http://oxldjnom8.bkt.clouddn.com/404Img.jpeg'}
                 />
                 {
-                    base64regex.test(url) ?
-                        <Progress percent={this.state.percent} className="img-progress" />
-                        :
-                        null
+                    // base64regex.test(url) ?
+                    //     <Progress percent={this.state.percent} className="img-progress" />
+                    //     :
+                    //     null
                 }
-            </div>);
-    }
+            </div>)
+
     renderText = content => (
         <div className="user-message" dangerouslySetInnerHTML={this.convertExpression(content)} />
     )
@@ -482,6 +429,7 @@ class ChatWindow extends Component {
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
         const { uploadLoadding } = this.state;
+        // const { uploadLoadImg, uploadLoadding } = this.state;
         return this.props.to ?
             <div className="ejianlian-chat-window">
                 {
