@@ -1,7 +1,7 @@
 import React, { PureComponent, Component } from 'react';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
-import { Modal, Select, Row, Tag, Checkbox, Button } from 'antd';
+import { Modal, Col, Select, Row, Tag, Checkbox, Button } from 'antd';
 import { withTracker } from 'meteor/react-meteor-data';
 import Company from '../../schema/company';
 import UserUtil, { userIdToInfo } from '../../util/user';
@@ -363,7 +363,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
         };
         console.log('leftUsers', leftUsers);
         return (
-            <div>
+            <Col className="ant-col-24 margin-bottom-20">
                 {this.props.children}
                 <Modal
                     title={(<p className="text-center">{modelTitle}</p>)}
@@ -408,7 +408,7 @@ class ChoosePeopleModel extends (PureComponent || Component) {
                         <Button type="primary" disabled={!allNum} onClick={() => this.getSelected(keyword)}>提交</Button>
                     </Row>
                 </Modal>
-            </div>
+            </Col>
         );
     }
 }

@@ -7,7 +7,7 @@ import { Popover, Tooltip, Progress, Modal, Spin } from 'antd';
 import format from 'date-format';
 // import 'qiniu-js/src/plupload/plupload.dev';
 
-
+import userInfo from '../../../../util/user';
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
 import PopulateUtil from '../../../../util/populate';
@@ -78,7 +78,7 @@ class ChatWindow extends Component {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage && this.props.count === 1) {
                 // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
-                $lastMessage.scrollIntoView({ block: 'end', behavior: 'smooth' });
+                $lastMessage.scrollIntoView();
             }
         }
         if (this.props.to) {
@@ -208,22 +208,24 @@ class ChatWindow extends Component {
         this.fileInput.click();
     }
     selectFile = () => {
-        const file = this.fileInput.files[0];
-        if (!file) {
+        const files = this.fileInput.files[0];
+        if (!files) {
             return;
         }
-        // const reader = new FileReader();
-        // const name = file.name;
-        // const fileType = file.type;
-        // const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
-        // const size = file.size;
-        // const sendMessage = this.sendMessage;
+        console.log('files', this.fileInput.files, files);
+        const name = files.name;
+        const fileType = files.type;
+        const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
+        const size = files.size;
+        const sendMessage = this.sendMessage;
+        const _this = this;
         Meteor.call(
             'createToken',
             (err, res) => {
                 if (err) {
                     console.log(err);
                 } else {
+                    console.log('createToken');
                     const option1 = {
                         runtimes: 'html5,flash,html', // 上传模式，依次退化
                         browse_button: this.fileInput, // 上传选择的点选按钮，必需
@@ -232,35 +234,44 @@ class ChatWindow extends Component {
                         // 其中uptoken是直接提供上传凭证，uptoken_url是提供了获取上传凭证的地址，如果需要定制获取uptoken的过程则可以设置uptoken_func
                         uptoken: res.token, // uptoken是上传凭证，由其他程序生成
                         get_new_uptoken: false, // 设置上传文件的时候是否每次都重新获取新的uptoken
+                        multi_selection: false,
                         // downtoken_url: '/downtoken',
                         // Ajax请求downToken的Url，私有空间时使用，JS-SDK将向该地址POST文件的key和domain，服务端返回的JSON必须包含url字段，url值为该文件的下载地址
-                        // unique_names: true,              // 默认false，key为文件名。若开启该选项，JS-SDK会为每个文件自动生成key（文件名）
-                        // save_key: true,                  // 默认false。若在服务端生成uptoken的上传策略中指定了sava_key，则开启，SDK在前端将不对key进行任何处理
+                        unique_names: false, // 默认false，key为文件名。若开启该选项，JS-SDK会为每个文件自动生成key（文件名）
+                        save_key: false, // 默认false。若在服务端生成uptoken的上传策略中指定了sava_key，则开启，SDK在前端将不对key进行任何处理
                         domain: 'http://up-z1.qiniu.com', // bucket域名，下载资源时用到，必需
-                        // container: this.fileInput, // 上传区域DOM ID，默认是browser_button的父元素
+                        container: this.$message, // 上传区域DOM ID，默认是browser_button的父元素
                         max_file_size: '100mb', // 最大文件体积限制
                         flash_swf_url: 'path/of/plupload/Moxie.swf', // 引入flash，相对路径
-                        max_retries: 3, // 上传失败最大重试次数
-                        // dragdrop: true, // 开启可拖曳上传
-                        // drop_element: 'container', // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+                        max_retries: 0, // 上传失败最大重试次数
+                        dragdrop: true, // 开启可拖曳上传
+                        drop_element: this.$message, // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
                         chunk_size: '4mb', // 分块上传时，每块的体积
                         auto_start: true, // 选择文件后自动上传，若关闭需要自己绑定事件触发上传
                         init: {
-                            FilesAdded() {
+                            FilesAdded(up, file) {
                                 // plupload.each(files, (file) => {
                                 //     // 文件添加进队列后，处理相关的事情
                                 // });
-                                console.log('FilesAdded');
+                                const reader = new FileReader();
+                                file[0].name = Math.random().toString(16).substring(2);
+                                console.log('filedAdd', file);
+                                reader.readAsDataURL(files);
+                                reader.onload = function () {
+                                    _this.setState({ uploadLoadding: true });
+                                };
+                                // console.log('FilesAdded', file);
+                                // _this.setState({ uploadLoadding: true });
                             },
                             BeforeUpload() {
                                 // 每个文件上传前，处理相关的事情
                                 console.log('BeforeUpload');
                             },
-                            UploadProgress() {
+                            UploadProgress(up, file) {
                                 // 每个文件上传时，处理相关的事情
-                                console.log('UploadProgress', file);
+                                _this.setState({ percent: file.percent });
                             },
-                            FileUploaded() {
+                            FileUploaded(up, file, info) {
                                 // 每个文件上传成功后，处理相关的事情
                                 // 其中info.response是文件上传成功后，服务端返回的json，形式如：
                                 // {
@@ -271,7 +282,19 @@ class ChatWindow extends Component {
                                 // var domain = up.getOption('domain');
                                 // var res = parseJSON(info.response);
                                 // var sourceLink = domain +"/"+ res.key; 获取上传成功后的文件的Url
-                                console.log('uploaded');
+                                _this.setState({ uploadLoadding: false });
+                                const filesize = (size || 0).toString();
+                                const resInfo = JSON.parse(info.response);
+                                const url = `http://oxldjnom8.bkt.clouddn.com/${resInfo.key}`;
+                                console.log('uploaded', up, file, resInfo);
+                                Meteor.call('clientInsertFile', name, type, filesize, url, (err_, fileId) => {
+                                    if (err_) {
+                                        return feedback.dealError(err_);
+                                    }
+                                    if (res) {
+                                        sendMessage(fileId, 'file');
+                                    }
+                                });
                             },
                             Error() {
                                 // 上传出错时，处理相关的事情
@@ -279,33 +302,19 @@ class ChatWindow extends Component {
                             UploadComplete() {
                                 // 队列文件处理完毕后，处理相关的事情
                             },
-                            Key() {
-                                // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
-                                // 该配置必须要在unique_names: false，save_key: false时才生效
-                                const key = '';
-                                // do something with key here
-                                return key;
-                            },
+                            // Key() {
+                            //     // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
+                            //     // 该配置必须要在unique_names: false，save_key: false时才生效
+                            //     const key = '';
+                            //     // do something with key here
+                            //     return key;
+                            // },
                         },
                     };
                     window.Qiniu.uploader(option1);
-
-                    // uploader.start();
                 }
             },
         );
-
-        // reader.onloadend = function () {
-        //     Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
-        //         if (err) {
-        //             return feedback.dealError(err);
-        //         }
-        //         if (res) {
-        //             sendMessage(res, 'file');
-        //         }
-        //     });
-        // };
-        // reader.readAsDataURL(file);
     }
     // 发起视频
     sendVideo = () => {
@@ -462,6 +471,7 @@ class ChatWindow extends Component {
         const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
+        const { uploadLoadImg, uploadLoadding } = this.state;
         return this.props.to ?
             <div className="ejianlian-chat-window">
                 {
@@ -547,6 +557,20 @@ class ChatWindow extends Component {
                                 </div>
                             </div>
                         ))
+                    }
+                    {
+                        uploadLoadding && <div className="self-message">
+                            <p className="user-avatar">
+                                <span className="avatar" style={{ backgroundColor: 'rgb(245, 91, 137)' }}>文涛</span>
+                            </p>
+                            <div className="user-message-wrap">
+                                <p className="user-nickname">{userInfo.getName()}</p>
+                                <div className="user-img">
+                                    <img src={uploadLoadImg} ref={i => this.imgPreview = i} />
+                                    <Progress percent={this.state.percent} className="img-progress" />
+                                </div>
+                            </div>
+                        </div>
                     }
                 </div>
                 <div className="chat-window-bottom">

@@ -137,8 +137,8 @@ class ImgUpload extends (PureComponent || Component) {
             defaultFileList: defaultImg,
         };
         return (
-            <div className="clearfix margin-bottom-10">
-                <p style={{ marginBottom: '10px' }}>{this.props.title}</p>
+            <div className="ant-col-24" style={{ marginBottom: '24px' }}>
+                <p style={{ lineHeight: '32px' }}>{this.props.title}</p>
                 <Upload
                     {...props}
                 >

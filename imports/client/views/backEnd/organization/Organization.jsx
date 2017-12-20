@@ -168,7 +168,7 @@ class Organization extends PureComponent {
             item.num = num[item.id] || 0;
         });
         return (
-            <div className="e-mg-organization-left-dep margin-top-20">
+            <div className="e-mg-organization-left-dep" style={{ marginTop: '25px' }}>
                 <div className={classnames('e-mg-organization-company', { 'dep-active': depActive === '' })}>
                     <a href="" onClick={e => this.handleTabDep(e, '')}><img src={company.logo} alt="" />{company.name} （{user.length || 0}）</a>
                     <i className={classnames('iconfont icon-jiantou-copy', { arrowDown: showMenu })} onClick={this.showMenu} />
@@ -507,7 +507,7 @@ class Organization extends PureComponent {
         }
         return (
             <div className="e-mg-organization">
-                <Row gutter={30} type="flex" justify="space-between" align="stretch">
+                <Row gutter={50} type="flex" justify="space-between" align="stretch">
                     <Col span={6} className="e-mg-organization-left">
                         {this.addDepModel()}
                         {this.depList(deps, this.props.users)}
