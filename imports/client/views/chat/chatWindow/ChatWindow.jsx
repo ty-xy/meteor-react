@@ -220,26 +220,49 @@ class ChatWindow extends Component {
         if (!file) {
             return;
         }
-        // const name = file.name;
-        // const reader = new FileReader();
+        const name = file.name;
+        const reader = new FileReader();
         const fileType = file.type;
         const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
         const size = file.size;
+        const me = this;
         const sendMessage = this.sendMessage;
-        // const _this = this;
-        Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
-            if (err) {
-                return feedback.dealError(err);
-            }
-            if (res) {
-                sendMessage(res, 'file');
-            }
-        });
+        const handlePercent = this.handlePercent;
+        reader.onprogress = function (e) {
+            console.log(e.loaded);
+            console.log(name);
+            me.loaded += e.loaded;
+            me.progress = (e.loaded / e.total) * 100;
+            console.log((e.loaded / e.total) * 100);
+            console.log(me.progress);
+            setTimeout(() => {
+                handlePercent(me.progress);
+            }, 80);
+            // me.setState({
+            //     show: true,
+            // });
+        };
+        reader.onloadend = function () {
+            Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
+                if (err) {
+                    return feedback.dealError(err);
+                }
+                if (res) {
+                    sendMessage(res, 'file');
+                }
+            });
+        };
+        reader.readAsDataURL(file);
     };
     // reader.readAsDataURL(file);
     //     })
     // }
     // 发起视频
+    handlePercent=(percent) => {
+        this.setState({
+            percent: percent.toFixed(2),
+        });
+    }
     sendVideo = () => {
         this.setState({
             isShowVideo: !this.state.isShowVideo,
@@ -339,35 +362,34 @@ class ChatWindow extends Component {
             </div>
         );
     }
-    renderImage = (url) => {
-        const base64regex = /data:/;
-        if (base64regex.test(url)) {
-            setInterval(() => {
-                let percent = this.state.percent + 10;
-                if (percent > 99 || !base64regex.test(url)) {
-                    percent = 99;
-                    clearInterval(this.timer);
-                }
-                this.setState({ percent });
-            }, 200);
-        }
-        return (
+    renderImage = url =>
+        // const base64regex = /data:/;
+        // if (base64regex.test(url)) {
+        //     setInterval(() => {
+        //         let percent = this.state.percent + 10;
+        //         if (percent > 99 || !base64regex.test(url)) {
+        //             percent = 99;
+        //             clearInterval(this.timer);
+        //         }
+        //         this.setState({ percent });
+        //     }, 200);
+        // }
+        (
             <div className="user-img">
                 <img
                     src={url}
                     ref={i => this.img = i}
                     onLoad={this.imageLoad}
                     onDoubleClick={() => this.handleImageDoubleClick(url)}
-                    onError={() => this.img.src = 'http://oxldjnom8.bkt.clouddn.com/404Img.jpeg'}
                 />
                 {
-                    base64regex.test(url) ?
-                        <Progress percent={this.state.percent} className="img-progress" />
-                        :
-                        null
+                    // base64regex.test(url) ?
+                    //     <Progress percent={this.state.percent} className="img-progress" />
+                    //     :
+                    //     null
                 }
-            </div>);
-    }
+            </div>)
+
     renderText = content => (
         <div className="user-message" dangerouslySetInnerHTML={this.convertExpression(content)} />
     )

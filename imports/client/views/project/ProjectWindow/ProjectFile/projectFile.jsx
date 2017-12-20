@@ -29,7 +29,7 @@ class projectTask extends Component {
             checkAll: false,
             checkedList: false,
             length: '',
-            percent: 0,
+            // percent: 0,
             show: false,
         };
         this.checkList = [];
