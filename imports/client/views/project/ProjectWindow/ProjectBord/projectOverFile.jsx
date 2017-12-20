@@ -52,8 +52,9 @@ class projectOverFile extends Component {
                 <Card title="已建档项目" style={{ height: '100%', textAlign: 'center', position: 'relative' }}>
                     {this.state.length === 0 ?
                         <div className="e-p-o-right">
-                            <p>你还没有已归档项目</p>
-                            <Icon icon="icon-meiyouxiaoshoudongtai icon" />
+                            <p className="e-title">你还没有已归档项目</p>
+                            <img src="/noFile.png" style={{ marginTop: '30 px' }} />
+                            {/* <Icon icon="icon-meiyouxiaoshoudongtai icon" /> */}
                         </div> : <div className="over-project-back">
                             {this.props.projects.map((value) => {
                                 if (value.headPortrait.indexOf('icon') === -1) {
