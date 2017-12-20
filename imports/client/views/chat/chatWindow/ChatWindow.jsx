@@ -25,6 +25,9 @@ import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 import EmptyChat from '../../../components/EmptyChat';
 
+import { lazy, throttle } from '../../../../util/throttle';
+// import { generateShowHourMinuteSecond } from 'antd/lib/time-picker';
+
 require('qiniu-js/dist/qiniu.min');
 
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -78,7 +81,7 @@ class ChatWindow extends Component {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage && this.props.count === 1) {
                 // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
-                $lastMessage.scrollIntoView();
+                $lastMessage.scrollIntoView(true);
             }
         }
         if (this.props.to) {
@@ -133,6 +136,12 @@ class ChatWindow extends Component {
     }
     handleMessageListScroll = (e) => {
         const $messageList = e.target;
+        function d() {
+            console.log('======');
+        }
+        console.log('scrollHeight-clientHeight-scrollTop', $messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop);
+        $messageList.addEventListener('scroll', throttle(lazy($messageList, d), 500, 1000), false);
+
         if (this.onScrollHandle) {
             clearTimeout(this.onScrollHandle);
         }
@@ -431,7 +440,8 @@ class ChatWindow extends Component {
         return (
             <div className="user-img">
                 <img
-                    src={url}
+                    src=""
+                    data-src={url}
                     ref={i => this.img = i}
                     onLoad={this.imageLoad}
                     onDoubleClick={() => this.handleImageDoubleClick(url)}
@@ -471,7 +481,7 @@ class ChatWindow extends Component {
         const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
-        const { uploadLoadImg, uploadLoadding } = this.state;
+        const { uploadLoadding } = this.state;
         return this.props.to ?
             <div className="ejianlian-chat-window">
                 {
@@ -561,12 +571,12 @@ class ChatWindow extends Component {
                     {
                         uploadLoadding && <div className="self-message">
                             <p className="user-avatar">
-                                <span className="avatar" style={{ backgroundColor: 'rgb(245, 91, 137)' }}>文涛</span>
+                                <span className="avatar" style={{ backgroundColor: 'rgb(245, 91, 137)' }}>{userInfo.getName().substr(-2, 2)}</span>
                             </p>
                             <div className="user-message-wrap">
                                 <p className="user-nickname">{userInfo.getName()}</p>
                                 <div className="user-img">
-                                    <img src={uploadLoadImg} ref={i => this.imgPreview = i} />
+                                    <img src="/commonImg.png" ref={i => this.imgPreview = i} />
                                     <Progress percent={this.state.percent} className="img-progress" />
                                 </div>
                             </div>
