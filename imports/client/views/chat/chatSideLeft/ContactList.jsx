@@ -130,7 +130,9 @@ class ContactList extends Component {
                     :
                     null
             }
-            <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
+            <div className="icon-guanbi-close">
+                <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
+            </div>
             <div className="user-avatar">
                 <Avatar avatar={group.avatar ? group.avatar : avatarUrl.avatarGroup} name="群聊" />
             </div>

@@ -11,6 +11,12 @@
         padding: 30px 50px;
         margin: 20px 0; 
     }
+     .list-item:hover{
+        background-color:rgb(213, 236, 252);
+     }
+     .chat-user-pannel-avtive {
+        background-color: #D4ECFC !important;
+    }
      .list-item{
          display:flex;
          display: -webkit-flex;
@@ -19,10 +25,17 @@
          background:#fff;
          box-sizing:border-box;
          border-bottom: 1px solid #f4f4f4;
-         border-top-left-radius: 10px;
-         border-top-right-radius:10px;
+        //  border-top-left-radius: 10px;
+        //  border-top-right-radius:10px;
          align-items:center;
-         margin-left:20px;
+         padding-left:20px;
+         cursor: pointer;
+         .kongbai{
+            margin:0 0 -2px  -20px;
+            border-bottom:1px solid #fff;
+            width:20px;
+            height:100%;
+         }
          &>p{
             font-family: PingFangSC-Regular;
             font-size: 16px;

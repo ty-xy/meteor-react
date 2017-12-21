@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 // import { Spin } from 'antd';
 import { Link } from 'react-router-dom';
+import classnames from 'classnames';
+
 import { withTracker } from 'meteor/react-meteor-data';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import DefaultProject from './DefaultProject';
-import MyIcon from '../../../components/Icon';
 
+import MyIcon from '../../../components/Icon';
 import Project from '../../../../../imports/schema/project';
 import ProjectMember from '../../../../../imports/schema/projectmember';
 
@@ -23,7 +25,15 @@ class ProjectList extends Component {
         this.state = {
             visible: true,
             showDefault: true,
+            selectedChat: {},
         };
+    }
+    handleToggle = (value) => {
+        this.setState({
+            selectedChat: {
+                [value]: true,
+            },
+        });
     }
     handleClick = () => {
         this.setState({
@@ -45,7 +55,13 @@ class ProjectList extends Component {
                                 if (value.headPortrait && value.headPortrait.indexOf('icon') === -1 && value.pigeonhole === 1) {
                                     return (
                                         <Link to={`/project/task/${value.uprojectId}`} key={value._id}>
-                                            <li className="list-item" key={value._id}>
+                                            <li
+                                            /* className="list-item" */
+                                                className={classnames('list-item', { 'chat-user-pannel-avtive': this.state.selectedChat[value._id] })}
+                                                key={value._id}
+                                                onClick={() => this.handleToggle(value._id)}
+                                            >
+                                                <div className="kongbai" />
                                                 <div className="list-img">
                                                     {<img src={`http://oxldjnom8.bkt.clouddn.com//${value.headPortrait}`} alt="" />}
                                                 </div>
@@ -58,7 +74,12 @@ class ProjectList extends Component {
                                 } else if (value.headPortrait && value.headPortrait.indexOf('icon') === 0 && value.pigeonhole === 1) {
                                     return (
                                         <Link to={`/project/task/${value.uprojectId}`} key={value._id}>
-                                            <li className="list-item" key={value._id}>
+                                            <li
+                                                className={classnames('list-item', { 'chat-user-pannel-avtive': this.state.selectedChat[value._id] })}
+                                                onClick={() => this.handleToggle(value._id)}
+                                                key={value._id}
+                                            >
+                                                <div className="kongbai" />
                                                 <div className="list-img-icon">
                                                     {<MyIcon icon={`${value.headPortrait} icon`} size={24} iconColor="#fff" />}
                                                 </div>
