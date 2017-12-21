@@ -23,7 +23,7 @@ import MyModel from '../manage/audit/component/MyModel';
 const colors = ['#7986CB', '#4DB6AC', '#9575CD', '#F06292'];
 const auditTypes = ['事假', '病假', '年假', '调休', '婚假', '产假', '陪产假', '路途假', '其他', '出差', '报销', '通用审批'];
 
-const logTypes = ['日报', '月报', '周报'];
+const logTypes = ['日报', '月报', '周报', '日报评论', '评论回复'];
 
 
 @pureRender
@@ -155,7 +155,7 @@ class Header extends Component {
                                     </div>
                                     <div className="list-desc">
                                         <p className="title">「{item.noticeType}」— {userIdToInfo.getName(allUsers, item.from)}的{item.noticeType}</p>
-                                        <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
+                                        <p className="desc">{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
                                     </div>
                                     {!isRead && <div className="list-pointer"><span /></div>}
                                 </div>
@@ -196,7 +196,12 @@ class Header extends Component {
                                         </div>
                                         <div className="list-desc">
                                             <p className="title">「{item.noticeType}」— {userIdToInfo.getName(allUsers, item.from)}的{item.noticeType}</p>
-                                            <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
+                                            {
+                                                (item.noticeType === '日报评论' || item.noticeType === '评论回复') ?
+                                                    <p className="desc">{userIdToInfo.getName(allUsers, item.from)}{item.noticeType === '日报评论' ? '评论了你的日报，' : '的评论回复,'}<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
+                                                    :
+                                                    <p className="desc">{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
+                                            }
                                         </div>
                                         {!item.isRead && <div className="list-pointer"><span /></div>}
                                     </div>
@@ -210,6 +215,7 @@ class Header extends Component {
     )
     render() {
         const { notices, allUsers, companys } = this.props;
+        console.log('notices', notices);
         const { isShowNotice } = this.state;
         return (
             <div className="ejianlianHeader">

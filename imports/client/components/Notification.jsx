@@ -67,7 +67,12 @@ class Notification extends Component {
                     <div className="e-notification-avatar"><img src="/start.png" /></div>
                     <div className="e-notification-desc">
                         <p className="title">「{arg.noticeType}」— {userIdToInfo.getName(allUsers, from)}的{arg.noticeType}</p>
-                        <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, from)}提交了{arg.noticeType}，<a href="" onClick={e => this.gotoLook(e, _id, { toMembers, companys, userCompany, from, allUsers, ...arg })}>点击前往查看</a></p>
+                        {
+                            (arg.noticeType === '日报评论' || arg.noticeType === '评论回复') ?
+                                <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, from)}{arg.noticeType === '日报评论' ? '评论了你的日报，' : '的评论回复,'}<a href="" onClick={e => this.gotoLook(e, _id, { toMembers, companys, userCompany, from, allUsers, ...arg })}>点击前往查看</a></p>
+                                :
+                                <p className="desc">&nbsp;{userIdToInfo.getName(allUsers, from)}提交了{arg.noticeType}，<a href="" onClick={e => this.gotoLook(e, _id, { toMembers, companys, userCompany, from, allUsers, ...arg })}>点击前往查看</a></p>
+                        }
                     </div>
                 </div>
             </div>
