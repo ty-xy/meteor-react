@@ -55,7 +55,10 @@ log.schema = new SimpleSchema({
         type: String,
         optional: true,
     },
-
+    comments: {
+        type: [Object],
+        optional: true,
+    },
 });
 
 export default log;

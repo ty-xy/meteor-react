@@ -19,6 +19,7 @@ Meteor.methods({
             group,
             company,
             cache,
+            comments: [],
         };
         Log.schema.validate(newLog);
         const _id = Log.insert(newLog);
@@ -66,6 +67,50 @@ Meteor.methods({
                 $set: updateLog,
             },
         );
+    },
+    // 评论
+    async commentLog({ _id, content, to, noticeType }) {
+        const res = {
+            from: Meteor.userId(),
+            to,
+            content,
+            createdAt: new Date(),
+        };
+        const update = await Log.update(
+            { _id },
+            {
+                $push: { comments: res },
+            },
+        );
+        console.log('update', update);
+
+        if (update) {
+            const noticeRes = {
+                from: Meteor.userId(),
+                userCompany: UserUtil.getMainCompany(),
+                toMembers: [
+                    {
+                        userId: to,
+                        isRead: false,
+                        rejectRead: false,
+                    },
+                ],
+                noticeType,
+                logId: _id,
+            };
+            Meteor.call(
+                'createGlobalNotice',
+                (noticeRes),
+                (err, noticeId) => {
+                    Log.update(
+                        { _id },
+                        { $set: { noticeId } },
+                    );
+                },
+            );
+            return true;
+        }
+        return false;
     },
     // 删除
     deleteLog({ _id }) {

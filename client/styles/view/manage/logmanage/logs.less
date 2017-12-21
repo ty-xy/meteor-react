@@ -186,8 +186,8 @@
             line-height: 1.8;
         }
     }
-    .e-mg-log-details-footer{
-        margin: 30px 0 10px 0;
+    .e-mg-log-details-footer-readed, .e-mg-log-details-footer-comment{
+        margin-top: 30px;
         padding: 20px 0;
         border-top: 1px solid #eee;
         p{
@@ -195,7 +195,7 @@
             letter-spacing: 0.24px;
         }
         .ant-col-24{
-            margin-top: 10px;
+            margin-top: 5px;
             color: #666666;
             letter-spacing: 0.24px;
             span{
@@ -207,6 +207,42 @@
             }
             img{
                 border-radius: 50%;
+            }
+        }
+    }
+    .e-mg-log-details-footer-comment{
+        margin-top: 10px;
+        .e-log-comment{
+            margin-top: 25px;
+            display: flex;
+            .e-log-comment-avatar{
+                width: 60px;
+                flex: 0 0 auto;
+            }
+            .e-log-comment-content{
+                flex: 1 1 auto;
+                .comment-a{
+                    display: block;
+                    color: #666;
+                    span{
+                        float: right;
+                        color: rgb(146, 145, 145);
+                    }
+                    &:hover{
+                        color: #15B4F1;
+                        &:after{
+                            content: '@';
+                            margin-left: 6px;
+                        }
+                    }
+                }
+            }
+        }
+        .e-log-comment-btn{
+            margin-top: 30px;
+            span {
+                margin-bottom: 0px;
+                margin-right: 0px;
             }
         }
     }

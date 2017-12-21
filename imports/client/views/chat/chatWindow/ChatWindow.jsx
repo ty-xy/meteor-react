@@ -14,6 +14,7 @@ import Group from '../../../../../imports/schema/group';
 import PopulateUtil from '../../../../util/populate';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
+import userInfo from '../../../../util/user';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -26,12 +27,8 @@ import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 import EmptyChat from '../../../components/EmptyChat';
 
-// require('qiniu-js/src/plupload/moxie');
-// require('qiniu-js/src/plupload/plupload.dev');
-// require('qiniu-js/dist/qiniu.min');
-
-
-// require('qiniu-js');
+import { throttle } from '../../../../util/throttle';
+// import { generateShowHourMinuteSecond } from 'antd/lib/time-picker';
 
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
 
@@ -85,7 +82,7 @@ class ChatWindow extends Component {
             const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
             if ($lastMessage && this.props.count === 1) {
                 // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
-                $lastMessage.scrollIntoView();
+                $lastMessage.scrollIntoView(true);
             }
         }
         if (this.props.to) {
@@ -140,22 +137,26 @@ class ChatWindow extends Component {
     }
     handleMessageListScroll = (e) => {
         const $messageList = e.target;
-        if (this.onScrollHandle) {
-            clearTimeout(this.onScrollHandle);
-        }
-        // this.tt = Date.now();
-        this.onScrollHandle = setTimeout(() => {
-            // console.log('耗时', Date.now() - this.tt);
-            // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop, $messageList.scrollHeight !== $messageList.clientHeight, $messageList.scrollTop < 10);
-            if ($messageList.scrollHeight !== $messageList.clientHeight && $messageList.scrollTop < 10) {
+        // 图片懒加载
+        // lazy($messageList);
+
+        if (($messageList.scrollHeight !== $messageList.clientHeight) && $messageList.scrollTop === 0) {
+            const scrollFn = () => {
                 this.setState({ showHistoryLoading: true });
-                this.props.getMoreMessage();
-                setTimeout(() => {
-                    this.setState({ showHistoryLoading: false });
-                }, 80);
-            }
-            // action.setAutoScroll($messageList.scrollHeight - $messageList.scrollTop - $messageList.clientHeight < $messageList.clientHeight / 2);
-        }, 300);
+                this.props.getMoreMessage().then((res) => {
+                    if (res) {
+                        console.log('rea', res);
+                        $messageList.scrollTop = 10;
+                        $messageList.scrollIntoView(false);
+                        setTimeout(() => {
+                            this.setState({ showHistoryLoading: false });
+                        }, 80);
+                    }
+                });
+            };
+
+            throttle(scrollFn(), 500, 1000);
+        }
     }
     sendMessage = (content, type) => {
         if (!content) {
@@ -259,9 +260,17 @@ class ChatWindow extends Component {
     // }
     // 发起视频
     handlePercent=(percent) => {
-        this.setState({
-            percent: percent.toFixed(2),
-        });
+        if (percent === 100) {
+            this.setState({
+                percent: percent.toFixed(2),
+                uploadLoadding: false,
+            });
+        } else {
+            this.setState({
+                percent: percent.toFixed(2),
+                uploadLoadding: true,
+            });
+        }
     }
     sendVideo = () => {
         this.setState({
@@ -363,31 +372,16 @@ class ChatWindow extends Component {
         );
     }
     renderImage = url =>
-        // const base64regex = /data:/;
-        // if (base64regex.test(url)) {
-        //     setInterval(() => {
-        //         let percent = this.state.percent + 10;
-        //         if (percent > 99 || !base64regex.test(url)) {
-        //             percent = 99;
-        //             clearInterval(this.timer);
-        //         }
-        //         this.setState({ percent });
-        //     }, 200);
-        // }
         (
             <div className="user-img">
                 <img
                     src={url}
+                    height="100"
+                    data-src={url}
                     ref={i => this.img = i}
                     onLoad={this.imageLoad}
                     onDoubleClick={() => this.handleImageDoubleClick(url)}
                 />
-                {
-                    // base64regex.test(url) ?
-                    //     <Progress percent={this.state.percent} className="img-progress" />
-                    //     :
-                    //     null
-                }
             </div>)
 
     renderText = content => (
@@ -416,6 +410,7 @@ class ChatWindow extends Component {
         const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
         const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
         const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
+        const { uploadLoadding } = this.state;
         // const { uploadLoadImg, uploadLoadding } = this.state;
         return this.props.to ?
             <div className="ejianlian-chat-window">
@@ -504,9 +499,17 @@ class ChatWindow extends Component {
                         ))
                     }
                     {
-                        <div className="user-message-wrap">
-                            {/* <img width="100" src={uploadLoadImg} ref={i => this.imgPreview = i} /> */}
-                            {/* <Progress percent={this.state.percent} className="img-progress" /> */}
+                        uploadLoadding && <div className="self-message">
+                            <p className="user-avatar">
+                                <span className="avatar" style={{ backgroundColor: 'rgb(245, 91, 137)' }}>{userInfo.getName().substr(-2, 2)}</span>
+                            </p>
+                            <div className="user-message-wrap">
+                                <p className="user-nickname">{userInfo.getName()}</p>
+                                <div className="user-img">
+                                    <img src="/commonImg.png" ref={i => this.imgPreview = i} />
+                                    <Progress percent={this.state.percent} className="img-progress" />
+                                </div>
+                            </div>
                         </div>
                     }
                 </div>
