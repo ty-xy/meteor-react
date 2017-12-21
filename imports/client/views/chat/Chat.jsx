@@ -211,7 +211,7 @@ class Chat extends Component {
                                         onClick={this.handleClick.bind(this, index + 1)}
                                     >
                                         <p className="type-icon">
-                                            <Icon icon={item.content} size={20} />
+                                            <Icon icon={item.content} size={24} />
                                         </p>
                                         <p>{item.name}</p>
                                     </li>

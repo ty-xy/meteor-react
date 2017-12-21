@@ -1,9 +1,19 @@
 @import '../util/util.less';
 .ejianlian-register {
+    .text-line{
+        margin-left:25%;
+        @media (min-width: 768px) {/*当宽度大于768px时触发*/
+            .ant-col-sm-offset-8 {
+                margin-left: 25% !important;
+            }
+          }
+    }
     .register-title {
         border: 0;
         margin: 10px 0px;
     }
+    
+
     & > .form-content-wrap {
         height:600px;
         .form-content {
@@ -19,6 +29,7 @@
                     cursor: pointer;
                 }
             }
+           
         }
     }
     .register-step {
