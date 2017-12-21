@@ -210,7 +210,7 @@ class projectTask extends Component {
                </Row>
                <div className="file-detail" >
                    <Row className="file-detail-title" style={{ minWidth: '1024px', overflow: 'auto' }}>
-                       <Col span={8}>
+                       <Col span={10}>
                            <Row>
                                <Col span={5}>
                                    <Checkbox
@@ -233,7 +233,7 @@ class projectTask extends Component {
                                </Col>
                            </Row>
                        </Col>
-                       <Col span={8}>
+                       <Col span={6}>
                            <Row>
                                <Col span={8}>大小</Col>
                                <Col span={8}>创建者</Col>
@@ -252,7 +252,7 @@ class projectTask extends Component {
                                    style={{ minWidth: '1024px', overflow: 'auto' }}
                                >
                                    <Row className="file-detail-title" key={item._id}>
-                                       <Col span={8}>
+                                       <Col span={10}>
                                            <Row>
                                                <Col span={4} style={{ display: 'flex' }} >
                                                    <Checkbox
@@ -266,7 +266,7 @@ class projectTask extends Component {
                                                <Col>{item.name}</Col>
                                            </Row>
                                        </Col>
-                                       <Col span={8}>
+                                       <Col span={6}>
                                            <Row>
                                                <Col span={8}>{item.size}</Col>
                                                <Col span={8}>
