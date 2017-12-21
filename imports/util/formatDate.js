@@ -20,6 +20,8 @@ const formateDate = {
             return format('hh:mm', value);
         } else if (value.toLocaleDateString() === yesterday.toLocaleDateString()) {
             return `昨天${format('hh:mm', value)}`;
+        } else if (value.getFullYear() === today.getFullYear()) {
+            return format('MM-dd hh:mm', value);
         }
         return format('yyyy-MM-dd hh:mm', value);
     },
