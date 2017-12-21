@@ -143,10 +143,16 @@ class ChatWindow extends Component {
         if (($messageList.scrollHeight !== $messageList.clientHeight) && $messageList.scrollTop === 0) {
             const scrollFn = () => {
                 this.setState({ showHistoryLoading: true });
-                this.props.getMoreMessage();
-                setTimeout(() => {
-                    this.setState({ showHistoryLoading: false });
-                }, 80);
+                this.props.getMoreMessage().then((res) => {
+                    if (res) {
+                        console.log('rea', res);
+                        $messageList.scrollTop = 10;
+                        $messageList.scrollIntoView(false);
+                        setTimeout(() => {
+                            this.setState({ showHistoryLoading: false });
+                        }, 80);
+                    }
+                });
             };
 
             throttle(scrollFn(), 500, 1000);
@@ -370,6 +376,7 @@ class ChatWindow extends Component {
             <div className="user-img">
                 <img
                     src={url}
+                    height="100"
                     data-src={url}
                     ref={i => this.img = i}
                     onLoad={this.imageLoad}

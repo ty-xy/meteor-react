@@ -93,6 +93,7 @@ class Chat extends Component {
         this.setState({
             count: countNum,
         });
+        return Promise.resolve(true);
     }
     handleChatType = (chatType) => {
         this.setState({
