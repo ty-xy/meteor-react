@@ -2,7 +2,12 @@ import React from 'react';
 // import { Card } from 'antd';
 
 const Welcome = () => (
-    <p>欢迎来到管理界面!</p>
+    <div className="empty-chat-wrap">
+        <div className="empty-chat ">
+            <p>开启您的团队协作之旅</p>
+            <img src="/start.png" alt="" />
+        </div>
+    </div>
 );
 
 export default Welcome;

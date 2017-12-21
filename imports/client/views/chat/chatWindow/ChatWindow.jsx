@@ -506,7 +506,7 @@ class ChatWindow extends Component {
                     {
                         <div className="user-message-wrap">
                             {/* <img width="100" src={uploadLoadImg} ref={i => this.imgPreview = i} /> */}
-                            <Progress percent={this.state.percent} className="img-progress" />
+                            {/* <Progress percent={this.state.percent} className="img-progress" /> */}
                         </div>
                     }
                 </div>

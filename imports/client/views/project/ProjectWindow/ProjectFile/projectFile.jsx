@@ -209,7 +209,7 @@ class projectTask extends Component {
                    </Col>
                </Row>
                <div className="file-detail" >
-                   <Row className="file-detail-title" style={{ minWidth: '1024px', overflow: 'auto' }}>
+                   <Row className="file-detail-title" style={{ minWidth: '1024px', overflow: 'hidden' }}>
                        <Col span={10}>
                            <Row>
                                <Col span={5}>
@@ -249,7 +249,7 @@ class projectTask extends Component {
                                <li
                                    className="detail-list-wenjian"
                                    key={item._id}
-                                   style={{ minWidth: '1024px', overflow: 'auto' }}
+                                   style={{ minWidth: '1024px', overflow: 'hidden' }}
                                >
                                    <Row className="file-detail-title" key={item._id}>
                                        <Col span={10}>
@@ -277,7 +277,7 @@ class projectTask extends Component {
                                                </Col>
                                            </Row>
                                        </Col>
-                                       <Col span={8} style={{ textAlign: 'center' }}>
+                                       <Col span={8} style={{ textAlign: 'center' }} className="xiazahi-d">
                                            <a href={item.url} download={item.name} >
                                                <Icon icon="icon-xiazai icon-twoli" size={20} />
                                            </a>
