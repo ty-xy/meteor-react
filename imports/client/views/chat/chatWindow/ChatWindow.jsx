@@ -27,7 +27,7 @@ import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 import EmptyChat from '../../../components/EmptyChat';
 
-import { lazy, throttle } from '../../../../util/throttle';
+import { throttle } from '../../../../util/throttle';
 // import { generateShowHourMinuteSecond } from 'antd/lib/time-picker';
 
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -43,7 +43,7 @@ class ChatWindow extends Component {
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
-        // getMoreMessage: PropTypes.func,
+        getMoreMessage: PropTypes.func,
         count: PropTypes.number,
     }
     constructor(...args) {
@@ -137,28 +137,20 @@ class ChatWindow extends Component {
     }
     handleMessageListScroll = (e) => {
         const $messageList = e.target;
-        function d() {
-            console.log('======', lazy);
+        // 图片懒加载
+        // lazy($messageList);
+
+        if (($messageList.scrollHeight !== $messageList.clientHeight) && $messageList.scrollTop === 0) {
+            const scrollFn = () => {
+                this.setState({ showHistoryLoading: true });
+                this.props.getMoreMessage();
+                setTimeout(() => {
+                    this.setState({ showHistoryLoading: false });
+                }, 80);
+            };
+
+            throttle(scrollFn(), 500, 1000);
         }
-        console.log('scrollHeight-clientHeight-scrollTop', $messageList.scrollHeight, $messageList.clientHeight + $messageList.scrollTop, $messageList.clientHeight, $messageList.scrollTop);
-        // $messageList.addEventListener('scroll', throttle(lazy($messageList), 500, 1000), false);
-        // if (this.onScrollHandle) {
-        //     clearTimeout(this.onScrollHandle);
-        // }
-        // this.tt = Date.now();
-        // this.onScrollHandle = setTimeout(() => {
-        //     // console.log('耗时', Date.now() - this.tt);
-        //     // console.log($messageList.scrollHeight, $messageList.clientHeight, $messageList.scrollTop, $messageList.scrollHeight !== $messageList.clientHeight, $messageList.scrollTop < 10);
-        if ($messageList.scrollTop < 15) {
-            $messageList.addEventListener('scroll', throttle(d, 500, 1000), false);
-            // this.setState({ showHistoryLoading: true });
-            // this.props.getMoreMessage();
-            // setTimeout(() => {
-            //     this.setState({ showHistoryLoading: false });
-            // }, 80);
-        }
-        //     // action.setAutoScroll($messageList.scrollHeight - $messageList.scrollTop - $messageList.clientHeight < $messageList.clientHeight / 2);
-        // }, 300);
     }
     sendMessage = (content, type) => {
         if (!content) {
@@ -374,17 +366,6 @@ class ChatWindow extends Component {
         );
     }
     renderImage = url =>
-        // const base64regex = /data:/;
-        // if (base64regex.test(url)) {
-        //     setInterval(() => {
-        //         let percent = this.state.percent + 10;
-        //         if (percent > 99 || !base64regex.test(url)) {
-        //             percent = 99;
-        //             clearInterval(this.timer);
-        //         }
-        //         this.setState({ percent });
-        //     }, 200);
-        // }
         (
             <div className="user-img">
                 <img
@@ -394,12 +375,6 @@ class ChatWindow extends Component {
                     onLoad={this.imageLoad}
                     onDoubleClick={() => this.handleImageDoubleClick(url)}
                 />
-                {
-                    // base64regex.test(url) ?
-                    //     <Progress percent={this.state.percent} className="img-progress" />
-                    //     :
-                    //     null
-                }
             </div>)
 
     renderText = content => (

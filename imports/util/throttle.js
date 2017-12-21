@@ -27,16 +27,13 @@ export function lazy(target) {
 export function throttle(fn, time, interval) {
     let timer = null;
     let startTime = new Date();
-    let n = 0;
     return () => {
         clearTimeout(timer);
         const endTime = new Date();
         if (endTime - startTime > interval) {
-            n++;
             fn();
             startTime = endTime;
         } else {
-            console.log('setTimeout', n);
             timer = setTimeout(fn, time);
         }
     };
