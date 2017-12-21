@@ -88,7 +88,9 @@ class ContactList extends Component {
             }}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
-            <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} />
+            <div className="icon-guanbi-close">
+                <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} />
+            </div>
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
             </div>

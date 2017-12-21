@@ -189,13 +189,17 @@ class Register extends Component {
                                         {getFieldDecorator('verificationCode', {
                                             rules: [{ required: true, message: '请输入正确的短信验证码' }],
                                         })(
-                                            <Input placeholder="短信验证码" />,
+                                            <Input placeholder="短信验证码" className="ant-input-lg" />,
                                         )}
                                     </Col>
                                     <Col span={12}>
                                         {
                                             this.state.sendBtnStatus === 0 ?
-                                                <Button className="obtainCode" onClick={this.sendMessage}>获取验证码</Button>
+                                                <Button
+                                                    className="obtainCode"
+                                                    size="large"
+                                                    onClick={this.sendMessage}
+                                                >获取验证码</Button>
                                                 :
                                                 null
                                         }
