@@ -1,14 +1,17 @@
 import React, { PureComponent, Component } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Button, Input } from 'antd';
 import { Meteor } from 'meteor/meteor';
+import format from 'date-format';
 import { withTracker } from 'meteor/react-meteor-data';
 import { userIdToInfo } from '../../../../util/user';
 import Notice from '../../../../schema/notice';
 import Log from '../../../../schema/log';
 import File from '../../../../schema/file';
+import feedback from '../../../../util/feedback';
 
 import ImageViewer from '../../../features/ImageViewer';
 
+const { TextArea } = Input;
 
 class Detail extends (PureComponent || Component) {
     state = {
@@ -35,18 +38,45 @@ class Detail extends (PureComponent || Component) {
             [`showImgViewer${index}`]: bool,
         });
     }
-    render() {
+    // 提交评论
+    handleSubmitComment = () => {
         const { id } = this.props.match.params || {};
-        let logInfo = {};
-        let members = [];
-        const { allUsers, toMembers, logs } = this.props;
-
-        logs.forEach((item) => {
-            if (item._id === id) {
-                logInfo = item;
-            }
+        const { content, to } = this.state;
+        console.log('to', content, to);
+        Meteor.call(
+            'commentLog',
+            {
+                _id: id,
+                content,
+                to: to || this.props.logInfo.userId,
+                noticeType: to ? '评论回复' : '日报评论',
+            },
+            (err, res) => {
+                if (res) {
+                    feedback.successToast('评论成功');
+                    this.setState({ content: '' });
+                } else {
+                    feedback.successToast('评论失败');
+                }
+            },
+        );
+    }
+    handleChange = (e) => {
+        this.setState({ content: e.target.value });
+    }
+    // 回复
+    handleFocus = (e, to) => {
+        e.preventDefault();
+        this.setState({
+            content: `回复@${userIdToInfo.getName(this.props.allUsers, to)}：`,
+            to,
         });
-        const { nickname, finish, plan, help, userId, noticeId, img = [], file = [] } = logInfo;
+        this.comments.focus();
+    }
+    render() {
+        let members = [];
+        const { allUsers, toMembers, logInfo } = this.props;
+        const { nickname, finish, plan, help, userId, noticeId, img = [], file = [], comments = [] } = logInfo || {};
         if (noticeId) {
             toMembers.forEach((item) => {
                 if (noticeId === item._id) {
@@ -129,8 +159,8 @@ class Detail extends (PureComponent || Component) {
                             {file.map(item => (<p key={item}><a download href={File.findOne({ _id: item }) && File.findOne({ _id: item }).url}>{File.findOne({ _id: item }) && File.findOne({ _id: item }).name}</a></p>))}
                         </Col> : null
                     }
-                    <Col span={24} className="e-mg-log-details-footer">
-                        <p>{num}人已读</p>
+                    <Col span={24} className="e-mg-log-details-footer-readed">
+                        <p>已读 {num}人</p>
                         <Col span={24} data-peos={members}>
                             {
                                 members.map((item, index) => {
@@ -150,12 +180,41 @@ class Detail extends (PureComponent || Component) {
                             }
                         </Col>
                     </Col>
+                    <Col span={24} className="e-mg-log-details-footer-comment">
+                        <p>评论 {comments.length}</p>
+                        <Col span={24} data-peos={members}>
+                            {
+                                comments.map((item, index) => (
+                                    <div href="" className="e-log-comment" key={index}>
+                                        <div className="e-log-comment-avatar">
+                                            {userIdToInfo.getAvatar(allUsers, item.from) ?
+                                                <img src={userIdToInfo.getAvatar(allUsers, item.from) || '无头像'} width="36" />
+                                                : <span style={{ ...styles, background: colors[index % 4] }}>{userIdToInfo.getName(allUsers, item.from).substr(-2, 3)}</span>
+                                            }
+                                        </div>
+                                        <div className="e-log-comment-content">
+                                            <p><a className="comment-a" href="" onClick={e => this.handleFocus(e, item.from)}>{userIdToInfo.getName(allUsers, item.from)}<span>{format('yyyy-MM-dd', item.createAt)}</span></a></p>
+                                            <p style={{ marginTop: '6px' }}>{item.content}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </Col>
+                        <Col span={24} className="e-log-comment-btn">
+                            <Col span={24}>
+                                <TextArea placeholder="评论日志" value={this.state.content} rows={3} ref={i => this.comments = i} onChange={this.handleChange} />
+                            </Col>
+                            <Col span={24} style={{ marginTop: '8px' }}>
+                                <Button type="primary" onClick={this.handleSubmitComment}>发送</Button>
+                            </Col>
+                        </Col>
+                    </Col>
                 </Col>
             </Row>
         );
     }
 }
-export default withTracker(() => {
+export default withTracker(({ match }) => {
     Meteor.subscribe('users');
     Meteor.subscribe('notice');
     Meteor.subscribe('log');
@@ -163,7 +222,7 @@ export default withTracker(() => {
     return {
         allUsers: Meteor.users.find().fetch(),
         toMembers: Notice.find().fetch(),
-        logs: Log.find().fetch(),
+        logInfo: Log.findOne({ _id: match.params.id }),
         files: File.find().fetch(),
     };
 })(Detail);
