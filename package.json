@@ -56,6 +56,7 @@
     "qiniu": "^7.1.1",
     "qiniu-js": "^1.0.23",
     "react": "^16.0.0",
+    "react-cropper": "^1.0.1",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.5.4",
     "react-dom": "^16.0.0",

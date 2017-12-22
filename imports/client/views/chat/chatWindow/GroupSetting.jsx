@@ -10,6 +10,7 @@ import Avatar from '../../../components/Avatar';
 import UserUtil from '../../../../util/user';
 import feedback from '../../../../util/feedback';
 import SelectOne from '../../../features/SelectOne';
+import AvatarCut from '../../../features/AvatarCut';
 import SelectMembers from '../../../features/SelectMembers';
 import Company from '../../../../schema/company';
 import fields from '../../../../util/fields';
@@ -164,20 +165,33 @@ class GroupSetting extends Component {
         if (!image) {
             return;
         }
+        if (image.size > 800000) {
+            feedback.dealError('请选择小于800kb的头像');
+            return;
+        }
+        console.log('image', image);
 
+        const _this = this;
         const reader = new FileReader();
-
-        const groupId = this.props.groupId;
-
         reader.onloadend = function () {
-            Meteor.call('changeGroupAvatar', this.result, groupId, (err) => {
-                if (err) {
-                    return feedback.dealError(err);
-                }
-                return feedback.dealSuccess('修改头像成功');
-            });
+            _this.showAvatarCut(true, this.result);
         };
         reader.readAsDataURL(image);
+    }
+    // 显示修改头像
+    showAvatarCut = (bool, avatarDate = '') => {
+        this.setState({ avatarCutVisible: bool, avatarDate });
+    }
+    // 提交图片保存
+    handleAvatar=(img) => {
+        const groupId = this.props.groupId;
+        Meteor.call('changeGroupAvatar', img, groupId, (err) => {
+            if (err) {
+                return feedback.dealError(err);
+            }
+            this.showAvatarCut(false);
+            return feedback.dealSuccess('修改头像成功');
+        });
     }
     render() {
         return (
@@ -186,12 +200,18 @@ class GroupSetting extends Component {
                     <div className="group-info">
                         <div className="group-base-info">
                             <div className="group-avatar-wrap">
+                                <AvatarCut
+                                    visible={this.state.avatarCutVisible}
+                                    showAvatarCut={this.showAvatarCut}
+                                    handleAvatar={this.handleAvatar}
+                                    avatarDate={this.state.avatarDate}
+                                />
                                 <Avatar avatar={this.props.avatar ? this.props.avatar : avatarUrl.avatarGroup} name="群聊" />
                                 {
                                     this.props.admin === Meteor.userId() ?
                                         <div className="choose-new-avatar">
                                             <Icon icon="icon-jiahao" iconColor="#fff" size={20} />
-                                            <input type="file" onChange={this.chooseNewGroupAvatar} />
+                                            <input type="file" accept="image/png,image/jpg,image/jpeg,image/svg" onChange={this.chooseNewGroupAvatar} />
                                         </div>
                                         :
                                         null
