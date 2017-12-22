@@ -55,7 +55,7 @@ class Day extends (React.PureComponent || React.Component) {
     formSubmit = (e) => {
         e.preventDefault();
         const { form, companyInfo } = this.props;
-        const { deps } = companyInfo;
+        const { deps = [] } = companyInfo || {};
         const { img, file, group, peo, logType } = this.state;
         form.validateFields((err, fields) => {
             if (err) {
