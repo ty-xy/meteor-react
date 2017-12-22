@@ -516,3 +516,9 @@
 2017-12-22 15:49:53,   build 64
 
  zg-xym    build results on build 63
+----------------------------------
+
+2017-12-22 16:15:35,   build 65
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg-xym    build results on build 64
