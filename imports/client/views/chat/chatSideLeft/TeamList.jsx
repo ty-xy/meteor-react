@@ -72,6 +72,7 @@ class TeamList extends Component {
                     onCancel={this.handleCancel}
                     wrapClassName="create-team-mask"
                     footer={null}
+                    width="400px"
                 >
                     <CreateTeam
                         isShowAdd
