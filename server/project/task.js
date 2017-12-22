@@ -17,7 +17,7 @@ Meteor.methods({
             label: '',
             textId,
             fileId: [],
-            taskMembers: [Meteor.userId()],
+            taskMembers: [],
         };
         Task.schema.validate(newTask);
         Task.insert(newTask);

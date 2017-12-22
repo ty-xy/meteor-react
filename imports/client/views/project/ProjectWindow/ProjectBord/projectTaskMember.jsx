@@ -87,7 +87,7 @@ class projectMembers extends Component {
                     {
                         this.props.allMembers.length > 0 && this.props.allMembers.map(user => (
                             user ?
-                                <div className="avatar-name" onClick={e => this.handleRemoveMembers(e, user._id)}>
+                                <div className="avatar-name" onClick={e => this.handleRemoveMembers(e, user._id)} key={user._id}>
                                     <Avatar
                                         key={user._id}
                                         avatarColor={user.profile && user.profile.avatarColor}
