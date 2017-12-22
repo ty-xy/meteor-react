@@ -197,7 +197,7 @@ class projectTask extends Component {
                             </button>
                         </Col> */}
                    <Col span={2} style={{ textAlign: 'center' }}>
-                       <button className="up-button" onClick={this.sendFile}>
+                       <button className="up-button common-zhiti" onClick={this.sendFile}>
                           上传
                        </button>
                        <input
@@ -212,13 +212,13 @@ class projectTask extends Component {
                    <Row className="file-detail-title" style={{ minWidth: '1024px', overflow: 'hidden' }}>
                        <Col span={10}>
                            <Row>
-                               <Col span={5}>
+                               <Col span={5} className="common-zhiti">
                                    <Checkbox
                                        onChange={this.onCheckAllChange}
                                        checked={this.state.checkAll}
                                    >名称</Checkbox>
                                </Col>
-                               <Col span={8}>
+                               <Col span={8} className="common-zhiti">
                                      （已选择 {this.state.length || 0} 项目）
                                </Col>
                                <Col span={3} className="down-load  file-load" onClick={this.handleDown}>
@@ -235,9 +235,9 @@ class projectTask extends Component {
                        </Col>
                        <Col span={6}>
                            <Row>
-                               <Col span={8}>大小</Col>
-                               <Col span={8}>创建者</Col>
-                               <Col span={8}>时间</Col>
+                               <Col span={8} className="common-zhiti">大小</Col>
+                               <Col span={8} className="common-zhiti">创建者</Col>
+                               <Col span={8} className="common-zhiti">时间</Col>
                            </Row>
                        </Col>
                        <Col span={8} style={{ textAlign: 'center' }} />
@@ -263,16 +263,16 @@ class projectTask extends Component {
                                                        <FileIcon type={item.type} />
                                                    </div>
                                                </Col>
-                                               <Col>{item.name}</Col>
+                                               <Col className="common-zhiti">{item.name}</Col>
                                            </Row>
                                        </Col>
                                        <Col span={6}>
                                            <Row>
-                                               <Col span={8}>{item.size}</Col>
-                                               <Col span={8}>
+                                               <Col span={8} className="common-zhiti">{item.size}</Col>
+                                               <Col span={8} className="common-zhiti">
                                                    {item.fileFrom}
                                                </Col>
-                                               <Col span={8}>
+                                               <Col span={8} className="common-zhiti">
                                                    {formatDate.dealMessageTime(item.createdAt)}
                                                </Col>
                                            </Row>
