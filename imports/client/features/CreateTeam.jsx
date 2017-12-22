@@ -94,11 +94,11 @@ class CreateTeam extends Component {
     render() {
         const { formLayout } = this.state;
         const formItemLayout = formLayout === 'horizontal' ? {
-            labelCol: { span: 4 },
-            wrapperCol: { span: 14 },
+            labelCol: { span: 6 },
+            wrapperCol: { span: 17 },
         } : null;
         const buttonItemLayout = formLayout === 'horizontal' ? {
-            wrapperCol: { span: 14, offset: 4 },
+            wrapperCol: { span: 17, offset: 6 },
         } : null;
         const { getFieldDecorator } = this.props.form;
         const { name = '', logo = this.state.teamLogo, industryType = '', residence = [] } = this.props.currentCompany || {};
