@@ -5,6 +5,7 @@ import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Popover, Tooltip, Progress, Modal, Spin } from 'antd';
 import format from 'date-format';
+import ReactChatView from 'react-chatview';
 // import qiniu from 'qiniu-js';
 // /* global Qiniu */
 // /* global plupload */
@@ -27,8 +28,6 @@ import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 import EmptyChat from '../../../components/EmptyChat';
 
-import { throttle } from '../../../../util/throttle';
-// import { generateShowHourMinuteSecond } from 'antd/lib/time-picker';
 
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
 
@@ -44,7 +43,6 @@ class ChatWindow extends Component {
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
         getMoreMessage: PropTypes.func,
-        count: PropTypes.number,
     }
     constructor(...args) {
         super(...args);
@@ -78,13 +76,6 @@ class ChatWindow extends Component {
                 break;
             }
         }
-        if (prevProps.messages && this.props.messages && prevProps.messages.length !== this.props.messages.length && this.messageList && this.messageList.children.length > 0) {
-            const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
-            if ($lastMessage && this.props.count === 1) {
-                // 优化一下,有时间写个函数节流,延迟200ms,这样初始渲染的时候, 就不会连续的scroll了,
-                $lastMessage.scrollIntoView(true);
-            }
-        }
         if (this.props.to) {
             this.$message.addEventListener('keydown', this.handleSendMessage);
         }
@@ -92,14 +83,6 @@ class ChatWindow extends Component {
             this.setState({
                 isNewNotice: true,
             });
-        }
-    }
-    // 图片初始高度是0, 图片加载完成后, 把消息撑了起来, 这时候scrollIntoView已经执行完了,所以会出现看到聊天窗口的时候最后一条消息被挡上了,需要滚动一下才能看到
-    // 表情, 写死高度.  图片消息, 等图片onLoad的时候, 再执行一次最后一条消息的 scrollIntoView
-    imageLoad = () => {
-        const $lastMessage = this.messageList.children[this.messageList.children.length - 1];
-        if ($lastMessage) {
-            $lastMessage.scrollIntoView(true);
         }
     }
     showFriendShip = () => {
@@ -135,28 +118,14 @@ class ChatWindow extends Component {
             isShowGroupSet: !this.state.isShowGroupSet,
         });
     }
-    handleMessageListScroll = (e) => {
-        const $messageList = e.target;
-        // 图片懒加载
-        // lazy($messageList);
-
-        if (($messageList.scrollHeight !== $messageList.clientHeight) && $messageList.scrollTop === 0) {
-            const scrollFn = () => {
-                this.setState({ showHistoryLoading: true });
-                this.props.getMoreMessage().then((res) => {
-                    if (res) {
-                        console.log('rea', res);
-                        $messageList.scrollTop = 10;
-                        $messageList.scrollIntoView(false);
-                        setTimeout(() => {
-                            this.setState({ showHistoryLoading: false });
-                        }, 80);
-                    }
-                });
-            };
-
-            throttle(scrollFn(), 500, 1000);
-        }
+    handleMessageListScroll() {
+        this.setState({ showHistoryLoading: true });
+        return new Promise((resolve) => {
+            this.props.getMoreMessage().then(() => {
+                this.setState({ showHistoryLoading: false });
+            });
+            resolve();
+        });
     }
     sendMessage = (content, type) => {
         if (!content) {
@@ -379,7 +348,6 @@ class ChatWindow extends Component {
                     height="100"
                     data-src={url}
                     ref={i => this.img = i}
-                    onLoad={this.imageLoad}
                     onDoubleClick={() => this.handleImageDoubleClick(url)}
                 />
             </div>)
@@ -467,7 +435,12 @@ class ChatWindow extends Component {
                         :
                         null
                 }
-                <div className="chat-message-list" ref={i => this.messageList = i} onScroll={this.handleMessageListScroll}>
+                <ReactChatView
+                    className="content chat-message-list"
+                    flipped
+                    scrollLoadThreshold={50}
+                    onInfiniteLoad={this.handleMessageListScroll.bind(this)}
+                >
                     {
                         this.props.messages.map((message, index) => (
                             <div
@@ -512,7 +485,7 @@ class ChatWindow extends Component {
                             </div>
                         </div>
                     }
-                </div>
+                </ReactChatView>
                 <div className="chat-window-bottom">
                     <div className="chat-send-skill">
                         <p className="skill-icon">
