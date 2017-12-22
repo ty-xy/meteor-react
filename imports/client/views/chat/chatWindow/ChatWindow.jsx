@@ -293,7 +293,15 @@ class ChatWindow extends Component {
                         onClick={this.handleClick}
                         style={{ width: '40px', height: '40px', padding: '5px' }}
                     >
-                        <div className="no-click" style={{ backgroundPosition: `left ${-30 * index}px`, backgroundImage: 'url(\'/expressions.png\')', width: '30px', height: '30px' }} />
+                        <Popover content={e} >
+                            <div
+                                className="no-click"
+                                style={{ backgroundPosition: `left ${-30 * index}px`,
+                                    backgroundImage: 'url(\'/expressions.png\')',
+                                    width: '30px',
+                                    height: '30px' }}
+                            />
+                        </Popover>
                     </div>
                 ))
             }
