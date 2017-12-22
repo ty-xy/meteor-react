@@ -157,7 +157,9 @@ class Header extends Component {
                                         <p className="title">「{item.noticeType}」— {userIdToInfo.getName(allUsers, item.from)}的{item.noticeType}</p>
                                         <p className="desc">{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
                                     </div>
-                                    {!isRead && <div className="list-pointer"><span /></div>}
+                                    {!isRead && <div className="list-pointer">
+                                        <img src="/Oval.png" />
+                                    </div>}
                                 </div>
                             </div>
                         );
@@ -203,7 +205,9 @@ class Header extends Component {
                                                     <p className="desc">{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
                                             }
                                         </div>
-                                        {!item.isRead && <div className="list-pointer"><span /></div>}
+                                        {!item.isRead && <div className="list-pointer">
+                                            {/* <span /> */}
+                                            <img src="/Oval.png" /></div>}
                                     </div>
                                 </div> : null
                         );
