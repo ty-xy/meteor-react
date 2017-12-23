@@ -7,10 +7,10 @@ import { withTracker } from 'meteor/react-meteor-data';
 
 import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
+import AvatarCut from '../../../features/AvatarCut';
 import UserUtil from '../../../../util/user';
 import feedback from '../../../../util/feedback';
 import SelectOne from '../../../features/SelectOne';
-import AvatarCut from '../../../features/AvatarCut';
 import SelectMembers from '../../../features/SelectMembers';
 import Company from '../../../../schema/company';
 import fields from '../../../../util/fields';
@@ -169,7 +169,6 @@ class GroupSetting extends Component {
             feedback.dealError('请选择小于800kb的头像');
             return;
         }
-        console.log('image', image);
 
         const _this = this;
         const reader = new FileReader();
@@ -200,6 +199,7 @@ class GroupSetting extends Component {
                     <div className="group-info">
                         <div className="group-base-info">
                             <div className="group-avatar-wrap">
+                                {/* 头像裁剪 */}
                                 <AvatarCut
                                     visible={this.state.avatarCutVisible}
                                     showAvatarCut={this.showAvatarCut}
