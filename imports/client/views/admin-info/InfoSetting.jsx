@@ -93,7 +93,7 @@ class InfoSetting extends Component {
                     <FormItem
                         label="头像"
                         {...formItemLayout}
-                        style={{ marginBottom: '10px' }}
+                        style={{ marginBottom: '15px' }}
                     >
                         <AvatarCut
                             visible={this.state.avatarCutVisible}
