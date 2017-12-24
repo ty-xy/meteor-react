@@ -522,3 +522,14 @@
 
  zg xym    Merge branch 'feature/management_gwt' into 'master'
  zg-xym    build results on build 64
+----------------------------------
+
+2017-12-24 22:38:38,   build 66
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge branch 'master' into feature/management_gwt
+ zg gwt    feature: 个人信息设置增加头像裁剪功能
+ zg gwt    feature: 个人资料头像裁剪保存
+ zg gwt    feature: 头像裁剪
+ zg gwt    style:卡片添加box-shadow
+ zg-xym    build results on build 65
