@@ -533,3 +533,9 @@
  zg gwt    feature: 头像裁剪
  zg gwt    style:卡片添加box-shadow
  zg-xym    build results on build 65
+----------------------------------
+
+2017-12-25 10:36:35,   build 67
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg-xym    build results on build 66
