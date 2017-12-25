@@ -16,6 +16,7 @@ import PopulateUtil from '../../../../util/populate';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
 import userInfo from '../../../../util/user';
+import { doDown, doUp, doMove } from '../../../../util/resize';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -30,6 +31,7 @@ import EmptyChat from '../../../components/EmptyChat';
 
 
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
+
 
 @pureRender
 class ChatWindow extends Component {
@@ -63,6 +65,11 @@ class ChatWindow extends Component {
             uploadLoadImg: '',
         };
         this.onScrollHandle = null;
+    }
+    componentDidMount() {
+        document.onmousedown = doDown;
+        document.onmouseup = doUp;
+        document.onmousemove = doMove;
     }
     componentDidUpdate(prevProps) {
         for (let i = this.props.messages.length - 1; i >= 0; i--) {
@@ -443,6 +450,7 @@ class ChatWindow extends Component {
                         :
                         null
                 }
+
                 <ReactChatView
                     className="content chat-message-list"
                     flipped
@@ -494,7 +502,7 @@ class ChatWindow extends Component {
                         </div>
                     }
                 </ReactChatView>
-                <div className="chat-window-bottom">
+                {/* <div className="chat-window-bottom resizeMe" ref={i => this.$chatBottom = i}>
                     <div className="chat-send-skill">
                         <p className="skill-icon">
                             <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
@@ -516,6 +524,32 @@ class ChatWindow extends Component {
                     <div className="chat-message-input">
                         <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
                         <p className="chat-send-message" onClick={this.sendText}>发送</p>
+                    </div>
+                </div> */}
+                <div className="chat-window-bottom" ref={i => this.$chatBottom = i}>
+                    <div className="chat-message-input resizeMe">
+                        <div className="chat-send-skill">
+                            <p className="skill-icon">
+                                <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
+                                    <Icon icon="icon-biaoqing icon" />
+                                </Popover>
+                            </p>
+                            <p className="skill-icon">
+                                <Tooltip title="发送文件" mouseEnterDelay={1}>
+                                    <Icon icon="icon-wenjian icon" onClick={this.sendFile} />
+                                    <input
+                                        className="input-file"
+                                        type="file"
+                                        ref={i => this.fileInput = i}
+                                        onChange={this.selectFile}
+                                    />
+                                </Tooltip>
+                            </p>
+                        </div>
+                        <div className="chat-send-bts">
+                            <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
+                            <p className="chat-send-message" onClick={this.sendText}>发送</p>
+                        </div>
                     </div>
                 </div>
                 {
