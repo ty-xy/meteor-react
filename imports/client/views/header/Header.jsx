@@ -158,7 +158,7 @@ class Header extends Component {
                                         <p className="desc">{userIdToInfo.getName(allUsers, item.from)}发布的{item.noticeType}，<a href="" onClick={e => this.gotoLook(e, { ...item })}>点击前往查看</a></p>
                                     </div>
                                     {!isRead && <div className="list-pointer">
-                                        <img src="/Oval.png" />
+                                        <img src="http://cdn.zg18.com/Oval.png" />
                                     </div>}
                                 </div>
                             </div>
@@ -207,7 +207,7 @@ class Header extends Component {
                                         </div>
                                         {!item.isRead && <div className="list-pointer">
                                             {/* <span /> */}
-                                            <img src="/Oval.png" /></div>}
+                                            <img src="http://cdn.zg18.com/Oval.png" /></div>}
                                     </div>
                                 </div> : null
                         );
@@ -245,7 +245,7 @@ class Header extends Component {
                 <div className="ejianlian-header-bar">
                     <div className="ejianlian-header-logo">
                         <Link to="/chat">
-                            <img src="/logo_slougo.jpg" />
+                            <img src="http://cdn.zg18.com/logo_slougo.jpg" />
                             <span>一键联通好管理</span>
                         </Link>
                     </div>

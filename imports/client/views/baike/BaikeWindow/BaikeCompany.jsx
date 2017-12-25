@@ -69,26 +69,26 @@ class BaikeFirst extends Component {
                     <div className="company-Carousel" style={{ width: '100%' }}>
                         <Carousel {...settings} >
                             <div style={{ textAlign: 'center' }}>
-                                <img src="/zhongyi.png" />
+                                <img src="http://cdn.zg18.com/zhongyi.png" />
                                 <p>中艺建筑装饰</p>
                             </div>
                             <div style={{ textAlign: 'center' }}>
 
-                                <img src="/chinabuilding.png" />
+                                <img src="http://cdn.zg18.com/chinabuilding.png" />
                                 <p>中国建筑装饰</p>
                             </div>
                             <div style={{ textAlign: 'center' }}>
-                                <img src="/goldtanglang.png" />
+                                <img src="http://cdn.zg18.com/goldtanglang.png" />
                                 <p>金螳螂建筑装饰</p>
                             </div>
                             <div style={{ textAlign: 'center' }}>
 
-                                <img src="/juzhong.png" />
+                                <img src="http://cdn.zg18.com/juzhong.png" />
                                 <p>居众装饰设计</p>
                             </div>
                             <div style={{ textAlign: 'center' }}>
 
-                                <img src="/shangtai.png" />
+                                <img src="http://cdn.zg18.com/shangtai.png" />
                                 <p>尚泰装饰设计</p>
                             </div>
                         </Carousel>
@@ -96,7 +96,7 @@ class BaikeFirst extends Component {
                     <ul className="company-list-show">
                         <li className="company-list-show-detail">
                             <div className="company-list-show-detail-left">
-                                <img src="/zhongyi.png" />
+                                <img src="http://cdn.zg18.com/zhongyi.png" />
                                 <div>
                                     <p>中艺建筑装饰有限公司</p>
                                     <p>建筑装饰和其他建筑行业</p>
@@ -112,7 +112,7 @@ class BaikeFirst extends Component {
                         </li>
                         <li className="company-list-show-detail">
                             <div className="company-list-show-detail-left">
-                                <img src="/goldtanglang.png" />
+                                <img src="http://cdn.zg18.com/goldtanglang.png" />
                                 <div>
                                     <p>苏州金螳螂建筑装饰股份有限公司</p>
                                     <p>房屋建筑业</p>

@@ -34,7 +34,7 @@ class BackEnd extends Component {
             <div className="ejianlianHeader">
                 <div className="ejianlian-header-bar">
                     <div className="ejianlian-header-logo">
-                        <Link to="/chat"><img src="/logo.png" style={{ width: '80px', margin: '12px 20px' }} /></Link>
+                        <Link to="/chat"><img src="http://cdn.zg18.com/logo.png" style={{ width: '80px', margin: '12px 20px' }} /></Link>
                     </div>
                     <div className="ejianlian-header-bar-tab">
                         <ul className="header-bar-tab backend-nav">
