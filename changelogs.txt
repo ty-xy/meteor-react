@@ -558,3 +558,11 @@
  zg gwt    feat: 新增聊天窗口上下扩展
  zg xym    Update build.sh
  zg-xym    build results on build 68
+----------------------------------
+
+2017-12-25 18:19:02,   build 70
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge branch 'master' into feature/management_gwt
+ zg gwt    feat: 静态资源放到七牛CDN； 替换表情包
+ zg-xym    build results on build 69
