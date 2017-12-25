@@ -549,3 +549,12 @@
  zg xy    fix：发送样式
  zg xy    fix：更改图片名称
  zg-xym    build results on build 67
+----------------------------------
+
+2017-12-25 15:50:37,   build 69
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    feat: merge master
+ zg gwt    feat: 新增聊天窗口上下扩展
+ zg xym    Update build.sh
+ zg-xym    build results on build 68
