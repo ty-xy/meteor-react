@@ -566,3 +566,10 @@
  zg gwt    Merge branch 'master' into feature/management_gwt
  zg gwt    feat: 静态资源放到七牛CDN； 替换表情包
  zg-xym    build results on build 69
+----------------------------------
+
+2017-12-25 22:16:14,   build 71
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    style: 修改表情包样式问题； 取消启动时的socket
+ zg-xym    build results on build 70
