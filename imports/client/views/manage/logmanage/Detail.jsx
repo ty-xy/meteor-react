@@ -100,7 +100,7 @@ class Detail extends (PureComponent || Component) {
             color: '#fff',
             marginRight: '0px',
             lineHeight: '36px',
-            marginBottom: '0px',
+            marginBottom: '5px',
         };
         return (
             <Row className="e-mg-log-details">
