@@ -29,14 +29,14 @@ class BaikeFirst extends Component {
                         />
                     </div>
                     <div className="baike-zhigong-wenku-body">
-                        <img src="/表单.png" />
-                        <img src="/工程图纸.png" />
-                        <img src="/规范.png" />
-                        <img src="/软件.png" />
-                        <img src="/文档论文.png" />
-                        <img src="/施工方案.png" />
-                        <img src="/图库.png" />
-                        <img src="/其他.png" />
+                        <img src="/sheet.png" />
+                        <img src="/engdrawings.png" />
+                        <img src="/normal.png" />
+                        <img src="/software.png" />
+                        <img src="/document.png" />
+                        <img src="/construct.png" />
+                        <img src="/gallery.png" />
+                        <img src="/other.png" />
                     </div>
                 </div>
             </div>

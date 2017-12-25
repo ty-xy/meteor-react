@@ -21,7 +21,7 @@ echo "上次build的编号： $buildnum"
 # Step 4 真正的创建 build
 startbuild=$( date "+%Y-%m-%d %H:%M:%S" )
 meteor npm install --save bcrypt
-meteor npm install
+meteor npm install --production
 meteor build ../build --architecture os.linux.x86_64
 
 # Step 5 将创建成功的文件拷贝到远程

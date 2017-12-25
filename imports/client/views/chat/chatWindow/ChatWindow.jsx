@@ -69,9 +69,7 @@ class ChatWindow extends Component {
     componentDidMount() {
         document.onmousedown = doDown;
         document.onmouseup = doUp;
-        document.onmousemove = () => {
-            doMove();
-        };
+        document.onmousemove = doMove;
     }
     componentDidUpdate(prevProps) {
         for (let i = this.props.messages.length - 1; i >= 0; i--) {

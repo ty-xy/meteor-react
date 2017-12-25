@@ -28,7 +28,7 @@ class BaikePeopleDetail extends Component {
                             </div>
                         </div>
                         <div>
-                            <img src="/王澍_介绍.png" />
+                            <img src="/wangpeng_product.png" />
                         </div>
                         <div className="wangshupeng-detail-c">
                             <h4>早年经历</h4>
@@ -62,7 +62,7 @@ class BaikePeopleDetail extends Component {
                         </div>
                     </div>
                     <div >
-                        <img src="/王澍.png" style={{ width: '268px', height: '379px', marginLeft: '24px' }} />
+                        <img src="/wangpeng.png" style={{ width: '268px', height: '379px', marginLeft: '24px' }} />
                     </div>
                 </div>
             </div>
