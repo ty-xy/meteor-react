@@ -1,4 +1,8 @@
 let theobject = null; // This gets a value as soon as a resize start
+// if (typeof (window.event) === 'undefined') {
+//     const $E = function () { let c = $E.caller; while (c.caller)c = c.caller; return c.arguments[0]; };
+//     window.__defineGetter__('event', $E);
+// }
 
 function resizeObject() {
     this.el = null; // pointer to the object

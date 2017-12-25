@@ -56,13 +56,14 @@ class Detail extends (PureComponent || Component) {
             '#7986CB', '#4DB6AC', '#9575CD', '#F06292',
         ];
         const styles = {
+            display: 'inline-block',
             width: '36px',
             height: '36px',
             borderRadius: '50%',
             color: '#fff',
             marginRight: '0px',
             lineHeight: '36px',
-            marginBottom: '0px',
+            marginBottom: '5px',
         };
         return (
             <Row className="e-mg-log-details">
@@ -85,14 +86,14 @@ class Detail extends (PureComponent || Component) {
                         <p>内容</p>
                         {content ? <div dangerouslySetInnerHTML={{ __html: content }} /> : <p>暂无内容</p>}
                     </Col>
-                    <Col span={24} className="e-mg-log-details-footer">
-                        <p>{num}人已读</p>
+                    <Col span={24} className="e-mg-log-details-footer margin-top-20">
+                        <p style={{ marginBottom: '10px' }}>{num}人已读</p>
                         <Col span={24} data-peos={members}>
                             {
                                 members.map((item, index) => {
                                     if (item.isRead) {
                                         return (
-                                            <span key={item.userId}>
+                                            <span key={item.userId} className="notice-details-span">
                                                 {userIdToInfo.getAvatar(allUsers, item.userId) ?
                                                     <img src={userIdToInfo.getAvatar(allUsers, item.userId) || '无头像'} width="36" />
                                                     : <span style={{ ...styles, background: colors[index % 4] }}>{userIdToInfo.getName(allUsers, item.userId).substr(-2, 3)}</span>

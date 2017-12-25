@@ -92,6 +92,11 @@ class ChatWindow extends Component {
             });
         }
     }
+    componentWillUnmount() {
+        document.onmousedown = null;
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
     showFriendShip = () => {
         this.setState({
             isNewFriend: true,
@@ -176,7 +181,7 @@ class ChatWindow extends Component {
             (r, e) => {
                 const index = expressions.default.indexOf(e);
                 if (index !== -1) {
-                    return `<img class="expression-default-message" src="${transparentImage}" style="background-position: left ${-30 * index}px; background-image: url('/expressions.png'); width: 30px ;height: 30px;" onerror="this.style.display='none'" alt="${r}">`;
+                    return `<img class="expression-default-message" src="${transparentImage}" style="background-position: left ${-30 * index}px" onerror="this.style.display='none'" alt="${r}">`;
                 }
                 return r;
             },
@@ -291,7 +296,7 @@ class ChatWindow extends Component {
         });
     }
     renderDefaultExpression = () => (
-        <div className="default-expression" style={{ width: '400px', height: '200px' }}>
+        <div className="default-expression" style={{ width: '400px', height: '130px' }}>
             {
                 expressions.default.map((e, index) => (
                     <div
@@ -304,7 +309,7 @@ class ChatWindow extends Component {
                             <div
                                 className="no-click"
                                 style={{ backgroundPosition: `left ${-30 * index}px`,
-                                    backgroundImage: 'url(\'/expressions.png\')',
+                                    backgroundImage: 'url(\'http://cdn.zg18.com/expressions.png\')',
                                     width: '30px',
                                     height: '30px' }}
                             />
@@ -495,37 +500,13 @@ class ChatWindow extends Component {
                             <div className="user-message-wrap">
                                 <p className="user-nickname">{userInfo.getName()}</p>
                                 <div className="user-img">
-                                    <img src="/commonImg.png" ref={i => this.imgPreview = i} />
+                                    <img src="http://cdn.zg18.com/commonImg.png" ref={i => this.imgPreview = i} />
                                     <Progress percent={this.state.percent} className="img-progress" />
                                 </div>
                             </div>
                         </div>
                     }
                 </ReactChatView>
-                {/* <div className="chat-window-bottom resizeMe" ref={i => this.$chatBottom = i}>
-                    <div className="chat-send-skill">
-                        <p className="skill-icon">
-                            <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
-                                <Icon icon="icon-biaoqing icon" />
-                            </Popover>
-                        </p>
-                        <p className="skill-icon">
-                            <Tooltip title="发送文件" mouseEnterDelay={1}>
-                                <Icon icon="icon-wenjian icon" onClick={this.sendFile} />
-                                <input
-                                    className="input-file"
-                                    type="file"
-                                    ref={i => this.fileInput = i}
-                                    onChange={this.selectFile}
-                                />
-                            </Tooltip>
-                        </p>
-                    </div>
-                    <div className="chat-message-input">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
-                        <p className="chat-send-message" onClick={this.sendText}>发送</p>
-                    </div>
-                </div> */}
                 <div className="chat-window-bottom" ref={i => this.$chatBottom = i}>
                     <div className="chat-message-input resizeMe">
                         <div className="chat-send-skill">
