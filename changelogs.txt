@@ -502,3 +502,40 @@
  zg gwt    fix: 进度条bug
  zg xy    Merge branch 'master' into feature/project_ty
  zg-xym    build results on build 61
+----------------------------------
+
+2017-12-22 11:23:16,   build 63
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    fix：修改safari的文件字体的样式
+ zg xy    fix:更改通知样式
+ zg-xym    build results on build 62
+----------------------------------
+
+2017-12-22 15:49:53,   build 64
+
+ zg-xym    build results on build 63
+----------------------------------
+
+2017-12-22 16:15:35,   build 65
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg-xym    build results on build 64
+----------------------------------
+
+2017-12-24 22:38:38,   build 66
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge branch 'master' into feature/management_gwt
+ zg gwt    feature: 个人信息设置增加头像裁剪功能
+ zg gwt    feature: 个人资料头像裁剪保存
+ zg gwt    feature: 头像裁剪
+ zg gwt    style:卡片添加box-shadow
+ zg-xym    build results on build 65
+----------------------------------
+
+2017-12-25 10:36:35,   build 67
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg-xym    build results on build 66

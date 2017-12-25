@@ -9,6 +9,8 @@ import feedback from '../../../util/feedback';
 import pcaData from '../../../util/pcaData';
 import PopulateUtil from '../../../util/populate';
 
+import AvatarCut from '../../features/AvatarCut';
+
 const Option = Select.Option;
 const FormItem = Form.Item;
 
@@ -29,18 +31,32 @@ class InfoSetting extends Component {
         if (!image) {
             return;
         }
-        const reader = new FileReader();
-        const { _id = '' } = this.props.user;
+        if (image.size > 800000) {
+            feedback.dealError('请选择小于800kb的头像');
+            return;
+        }
 
+        const _this = this;
+        const reader = new FileReader();
         reader.onloadend = function () {
-            Meteor.call('changeAvatar', this.result, _id, (err) => {
-                if (err) {
-                    return console.error(err.reason);
-                }
-                console.log('修改头像成功');
-            });
+            _this.showAvatarCut(true, this.result);
         };
         reader.readAsDataURL(image);
+    }
+    // 显示修改头像
+    showAvatarCut = (bool, avatarDate = '') => {
+        this.setState({ avatarCutVisible: bool, avatarDate });
+    }
+    // 提交图片保存
+    handleAvatar=(img) => {
+        const { _id = '' } = this.props.user;
+        Meteor.call('changeAvatar', img, _id, (err) => {
+            if (err) {
+                return console.error(err.reason);
+            }
+            this.showAvatarCut(false);
+            feedback.dealSuccess('修改成功');
+        });
     }
     handleSubmit = (e) => {
         e.preventDefault();
@@ -48,7 +64,7 @@ class InfoSetting extends Component {
             if (!err) {
                 Meteor.call('changeUserBaseInfo', formValues, (error) => {
                     if (error) {
-                        return feedback.dealError('修改成功');
+                        return feedback.dealError('修改失败');
                     }
                     return feedback.dealSuccess('修改成功');
                 });
@@ -77,12 +93,21 @@ class InfoSetting extends Component {
                     <FormItem
                         label="头像"
                         {...formItemLayout}
+                        style={{ marginBottom: '15px' }}
                     >
-                        <div className="change-self-avatar">
+                        <AvatarCut
+                            visible={this.state.avatarCutVisible}
+                            showAvatarCut={this.showAvatarCut}
+                            handleAvatar={this.handleAvatar}
+                            avatarDate={this.state.avatarDate}
+                        />
+                        <div className="group-avatar-wrap">
+                            {/* 头像裁剪 */}
                             <AvatarSelf />
-                            <p className="edit-avatar">修改头像
-                                <input type="file" id="avatar" onChange={this.handleUploadImg} ref={i => this.fileInput = i} />
-                            </p>
+                            <div className="choose-new-avatar">
+                                修改
+                                <input type="file" id="avatar" accept="image/png,image/jpg,image/jpeg,image/svg" onChange={this.handleUploadImg} ref={i => this.fileInput = i} />
+                            </div>
                         </div>
                     </FormItem>
                     <FormItem
