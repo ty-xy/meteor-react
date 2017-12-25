@@ -37,7 +37,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/1.png" />
+                                        <img src="/donggong.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>懂功</li>
@@ -49,7 +49,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/2.png" />
+                                        <img src="/jiangzijie.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>江子杰</li>
@@ -63,7 +63,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/3.png" />
+                                        <img src="/liuguoyun.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>刘国云</li>
@@ -75,7 +75,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/4.png" />
+                                        <img src="/lichun.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>李春</li>
@@ -89,7 +89,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/5.png" />
+                                        <img src="/zhangmingliang.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>张明梁</li>
@@ -101,7 +101,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/6.png" />
+                                        <img src="/shuyu.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>苏玉豪</li>
@@ -115,7 +115,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/7.png" />
+                                        <img src="/wangze.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>王泽宣</li>
@@ -127,7 +127,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/8.png" />
+                                        <img src="/hejia.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>何家宜</li>

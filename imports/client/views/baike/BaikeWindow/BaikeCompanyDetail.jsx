@@ -22,7 +22,7 @@ class BaikePeopleDetail extends Component {
                             </div>
                         </div>
                         <div>
-                            <img src="/中艺_介绍.png" />
+                            <img src="/zhongyi_product.png" />
                         </div>
                         <div className="zhongyi-detail-c">
                             <h4>公司简介</h4>
@@ -61,7 +61,7 @@ class BaikePeopleDetail extends Component {
                         </div>
                     </div>
                     <div>
-                        <img src="/中国工艺.png" style={{ width: '268px', height: '379px', marginLeft: '24px' }} />
+                        <img src="/chinaArt.png" style={{ width: '268px', height: '379px', marginLeft: '24px' }} />
                     </div>
                 </div>
             </div>
