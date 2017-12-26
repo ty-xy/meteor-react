@@ -6,15 +6,15 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import IdUtil from '../../../../util/id';
-// import Message from '../../../../schema/message';
-// import Group from '../../../../schema/group';
-// import Notice from '../../../../schema/notice';
+import Message from '../../../../schema/message';
+import Group from '../../../../schema/group';
+import Notice from '../../../../schema/notice';
 import Avatar from '../../../components/Avatar';
-// import UserUtil from '../../../../util/user';
+import UserUtil from '../../../../util/user';
 import Icon from '../../../components/Icon';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
-// import PopulateUtil from '../../../../util/populate';
+import PopulateUtil from '../../../../util/populate';
 import NoticeSound from '../../../../util/sound';
 import avatarUrl from '../../../../util/avatarUrl';
 
@@ -205,74 +205,73 @@ class ContactList extends Component {
 
 export default withTracker(() => {
     Meteor.subscribe('users');
-    // Meteor.subscribe('group');
-    // Meteor.subscribe('notice');
-    // const chatList = UserUtil.getChatList();
+    Meteor.subscribe('group');
+    Meteor.subscribe('notice');
+    const chatList = UserUtil.getChatList();
 
-    // const selfGroup = UserUtil.getGroups();
-    // const selfFriend = UserUtil.getFriends();
-    // const friendMessage = selfFriend.map(i => IdUtil.merge(Meteor.userId(), i));
-    // const chatMessageId = [...selfGroup, ...friendMessage];
-    // // 应该过滤出所有与我有关的消息
-    // const allMessage = Message.find({ to: { $in: chatMessageId } }).fetch();
-    // // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
-    // let allUnRead = [];
-    // allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
-    // // 所以有未读消息时点击删除事此时这个消息列表已经删除,但是此时未读消息条数不会立刻更新,判断有未读消息,不存在该聊天窗口,则创建新的聊天窗口,过了一会数据更新了,未读消息为0
-    // if (allUnRead.length > 0) {
-    //     allUnRead.forEach((k) => {
-    //         if (k.to.length <= 17) {
-    //             // if (!chatList.find(j => j.group && j.group._id === k.to)) {
-    //             Meteor.call('addChatList', k.to, 'groupId', (err) => {
-    //                 feedback.dealError(err);
-    //             });
-    //             // }
-    //             // 群聊天
-    //         } else if (k.to.length >= 34) {
-    //             const userId = k.to.slice(0, k.to.length / 2);
-    //             if (userId !== Meteor.userId()) {
-    //                 // 用户聊天
-    //                 Meteor.call('addChatList', userId, 'userId', (err) => {
-    //                     feedback.dealError(err);
-    //                 });
-    //             } else {
-    //                 Meteor.call('addChatList', k.from._id, 'userId', (err) => {
-    //                     feedback.dealError(err);
-    //                 });
-    //             }
-    //         } else {
-    //             console.log('to字段Id的长度', k.to.length);
-    //         }
-    //     });
-    // }
-    // // 已存在聊天列表中显示未读消息
-    // chatList.forEach((x) => {
-    //     if (x.type === 'user') {
-    //         x.user = Meteor.users.findOne({ _id: x.userId });
-    //         const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }, { sort: { createdAt: -1 } }).fetch();
-    //         x.lastMessage = messages.length === 0 ? null : messages[0];
-    //         x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
-    //         x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
-    //     } else if (x.type === 'group') {
-    //         x.group = Group.findOne({ _id: x.groupId });
-    //         const messages = Message.find({ to: x.groupId }, { sort: { createdAt: -1 } }).fetch();
-    //         x.lastMessage = messages.length === 0 ? null : messages[0];
-    //         x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
-    //         x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
-    //     }
-    // });
-    // // 找出别人向你发起的未处理的好友认证
-    // const newFriendNotice = Notice.find({ type: 0, to: Meteor.userId(), dealResult: 0 }).fetch();
-    // newFriendNotice.forEach((x) => {
-    //     x.notice = Notice.findOne({ _id: x._id });
-    //     x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
-    //     x.sortTime = x.createdAt;
-    // });
-    // console.log('chatList, allUnRead, newFriendNotice', chatList, allUnRead, newFriendNotice);
+    const selfGroup = UserUtil.getGroups();
+    const selfFriend = UserUtil.getFriends();
+    const friendMessage = selfFriend.map(i => IdUtil.merge(Meteor.userId(), i));
+    const chatMessageId = [...selfGroup, ...friendMessage];
+    // 应该过滤出所有与我有关的消息
+    const allMessage = Message.find({ to: { $in: chatMessageId } }).fetch();
+    // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
+    let allUnRead = [];
+    allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
+    // 所以有未读消息时点击删除事此时这个消息列表已经删除,但是此时未读消息条数不会立刻更新,判断有未读消息,不存在该聊天窗口,则创建新的聊天窗口,过了一会数据更新了,未读消息为0
+    if (allUnRead.length > 0) {
+        allUnRead.forEach((k) => {
+            if (k.to.length <= 17) {
+                // if (!chatList.find(j => j.group && j.group._id === k.to)) {
+                Meteor.call('addChatList', k.to, 'groupId', (err) => {
+                    feedback.dealError(err);
+                });
+                // }
+                // 群聊天
+            } else if (k.to.length >= 34) {
+                const userId = k.to.slice(0, k.to.length / 2);
+                if (userId !== Meteor.userId()) {
+                    // 用户聊天
+                    Meteor.call('addChatList', userId, 'userId', (err) => {
+                        feedback.dealError(err);
+                    });
+                } else {
+                    Meteor.call('addChatList', k.from._id, 'userId', (err) => {
+                        feedback.dealError(err);
+                    });
+                }
+            } else {
+                console.log('to字段Id的长度', k.to.length);
+            }
+        });
+    }
+    // 已存在聊天列表中显示未读消息
+    chatList.forEach((x) => {
+        if (x.type === 'user') {
+            x.user = Meteor.users.findOne({ _id: x.userId });
+            const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }, { sort: { createdAt: -1 } }).fetch();
+            x.lastMessage = messages.length === 0 ? null : messages[0];
+            x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
+            x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
+        } else if (x.type === 'group') {
+            x.group = Group.findOne({ _id: x.groupId });
+            const messages = Message.find({ to: x.groupId }, { sort: { createdAt: -1 } }).fetch();
+            x.lastMessage = messages.length === 0 ? null : messages[0];
+            x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
+            x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
+        }
+    });
+    // 找出别人向你发起的未处理的好友认证
+    const newFriendNotice = Notice.find({ type: 0, to: Meteor.userId(), dealResult: 0 }).fetch();
+    newFriendNotice.forEach((x) => {
+        x.notice = Notice.findOne({ _id: x._id });
+        x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
+        x.sortTime = x.createdAt;
+    });
     return {
-        chatList: [],
-        allUnRead: [],
-        newFriendNotice: [],
+        chatList,
+        allUnRead,
+        newFriendNotice,
     };
 })(ContactList);
 
