@@ -203,8 +203,8 @@ class ContactList extends Component {
     }
 }
 
-export default withTracker(() =>
-    // Meteor.subscribe('users');
+export default withTracker(() => {
+    Meteor.subscribe('users');
     // Meteor.subscribe('group');
     // Meteor.subscribe('notice');
     // const chatList = UserUtil.getChatList();
@@ -268,10 +268,11 @@ export default withTracker(() =>
     //     x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
     //     x.sortTime = x.createdAt;
     // });
-    ({
+    // console.log('chatList, allUnRead, newFriendNotice', chatList, allUnRead, newFriendNotice);
+    return {
         chatList: [],
         allUnRead: [],
         newFriendNotice: [],
-    }),
-)(ContactList);
+    };
+})(ContactList);
 

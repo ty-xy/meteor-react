@@ -594,3 +594,17 @@
  zg xym    Merge branch 'feature/management_gwt' into 'master'
  zg gwt    test: 取消左侧消息提示
  zg-xym    build results on build 73
+----------------------------------
+
+2017-12-26 14:20:59,   build 75
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    feature: 后台头像设置裁剪；  test: 增加前台数据订阅
+ zg-xym    build results on build 74
+----------------------------------
+
+2017-12-26 16:55:45,   build 76
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    test: 恢复聊天窗口消息
+ zg-xym    build results on build 75

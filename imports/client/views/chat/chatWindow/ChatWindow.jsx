@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Popover, Tooltip, Progress, Modal, Spin } from 'antd';
-// import format from 'date-format';
+import format from 'date-format';
 import ReactChatView from 'react-chatview';
 // import qiniu from 'qiniu-js';
 // /* global Qiniu */
 // /* global plupload */
 
-// import Message from '../../../../../imports/schema/message';
+import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
 import PopulateUtil from '../../../../util/populate';
 import feedback from '../../../../util/feedback';
@@ -74,7 +74,9 @@ class ChatWindow extends Component {
     }
     componentWillReceiveProps(nextProps) {
         console.log('componentWillReceiveProps', nextProps);
-        this.setState({ messages: nextProps.messages });
+        if (nextProps.messages.length !== this.state.messages) {
+            this.setState({ messages: nextProps.messages });
+        }
     }
     componentDidUpdate(prevProps) {
         console.log('componentDidUpdate');
@@ -629,39 +631,39 @@ export default withTracker(({ to, userId, count }) => {
     Meteor.subscribe('files');
     const chatGroup = Group.findOne({ _id: to });
     // PopulateUtil.group(chatGroup);
-    // const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
-    // if (files[0]) {
-    //     files.forEach((d, i, data) => {
-    //         d.showYearMonth = false;
-    //         d.fileFrom = PopulateUtil.user(d.from).profile.name;
-    //         if (i) {
-    //             const prev = data[i - 1];
-    //             d.showYearMonth = format('yyyy-MM', d.createdAt) !== format('yyyy-MM', prev.createdAt);
-    //         } else {
-    //             d.showYearMonth = true;
-    //         }
-    //     });
-    // }
-    // const messages = Message.find({ to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
+    const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
+    if (files[0]) {
+        files.forEach((d, i, data) => {
+            d.showYearMonth = false;
+            d.fileFrom = PopulateUtil.user(d.from).profile.name;
+            if (i) {
+                const prev = data[i - 1];
+                d.showYearMonth = format('yyyy-MM', d.createdAt) !== format('yyyy-MM', prev.createdAt);
+            } else {
+                d.showYearMonth = true;
+            }
+        });
+    }
+    const messages = Message.find({ to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
 
-    // messages.forEach((d, i, data) => {
-    //     d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
-    //     d.from = PopulateUtil.message(d.from);
-    //     d.showYearMonth = false;
-    //     if (i) {
-    //         const prev = data[i - 1];
-    //         d.showYearMonth = d.createdAt.getTime() - prev.createdAt.getTime() > 10 * 60 * 1000;
-    //     } else {
-    //         d.showYearMonth = true;
-    //     }
-    // });
-    console.log(787878, chatGroup);
+    messages.forEach((d, i, data) => {
+        d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
+        d.from = PopulateUtil.message(d.from);
+        d.showYearMonth = false;
+        if (i) {
+            const prev = data[i - 1];
+            d.showYearMonth = d.createdAt.getTime() - prev.createdAt.getTime() > 10 * 60 * 1000;
+        } else {
+            d.showYearMonth = true;
+        }
+    });
+    console.log(787878, chatGroup, Message.find().fetch());
     return {
-        messages: [],
+        messages,
         to,
         chatUser: Meteor.users.findOne({ _id: userId }),
         chatGroup,
-        files: [],
+        files,
     };
 })(ChatWindow);
 
