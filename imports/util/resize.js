@@ -81,7 +81,7 @@ function doUp() {
 
 function doMove() {
     let str;
-    const xMin = 8; // The smallest width possible
+    // const xMin = 8; // The smallest width possible
     const yMin = 8; //             height
 
     const el = getReal(event.srcElement, 'className', 'resizeMe');
@@ -96,7 +96,7 @@ function doMove() {
 
     // Dragging starts here
     if (theobject !== null) {
-        if (theobject.dir.indexOf('e') !== -1) { theobject.el.style.width = `${Math.max(xMin, theobject.width + window.event.clientX - theobject.grabx)}px`; }
+        // if (theobject.dir.indexOf('e') !== -1) { theobject.el.style.width = `${Math.max(xMin, theobject.width + window.event.clientX - theobject.grabx)}px`; }
 
         if (theobject.dir.indexOf('s') !== -1) { theobject.el.style.height = `${Math.max(yMin, theobject.height + window.event.clientY - theobject.graby)}px`; }
 

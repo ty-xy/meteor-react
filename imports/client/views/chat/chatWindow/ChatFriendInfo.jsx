@@ -104,8 +104,7 @@ class ChatFriendInfo extends Component {
                 <div className="opacity" onClick={this.props.handleFriendInfo} />
                 <div className="container-middle container-content">
                     <div className="friend-data-content">
-                        <div className="content-bg" style={divStyle} />
-                        <div className="content-bg1" />
+                        <div className={avatar ? 'content-bg content-bg-filter' : 'content-bg'} style={divStyle} />
                         <p className="close-wrap"><i className="icon-guanbi iconfont" onClick={this.props.handleFriendInfo} /></p>
                         <ul className="friend-info">
                             <li className="friend-base-info">

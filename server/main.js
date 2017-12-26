@@ -47,14 +47,18 @@ import File from '../imports/schema/file';
 //     }
 // });
 
-
 Meteor.publish('users', () => Meteor.users.find(
     {},
     {
         fields: fields.user,
     },
 ));
-Meteor.publish('message', () => Message.find({}));
+console.log('Meteor.iserver', Meteor.isServer);
+
+Meteor.publish('message', (channels) => {
+    console.log('channels', channels);
+    return Message.find(channels || {});
+});
 Meteor.publish('group', () => Group.find({}));
 Meteor.publish('files', () => File.find({}));
 
