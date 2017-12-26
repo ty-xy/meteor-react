@@ -63,6 +63,7 @@ class ChatWindow extends Component {
             isNewNotice: false,
             percent: 0,
             uploadLoadImg: '',
+            messages: [],
         };
         this.onScrollHandle = null;
     }
@@ -71,7 +72,12 @@ class ChatWindow extends Component {
         document.onmouseup = doUp;
         document.onmousemove = doMove;
     }
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps', nextProps);
+        this.setState({ messages: nextProps.messages });
+    }
     componentDidUpdate(prevProps) {
+        console.log('componentDidUpdate');
         for (let i = this.props.messages.length - 1; i >= 0; i--) {
             if (!this.props.messages[i].readed) {
                 Meteor.call('readMessage', this.props.messages[i]._id, Meteor.userId(), (err) => {
@@ -463,7 +469,7 @@ class ChatWindow extends Component {
                     onInfiniteLoad={this.handleMessageListScroll.bind(this)}
                 >
                     {
-                        this.props.messages.map((message, index) => (
+                        this.state.messages.map((message, index) => (
                             <div
                                 key={index}
                             >
