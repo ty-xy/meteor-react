@@ -29,14 +29,14 @@ class BaikeFirst extends Component {
                         />
                     </div>
                     <div className="baike-zhigong-wenku-body">
-                        <img src="/sheet.png" />
-                        <img src="/engdrawings.png" />
-                        <img src="/normal.png" />
-                        <img src="/software.png" />
-                        <img src="/document.png" />
-                        <img src="/construct.png" />
-                        <img src="/gallery.png" />
-                        <img src="/other.png" />
+                        <img src="http://cdn.zg18.com/sheet.png" />
+                        <img src="http://cdn.zg18.com/engdrawings.png" />
+                        <img src="http://cdn.zg18.com/normal.png" />
+                        <img src="http://cdn.zg18.com/software.png" />
+                        <img src="http://cdn.zg18.com/document.png" />
+                        <img src="http://cdn.zg18.com/construct.png" />
+                        <img src="http://cdn.zg18.com/gallery.png" />
+                        <img src="http://cdn.zg18.com/other.png" />
                     </div>
                 </div>
             </div>

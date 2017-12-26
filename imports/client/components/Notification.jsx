@@ -64,7 +64,7 @@ class Notification extends Component {
                 <i className="iconfont icon-guanbi e-notification-close" onClick={() => this.hideNotification(_id)} />
                 <p>来自 {companyName}</p>
                 <div className="e-notification-content clearfix margin-top-20">
-                    <div className="e-notification-avatar"><img src="/start.png" /></div>
+                    <div className="e-notification-avatar"><img src="http://cdn.zg18.com/start.png" /></div>
                     <div className="e-notification-desc">
                         <p className="title">「{arg.noticeType}」— {userIdToInfo.getName(allUsers, from)}的{arg.noticeType}</p>
                         {

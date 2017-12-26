@@ -16,10 +16,10 @@ const CardAudit = ({ handlerAudit, type, reason, daynum, createdAt, status, user
         </div>
         <div className="e-mg-log-card-body e-mg-audit-card-yes">
             {
-                status === '同意' && (<img src="/audit_yes.png" />)
+                status === '同意' && (<img src="http://cdn.zg18.com/audit_yes.png" />)
             }
             {
-                status === '拒绝' && (<img src="/audit_no.png" />)
+                status === '拒绝' && (<img src="http://cdn.zg18.com/audit_no.png" />)
             }
             {
                 /假/g.test(type) && (<div>

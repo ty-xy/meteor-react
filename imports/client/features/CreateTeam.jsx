@@ -9,6 +9,7 @@ import AvatarSelf from '../components/AvatarSelf';
 import Icon from '../components/Icon';
 import feedback from '../../util/feedback';
 import SelectMembers from '../features/SelectMembers';
+import AvatarCut from '../features/AvatarCut';
 import Company from '../../schema/company';
 import UserUtil from '../../util/user';
 import pcaData from '../../util/pcaData';
@@ -55,18 +56,32 @@ class CreateTeam extends Component {
         if (!image) {
             return;
         }
+        if (image.size > 800000) {
+            feedback.dealError('请选择小于800kb的头像');
+            return;
+        }
+
+        const _this = this;
         const reader = new FileReader();
-        const changeAvatar = this.changeAvatar;
         reader.onloadend = function () {
-            Meteor.call('uploadImg', this.result, (err, result) => {
-                if (err) {
-                    return feedback.dealError(err);
-                }
-                changeAvatar(result);
-                return feedback.successToast('修改头像成功');
-            });
+            _this.showAvatarCut(true, this.result);
         };
         reader.readAsDataURL(image);
+    }
+    // 显示修改头像
+    showAvatarCut = (bool, avatarDate = '') => {
+        this.setState({ avatarCutVisible: bool, avatarDate });
+    }
+    // 提交图片保存
+    handleAvatar=(img) => {
+        const _id = Meteor.userId();
+        Meteor.call('changeAvatar', img, _id, (err) => {
+            if (err) {
+                return console.error(err.reason);
+            }
+            this.showAvatarCut(false);
+            feedback.dealSuccess('修改成功');
+        });
     }
     changeAvatar = (avatarUrl) => {
         this.setState({
@@ -101,16 +116,32 @@ class CreateTeam extends Component {
             wrapperCol: { span: 17, offset: 6 },
         } : null;
         const { getFieldDecorator } = this.props.form;
-        const { name = '', logo = this.state.teamLogo, industryType = '', residence = [] } = this.props.currentCompany || {};
+        const { name = '', industryType = '', residence = [] } = this.props.currentCompany || {};
         return (
             <div>
-                <Form layout={formLayout} onSubmit={this.handleSubmit}>
-                    <FormItem>
-                        <div className="upload-team-avatar">
-                            <Avatar avatar={logo} name="团队" />
+                <Form layout={formLayout} onSubmit={this.handleSubmit} className="info-setting">
+                    <FormItem
+                        label="头像"
+                        {...formItemLayout}
+                        style={{ marginBottom: '10px' }}
+                    >
+                        {/* <Avatar avatar={logo} name="团队" />
                             <p className="edit-avatar">修改头像
                                 <input type="file" id="avatar" onChange={this.handleUploadImg} ref={i => this.fileInput = i} />
-                            </p>
+                            </p> */}
+                        <AvatarCut
+                            visible={this.state.avatarCutVisible}
+                            showAvatarCut={this.showAvatarCut}
+                            handleAvatar={this.handleAvatar}
+                            avatarDate={this.state.avatarDate}
+                        />
+                        <div className="group-avatar-wrap">
+                            {/* 头像裁剪 */}
+                            <AvatarSelf />
+                            <div className="choose-new-avatar">
+                                修改
+                                <input type="file" id="avatar" accept="image/png,image/jpg,image/jpeg,image/svg" onChange={this.handleUploadImg} ref={i => this.fileInput = i} />
+                            </div>
                         </div>
                     </FormItem>
                     <FormItem

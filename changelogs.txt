@@ -539,3 +539,58 @@
 
  zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
  zg-xym    build results on build 66
+----------------------------------
+
+2017-12-25 11:39:01,   build 68
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    fix:项目群聊和聊天同步
+ zg xy    fix：发送样式
+ zg xy    fix：更改图片名称
+ zg-xym    build results on build 67
+----------------------------------
+
+2017-12-25 15:50:37,   build 69
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    feat: merge master
+ zg gwt    feat: 新增聊天窗口上下扩展
+ zg xym    Update build.sh
+ zg-xym    build results on build 68
+----------------------------------
+
+2017-12-25 18:19:02,   build 70
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge branch 'master' into feature/management_gwt
+ zg gwt    feat: 静态资源放到七牛CDN； 替换表情包
+ zg-xym    build results on build 69
+----------------------------------
+
+2017-12-25 22:16:14,   build 71
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    style: 修改表情包样式问题； 取消启动时的socket
+ zg-xym    build results on build 70
+----------------------------------
+
+2017-12-26 09:59:35,   build 72
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    test: 测试聊天信息
+ zg-xym    build results on build 71
+----------------------------------
+
+2017-12-26 10:27:30,   build 73
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    test: 取消首页数据
+ zg-xym    build results on build 72
+----------------------------------
+
+2017-12-26 13:38:22,   build 74
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    test: 取消左侧消息提示
+ zg-xym    build results on build 73

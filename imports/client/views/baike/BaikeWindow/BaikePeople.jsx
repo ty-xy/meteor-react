@@ -37,7 +37,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/donggong.png" />
+                                        <img src="http://cdn.zg18.com/donggong.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>懂功</li>
@@ -49,7 +49,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/jiangzijie.png" />
+                                        <img src="http://cdn.zg18.com/jiangzijie.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>江子杰</li>
@@ -63,7 +63,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/liuguoyun.png" />
+                                        <img src="http://cdn.zg18.com/liuguoyun.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>刘国云</li>
@@ -75,7 +75,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/lichun.png" />
+                                        <img src="http://cdn.zg18.com/lichun.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>李春</li>
@@ -89,7 +89,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/zhangmingliang.png" />
+                                        <img src="http://cdn.zg18.com/zhangmingliang.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>张明梁</li>
@@ -101,7 +101,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/shuyu.png" />
+                                        <img src="http://cdn.zg18.com/shuyu.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>苏玉豪</li>
@@ -115,7 +115,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/wangze.png" />
+                                        <img src="http://cdn.zg18.com/wangze.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>王泽宣</li>
@@ -127,7 +127,7 @@ class BaikeFirst extends Component {
                             <Link to="/baike/detail">
                                 <div className="ejian-people-show-reader">
                                     <p>
-                                        <img src="/hejia.png" />
+                                        <img src="http://cdn.zg18.com/hejia.png" />
                                     </p>
                                     <ul className="ejian-people-show-right">
                                         <li>何家宜</li>

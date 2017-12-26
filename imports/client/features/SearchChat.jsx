@@ -65,7 +65,7 @@ class SearchChat extends Component {
                                 this.state.friends && this.state.groups && this.state.friends.length === 0 && this.state.groups.length === 0 ?
                                     <div className="search-chat-no-result">
                                         <div className="no-result">
-                                            <img src="/noSearchResult.png" alt="" />
+                                            <img src="http://cdn.zg18.com/noSearchResult.png" alt="" />
                                             <p>搜索无结果</p>
                                         </div>
                                     </div>

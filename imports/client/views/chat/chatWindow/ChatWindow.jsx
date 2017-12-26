@@ -4,18 +4,19 @@ import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Popover, Tooltip, Progress, Modal, Spin } from 'antd';
-import format from 'date-format';
+// import format from 'date-format';
 import ReactChatView from 'react-chatview';
 // import qiniu from 'qiniu-js';
 // /* global Qiniu */
 // /* global plupload */
 
-import Message from '../../../../../imports/schema/message';
+// import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
 import PopulateUtil from '../../../../util/populate';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
 import userInfo from '../../../../util/user';
+import { doDown, doUp, doMove } from '../../../../util/resize';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -30,6 +31,7 @@ import EmptyChat from '../../../components/EmptyChat';
 
 
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
+
 
 @pureRender
 class ChatWindow extends Component {
@@ -61,10 +63,21 @@ class ChatWindow extends Component {
             isNewNotice: false,
             percent: 0,
             uploadLoadImg: '',
+            messages: [],
         };
         this.onScrollHandle = null;
     }
+    componentDidMount() {
+        document.onmousedown = doDown;
+        document.onmouseup = doUp;
+        document.onmousemove = doMove;
+    }
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps', nextProps);
+        this.setState({ messages: nextProps.messages });
+    }
     componentDidUpdate(prevProps) {
+        console.log('componentDidUpdate');
         for (let i = this.props.messages.length - 1; i >= 0; i--) {
             if (!this.props.messages[i].readed) {
                 Meteor.call('readMessage', this.props.messages[i]._id, Meteor.userId(), (err) => {
@@ -84,6 +97,11 @@ class ChatWindow extends Component {
                 isNewNotice: true,
             });
         }
+    }
+    componentWillUnmount() {
+        document.onmousedown = null;
+        document.onmouseup = null;
+        document.onmousemove = null;
     }
     showFriendShip = () => {
         this.setState({
@@ -139,7 +157,9 @@ class ChatWindow extends Component {
                 type,
             },
             (err) => {
-                feedback.dealError(err);
+                if (err) {
+                    feedback.dealError(err);
+                }
                 this.$message.value = '';
             });
     }
@@ -169,7 +189,7 @@ class ChatWindow extends Component {
             (r, e) => {
                 const index = expressions.default.indexOf(e);
                 if (index !== -1) {
-                    return `<img class="expression-default-message" src="${transparentImage}" style="background-position: left ${-30 * index}px; background-image: url('/expressions.png'); width: 30px ;height: 30px;" onerror="this.style.display='none'" alt="${r}">`;
+                    return `<img class="expression-default-message" src="${transparentImage}" style="background-position: left ${-30 * index}px" onerror="this.style.display='none'" alt="${r}">`;
                 }
                 return r;
             },
@@ -284,7 +304,7 @@ class ChatWindow extends Component {
         });
     }
     renderDefaultExpression = () => (
-        <div className="default-expression" style={{ width: '400px', height: '200px' }}>
+        <div className="default-expression" style={{ width: '400px', height: '130px' }}>
             {
                 expressions.default.map((e, index) => (
                     <div
@@ -297,7 +317,7 @@ class ChatWindow extends Component {
                             <div
                                 className="no-click"
                                 style={{ backgroundPosition: `left ${-30 * index}px`,
-                                    backgroundImage: 'url(\'/expressions.png\')',
+                                    backgroundImage: 'url(\'http://cdn.zg18.com/expressions.png\')',
                                     width: '30px',
                                     height: '30px' }}
                             />
@@ -443,6 +463,7 @@ class ChatWindow extends Component {
                         :
                         null
                 }
+
                 <ReactChatView
                     className="content chat-message-list"
                     flipped
@@ -450,7 +471,7 @@ class ChatWindow extends Component {
                     onInfiniteLoad={this.handleMessageListScroll.bind(this)}
                 >
                     {
-                        this.props.messages.map((message, index) => (
+                        this.state.messages.map((message, index) => (
                             <div
                                 key={index}
                             >
@@ -487,35 +508,37 @@ class ChatWindow extends Component {
                             <div className="user-message-wrap">
                                 <p className="user-nickname">{userInfo.getName()}</p>
                                 <div className="user-img">
-                                    <img src="/commonImg.png" ref={i => this.imgPreview = i} />
+                                    <img src="http://cdn.zg18.com/commonImg.png" ref={i => this.imgPreview = i} />
                                     <Progress percent={this.state.percent} className="img-progress" />
                                 </div>
                             </div>
                         </div>
                     }
                 </ReactChatView>
-                <div className="chat-window-bottom">
-                    <div className="chat-send-skill">
-                        <p className="skill-icon">
-                            <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
-                                <Icon icon="icon-biaoqing icon" />
-                            </Popover>
-                        </p>
-                        <p className="skill-icon">
-                            <Tooltip title="发送文件" mouseEnterDelay={1}>
-                                <Icon icon="icon-wenjian icon" onClick={this.sendFile} />
-                                <input
-                                    className="input-file"
-                                    type="file"
-                                    ref={i => this.fileInput = i}
-                                    onChange={this.selectFile}
-                                />
-                            </Tooltip>
-                        </p>
-                    </div>
-                    <div className="chat-message-input">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
-                        <p className="chat-send-message" onClick={this.sendText}>发送</p>
+                <div className="chat-window-bottom" ref={i => this.$chatBottom = i}>
+                    <div className="chat-message-input resizeMe">
+                        <div className="chat-send-skill">
+                            <p className="skill-icon">
+                                <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
+                                    <Icon icon="icon-biaoqing icon" />
+                                </Popover>
+                            </p>
+                            <p className="skill-icon">
+                                <Tooltip title="发送文件" mouseEnterDelay={1}>
+                                    <Icon icon="icon-wenjian icon" onClick={this.sendFile} />
+                                    <input
+                                        className="input-file"
+                                        type="file"
+                                        ref={i => this.fileInput = i}
+                                        onChange={this.selectFile}
+                                    />
+                                </Tooltip>
+                            </p>
+                        </div>
+                        <div className="chat-send-bts">
+                            <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
+                            <p className="chat-send-message" onClick={this.sendText}>发送</p>
+                        </div>
                     </div>
                 </div>
                 {
@@ -600,45 +623,45 @@ class ChatWindow extends Component {
 }
 
 export default withTracker(({ to, userId, count }) => {
-    // console.log('加载次数', count);
+    console.log('加载次数', count);
     Meteor.subscribe('message');
     Meteor.subscribe('group');
     Meteor.subscribe('files');
     const chatGroup = Group.findOne({ _id: to });
     // PopulateUtil.group(chatGroup);
-    const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
-    if (files[0]) {
-        files.forEach((d, i, data) => {
-            d.showYearMonth = false;
-            d.fileFrom = PopulateUtil.user(d.from).profile.name;
-            if (i) {
-                const prev = data[i - 1];
-                d.showYearMonth = format('yyyy-MM', d.createdAt) !== format('yyyy-MM', prev.createdAt);
-            } else {
-                d.showYearMonth = true;
-            }
-        });
-    }
-    const messages = Message.find({ to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
+    // const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
+    // if (files[0]) {
+    //     files.forEach((d, i, data) => {
+    //         d.showYearMonth = false;
+    //         d.fileFrom = PopulateUtil.user(d.from).profile.name;
+    //         if (i) {
+    //             const prev = data[i - 1];
+    //             d.showYearMonth = format('yyyy-MM', d.createdAt) !== format('yyyy-MM', prev.createdAt);
+    //         } else {
+    //             d.showYearMonth = true;
+    //         }
+    //     });
+    // }
+    // const messages = Message.find({ to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
 
-    messages.forEach((d, i, data) => {
-        d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
-        d.from = PopulateUtil.message(d.from);
-        d.showYearMonth = false;
-        if (i) {
-            const prev = data[i - 1];
-            d.showYearMonth = d.createdAt.getTime() - prev.createdAt.getTime() > 10 * 60 * 1000;
-        } else {
-            d.showYearMonth = true;
-        }
-    });
-    // console.log(787878, messages);
+    // messages.forEach((d, i, data) => {
+    //     d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
+    //     d.from = PopulateUtil.message(d.from);
+    //     d.showYearMonth = false;
+    //     if (i) {
+    //         const prev = data[i - 1];
+    //         d.showYearMonth = d.createdAt.getTime() - prev.createdAt.getTime() > 10 * 60 * 1000;
+    //     } else {
+    //         d.showYearMonth = true;
+    //     }
+    // });
+    console.log(787878, chatGroup);
     return {
-        messages,
+        messages: [],
         to,
         chatUser: Meteor.users.findOne({ _id: userId }),
         chatGroup,
-        files,
+        files: [],
     };
 })(ChatWindow);
 

@@ -59,16 +59,16 @@ class BaikeFirst extends Component {
                         <div className="hot-module">
                             <div className="img-container">
                                 <Link to="/baike/people">
-                                    <img src="/people.png" />
+                                    <img src="http://cdn.zg18.com/people.png" />
                                 </Link>
                                 <Link to="/baike/company">
-                                    <img src="/company.png" />
+                                    <img src="http://cdn.zg18.com/company.png" />
                                 </Link>
                                 <Link to="/baike/file">
-                                    <img src="/wenku.png" />
+                                    <img src="http://cdn.zg18.com/wenku.png" />
                                 </Link>
                                 <Link to="/baike/answer">
-                                    <img src="/wenda.png" />
+                                    <img src="http://cdn.zg18.com/wenda.png" />
                                 </Link>
                             </div>
                         </div>
