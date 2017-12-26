@@ -157,7 +157,9 @@ class ChatWindow extends Component {
                 type,
             },
             (err) => {
-                feedback.dealError(err);
+                if (err) {
+                    feedback.dealError(err);
+                }
                 this.$message.value = '';
             });
     }
@@ -653,7 +655,7 @@ export default withTracker(({ to, userId, count }) => {
     //         d.showYearMonth = true;
     //     }
     // });
-    // console.log(787878, messages);
+    console.log(787878, chatGroup);
     return {
         messages: [],
         to,

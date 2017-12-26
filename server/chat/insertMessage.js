@@ -13,6 +13,8 @@ Meteor.methods({
             readedMembers: [Meteor.userId()],
         };
         Messages.schema.validate(newMessage);
-        return Messages.insert(newMessage);
+        Messages.insert(newMessage);
+        // console.log('id', id);
+        // return id;
     },
 });
