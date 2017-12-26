@@ -624,7 +624,7 @@ class ChatWindow extends Component {
 
 export default withTracker(({ to, userId, count }) => {
     console.log('加载次数', count);
-    // Meteor.subscribe('message');
+    Meteor.subscribe('message');
     Meteor.subscribe('group');
     Meteor.subscribe('files');
     const chatGroup = Group.findOne({ _id: to });
