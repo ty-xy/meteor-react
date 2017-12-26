@@ -7,7 +7,7 @@ const { TextArea } = Input;
 export default function Icom({ Twidth, onClick, input, value, onChange, onConcel, onPop, onKeyDown, defaultvalue,
     bool = true, Top }) {
     return (
-        <div style={{ zIndex: 2000, position: 'relative', marginTop: Top }}>
+        <div style={{ zIndex: 1000, position: 'relative', marginTop: Top }}>
             <TextArea
                 autosize={{ minRows: 1, maxRows: 6 }}
                 autoFocus
