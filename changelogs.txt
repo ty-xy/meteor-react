@@ -616,3 +616,9 @@
  zg xy    Merge branch 'master' into feature/project_ty
  zg xy    fix:修改项目的样式
  zg-xym    build results on build 76
+----------------------------------
+
+2017-12-26 17:26:15,   build 78
+
+ zg-xym    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
+ zg-xym    build results on build 77
