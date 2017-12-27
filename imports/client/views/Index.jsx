@@ -28,14 +28,15 @@ class Index extends Component {
                 } else {
                     history.push('/chat');
                 }
-            } else if (!user && this.isLogin === true && this.props.hash === '#id') {
-                // this.isLogin = false;
-                if (location.search && location.search.indexOf('companyId')) {
-                    history.push({ pathname: '/register', search: location.search, state: 'invite' });
-                } else {
-                    history.push('/register');
-                }
             }
+            //  else if (!user && this.isLogin === true && this.props.hash === '#id') {
+            //     // this.isLogin = false;
+            //     if (location.search && location.search.indexOf('companyId')) {
+            //         history.push({ pathname: '/register', search: location.search, state: 'invite' });
+            //     } else {
+            //         history.push('/register');
+            //     }
+            // }
         });
     }
     isLogin = true;
