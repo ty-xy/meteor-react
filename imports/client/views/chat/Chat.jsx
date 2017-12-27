@@ -279,8 +279,6 @@ class Chat extends Component {
                                 render={props => (
                                     <ChatWindow
                                         {...props}
-                                        to={this.state.to}
-                                        userId={this.state.userId}
                                         changeTo={this.changeTo}
                                         handleToggle={this.handleToggle}
                                         handleClick={this.handleClick.bind(this, 1)}

@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Popover, Tooltip, Progress, Modal, Spin } from 'antd';
+import { Popover, Tooltip, Progress, Spin } from 'antd';
 import format from 'date-format';
 import ReactChatView from 'react-chatview';
 // import qiniu from 'qiniu-js';
@@ -20,8 +20,8 @@ import { doDown, doUp, doMove } from '../../../../util/resize';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
-import GroupNotice from './GroupNotice';
-import GroupSetting from './GroupSetting';
+
+import ChatHeader from './ChatHeader';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 import expressions from '../../../../util/expressions';
@@ -37,7 +37,6 @@ const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEA
 class ChatWindow extends Component {
     static propTypes = {
         messages: PropTypes.arrayOf(PropTypes.object),
-        to: PropTypes.string,
         chatUser: PropTypes.object,
         chatGroup: PropTypes.object,
         match: PropTypes.object,
@@ -400,20 +399,8 @@ class ChatWindow extends Component {
         }
     }
     render() {
-        const { profile = {}, _id = '' } = this.props.chatUser || {};
-        const { name = '' } = profile;
-        const groupName = this.props.chatGroup ? this.props.chatGroup.name : '';
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
-        const memberIds = this.props.chatGroup ? this.props.chatGroup.members : [];
-        const admin = this.props.chatGroup ? this.props.chatGroup.admin : '';
-        const notice = this.props.chatGroup ? this.props.chatGroup.notice : '';
-        const noticeTime = this.props.chatGroup ? this.props.chatGroup.noticeTime : new Date();
-        const isDisturb = this.props.chatGroup ? this.props.chatGroup.isDisturb : [];
-        const stickTop = this.props.chatGroup ? this.props.chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
-        const groupAvatar = this.props.chatGroup ? this.props.chatGroup.avatar : '';
-        const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
         const { uploadLoadding } = this.state;
-        // const { uploadLoadImg, uploadLoadding } = this.state;
         console.log('this.props.to', this.props);
         return (<div className="ejianlian-chat-window">
             {
@@ -424,45 +411,7 @@ class ChatWindow extends Component {
                     :
                     null
             }
-            {
-                name ?
-                    <div className="chat-to-user">
-                        {name}
-                        <div className="chat-other-account">
-                            <p>
-                                <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
-                            </p>
-                            <p>
-                                <Icon
-                                    icon="icon-gerenziliao icon"
-                                    onClick={() => this.handleFriendId(_id)}
-                                />
-                            </p>
-                        </div>
-                    </div>
-                    :
-                    <div className="chat-to-user">
-                        {groupName}
-                        <div className="chat-other-account">
-                            <p>
-                                {
-                                    this.state.isNewNotice ?
-                                        <span className="notive-red-not" />
-                                        :
-                                        null
-                                }
-
-                                <Icon icon="icon-tongzhi2 icon" onClick={this.handleGroupNotice} />
-                            </p>
-                            <p>
-                                <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
-                            </p>
-                            <p>
-                                <Icon icon="icon-shezhi icon" onClick={this.showGroupSet} />
-                            </p>
-                        </div>
-                    </div>
-            }
+            <ChatHeader {...this.props} />
             {
                 this.state.showHistoryLoading ?
                     <Spin />
@@ -571,35 +520,6 @@ class ChatWindow extends Component {
                     null
             }
             {
-                this.state.isShowGroupSet ?
-                    <Modal
-                        title="群设置"
-                        visible
-                        onCancel={this.showGroupSet}
-                        width={370}
-                        wrapClassName="create-team-mask"
-                        footer={null}
-                    >
-                        <GroupSetting
-                            showGroupSet={this.showGroupSet}
-                            groupName={groupName}
-                            groupMemberIds={memberIds}
-                            groupId={groupId}
-                            admin={admin}
-                            isDisturb={isDisturb}
-                            stickTop={stickTop}
-                            avatar={groupAvatar}
-                            changeTo={this.props.changeTo}
-                            handleFriendIdInfo={this.handleFriendIdInfo}
-                            groupType={groupType}
-                            handleToggle={this.props.handleToggle}
-                        />
-                    </Modal>
-
-                    :
-                    null
-            }
-            {
                 this.state.showImgViewer ?
                     <ImageViewer
                         image={this.state.image}
@@ -608,29 +528,17 @@ class ChatWindow extends Component {
                     :
                     null
             }
-            {
-                this.state.isShowNotice ?
-                    <GroupNotice
-                        handleGroupNotice={this.handleGroupNotice}
-                        admin={admin}
-                        notice={notice}
-                        groupId={groupId}
-                        noticeTime={noticeTime}
-                        showNewNotice={this.showNewNotice}
-                    />
-                    :
-                    null
-            }
         </div>);
     }
 }
 
-export default withTracker(({ to, userId, count }) => {
+export default withTracker(({ count, match }) => {
     console.log('加载次数', count);
+    const to = match.params.to;
     Meteor.subscribe('message');
     Meteor.subscribe('group');
     Meteor.subscribe('files');
-    const chatGroup = Group.findOne({ _id: to });
+    const chatGroup = Group.findOne({ _id: to }) || {};
     // PopulateUtil.group(chatGroup);
     const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
     if (files[0]) {
@@ -658,11 +566,10 @@ export default withTracker(({ to, userId, count }) => {
             d.showYearMonth = true;
         }
     });
-    console.log(787878, chatGroup, Message.find().fetch());
     return {
         messages,
         to,
-        chatUser: Meteor.users.findOne({ _id: userId }),
+        chatUser: Meteor.users.findOne({ _id: Meteor.userId() }) || {},
         chatGroup,
         files,
     };

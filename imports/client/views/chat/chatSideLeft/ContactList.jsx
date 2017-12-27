@@ -39,8 +39,8 @@ class ContactList extends Component {
             NoticeSound.play();
         }
     }
-    handleChatWindow = (id) => {
-        this.props.history.push(`/chat/${id}/window`);
+    handleChatWindow = (id, type) => {
+        this.props.history.push({ pathname: `/chat/${id}/window`, state: { type } });
     }
     compare = property => (a, b) => b[property] - a[property];
     deleteChat = (userId, type, unreadMessage) => {
@@ -94,7 +94,7 @@ class ContactList extends Component {
             onClick={() => {
                 this.props.handleToggle(user._id);
                 // this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id, '', 'message');
-                this.handleChatWindow(IdUtil.merge(Meteor.userId()));
+                this.handleChatWindow(Meteor.userId(), type);
             }}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
@@ -130,7 +130,7 @@ class ContactList extends Component {
             onClick={() => {
                 this.props.handleToggle(group._id);
                 // this.props.changeTo(group._id, group._id, '', 'message');
-                this.handleChatWindow(group._id);
+                this.handleChatWindow(group._id, type);
             }}
             key={i}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[group._id] })}
@@ -201,6 +201,7 @@ class ContactList extends Component {
         }
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
         const sortedChatList = [...newStickTopChat, ...newDefaultTopChat];
+        console.log('sortedChatList', sortedChatList);
         return (
             <div className="ejianlian-chat-message-list">
                 {

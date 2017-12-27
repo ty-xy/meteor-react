@@ -65,7 +65,9 @@
         "jsx-a11y/alt-text": 0,
         "no-nested-ternary": 0,
         "jsx-a11y/media-has-caption": 0,
-        "no-mixed-operators": 0
+        "no-mixed-operators": 0,
+        "no-tabs": 0,
+        "no-mixed-spaces-and-tabs": 0
 
     }
 }
