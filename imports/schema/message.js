@@ -11,8 +11,11 @@ Message.schema = new SimpleSchema({
         regEx: SimpleSchema.RegEx.Id,
     },
     to: {
+        type: [Object],
+    },
+    'to.$.userId': {
         type: String,
-        regEx: /.+/,
+        regEx: SimpleSchema.RegEx.Id,
     },
     content: {
         type: String,

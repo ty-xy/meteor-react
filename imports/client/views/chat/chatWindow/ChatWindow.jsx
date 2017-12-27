@@ -16,7 +16,7 @@ import PopulateUtil from '../../../../util/populate';
 import feedback from '../../../../util/feedback';
 import formatDate from '../../../../util/formatDate';
 import userInfo from '../../../../util/user';
-import { doDown, doUp, doMove } from '../../../../util/resize';
+// import { doDown, doUp, doMove } from '../../../../util/resize';
 
 import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
@@ -40,6 +40,7 @@ class ChatWindow extends Component {
         chatUser: PropTypes.object,
         chatGroup: PropTypes.object,
         match: PropTypes.object,
+        location: PropTypes.object,
         files: PropTypes.array,
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
@@ -68,17 +69,19 @@ class ChatWindow extends Component {
         };
         this.onScrollHandle = null;
     }
+    componentWillMount() {
+        const { match, location } = this.props;
+        this.setState({ to: match.params.to, chatType: location.state && location.state.type });
+    }
     componentDidMount() {
-        document.onmousedown = doDown;
-        document.onmouseup = doUp;
-        document.onmousemove = doMove;
+        // document.onmousedown = doDown;
+        // document.onmouseup = doUp;
+        // document.onmousemove = doMove;
     }
     componentWillReceiveProps(nextProps) {
         console.log('componentWillReceiveProps', nextProps);
         if (nextProps.messages.length !== this.state.messages) {
             this.setState({ messages: nextProps.messages });
-        } else {
-            this.setState({ to: nextProps.match.params.to });
         }
     }
     componentDidUpdate(prevProps) {
@@ -154,12 +157,27 @@ class ChatWindow extends Component {
         if (!content) {
             return feedback.dealWarning('请输入要发送的内容');
         }
+        const { chatType } = this.state;
+        const { chatUser, chatGroup } = this.props;
+        const resMes = { content, type, to: [] };
+        if (chatType === 'group') {
+            (chatGroup.members && []).forEach((userId) => {
+                const user = { userId };
+                if (userId === Meteor.userId()) {
+                    user.isRead = true;
+                }
+                resMes.to.push(user);
+            });
+        }
+        if (chatType === 'user') {
+            const user = { userId: Meteor.userId(), isRead: true };
+            resMes.to.push(user);
+        }
+        console.log('content', content, type, chatUser, chatGroup, chatType, resMes);
         Meteor.call(
             'insertMessage',
             {
-                content,
-                to: this.state.to,
-                type,
+                ...resMes,
             },
             (err) => {
                 if (err) {
@@ -401,7 +419,7 @@ class ChatWindow extends Component {
     render() {
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const { uploadLoadding } = this.state;
-        console.log('this.props.to', this.props);
+        console.log('this.props, this.state', this.props, this.state);
         return (<div className="ejianlian-chat-window">
             {
                 this.state.isShowVideo ?

@@ -5,7 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Button } from 'antd';
-import { Route, Link } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 
 import ContactList from './chatSideLeft/ContactList';
@@ -189,11 +189,6 @@ class Chat extends Component {
                     {/* 邀请提示框 */}
                     {this.inviteNotice()}
                     {/* 导航部分 */}
-                    <Link to="/chat">chat</Link>
-                    <Link to="/chat/324/window">chatDetial</Link>
-                    <Link to="/chat/newfriend">newFriend</Link>
-                    <Link to="/chat/teammembers">teamMembers</Link>
-
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
                             <SearchChat
