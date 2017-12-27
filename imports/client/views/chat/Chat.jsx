@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Button } from 'antd';
+import { Route, Link } from 'react-router-dom';
 
 
 import ContactList from './chatSideLeft/ContactList';
@@ -171,16 +172,8 @@ class Chat extends Component {
     />)
     renderChatType = (chatType) => {
         switch (chatType) {
-        case 'message':
-            return (<ChatWindow
-                to={this.state.to}
-                userId={this.state.userId}
-                changeTo={this.changeTo}
-                handleToggle={this.handleToggle}
-                handleClick={this.handleClick.bind(this, 1)}
-                getMoreMessage={this.getMoreMessage}
-                count={this.state.count}
-            />);
+        // case 'message':
+        //     return ();
         case 'newFriend':
             return <NewFriend />;
         case 'teamMembers':
@@ -196,6 +189,11 @@ class Chat extends Component {
                     {/* 邀请提示框 */}
                     {this.inviteNotice()}
                     {/* 导航部分 */}
+                    <Link to="/chat">chat</Link>
+                    <Link to="/chat/324/window">chatDetial</Link>
+                    <Link to="/chat/newfriend">newFriend</Link>
+                    <Link to="/chat/teammembers">teamMembers</Link>
+
                     <div className="ejianlian-chat-nav">
                         <div className="chat-search">
                             <SearchChat
@@ -223,6 +221,7 @@ class Chat extends Component {
                     <div className="ejianlian-chat-user-list">
                         {this.state.selected === 1 ?
                             <ContactList
+                                {...this.props}
                                 changeTo={this.changeTo}
                                 handleToggle={this.handleToggle}
                                 selectedChat={this.state.selectedChat}
@@ -266,11 +265,48 @@ class Chat extends Component {
                         handleToggle={this.handleToggle}
                     />
                 </div>
-                <div className="chat-right">
-                    {
+                {/* {
                         this.renderChatType(this.state.chatType)
+                    } */}
+                <Route
+                    path="/chat"
+                    component={({ match }) => (
+                        <div className="chat-right">
+                            <Route exact path={`${match.url}`} component={EmptyChat} />
+                            <Route path={`${match.url}/newfriend`} component={NewFriend} />
+                            <Route
+                                path={`${match.url}/:to/window`}
+                                render={props => (
+                                    <ChatWindow
+                                        {...props}
+                                        to={this.state.to}
+                                        userId={this.state.userId}
+                                        changeTo={this.changeTo}
+                                        handleToggle={this.handleToggle}
+                                        handleClick={this.handleClick.bind(this, 1)}
+                                        getMoreMessage={this.getMoreMessage}
+                                        count={this.state.count}
+                                    />)}
+                            />
+                            <Route
+                                path={`${match.url}/teammembers`}
+                                render={props => (
+                                    <TeamMembers
+                                        {...props}
+                                        teamId={this.state.currentKey}
+                                        depsId={this.state.currentDeps}
+                                        deps={this.state.deps}
+                                        changeTo={this.changeTo}
+                                        handleToggle={this.handleToggle}
+                                        handleClick={this.handleClick.bind(this, 1)}
+                                    />
+                                )}
+                            />
+                        </div>
+                    )
                     }
-                </div>
+                />
+
             </div>
         );
     }

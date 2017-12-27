@@ -195,7 +195,7 @@ export default Form.create({})(
                 x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;
             });
         } else {
-            currentMembers = currentCompany.members || [];
+            currentMembers = (currentCompany && currentCompany.members) || [];
             currentMembers.forEach((x) => {
                 x.key = x.userId;
                 x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;

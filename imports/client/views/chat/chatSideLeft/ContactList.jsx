@@ -23,16 +23,24 @@ class ContactList extends Component {
     static propTypes = {
         changeTo: PropTypes.func.isRequired,
         chatList: PropTypes.array,
+        history: PropTypes.object,
         handleToggle: PropTypes.func,
         selectedChat: PropTypes.object,
         allUnRead: PropTypes.array,
-        handleNewFriend: PropTypes.func,
+        // handleNewFriend: PropTypes.func,
         newFriendNotice: PropTypes.array,
+    }
+    constructor(props) {
+        super(props);
+        this.state = {};
     }
     componentWillUpdate(nextProps) {
         if (nextProps.allUnRead && this.props.allUnRead < nextProps.allUnRead) {
             NoticeSound.play();
         }
+    }
+    handleChatWindow = (id) => {
+        this.props.history.push(`/chat/${id}/window`);
     }
     compare = property => (a, b) => b[property] - a[property];
     deleteChat = (userId, type, unreadMessage) => {
@@ -62,8 +70,9 @@ class ContactList extends Component {
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[notice._id] })}
             key={index}
             onClick={() => {
-                this.props.handleToggle(notice._id);
-                this.props.handleNewFriend('newFriend');
+                // this.props.handleToggle(notice._id);
+                this.handleChatWindow(23424);
+                // this.props.handleNewFriend('newFriend');
             }}
         >
             <div className="user-avatar new-friend-notice">
@@ -84,7 +93,8 @@ class ContactList extends Component {
             key={index}
             onClick={() => {
                 this.props.handleToggle(user._id);
-                this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id, '', 'message');
+                // this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id, '', 'message');
+                this.handleChatWindow(IdUtil.merge(Meteor.userId()));
             }}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
         >
@@ -119,7 +129,8 @@ class ContactList extends Component {
         return (<div
             onClick={() => {
                 this.props.handleToggle(group._id);
-                this.props.changeTo(group._id, group._id, '', 'message');
+                // this.props.changeTo(group._id, group._id, '', 'message');
+                this.handleChatWindow(group._id);
             }}
             key={i}
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[group._id] })}

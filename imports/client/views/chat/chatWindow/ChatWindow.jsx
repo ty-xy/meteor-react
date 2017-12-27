@@ -27,7 +27,7 @@ import Icon from '../../../components/Icon';
 import expressions from '../../../../util/expressions';
 import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
-import EmptyChat from '../../../components/EmptyChat';
+// import EmptyChat from '../../../components/EmptyChat';
 
 
 const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
@@ -40,6 +40,7 @@ class ChatWindow extends Component {
         to: PropTypes.string,
         chatUser: PropTypes.object,
         chatGroup: PropTypes.object,
+        match: PropTypes.object,
         files: PropTypes.array,
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
@@ -64,6 +65,7 @@ class ChatWindow extends Component {
             percent: 0,
             uploadLoadImg: '',
             messages: [],
+            to: '',
         };
         this.onScrollHandle = null;
     }
@@ -76,6 +78,8 @@ class ChatWindow extends Component {
         console.log('componentWillReceiveProps', nextProps);
         if (nextProps.messages.length !== this.state.messages) {
             this.setState({ messages: nextProps.messages });
+        } else {
+            this.setState({ to: nextProps.match.params.to });
         }
     }
     componentDidUpdate(prevProps) {
@@ -91,7 +95,7 @@ class ChatWindow extends Component {
                 break;
             }
         }
-        if (this.props.to) {
+        if (this.state.to) {
             this.$message.addEventListener('keydown', this.handleSendMessage);
         }
         if (prevProps.chatGroup && this.props.chatGroup && prevProps.chatGroup.notice !== this.props.chatGroup.notice) {
@@ -155,7 +159,7 @@ class ChatWindow extends Component {
             'insertMessage',
             {
                 content,
-                to: this.props.to,
+                to: this.state.to,
                 type,
             },
             (err) => {
@@ -410,217 +414,214 @@ class ChatWindow extends Component {
         const groupType = this.props.chatGroup ? this.props.chatGroup.type : 'group';
         const { uploadLoadding } = this.state;
         // const { uploadLoadImg, uploadLoadding } = this.state;
-        return this.props.to ?
-            <div className="ejianlian-chat-window">
-                {
-                    this.state.isShowVideo ?
-                        <VideoMeeting
-                            closeVideo={this.sendVideo}
-                        />
-                        :
-                        null
-                }
-                {
-                    name ?
-                        <div className="chat-to-user">
-                            {name}
-                            <div className="chat-other-account">
-                                <p>
-                                    <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
-                                </p>
-                                <p>
-                                    <Icon
-                                        icon="icon-gerenziliao icon"
-                                        onClick={() => this.handleFriendId(_id)}
-                                    />
-                                </p>
-                            </div>
+        console.log('this.props.to', this.props);
+        return (<div className="ejianlian-chat-window">
+            {
+                this.state.isShowVideo ?
+                    <VideoMeeting
+                        closeVideo={this.sendVideo}
+                    />
+                    :
+                    null
+            }
+            {
+                name ?
+                    <div className="chat-to-user">
+                        {name}
+                        <div className="chat-other-account">
+                            <p>
+                                <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
+                            </p>
+                            <p>
+                                <Icon
+                                    icon="icon-gerenziliao icon"
+                                    onClick={() => this.handleFriendId(_id)}
+                                />
+                            </p>
                         </div>
-                        :
-                        <div className="chat-to-user">
-                            {groupName}
-                            <div className="chat-other-account">
-                                <p>
-                                    {
-                                        this.state.isNewNotice ?
-                                            <span className="notive-red-not" />
-                                            :
-                                            null
-                                    }
-
-                                    <Icon icon="icon-tongzhi2 icon" onClick={this.handleGroupNotice} />
-                                </p>
-                                <p>
-                                    <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
-                                </p>
-                                <p>
-                                    <Icon icon="icon-shezhi icon" onClick={this.showGroupSet} />
-                                </p>
-                            </div>
-                        </div>
-                }
-                {
-                    this.state.showHistoryLoading ?
-                        <Spin />
-                        :
-                        null
-                }
-
-                <ReactChatView
-                    className="content chat-message-list"
-                    flipped
-                    scrollLoadThreshold={50}
-                    onInfiniteLoad={this.handleMessageListScroll.bind(this)}
-                >
-                    {
-                        this.state.messages.map((message, index) => (
-                            <div
-                                key={index}
-                            >
+                    </div>
+                    :
+                    <div className="chat-to-user">
+                        {groupName}
+                        <div className="chat-other-account">
+                            <p>
                                 {
-                                    message.showYearMonth ?
-                                        <div className="message-time">{formatDate.dealMessageTime(message.createdAt)}</div>
+                                    this.state.isNewNotice ?
+                                        <span className="notive-red-not" />
                                         :
                                         null
                                 }
-                                <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
-                                    <p className="user-avatar" onClick={() => this.handleChatUser(message.from._id, message.to, groupId)}>
-                                        <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
-                                    </p>
-                                    <div className="user-message-wrap">
-                                        {
-                                            message.to === groupId ?
-                                                <p className="user-nickname">{message.from.profile.name}</p>
-                                                :
-                                                null
-                                        }
-                                        {
-                                            this.renderContent(message.type, message.content)
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                    }
-                    {
-                        uploadLoadding && <div className="self-message">
-                            <p className="user-avatar">
-                                <span className="avatar" style={{ backgroundColor: 'rgb(245, 91, 137)' }}>{userInfo.getName().substr(-2, 2)}</span>
+
+                                <Icon icon="icon-tongzhi2 icon" onClick={this.handleGroupNotice} />
                             </p>
-                            <div className="user-message-wrap">
-                                <p className="user-nickname">{userInfo.getName()}</p>
-                                <div className="user-img">
-                                    <img src="http://cdn.zg18.com/commonImg.png" ref={i => this.imgPreview = i} />
-                                    <Progress percent={this.state.percent} className="img-progress" />
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </ReactChatView>
-                <div className="chat-window-bottom" ref={i => this.$chatBottom = i}>
-                    <div className="chat-message-input resizeMe">
-                        <div className="chat-send-skill">
-                            <p className="skill-icon">
-                                <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
-                                    <Icon icon="icon-biaoqing icon" />
-                                </Popover>
+                            <p>
+                                <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
                             </p>
-                            <p className="skill-icon">
-                                <Tooltip title="发送文件" mouseEnterDelay={1}>
-                                    <Icon icon="icon-wenjian icon" onClick={this.sendFile} />
-                                    <input
-                                        className="input-file"
-                                        type="file"
-                                        ref={i => this.fileInput = i}
-                                        onChange={this.selectFile}
-                                    />
-                                </Tooltip>
+                            <p>
+                                <Icon icon="icon-shezhi icon" onClick={this.showGroupSet} />
                             </p>
-                        </div>
-                        <div className="chat-send-bts">
-                            <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
-                            <p className="chat-send-message" onClick={this.sendText}>发送</p>
                         </div>
                     </div>
-                </div>
-                {
-                    this.state.isShowFriendInfo ?
-                        <ChatFriendInfo
-                            handleFriendInfo={this.handleFriendInfo}
-                            friendId={this.state.chatFriendId}
-                            temporaryChat={this.state.temporaryChat}
-                            changeTo={this.props.changeTo}
-                            handleToggle={this.props.handleToggle}
-                            handleClick={this.props.handleClick}
-                        />
-                        :
-                        null
+            }
+            {
+                this.state.showHistoryLoading ?
+                    <Spin />
+                    :
+                    null
+            }
 
-                }
+            <ReactChatView
+                className="content chat-message-list"
+                flipped
+                scrollLoadThreshold={50}
+                onInfiniteLoad={this.handleMessageListScroll.bind(this)}
+            >
                 {
-                    this.state.isShowFriendFile ?
-                        <ChatFriendFile
-                            handleFriendFile={this.handleFriendFile}
-                            files={this.props.files}
-                        />
-                        :
-                        null
-                }
-                {
-                    this.state.isShowGroupSet ?
-                        <Modal
-                            title="群设置"
-                            visible
-                            onCancel={this.showGroupSet}
-                            width={370}
-                            wrapClassName="create-team-mask"
-                            footer={null}
+                    this.state.messages.map((message, index) => (
+                        <div
+                            key={index}
                         >
-                            <GroupSetting
-                                showGroupSet={this.showGroupSet}
-                                groupName={groupName}
-                                groupMemberIds={memberIds}
-                                groupId={groupId}
-                                admin={admin}
-                                isDisturb={isDisturb}
-                                stickTop={stickTop}
-                                avatar={groupAvatar}
-                                changeTo={this.props.changeTo}
-                                handleFriendIdInfo={this.handleFriendIdInfo}
-                                groupType={groupType}
-                                handleToggle={this.props.handleToggle}
-                            />
-                        </Modal>
-
-                        :
-                        null
+                            {
+                                message.showYearMonth ?
+                                    <div className="message-time">{formatDate.dealMessageTime(message.createdAt)}</div>
+                                    :
+                                    null
+                            }
+                            <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
+                                <p className="user-avatar" onClick={() => this.handleChatUser(message.from._id, message.to, groupId)}>
+                                    <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
+                                </p>
+                                <div className="user-message-wrap">
+                                    {
+                                        message.to === groupId ?
+                                            <p className="user-nickname">{message.from.profile.name}</p>
+                                            :
+                                            null
+                                    }
+                                    {
+                                        this.renderContent(message.type, message.content)
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    ))
                 }
                 {
-                    this.state.showImgViewer ?
-                        <ImageViewer
-                            image={this.state.image}
-                            closeImage={this.closeImageViewer}
-                        />
-                        :
-                        null
+                    uploadLoadding && <div className="self-message">
+                        <p className="user-avatar">
+                            <span className="avatar" style={{ backgroundColor: 'rgb(245, 91, 137)' }}>{userInfo.getName().substr(-2, 2)}</span>
+                        </p>
+                        <div className="user-message-wrap">
+                            <p className="user-nickname">{userInfo.getName()}</p>
+                            <div className="user-img">
+                                <img src="http://cdn.zg18.com/commonImg.png" ref={i => this.imgPreview = i} />
+                                <Progress percent={this.state.percent} className="img-progress" />
+                            </div>
+                        </div>
+                    </div>
                 }
-                {
-                    this.state.isShowNotice ?
-                        <GroupNotice
-                            handleGroupNotice={this.handleGroupNotice}
-                            admin={admin}
-                            notice={notice}
-                            groupId={groupId}
-                            noticeTime={noticeTime}
-                            showNewNotice={this.showNewNotice}
-                        />
-                        :
-                        null
-                }
+            </ReactChatView>
+            <div className="chat-window-bottom" ref={i => this.$chatBottom = i}>
+                <div className="chat-message-input resizeMe">
+                    <div className="chat-send-skill">
+                        <p className="skill-icon">
+                            <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
+                                <Icon icon="icon-biaoqing icon" />
+                            </Popover>
+                        </p>
+                        <p className="skill-icon">
+                            <Tooltip title="发送文件" mouseEnterDelay={1}>
+                                <Icon icon="icon-wenjian icon" onClick={this.sendFile} />
+                                <input
+                                    className="input-file"
+                                    type="file"
+                                    ref={i => this.fileInput = i}
+                                    onChange={this.selectFile}
+                                />
+                            </Tooltip>
+                        </p>
+                    </div>
+                    <div className="chat-send-bts">
+                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
+                        <p className="chat-send-message" onClick={this.sendText}>发送</p>
+                    </div>
+                </div>
             </div>
+            {
+                this.state.isShowFriendInfo ?
+                    <ChatFriendInfo
+                        handleFriendInfo={this.handleFriendInfo}
+                        friendId={this.state.chatFriendId}
+                        temporaryChat={this.state.temporaryChat}
+                        changeTo={this.props.changeTo}
+                        handleToggle={this.props.handleToggle}
+                        handleClick={this.props.handleClick}
+                    />
+                    :
+                    null
 
-            :
-            <EmptyChat />;
+            }
+            {
+                this.state.isShowFriendFile ?
+                    <ChatFriendFile
+                        handleFriendFile={this.handleFriendFile}
+                        files={this.props.files}
+                    />
+                    :
+                    null
+            }
+            {
+                this.state.isShowGroupSet ?
+                    <Modal
+                        title="群设置"
+                        visible
+                        onCancel={this.showGroupSet}
+                        width={370}
+                        wrapClassName="create-team-mask"
+                        footer={null}
+                    >
+                        <GroupSetting
+                            showGroupSet={this.showGroupSet}
+                            groupName={groupName}
+                            groupMemberIds={memberIds}
+                            groupId={groupId}
+                            admin={admin}
+                            isDisturb={isDisturb}
+                            stickTop={stickTop}
+                            avatar={groupAvatar}
+                            changeTo={this.props.changeTo}
+                            handleFriendIdInfo={this.handleFriendIdInfo}
+                            groupType={groupType}
+                            handleToggle={this.props.handleToggle}
+                        />
+                    </Modal>
+
+                    :
+                    null
+            }
+            {
+                this.state.showImgViewer ?
+                    <ImageViewer
+                        image={this.state.image}
+                        closeImage={this.closeImageViewer}
+                    />
+                    :
+                    null
+            }
+            {
+                this.state.isShowNotice ?
+                    <GroupNotice
+                        handleGroupNotice={this.handleGroupNotice}
+                        admin={admin}
+                        notice={notice}
+                        groupId={groupId}
+                        noticeTime={noticeTime}
+                        showNewNotice={this.showNewNotice}
+                    />
+                    :
+                    null
+            }
+        </div>);
     }
 }
 
