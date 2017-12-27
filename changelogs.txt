@@ -629,3 +629,10 @@
  zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
  zg xy    fix:登陆出现闪屏
  zg-xym    build results on build 78
+----------------------------------
+
+2017-12-27 11:44:38,   build 80
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    fix:index.jsx还原
+ zg-xym    build results on build 79
