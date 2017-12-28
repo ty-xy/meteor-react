@@ -2,14 +2,16 @@ import { Meteor } from 'meteor/meteor';
 import Messages from '../../imports/schema/message';
 
 Meteor.methods({
-    readMessage(messageId, userId) {
+    readMessage(groupId) {
+        console.log(groupId);
         Messages.update(
-            { _id: messageId },
+            { groupId, 'to.userId': Meteor.userId() },
             {
-                $push: {
-                    readedMembers: userId,
+                $set: {
+                    'to.$.isRead': true,
                 },
             },
+            { multi: true },
         );
     },
     readMessages(messageIds, userId) {

@@ -184,7 +184,7 @@ class ContactList extends Component {
                 Meteor.call('addChatList', item.user._id, 'userId', err => feedback.dealError(err));
             }
             return this.renderUser(item.user, item.lastMessage, item.time, item.type, i, item.unreadMessage);
-        } else if (item.type === 'team') {
+        } else if (item.type === 'team' || item.type === 'group') {
             return this.renderGroup(item._id, item.isDisturb || [], item.avatar, item.name, item.stickTop || [], item.lastMessage, item.time, item.type, i, item.unreadMessage);
         } else if (item.notice) {
             return this.renderNewFriend(item.notice, i, item.friendFrom);

@@ -70,7 +70,13 @@ class ChatWindow extends Component {
         this.onScrollHandle = null;
     }
     componentWillMount() {
-        const { match, location } = this.props;
+        const { match, location, chatGroup } = this.props;
+        console.log('componentWillMount', chatGroup);
+        Meteor.call('readMessage', chatGroup._id, (err) => {
+            if (err) {
+                feedback.dealError(err);
+            }
+        });
         this.setState({ to: match.params.to, chatType: location.state && location.state.type });
     }
     componentDidMount() {
@@ -86,21 +92,18 @@ class ChatWindow extends Component {
     // }
     componentDidUpdate(prevProps) {
         console.log('componentDidUpdate');
-        for (let i = this.props.messages.length - 1; i >= 0; i--) {
-            if (!this.props.messages[i].readed) {
-                Meteor.call('readMessage', this.props.messages[i]._id, Meteor.userId(), (err) => {
-                    if (err) {
-                        feedback.dealError(err);
-                    }
-                });
-            } else {
-                break;
-            }
+        const { match, chatGroup } = this.props;
+        if (chatGroup._id === match.params.to) {
+            Meteor.call('readMessage', chatGroup._id, (err) => {
+                if (err) {
+                    feedback.dealError(err);
+                }
+            });
         }
         if (this.state.to) {
             this.$message.addEventListener('keydown', this.handleSendMessage);
         }
-        if (prevProps.chatGroup && this.props.chatGroup && prevProps.chatGroup.notice !== this.props.chatGroup.notice) {
+        if (prevProps.chatGroup && chatGroup && prevProps.chatGroup.notice !== chatGroup.notice) {
             this.setState({
                 isNewNotice: true,
             });
