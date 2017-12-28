@@ -78,12 +78,12 @@ class ChatWindow extends Component {
         // document.onmouseup = doUp;
         // document.onmousemove = doMove;
     }
-    componentWillReceiveProps(nextProps) {
-        console.log('componentWillReceiveProps', nextProps);
-        if (nextProps.messages.length !== this.state.messages) {
-            this.setState({ messages: nextProps.messages });
-        }
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     console.log('componentWillReceiveProps', nextProps);
+    //     if (nextProps.messages.length !== this.state.messages) {
+    //         this.setState({ messages: nextProps.messages });
+    //     }
+    // }
     componentDidUpdate(prevProps) {
         console.log('componentDidUpdate');
         for (let i = this.props.messages.length - 1; i >= 0; i--) {
@@ -158,10 +158,12 @@ class ChatWindow extends Component {
             return feedback.dealWarning('请输入要发送的内容');
         }
         const { chatType } = this.state;
-        const { chatUser, chatGroup } = this.props;
-        const resMes = { content, type, to: [] };
+        const { chatGroup } = this.props;
+        const { members = [] } = chatGroup;
+        const resMes = { content, chatType, type, to: [] };
         if (chatType === 'group') {
-            (chatGroup.members && []).forEach((userId) => {
+            resMes.groupId = chatGroup._id;
+            members.forEach((userId) => {
                 const user = { userId };
                 if (userId === Meteor.userId()) {
                     user.isRead = true;
@@ -173,7 +175,6 @@ class ChatWindow extends Component {
             const user = { userId: Meteor.userId(), isRead: true };
             resMes.to.push(user);
         }
-        console.log('content', content, type, chatUser, chatGroup, chatType, resMes);
         Meteor.call(
             'insertMessage',
             {
@@ -444,7 +445,7 @@ class ChatWindow extends Component {
                 onInfiniteLoad={this.handleMessageListScroll.bind(this)}
             >
                 {
-                    this.state.messages.map((message, index) => (
+                    this.props.messages.map((message, index) => (
                         <div
                             key={index}
                         >
@@ -551,7 +552,6 @@ class ChatWindow extends Component {
 }
 
 export default withTracker(({ count, match }) => {
-    console.log('加载次数', count);
     const to = match.params.to;
     Meteor.subscribe('message');
     Meteor.subscribe('group');
@@ -571,8 +571,8 @@ export default withTracker(({ count, match }) => {
             }
         });
     }
-    const messages = Message.find({ to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
-
+    const messages = Message.find({ groupId: to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
+    console.log('加载次数', count, to, Message.find().fetch(), Meteor.subscribe('message', { groupId: to }));
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.from = PopulateUtil.message(d.from);
