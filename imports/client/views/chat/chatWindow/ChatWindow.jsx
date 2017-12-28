@@ -161,7 +161,7 @@ class ChatWindow extends Component {
         const { chatGroup } = this.props;
         const { members = [] } = chatGroup;
         const resMes = { content, chatType, type, to: [] };
-        if (chatType === 'group') {
+        if (chatType === 'group' || chatType === 'team') {
             resMes.groupId = chatGroup._id;
             members.forEach((userId) => {
                 const user = { userId };
@@ -175,6 +175,7 @@ class ChatWindow extends Component {
             const user = { userId: Meteor.userId(), isRead: true };
             resMes.to.push(user);
         }
+        console.log('...resMes', resMes);
         Meteor.call(
             'insertMessage',
             {
@@ -558,7 +559,7 @@ export default withTracker(({ count, match }) => {
     Meteor.subscribe('files');
     const chatGroup = Group.findOne({ _id: to }) || {};
     // PopulateUtil.group(chatGroup);
-    const files = Message.find({ to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
+    const files = Message.find({ groupId: to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
     if (files[0]) {
         files.forEach((d, i, data) => {
             d.showYearMonth = false;
@@ -572,7 +573,6 @@ export default withTracker(({ count, match }) => {
         });
     }
     const messages = Message.find({ groupId: to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
-    console.log('加载次数', count, to, Message.find().fetch(), Meteor.subscribe('message', { groupId: to }));
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.from = PopulateUtil.message(d.from);

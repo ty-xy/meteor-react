@@ -34,6 +34,15 @@ class ContactList extends Component {
         super(props);
         this.state = {};
     }
+    componentWillMount() {
+        // Meteor.call(
+        //     'getContactListNum',
+        //     { chatList: UserUtil.getChatList() },
+        //     (res, err) => {
+        //         console.log('componentWillMount', res, err, this.props, UserUtil.getChatList());
+        //     },
+        // );
+    }
     componentWillUpdate(nextProps) {
         if (nextProps.allUnRead && this.props.allUnRead < nextProps.allUnRead) {
             NoticeSound.play();
@@ -115,25 +124,23 @@ class ContactList extends Component {
                             </span>
                             :
                             null
-
                     }
-
                 </p>
             </div>
         </div>
     )
-    renderGroup = (group, lastMessage, time, type, i, unreadMessage) => {
-        const isMyDisturb = group.isDisturb && group.isDisturb.includes(Meteor.userId());
-        const selfStickTop = group.stickTop.find(x => x.userId && x.userId === Meteor.userId());
+    renderGroup = (_id, isDisturb, avatar, name, stickTop, lastMessage, time, type, i, unreadMessage) => {
+        const isMyDisturb = isDisturb.includes(Meteor.userId());
+        const selfStickTop = stickTop.find(x => x.userId && x.userId === Meteor.userId());
         // console.log(9090, isMyDisturb, unreadMessage);
         return (<div
             onClick={() => {
-                this.props.handleToggle(group._id);
+                this.props.handleToggle(_id);
                 // this.props.changeTo(group._id, group._id, '', 'message');
-                this.handleChatWindow(group._id, type);
+                this.handleChatWindow(_id, type);
             }}
             key={i}
-            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[group._id] })}
+            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[_id] })}
         >
             {
                 selfStickTop && selfStickTop.userId === Meteor.userId() ?
@@ -142,13 +149,13 @@ class ContactList extends Component {
                     null
             }
             <div className="icon-guanbi-close">
-                <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
+                <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(_id, type, unreadMessage)} />
             </div>
             <div className="user-avatar">
-                <Avatar avatar={group.avatar ? group.avatar : avatarUrl.avatarGroup} name="群聊" />
+                <Avatar avatar={avatar || avatarUrl.avatarGroup} name="群聊" />
             </div>
             <div className="user-message">
-                <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
+                <p>{name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
                     <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                     {
@@ -177,8 +184,8 @@ class ContactList extends Component {
                 Meteor.call('addChatList', item.user._id, 'userId', err => feedback.dealError(err));
             }
             return this.renderUser(item.user, item.lastMessage, item.time, item.type, i, item.unreadMessage);
-        } else if (item.group) {
-            return this.renderGroup(item.group, item.lastMessage, item.time, item.type, i, item.unreadMessage);
+        } else if (item.type === 'team') {
+            return this.renderGroup(item._id, item.isDisturb || [], item.avatar, item.name, item.stickTop || [], item.lastMessage, item.time, item.type, i, item.unreadMessage);
         } else if (item.notice) {
             return this.renderNewFriend(item.notice, i, item.friendFrom);
         }
@@ -201,12 +208,12 @@ class ContactList extends Component {
         }
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
         const sortedChatList = [...newStickTopChat, ...newDefaultTopChat];
-        console.log('sortedChatList', sortedChatList);
+        console.log('sortedChatList', sortedChatList, newStickTopChat, newDefaultTopChat, chatList);
         return (
             <div className="ejianlian-chat-message-list">
                 {
-                    sortedChatList.length > 0 ?
-                        sortedChatList.map((item, i) => this.renderChatListItem(item, i))
+                    chatList.length > 0 ?
+                        chatList.map((item, i) => this.renderChatListItem(item, i))
                         :
                         <div className="no-content">暂无聊天列表</div>
                 }
@@ -220,7 +227,13 @@ export default withTracker(() => {
     Meteor.subscribe('group');
     Meteor.subscribe('notice');
     const chatList = UserUtil.getChatList();
-
+    chatList.forEach((item, index) => {
+        Object.assign(item, Group.findOne({ _id: item.groupId }));
+        const allNum = Message.find({ 'to.userId': Meteor.userId(), groupId: item.groupId }).fetch() || [];
+        const isReadNum = Message.find({ to: { userId: Meteor.userId(), isRead: true }, groupId: chatList[index].groupId }).fetch() || [];
+        item.unreadMessage = (allNum.length - isReadNum.length) || 0;
+        item.lastMessage = allNum.createdAt;
+    });
     const selfGroup = UserUtil.getGroups();
     const selfFriend = UserUtil.getFriends();
     const friendMessage = selfFriend.map(i => IdUtil.merge(Meteor.userId(), i));
@@ -258,21 +271,21 @@ export default withTracker(() => {
         });
     }
     // 已存在聊天列表中显示未读消息
-    chatList.forEach((x) => {
-        if (x.type === 'user') {
-            x.user = Meteor.users.findOne({ _id: x.userId });
-            const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }, { sort: { createdAt: -1 } }).fetch();
-            x.lastMessage = messages.length === 0 ? null : messages[0];
-            x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
-            x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
-        } else if (x.type === 'group') {
-            x.group = Group.findOne({ _id: x.groupId });
-            const messages = Message.find({ to: x.groupId }, { sort: { createdAt: -1 } }).fetch();
-            x.lastMessage = messages.length === 0 ? null : messages[0];
-            x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
-            x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
-        }
-    });
+    // chatList.forEach((x) => {
+    //     if (x.type === 'user') {
+    //         x.user = Meteor.users.findOne({ _id: x.userId });
+    //         const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }, { sort: { createdAt: -1 } }).fetch();
+    //         x.lastMessage = messages.length === 0 ? null : messages[0];
+    //         x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
+    //         x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
+    //     } else if (x.type === 'group') {
+    //         x.group = Group.findOne({ _id: x.groupId });
+    //         const messages = Message.find({ to: x.groupId }, { sort: { createdAt: -1 } }).fetch();
+    //         x.lastMessage = messages.length === 0 ? null : messages[0];
+    //         x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
+    //         x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
+    //     }
+    // });
     // 找出别人向你发起的未处理的好友认证
     const newFriendNotice = Notice.find({ type: 0, to: Meteor.userId(), dealResult: 0 }).fetch();
     newFriendNotice.forEach((x) => {
@@ -280,6 +293,7 @@ export default withTracker(() => {
         x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
         x.sortTime = x.createdAt;
     });
+    console.log('withTracker', chatList);
     return {
         chatList,
         allUnRead,
