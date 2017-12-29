@@ -19,6 +19,7 @@ import userInfo from '../../../../util/user';
 // import { doDown, doUp, doMove } from '../../../../util/resize';
 
 import ChatHeader from './ChatHeader';
+import ChatFriendInfo from './ChatFriendInfo';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 import VideoMeeting from '../../../features/VideoMeeting';
@@ -68,7 +69,6 @@ class ChatWindow extends Component {
     }
     componentWillMount() {
         const { match, location, chatGroup } = this.props;
-        console.log('componentWillMount', chatGroup);
         Meteor.call('readMessage', chatGroup._id, (err) => {
             if (err) {
                 feedback.dealError(err);
@@ -81,17 +81,9 @@ class ChatWindow extends Component {
         // document.onmouseup = doUp;
         // document.onmousemove = doMove;
     }
-    // componentWillReceiveProps(nextProps) {
-    //     console.log('componentWillReceiveProps', nextProps);
-    //     if (nextProps.messages.length !== this.state.messages) {
-    //         this.setState({ messages: nextProps.messages });
-    //     }
-    // }
     componentDidUpdate(prevProps) {
-        console.log('componentDidUpdate');
         const { match, chatGroup } = this.props;
         if (chatGroup._id === match.params.to) {
-            console.log('this.lastTime', this.lastTime);
             Meteor.call('readMessageLast', chatGroup._id, (err) => {
                 if (err) {
                     feedback.dealError(err);
@@ -120,11 +112,18 @@ class ChatWindow extends Component {
             count: 1,
         });
     }
-
+    // 个人信息model
     handleFriendId = (chatFriendId) => {
         this.setState({
             chatFriendId,
             isShowFriendInfo: true,
+        });
+    }
+    // 个人信息关闭
+    handleFriendInfoClose = () => {
+        this.setState({
+            isShowFriendInfo: false,
+            isShowGroupSet: false,
         });
     }
     handleMessageListScroll() {
@@ -158,7 +157,6 @@ class ChatWindow extends Component {
             const user = { userId: Meteor.userId(), isRead: true };
             resMes.to.push(user);
         }
-        console.log('...resMes', resMes);
         Meteor.call(
             'insertMessage',
             {
@@ -192,7 +190,7 @@ class ChatWindow extends Component {
     }
     selectFile = () => {
         const file = this.fileInput.files[0];
-        console.log('files', this.fileInput.files, file);
+
         if (!file) {
             return;
         }
@@ -258,31 +256,20 @@ class ChatWindow extends Component {
             image: url,
         });
     }
+    // 聊天窗口点击人员头像查看信息
     handleChatUser = (fromId, toId, groupId) => {
+        console.log('handleChatUser', fromId, toId, groupId);
         if (fromId === Meteor.userId()) {
             return;
         }
-        if (toId === groupId) {
-            // 是一个群里的成员,允许创建临时会话
-            this.setState({
-                temporaryChat: true,
-            });
-            this.handleFriendId(fromId);
-        }
-    }
-    // 个人资料显示临时会话的按钮
-    handleFriendIdInfo = (friendId) => {
-        if (friendId === Meteor.userId()) {
-            this.setState({
-                temporaryChat: false,
-            });
-        } else {
-            this.setState({
-                temporaryChat: true,
-            });
-        }
-
-        this.handleFriendId(friendId);
+        this.handleFriendId(fromId);
+        // if (toId === groupId) {
+        //     // 是一个群里的成员,允许创建临时会话
+        //     this.setState({
+        //         temporaryChat: true,
+        //     });
+        //     this.handleFriendId(fromId);
+        // }
     }
     closeImageViewer = () => {
         this.setState({
@@ -327,7 +314,6 @@ class ChatWindow extends Component {
     render() {
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const { uploadLoadding } = this.state;
-        console.log('this.props, this.state', this.props, this.state);
         return (<div className="ejianlian-chat-window">
             {
                 this.state.isShowVideo ?
@@ -337,7 +323,21 @@ class ChatWindow extends Component {
                     :
                     null
             }
-            <ChatHeader {...this.props} handleFriendIdInfo={this.handleFriendIdInfo} handleFriendId={this.handleFriendId} handleToggle={this.handleToggle} />
+            {/* 人员信息 */}
+            {
+                this.state.isShowFriendInfo ?
+                    <ChatFriendInfo
+                        handleFriendInfo={this.handleFriendInfoClose}
+                        friendId={this.state.chatFriendId}
+                        temporaryChat={this.state.temporaryChat}
+                        handleToggle={this.handleToggle}
+                        handleClick={this.handleClick}
+                    />
+                    :
+                    null
+
+            }
+            <ChatHeader {...this.props} handleFriendId={this.handleFriendId} handleFriendInfo={this.handleFriendInfoClose} />
             {
                 this.state.showHistoryLoading ?
                     <Spin />
@@ -427,7 +427,6 @@ class ChatWindow extends Component {
 }
 
 export default withTracker(({ count, match }) => {
-    console.log(match);
     const to = match.params.to;
     Meteor.subscribe('message');
     Meteor.subscribe('group');

@@ -29,12 +29,17 @@ import Icon from '../../components/Icon';
 
 import InviteModel from '../manage/audit/component/MyModel';
 
+
 // let count = 1;
 @pureRender
 class Chat extends Component {
     static propTypes = {
         chatList: PropTypes.array,
         history: PropTypes.object,
+    }
+    static childContextTypes = {
+        handleFriendId: PropTypes.func,
+        handleFriendInfo: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -58,6 +63,12 @@ class Chat extends Component {
             currentDeps: '',
             deps: '',
             count: 1,
+        };
+    }
+    getChildContext() {
+        return {
+            handleFriendId: this.handleFriendId,
+            handleFriendInfo: this.handleFriendInfo,
         };
     }
     componentWillMount() {
@@ -96,6 +107,20 @@ class Chat extends Component {
             count: countNum,
         });
         return Promise.resolve(true);
+    }
+    // 展示个人信息
+    handleFriendId = (chatFriendId) => {
+        this.setState({
+            chatFriendId,
+            isShowFriendInfo: true,
+        });
+    }
+    // 个人信息关闭
+    handleFriendInfo = () => {
+        this.setState({
+            isShowFriendInfo: false,
+            isShowGroupSet: false,
+        });
     }
     handleChatType = (chatType) => {
         this.setState({
@@ -162,20 +187,6 @@ class Chat extends Component {
                 </div>
             </InviteModel>
         );
-    }
-    // 展示个人信息
-    handleFriendId = (chatFriendId) => {
-        this.setState({
-            chatFriendId,
-            isShowFriendInfo: true,
-        });
-    }
-    // 个人信息
-    handleFriendInfo = () => {
-        this.setState({
-            isShowFriendInfo: false,
-            isShowGroupSet: false,
-        });
     }
 
     renderTeamMembers = (teamId, currentDeps, deps) => (<TeamMembers
@@ -289,7 +300,6 @@ class Chat extends Component {
                                 render={props => (
                                     <ChatWindow
                                         {...props}
-                                        changeTo={this.changeTo}
                                         handleToggle={this.handleToggle}
                                         handleClick={this.handleClick.bind(this, 1)}
                                         getMoreMessage={this.getMoreMessage}

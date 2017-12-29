@@ -15,6 +15,7 @@ class ChatHeader extends Component {
         super(...arg);
         this.state = {};
     }
+
 	handleGroupNotice = () => {
 	    this.setState({
 	        isShowNotice: !this.state.isShowNotice,
@@ -51,7 +52,6 @@ class ChatHeader extends Component {
 
         const { type, avatar, isDisturb = [], noticeTime = new Date() } = chatGroup;
         const stickTop = chatGroup.stickTop ? chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
-        console.log('object', this.props, chatGroup, chatUser);
         return (
             <div className="chat-window-header">
                 {
@@ -113,6 +113,7 @@ class ChatHeader extends Component {
                         handleFriendIdInfo={this.props.handleFriendIdInfo}
                         groupType={type}
                         handleToggle={this.handleToggle}
+                        {...this.props}
                     />
                 </Modal>
                 {

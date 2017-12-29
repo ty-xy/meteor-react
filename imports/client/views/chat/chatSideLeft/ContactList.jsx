@@ -115,10 +115,10 @@ class ContactList extends Component {
                 <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(id, type, unreadMessage)} />
             </div>
             <div className="user-avatar">
-                <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
+                {/* <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} /> */}
             </div>
             <div className="user-message">
-                <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
+                {/* <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p> */}
                 <p className="last-message">
                     <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                     {
