@@ -19,18 +19,15 @@ import userInfo from '../../../../util/user';
 // import { doDown, doUp, doMove } from '../../../../util/resize';
 
 import ChatFriendInfo from './ChatFriendInfo';
-import ChatFriendFile from './ChatFriendFile';
-
 import ChatHeader from './ChatHeader';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
-import expressions from '../../../../util/expressions';
-import ImageViewer from '../../../features/ImageViewer';
 import VideoMeeting from '../../../features/VideoMeeting';
 // import EmptyChat from '../../../components/EmptyChat';
 
-
-const transparentImage = 'data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==';
+import expressions from '../../../../util/expressions';
+import Text from './messageComponent/Text';
+import Files from './messageComponent/Files';
 
 
 @pureRender
@@ -116,37 +113,10 @@ class ChatWindow extends Component {
         document.onmouseup = null;
         document.onmousemove = null;
     }
-    showFriendShip = () => {
-        this.setState({
-            isNewFriend: true,
-        });
-    }
-    handleGroupNotice = () => {
-        this.setState({
-            isShowNotice: !this.state.isShowNotice,
-        });
-        this.readNotice();
-    }
     handleFriendId = (chatFriendId) => {
         this.setState({
             chatFriendId,
             isShowFriendInfo: true,
-        });
-    }
-    handleFriendInfo = () => {
-        this.setState({
-            isShowFriendInfo: false,
-            isShowGroupSet: false,
-        });
-    }
-    handleFriendFile = () => {
-        this.setState({
-            isShowFriendFile: !this.state.isShowFriendFile,
-        });
-    }
-    showGroupSet = () => {
-        this.setState({
-            isShowGroupSet: !this.state.isShowGroupSet,
         });
     }
     handleMessageListScroll() {
@@ -208,29 +178,6 @@ class ChatWindow extends Component {
         const name = e.currentTarget.dataset.name;
         this.$message.value += `#(${name})`;
     }
-    // 显示为已读公告
-    readNotice = () => {
-        this.setState({
-            isNewNotice: false,
-        });
-    }
-    convertExpression = txt => ({
-        __html: txt.replace(
-            /#\(([\u4e00-\u9fa5a-z0-9-]+)\)/g,
-            (r, e) => {
-                const index = expressions.default.indexOf(e);
-                if (index !== -1) {
-                    return `<img class="expression-default-message" src="${transparentImage}" style="background-position: left ${-30 * index}px" onerror="this.style.display='none'" alt="${r}">`;
-                }
-                return r;
-            },
-        ).replace(
-            /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g,
-            r => (
-                `<a href="${r}" rel="noopener noreferrer" target="_blank">${r}</a>`
-            ),
-        ),
-    })
     // 发送文件
     sendFile = () => {
         this.fileInput.click();
@@ -359,67 +306,12 @@ class ChatWindow extends Component {
         </div>
     )
 
-    renderFile = (content) => {
-        const result = PopulateUtil.file(content);
-        if (!result) {
-            return;
-        }
-        if (/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(result.type)) {
-            return this.renderImage(result.url);
-        }
-        const base64regex = /data:/;
-        if (base64regex.test(result.url)) {
-            setInterval(() => {
-                let percent = this.state.percent + 10;
-                if (percent > 99) {
-                    percent = 99;
-                    clearInterval(this.timer);
-                }
-                this.setState({ percent });
-            }, 200);
-        }
-        return (
-            <div className="file">
-                <div className="file-icon">
-                    <Icon icon="icon-wenjian" size={30} iconColor="#ffca28" />
-                </div>
-                <div>
-                    <p>{result.name}</p>
-                    <p className="file-size">{result.size}</p>
-                </div>
-                <a href={result.url} download>
-                    下载
-                </a>
-                {
-                    base64regex.test(result.url) ?
-                        <Progress percent={this.state.percent} className="file-progress" />
-                        :
-                        null
-                }
-            </div>
-        );
-    }
-    renderImage = url =>
-        (
-            <div className="user-img">
-                <img
-                    src={url}
-                    height="100"
-                    data-src={url}
-                    ref={i => this.img = i}
-                    onDoubleClick={() => this.handleImageDoubleClick(url)}
-                />
-            </div>)
-
-    renderText = content => (
-        <div className="user-message" dangerouslySetInnerHTML={this.convertExpression(content)} />
-    )
     renderContent = (type, content) => {
         switch (type) {
         case 'text':
-            return this.renderText(content);
+            return <Text content={content} />;
         case 'file':
-            return this.renderFile(content);
+            return <Files content={content} />;
         default:
             return <span>未知消息</span>;
         }
@@ -437,7 +329,7 @@ class ChatWindow extends Component {
                     :
                     null
             }
-            <ChatHeader {...this.props} />
+            <ChatHeader {...this.props} handleFriendIdInfo={this.handleFriendIdInfo} handleFriendId={this.handleFriendId} />
             {
                 this.state.showHistoryLoading ?
                     <Spin />
@@ -496,6 +388,20 @@ class ChatWindow extends Component {
                     </div>
                 }
             </ReactChatView>
+            {
+                this.state.isShowFriendInfo ?
+                    <ChatFriendInfo
+                        handleFriendInfo={this.handleFriendInfo}
+                        friendId={this.state.chatFriendId}
+                        temporaryChat={this.state.temporaryChat}
+                        changeTo={this.changeTo}
+                        handleToggle={this.handleToggle}
+                        handleClick={this.handleClick}
+                    />
+                    :
+                    null
+
+            }
             <div className="chat-window-bottom" ref={i => this.$chatBottom = i}>
                 <div className="chat-message-input resizeMe">
                     <div className="chat-send-skill">
@@ -522,38 +428,6 @@ class ChatWindow extends Component {
                     </div>
                 </div>
             </div>
-            {
-                this.state.isShowFriendInfo ?
-                    <ChatFriendInfo
-                        handleFriendInfo={this.handleFriendInfo}
-                        friendId={this.state.chatFriendId}
-                        temporaryChat={this.state.temporaryChat}
-                        changeTo={this.props.changeTo}
-                        handleToggle={this.props.handleToggle}
-                        handleClick={this.props.handleClick}
-                    />
-                    :
-                    null
-
-            }
-            {
-                this.state.isShowFriendFile ?
-                    <ChatFriendFile
-                        handleFriendFile={this.handleFriendFile}
-                        files={this.props.files}
-                    />
-                    :
-                    null
-            }
-            {
-                this.state.showImgViewer ?
-                    <ImageViewer
-                        image={this.state.image}
-                        closeImage={this.closeImageViewer}
-                    />
-                    :
-                    null
-            }
         </div>);
     }
 }

@@ -4,7 +4,6 @@ import { Meteor } from 'meteor/meteor';
 import pureRender from 'pure-render-decorator';
 import { Modal } from 'antd';
 
-import ChatFriendInfo from './ChatFriendInfo';
 import ChatFriendFile from './ChatFriendFile';
 import GroupNotice from './GroupNotice';
 import GroupSetting from './GroupSetting';
@@ -21,13 +20,6 @@ class ChatHeader extends Component {
 	        isShowNotice: !this.state.isShowNotice,
 	    });
 	    this.readNotice();
-	}
-
-	handleFriendId = (chatFriendId) => {
-	    this.setState({
-	        chatFriendId,
-	        isShowFriendInfo: true,
-	    });
 	}
 
     handleFriendFile = () => {
@@ -59,7 +51,6 @@ class ChatHeader extends Component {
 
         const { type, avatar, isDisturb = [], noticeTime = new Date() } = chatGroup;
         const stickTop = chatGroup.stickTop ? chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
-        console.log('object');
         return (
             <div className="chat-window-header">
                 {
@@ -70,7 +61,7 @@ class ChatHeader extends Component {
                                 <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
                                 <Icon
                                     icon="icon-gerenziliao icon"
-                                    onClick={() => this.handleFriendId(chatUser._id)}
+                                    onClick={() => this.props.handleFriendId(chatUser._id)}
                                 />
                             </div>
                         </div>
@@ -90,20 +81,6 @@ class ChatHeader extends Component {
                                 <Icon icon="icon-shezhi icon" onClick={this.showGroupSet} />
                             </div>
                         </div>
-                }
-                {
-                    this.state.isShowFriendInfo ?
-                        <ChatFriendInfo
-                            handleFriendInfo={this.handleFriendInfo}
-                            friendId={this.state.chatFriendId}
-                            temporaryChat={this.state.temporaryChat}
-                            changeTo={this.changeTo}
-                            handleToggle={this.handleToggle}
-                            handleClick={this.handleClick}
-                        />
-                        :
-                        null
-
                 }
                 {
                     this.state.isShowFriendFile ?
@@ -132,7 +109,7 @@ class ChatHeader extends Component {
                         stickTop={stickTop}
                         avatar={avatar}
                         changeTo={this.changeTo}
-                        handleFriendIdInfo={this.handleFriendIdInfo}
+                        handleFriendIdInfo={this.props.handleFriendIdInfo}
                         groupType={type}
                         handleToggle={this.handleToggle}
                     />
@@ -158,6 +135,8 @@ ChatHeader.propTypes = {
     chatGroup: PropTypes.object,
     chatUser: PropTypes.object,
     location: PropTypes.object,
+    handleFriendIdInfo: PropTypes.func,
+    handleFriendId: PropTypes.func,
     files: PropTypes.array,
 };
 
