@@ -38,6 +38,7 @@ class FriendsList extends Component {
         });
     }
     render() {
+        console.log(this.props.users);
         return (
             <div className="ejianlian-chat-friend-list">
                 <div className="chat-friend-pannel" onClick={() => this.props.handleNewFriend('newFriend')}>

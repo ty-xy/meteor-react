@@ -33,11 +33,11 @@ Meteor.methods({
                 {
                     $push: {
                         'profile.friends': friendId,
-                        'profile.chatList': {
-                            type: 'user',
-                            userId: friendId,
-                            time: new Date(),
-                        },
+                        // 'profile.chatList': {
+                        //     type: 'user',
+                        //     userId: friendId,
+                        //     time: new Date(),
+                        // },
                     },
                 },
             );
@@ -46,11 +46,11 @@ Meteor.methods({
                 {
                     $push: {
                         'profile.friends': Meteor.userId(),
-                        'profile.chatList': {
-                            type: 'user',
-                            userId: Meteor.userId(),
-                            time: new Date(),
-                        },
+                        // 'profile.chatList': {
+                        //     type: 'user',
+                        //     userId: Meteor.userId(),
+                        //     time: new Date(),
+                        // },
                     },
                 },
             );
