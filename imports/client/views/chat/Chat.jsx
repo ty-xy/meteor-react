@@ -14,6 +14,7 @@ import GroupList from './chatSideLeft/GroupList';
 import TeamList from './chatSideLeft/TeamList';
 import AddChat from '../chat/chatSideLeft/addChat/AddChat';
 import ChatWindow from './chatWindow/ChatWindow';
+import ChatFriendInfo from './chatWindow/ChatFriendInfo';
 import UserUtil from '../../../util/user';
 import feedback from '../../../util/feedback';
 
@@ -162,6 +163,21 @@ class Chat extends Component {
             </InviteModel>
         );
     }
+    // 展示个人信息
+    handleFriendId = (chatFriendId) => {
+        this.setState({
+            chatFriendId,
+            isShowFriendInfo: true,
+        });
+    }
+    // 个人信息
+    handleFriendInfo = () => {
+        this.setState({
+            isShowFriendInfo: false,
+            isShowGroupSet: false,
+        });
+    }
+
     renderTeamMembers = (teamId, currentDeps, deps) => (<TeamMembers
         teamId={teamId}
         depsId={currentDeps}
@@ -170,18 +186,6 @@ class Chat extends Component {
         handleToggle={this.handleToggle}
         handleClick={this.handleClick.bind(this, 1)}
     />)
-    renderChatType = (chatType) => {
-        switch (chatType) {
-        // case 'message':
-        //     return ();
-        case 'newFriend':
-            return <NewFriend />;
-        case 'teamMembers':
-            return this.renderTeamMembers(this.state.currentKey, this.state.currentDeps, this.state.deps);
-        default:
-            return <EmptyChat />;
-        }
-    }
     render() {
         return (
             <div className="ejianlian-chat">
@@ -260,9 +264,20 @@ class Chat extends Component {
                         handleToggle={this.handleToggle}
                     />
                 </div>
-                {/* {
-                        this.renderChatType(this.state.chatType)
-                    } */}
+                {
+                    this.state.isShowFriendInfo ?
+                        <ChatFriendInfo
+                            handleFriendInfo={this.handleFriendInfo}
+                            friendId={this.state.chatFriendId}
+                            temporaryChat={this.state.temporaryChat}
+                            changeTo={this.changeTo}
+                            handleToggle={this.handleToggle}
+                            handleClick={this.handleClick}
+                        />
+                        :
+                        null
+
+                }
                 <Route
                     path="/chat"
                     component={({ match }) => (

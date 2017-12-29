@@ -18,7 +18,6 @@ import formatDate from '../../../../util/formatDate';
 import userInfo from '../../../../util/user';
 // import { doDown, doUp, doMove } from '../../../../util/resize';
 
-import ChatFriendInfo from './ChatFriendInfo';
 import ChatHeader from './ChatHeader';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
@@ -113,6 +112,15 @@ class ChatWindow extends Component {
         document.onmouseup = null;
         document.onmousemove = null;
     }
+    handleToggle = (value) => {
+        this.setState({
+            selectedChat: {
+                [value]: true,
+            },
+            count: 1,
+        });
+    }
+
     handleFriendId = (chatFriendId) => {
         this.setState({
             chatFriendId,
@@ -329,7 +337,7 @@ class ChatWindow extends Component {
                     :
                     null
             }
-            <ChatHeader {...this.props} handleFriendIdInfo={this.handleFriendIdInfo} handleFriendId={this.handleFriendId} />
+            <ChatHeader {...this.props} handleFriendIdInfo={this.handleFriendIdInfo} handleFriendId={this.handleFriendId} handleToggle={this.handleToggle} />
             {
                 this.state.showHistoryLoading ?
                     <Spin />
@@ -388,20 +396,6 @@ class ChatWindow extends Component {
                     </div>
                 }
             </ReactChatView>
-            {
-                this.state.isShowFriendInfo ?
-                    <ChatFriendInfo
-                        handleFriendInfo={this.handleFriendInfo}
-                        friendId={this.state.chatFriendId}
-                        temporaryChat={this.state.temporaryChat}
-                        changeTo={this.changeTo}
-                        handleToggle={this.handleToggle}
-                        handleClick={this.handleClick}
-                    />
-                    :
-                    null
-
-            }
             <div className="chat-window-bottom" ref={i => this.$chatBottom = i}>
                 <div className="chat-message-input resizeMe">
                     <div className="chat-send-skill">
