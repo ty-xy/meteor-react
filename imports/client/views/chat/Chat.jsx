@@ -261,8 +261,8 @@ class Chat extends Component {
                     />
                 </div>
                 {/* {
-                        this.renderChatType(this.state.chatType)
-                    } */}
+                    this.renderChatType(this.state.chatType)
+                } */}
                 <Route
                     path="/chat"
                     component={({ match }) => (

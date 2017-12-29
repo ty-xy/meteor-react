@@ -194,6 +194,7 @@ class ChatFriendInfo extends Component {
     }
 }
 export default withTracker(({ friendId }) => {
+    console.log(friendId);
     Meteor.subscribe('users');
     const user = Meteor.user() || {};
     const chatUser = Meteor.users.findOne({ _id: friendId }) || {};
