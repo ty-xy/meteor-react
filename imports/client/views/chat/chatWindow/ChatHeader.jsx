@@ -51,6 +51,7 @@ class ChatHeader extends Component {
 
         const { type, avatar, isDisturb = [], noticeTime = new Date() } = chatGroup;
         const stickTop = chatGroup.stickTop ? chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
+        console.log('object', this.props, chatGroup, chatUser);
         return (
             <div className="chat-window-header">
                 {

@@ -8,7 +8,7 @@ Meteor.methods({
                 {
                     $pull: {
                         'profile.chatList': {
-                            userId: chatId,
+                            groupId: chatId,
                         },
                     },
 

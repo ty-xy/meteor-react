@@ -9,6 +9,8 @@ import Icon from '../../../components/Icon';
 import Avatar from '../../../components/Avatar';
 import Notice from '../../../../schema/notice';
 import PopulateUtil from '../../../../util/populate';
+import feedback from '../../../../util/feedback';
+import userInfo from '../../../../util/user';
 
 @pureRender
 class NewFriend extends Component {
@@ -22,7 +24,7 @@ class NewFriend extends Component {
         };
     }
     compare = property => (a, b) => b[property] - a[property];
-    dealNotice = (noticeId, index, friendId) => {
+    dealNotice = async (noticeId, index, friendId, user) => {
         console.log(111);
         Meteor.call('dealFriendNotice', noticeId, index, (err) => {
             console.log(err);
@@ -33,6 +35,23 @@ class NewFriend extends Component {
                     console.error(err.reason);
                 }
             });
+            try {
+                // 注意判断选中的人是否包含Meter.userId()
+                const members = [Meteor.userId(), friendId];
+                const name = Meteor.user() ? user : userInfo.getName();
+                const result = await Meteor.callPromise('createGroup', {
+                    name,
+                    members,
+                    type: 'user',
+                });
+                console.log(result);
+                // await this.props.changeTo(result, result, '', 'message');
+                // await this.props.handleToggle(result);
+                await this.handleAddGroup();
+                feedback.dealSuccess('成功创建群聊');
+            } catch (err) {
+                feedback.dealError(err);
+            }
         }
     }
     deleteNotice = (noticeId) => {
@@ -54,8 +73,9 @@ class NewFriend extends Component {
             </div>
         </div>
     )
-    renderFriendNotice = (item, index) => (
-        <div className="new-friend-pannel" key={index}>
+    renderFriendNotice = (item, index) => {
+        console.log(11111111);
+        return (<div className="new-friend-pannel" key={index}>
             <Icon icon="icon-chuyidong" size={20} onClick={() => this.deleteNotice(item._id)} />
             <Avatar name={item.noticeFrom.profile.name} avatarColor={item.noticeFrom.profile.avatarColor} />
             <div className="friend-info">
@@ -65,7 +85,7 @@ class NewFriend extends Component {
             {
                 item.dealResult === 0 ?
                     <div className="friend-confirm">
-                        <button className="accept" onClick={this.dealNotice.bind(this, item._id, 1, item.from)}>接受</button>
+                        <button className="accept" onClick={this.dealNotice.bind(this, item._id, 1, item.from, item.noticeFrom.profile.name)}>接受</button>
                         <button className="refuse" onClick={this.dealNotice.bind(this, item._id, 2)}>拒绝</button>
                     </div>
                     : (item.dealResult === 1 ?
@@ -74,8 +94,8 @@ class NewFriend extends Component {
                         <button className="confirmed">已拒绝</button>
                     )
             }
-        </div>
-    )
+        </div>);
+    }
     render() {
         const renderFriendList = this.props.newFriendNotice.sort(this.compare('createdAt'));
         return (
@@ -87,15 +107,11 @@ class NewFriend extends Component {
                     {
                         renderFriendList.length > 0 ?
                             <div className="new-friend">
-
                                 {renderFriendList.map((item, index) => (
-
                                     item.to === Meteor.userId() ?
                                         this.renderFriendNotice(item, index)
                                         :
                                         this.renderRefuseFriend(item, index)
-
-
                                 ))}
                             </div>
                             :
@@ -124,6 +140,7 @@ export default withTracker(() => {
         x.noticeTo = PopulateUtil.user(x.to) || {};
     });
     const newFriendNotice = [...friendNotice, ...refuseFriend];
+    console.log(newFriendNotice, Meteor.userId());
     return {
         newFriendNotice,
     };
