@@ -68,6 +68,7 @@ class ChatWindow extends Component {
             to: '',
         };
         this.onScrollHandle = null;
+        this.lastTime = '';
     }
     componentWillMount() {
         const { match, location, chatGroup } = this.props;
@@ -94,7 +95,8 @@ class ChatWindow extends Component {
         console.log('componentDidUpdate');
         const { match, chatGroup } = this.props;
         if (chatGroup._id === match.params.to) {
-            Meteor.call('readMessage', chatGroup._id, (err) => {
+            console.log('this.lastTime', this.lastTime);
+            Meteor.call('readMessageLast', chatGroup._id, (err) => {
                 if (err) {
                     feedback.dealError(err);
                 }
@@ -184,10 +186,11 @@ class ChatWindow extends Component {
             {
                 ...resMes,
             },
-            (err) => {
+            (err, res) => {
                 if (err) {
                     feedback.dealError(err);
                 }
+                this.lastTime = res;
                 this.$message.value = '';
             });
     }

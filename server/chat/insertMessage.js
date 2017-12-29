@@ -4,9 +4,10 @@ import Messages from '../../imports/schema/message';
 
 Meteor.methods({
     insertMessage({ content, to, type, chatType, groupId }) {
+        const createdAt = new Date();
         const newMessage = {
             content,
-            createdAt: new Date(),
+            createdAt,
             from: Meteor.userId(),
             to,
             type,
@@ -17,6 +18,6 @@ Meteor.methods({
         Messages.schema.validate(newMessage);
         Messages.insert(newMessage);
         // console.log('id', id);
-        // return id;
+        // return createdAt;
     },
 });

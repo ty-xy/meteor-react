@@ -3,7 +3,6 @@ import Messages from '../../imports/schema/message';
 
 Meteor.methods({
     readMessage(groupId) {
-        console.log(groupId);
         Messages.update(
             { groupId, 'to.userId': Meteor.userId() },
             {
@@ -14,16 +13,17 @@ Meteor.methods({
             { multi: true },
         );
     },
-    readMessages(messageIds, userId) {
-        messageIds.map(messageId =>
-            Messages.update(
-                { _id: messageId },
-                {
-                    $push: {
-                        readedMembers: userId,
+    readMessageLast(groupId) {
+        Messages.findAndModify(
+            {
+                query: { groupId, 'to.userId': Meteor.userId() },
+                sort: { $natural: -1 },
+                update: {
+                    $set: {
+                        'to.$.isRead': true,
                     },
                 },
-            ),
+            },
         );
     },
 });
