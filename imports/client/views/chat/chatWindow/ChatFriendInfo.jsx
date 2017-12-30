@@ -69,6 +69,9 @@ class ChatFriendInfo extends Component {
             feedback.dealSuccess('删除好友成功');
             this.props.handleFriendInfo();
         });
+        Meteor.call('deleteGroup', this.props.groupId, (err) => {
+            console.log(err);
+        });
     }
     handleDeleteFriend = () => {
         this.props.handleFriendInfo();
@@ -200,7 +203,7 @@ export default withTracker(({ friendId }) => {
     Meteor.subscribe('users');
     Meteor.subscribe('group');
     const user = Meteor.user() || {};
-    const group = Group.findOne({ $and: [{ type: 'user', members: { $all: [friendId] } }] }) || {};
+    const group = Group.findOne({ $and: [{ type: 'user', members: [Meteor.userId(), friendId] }] }) || {};
     const groupId = group._id || '';
     const chatUser = Meteor.users.findOne({ _id: friendId }) || {};
     console.log(groupId);

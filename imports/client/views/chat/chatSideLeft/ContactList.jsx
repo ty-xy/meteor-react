@@ -187,7 +187,7 @@ class ContactList extends Component {
         if (item.type === 'user') {
             const mem = item.members ? item.members.filter(value => value !== Meteor.userId()) : '';
             const users = Meteor.users.findOne({ _id: mem[0] });
-            //  console.log(item, mem, users, Meteor.userId());
+            console.log(item, mem, users, Meteor.userId());
             return this.renderUser(users, item.lastMessage, item.time, item.type, i, item.unreadMessage, item._id, mem);
         } else if (item.type === 'team' || item.type === 'group') {
             return this.renderGroup(item._id, item.isDisturb || [], item.avatar, item.name, item.stickTop || [], item.lastMessage, item.time, item.type, i, item.unreadMessage);
