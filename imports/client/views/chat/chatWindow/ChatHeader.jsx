@@ -8,6 +8,7 @@ import ChatFriendFile from './ChatFriendFile';
 import GroupNotice from './GroupNotice';
 import GroupSetting from './GroupSetting';
 import Icon from '../../../components/Icon';
+// import UserUtil from '../../../../util/user';
 
 @pureRender
 class ChatHeader extends Component {
@@ -43,8 +44,11 @@ class ChatHeader extends Component {
     render() {
         const { chatGroup, chatUser } = this.props;
         const { location } = this.props;
+        const Id = chatGroup.type === 'user' ? chatGroup.members.filter(value => value !== Meteor.userId()) : '';
+        const chUSer = Meteor.users.findOne({ _id: Id[0] }) || {};
+        // console.log(chUSer.profile.name);
         // const { profile = {}, _id = '' } = this.props.chatUser || {};
-        const { name } = chatUser.profile || {};
+        const { name } = chUSer.profile || {};
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const memberIds = this.props.chatGroup ? this.props.chatGroup.members : [];
         const admin = this.props.chatGroup ? this.props.chatGroup.admin : '';
