@@ -155,6 +155,7 @@ class ChatWindow extends Component {
             });
         }
         if (chatType === 'user') {
+            resMes.groupId = chatGroup._id;
             const user = { userId: Meteor.userId(), isRead: true };
             resMes.to.push(user);
         }
@@ -337,7 +338,12 @@ class ChatWindow extends Component {
                     :
                     null
             }
-            <ChatHeader {...this.props} handleFriendIdInfo={this.handleFriendIdInfo} handleFriendId={this.handleFriendId} handleToggle={this.handleToggle} />
+            <ChatHeader
+                {...this.props}
+                handleFriendIdInfo={this.handleFriendIdInfo}
+                handleFriendId={this.handleFriendId}
+                handleToggle={this.handleToggle}
+            />
             {
                 this.state.showHistoryLoading ?
                     <Spin />

@@ -48,11 +48,12 @@ class ContactList extends Component {
             NoticeSound.play();
         }
     }
-    handleChatNewfriend=() => {
+    handleChatNewfriend = () => {
         this.props.history.push({ pathname: '/chat/newfriend' });
     }
     handleChatWindow = (id, type) => {
         this.props.history.push({ pathname: `/chat/${id}/window`, state: { type } });
+        console.log(type);
     }
     compare = property => (a, b) => b[property] - a[property];
     deleteChat = (userId, type, unreadMessage) => {

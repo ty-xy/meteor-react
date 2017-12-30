@@ -8,6 +8,7 @@ import Avatar from '../../../components/Avatar';
 import feedback from '../../../../util/feedback';
 import IdUtil from '../../../../util/id';
 import avatarUrl from '../../../../util/avatarUrl';
+import Group from '../../../../schema/group';
 
 @pureRender
 class ChatFriendInfo extends Component {
@@ -15,6 +16,7 @@ class ChatFriendInfo extends Component {
         handleFriendInfo: PropTypes.func,
         user: PropTypes.object,
         friendId: PropTypes.string,
+        groupId: PropTypes.string,
         chatUser: PropTypes.object,
         temporaryChat: PropTypes.bool,
         changeTo: PropTypes.func,
@@ -82,7 +84,7 @@ class ChatFriendInfo extends Component {
                 }
             });
         }
-        this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.friendId, 'userId', 'message');
+        this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.groupId, 'groupId', 'message');
         this.props.handleToggle(this.props.friendId);
         this.props.handleFriendInfo();
         this.props.handleClick();
@@ -196,11 +198,16 @@ class ChatFriendInfo extends Component {
 export default withTracker(({ friendId }) => {
     console.log(friendId);
     Meteor.subscribe('users');
+    Meteor.subscribe('group');
     const user = Meteor.user() || {};
+    const group = Group.findOne({ $and: [{ type: 'user', members: { $all: [friendId] } }] }) || {};
+    const groupId = group._id || '';
     const chatUser = Meteor.users.findOne({ _id: friendId }) || {};
+    console.log(groupId);
     return {
         user,
         chatUser,
         friendId,
+        groupId,
     };
 })(ChatFriendInfo);

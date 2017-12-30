@@ -7,45 +7,47 @@ import ImageViewer from '../../../../features/ImageViewer';
 
 class File extends PureComponent {
 	static propTypes = {
-	    content: PropTypes.string,
+		content: PropTypes.string,
 	}
 	constructor(props) {
-	    super(props);
-	    this.state = {
-	        showImgViewer: false,
-	    };
+		super(props);
+		this.state = {
+			showImgViewer: false,
+		};
 	}
 	handleImageDoubleClick = (url) => {
-	    this.setState({
-	        showImgViewer: true,
-	        image: url,
-	    });
+		this.setState({
+			showImgViewer: true,
+			image: url,
+		});
 	}
 	closeImageViewer = () => {
-	    this.setState({
-	        showImgViewer: false,
-	    });
+		this.setState({
+			showImgViewer: false,
+		});
 	}
-	renderImg = url => (
-		<div className="user-img">
-			<img
-				src={url}
-				height="100"
-				data-src={url}
-				ref={i => this.img = i}
-				onDoubleClick={() => this.handleImageDoubleClick(url)}
-			/>
-			{
-				this.state.showImgViewer ?
-					<ImageViewer
-						image={this.state.image}
-						closeImage={this.closeImageViewer}
-					/>
-					:
-					null
-			}
-		</div>
-	)
+	renderImg = (url) => {
+		console.log('');
+		return (
+			<div className="user-img">
+				<img
+					src={url}
+					height="100"
+					data-src={url}
+					ref={i => this.img = i}
+					onDoubleClick={() => this.handleImageDoubleClick(url)}
+				/>
+				{
+					this.state.showImgViewer ?
+						<ImageViewer
+							image={this.state.image}
+							closeImage={this.closeImageViewer}
+						/>
+						:
+						null
+				}
+			</div>);
+	}
 	renderFiles = (result) => {
 		if (/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(result.type)) {
 			return this.renderImg(result.url);
@@ -61,18 +63,18 @@ class File extends PureComponent {
 				</div>
 				<a href={result.url} download>
 					下载
-				</a>
+    </a>
 			</div>
 		);
 	}
-    render() {
-        const { content } = this.props;
-        const result = PopulateUtil.file(content) || {};
-	    if (!result) {
-	        return null;
-	    }
-        return this.renderFiles(result);
-    }
+	render() {
+		const { content } = this.props;
+		const result = PopulateUtil.file(content) || {};
+		if (!result) {
+			return null;
+		}
+		return this.renderFiles(result);
+	}
 }
 
 export default File;
