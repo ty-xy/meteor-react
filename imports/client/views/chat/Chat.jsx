@@ -14,7 +14,6 @@ import GroupList from './chatSideLeft/GroupList';
 import TeamList from './chatSideLeft/TeamList';
 import AddChat from '../chat/chatSideLeft/addChat/AddChat';
 import ChatWindow from './chatWindow/ChatWindow';
-import ChatFriendInfo from './chatWindow/ChatFriendInfo';
 import UserUtil from '../../../util/user';
 import feedback from '../../../util/feedback';
 
@@ -28,6 +27,7 @@ import Icon from '../../components/Icon';
 
 
 import InviteModel from '../manage/audit/component/MyModel';
+
 
 // let count = 1;
 @pureRender
@@ -163,20 +163,6 @@ class Chat extends Component {
             </InviteModel>
         );
     }
-    // 展示个人信息
-    handleFriendId = (chatFriendId) => {
-        this.setState({
-            chatFriendId,
-            isShowFriendInfo: true,
-        });
-    }
-    // 个人信息
-    handleFriendInfo = () => {
-        this.setState({
-            isShowFriendInfo: false,
-            isShowGroupSet: false,
-        });
-    }
 
     renderTeamMembers = (teamId, currentDeps, deps) => (<TeamMembers
         teamId={teamId}
@@ -264,20 +250,6 @@ class Chat extends Component {
                         handleToggle={this.handleToggle}
                     />
                 </div>
-                {
-                    this.state.isShowFriendInfo ?
-                        <ChatFriendInfo
-                            handleFriendInfo={this.handleFriendInfo}
-                            friendId={this.state.chatFriendId}
-                            temporaryChat={this.state.temporaryChat}
-                            changeTo={this.changeTo}
-                            handleToggle={this.handleToggle}
-                            handleClick={this.handleClick}
-                        />
-                        :
-                        null
-
-                }
                 <Route
                     path="/chat"
                     component={({ match }) => (
@@ -289,7 +261,6 @@ class Chat extends Component {
                                 render={props => (
                                     <ChatWindow
                                         {...props}
-                                        changeTo={this.changeTo}
                                         handleToggle={this.handleToggle}
                                         handleClick={this.handleClick.bind(this, 1)}
                                         getMoreMessage={this.getMoreMessage}

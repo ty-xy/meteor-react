@@ -48,7 +48,27 @@ class File extends PureComponent {
 				}
 			</div>);
 	}
-	renderFiles = (result) => {
+	renderImg = url => (
+		<div className="user-img">
+			<img
+				src={url}
+				height="100"
+				data-src={url}
+				ref={i => this.img = i}
+				onDoubleClick={() => this.handleImageDoubleClick(url)}
+			/>
+			{
+				this.state.showImgViewer ?
+					<ImageViewer
+						image={this.state.image}
+						closeImage={this.closeImageViewer}
+					/>
+					:
+					null
+			}
+		</div>
+	)
+	renderFiles = (result = {}) => {
 		if (/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(result.type)) {
 			return this.renderImg(result.url);
 		}
@@ -67,14 +87,12 @@ class File extends PureComponent {
 			</div>
 		);
 	}
-	render() {
-		const { content } = this.props;
-		const result = PopulateUtil.file(content) || {};
-		if (!result) {
-			return null;
-		}
-		return this.renderFiles(result);
-	}
+    render() {
+        const { content } = this.props;
+		const result = PopulateUtil.file(content);
+		console.log('result', result, content);
+        return this.renderFiles(result);
+    }
 }
 
 export default File;
