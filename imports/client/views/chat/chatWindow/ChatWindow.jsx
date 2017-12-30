@@ -23,11 +23,11 @@ import ChatFriendInfo from './ChatFriendInfo';
 import Avatar from '../../../components/Avatar';
 import Icon from '../../../components/Icon';
 import VideoMeeting from '../../../features/VideoMeeting';
-// import EmptyChat from '../../../components/EmptyChat';
 
 import expressions from '../../../../util/expressions';
-import Text from './messageComponent/Text';
-import Files from './messageComponent/Files';
+import Text from './component/Text';
+import Files from './component/Files';
+import Send from './component/Send';
 
 
 @pureRender
@@ -68,13 +68,12 @@ class ChatWindow extends Component {
         this.lastTime = '';
     }
     componentWillMount() {
-        const { match, location, chatGroup } = this.props;
+        const { chatGroup } = this.props;
         Meteor.call('readMessage', chatGroup._id, (err) => {
             if (err) {
                 feedback.dealError(err);
             }
         });
-        this.setState({ to: match.params.to, chatType: location.state && location.state.type });
     }
     componentDidMount() {
         // document.onmousedown = doDown;
@@ -89,9 +88,6 @@ class ChatWindow extends Component {
                     feedback.dealError(err);
                 }
             });
-        }
-        if (this.state.to) {
-            this.$message.addEventListener('keydown', this.handleSendMessage);
         }
         if (prevProps.chatGroup && chatGroup && prevProps.chatGroup.notice !== chatGroup.notice) {
             this.setState({
@@ -135,102 +131,10 @@ class ChatWindow extends Component {
             resolve();
         });
     }
-    sendMessage = (content, type) => {
-        if (!content) {
-            return feedback.dealWarning('请输入要发送的内容');
-        }
-        const { chatType } = this.state;
-        const { chatGroup } = this.props;
-        const { members = [] } = chatGroup;
-        const resMes = { content, chatType, type, to: [] };
-        if (chatType === 'group' || chatType === 'team') {
-            resMes.groupId = chatGroup._id;
-            members.forEach((userId) => {
-                const user = { userId };
-                if (userId === Meteor.userId()) {
-                    user.isRead = true;
-                }
-                resMes.to.push(user);
-            });
-        }
-        if (chatType === 'user') {
-            const user = { userId: Meteor.userId(), isRead: true };
-            resMes.to.push(user);
-        }
-        Meteor.call(
-            'insertMessage',
-            {
-                ...resMes,
-            },
-            (err, res) => {
-                if (err) {
-                    feedback.dealError(err);
-                }
-                this.lastTime = res;
-                this.$message.value = '';
-            });
-    }
-    handleSendMessage = (e) => {
-        if (e.keyCode === 13 && !e.shiftKey) {
-            e.preventDefault();
-            this.sendText();
-        }
-    }
-    // 发送文字和表情
-    sendText = () => {
-        this.sendMessage(this.$message.value.replace(/\n|\r\n/g, '<br/>'), 'text');
-    }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
         this.$message.value += `#(${name})`;
     }
-    // 发送文件
-    sendFile = () => {
-        this.fileInput.click();
-    }
-    selectFile = () => {
-        const file = this.fileInput.files[0];
-
-        if (!file) {
-            return;
-        }
-        const name = file.name;
-        const reader = new FileReader();
-        const fileType = file.type;
-        const type = fileType.slice(fileType.lastIndexOf('/') + 1) || '';
-        const size = file.size;
-        const me = this;
-        const sendMessage = this.sendMessage;
-        const handlePercent = this.handlePercent;
-        reader.onprogress = function (e) {
-            console.log(e.loaded);
-            console.log(name);
-            me.loaded += e.loaded;
-            me.progress = (e.loaded / e.total) * 100;
-            console.log((e.loaded / e.total) * 100);
-            console.log(me.progress);
-            setTimeout(() => {
-                handlePercent(me.progress);
-            }, 80);
-            // me.setState({
-            //     show: true,
-            // });
-        };
-        reader.onloadend = function () {
-            Meteor.call('insertFile', name, type, size, this.result, (err, res) => {
-                if (err) {
-                    return feedback.dealError(err);
-                }
-                if (res) {
-                    sendMessage(res, 'file');
-                }
-            });
-        };
-        reader.readAsDataURL(file);
-    };
-    // reader.readAsDataURL(file);
-    //     })
-    // }
     // 发起视频
     handlePercent=(percent) => {
         if (percent === 100) {
@@ -250,12 +154,6 @@ class ChatWindow extends Component {
             isShowVideo: !this.state.isShowVideo,
         });
     }
-    handleImageDoubleClick = (url) => {
-        this.setState({
-            showImgViewer: true,
-            image: url,
-        });
-    }
     // 聊天窗口点击人员头像查看信息
     handleChatUser = (fromId, toId, groupId) => {
         console.log('handleChatUser', fromId, toId, groupId);
@@ -271,36 +169,6 @@ class ChatWindow extends Component {
         //     this.handleFriendId(fromId);
         // }
     }
-    closeImageViewer = () => {
-        this.setState({
-            showImgViewer: false,
-        });
-    }
-    renderDefaultExpression = () => (
-        <div className="default-expression" style={{ width: '400px', height: '130px' }}>
-            {
-                expressions.default.map((e, index) => (
-                    <div
-                        key={index}
-                        data-name={e}
-                        onClick={this.handleClick}
-                        style={{ width: '40px', height: '40px', padding: '5px' }}
-                    >
-                        <Popover content={e} >
-                            <div
-                                className="no-click"
-                                style={{ backgroundPosition: `left ${-30 * index}px`,
-                                    backgroundImage: 'url(\'http://cdn.zg18.com/expressions.png\')',
-                                    width: '30px',
-                                    height: '30px' }}
-                            />
-                        </Popover>
-                    </div>
-                ))
-            }
-        </div>
-    )
-
     renderContent = (type, content) => {
         switch (type) {
         case 'text':
@@ -314,6 +182,7 @@ class ChatWindow extends Component {
     render() {
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const { uploadLoadding } = this.state;
+        console.log('messages', this.props.messages);
         return (<div className="ejianlian-chat-window">
             {
                 this.state.isShowVideo ?
@@ -352,9 +221,9 @@ class ChatWindow extends Component {
                 onInfiniteLoad={this.handleMessageListScroll.bind(this)}
             >
                 {
-                    this.props.messages.map((message, index) => (
+                    this.props.messages.map(message => (
                         <div
-                            key={index}
+                            key={message._id}
                         >
                             {
                                 message.showYearMonth ?
@@ -396,32 +265,7 @@ class ChatWindow extends Component {
                     </div>
                 }
             </ReactChatView>
-            <div className="chat-window-bottom" ref={i => this.$chatBottom = i}>
-                <div className="chat-message-input resizeMe">
-                    <div className="chat-send-skill">
-                        <p className="skill-icon">
-                            <Popover placement="topLeft" content={this.renderDefaultExpression()} trigger="click">
-                                <Icon icon="icon-biaoqing icon" />
-                            </Popover>
-                        </p>
-                        <p className="skill-icon">
-                            <Tooltip title="发送文件" mouseEnterDelay={1}>
-                                <Icon icon="icon-wenjian icon" onClick={this.sendFile} />
-                                <input
-                                    className="input-file"
-                                    type="file"
-                                    ref={i => this.fileInput = i}
-                                    onChange={this.selectFile}
-                                />
-                            </Tooltip>
-                        </p>
-                    </div>
-                    <div className="chat-send-bts">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
-                        <p className="chat-send-message" onClick={this.sendText}>发送</p>
-                    </div>
-                </div>
-            </div>
+            <Send {...this.props} />
         </div>);
     }
 }

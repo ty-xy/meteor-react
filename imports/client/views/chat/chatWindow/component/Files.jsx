@@ -46,7 +46,7 @@ class File extends PureComponent {
 			}
 		</div>
 	)
-	renderFiles = (result) => {
+	renderFiles = (result = {}) => {
 		if (/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(result.type)) {
 			return this.renderImg(result.url);
 		}
@@ -67,10 +67,8 @@ class File extends PureComponent {
 	}
     render() {
         const { content } = this.props;
-        const result = PopulateUtil.file(content) || {};
-	    if (!result) {
-	        return null;
-	    }
+		const result = PopulateUtil.file(content);
+		console.log('result', result, content);
         return this.renderFiles(result);
     }
 }
