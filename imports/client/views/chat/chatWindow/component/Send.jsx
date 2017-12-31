@@ -46,20 +46,14 @@ class Send extends PureComponent {
         const { chatGroup } = this.props;
         const { members = [] } = chatGroup;
         const resMes = { content, chatType, type, to: [] };
-        if (chatType === 'group' || chatType === 'team') {
-            resMes.groupId = chatGroup._id;
-            members.forEach((userId) => {
-                const user = { userId };
-                if (userId === Meteor.userId()) {
-                    user.isRead = true;
-                }
-                resMes.to.push(user);
-            });
-        }
-        if (chatType === 'user') {
-            const user = { userId: Meteor.userId(), isRead: true };
+        resMes.groupId = chatGroup._id;
+        members.forEach((userId) => {
+            const user = { userId };
+            if (userId === Meteor.userId()) {
+                user.isRead = true;
+            }
             resMes.to.push(user);
-        }
+        });
         console.log('resMes', resMes);
         Meteor.call(
             'insertMessage',

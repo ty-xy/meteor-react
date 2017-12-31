@@ -187,7 +187,7 @@ class ContactList extends Component {
         if (item.type === 'user') {
             const mem = item.members ? item.members.filter(value => value !== Meteor.userId()) : '';
             const users = Meteor.users.findOne({ _id: mem[0] });
-            console.log(item, mem, users, Meteor.userId());
+            console.log('renderChatListItem', item);
             return this.renderUser(users, item.lastMessage, item.time, item.type, i, item.unreadMessage, item._id, mem);
         } else if (item.type === 'team' || item.type === 'group') {
             return this.renderGroup(item._id, item.isDisturb || [], item.avatar, item.name, item.stickTop || [], item.lastMessage, item.time, item.type, i, item.unreadMessage);
@@ -198,7 +198,6 @@ class ContactList extends Component {
     }
     render() {
         const chatList = this.props.chatList;
-        console.log(chatList);
         // 设置置顶的聊天列表
         const stickTopChat = chatList.filter(x => x.group && x.group.stickTop.find(s => s.userId && s.userId === Meteor.userId()));
         stickTopChat.forEach((x) => {
@@ -277,24 +276,6 @@ export default withTracker(() => {
             }
         });
     }
-    // 已存在聊天列表中显示未读消息
-    chatList.forEach((x) => {
-        if (x.type === 'user') {
-            x.user = Meteor.users.findOne({ _id: x.userId });
-            const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }, { sort: { createdAt: -1 } }).fetch();
-            x.lastMessage = messages.length === 0 ? null : messages[0];
-            x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
-            x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
-        }
-    });
-    // else if (x.type === 'group') {
-    //         x.group = Group.findOne({ _id: x.groupId });
-    //         const messages = Message.find({ to: x.groupId }, { sort: { createdAt: -1 } }).fetch();
-    //         x.lastMessage = messages.length === 0 ? null : messages[0];
-    //         x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
-    //         x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
-    //     }
-    //
     // 找出别人向你发起的未处理的好友认证
     const newFriendNotice = Notice.find({ type: 0, to: Meteor.userId(), dealResult: 0 }).fetch();
     newFriendNotice.forEach((x) => {
@@ -302,7 +283,6 @@ export default withTracker(() => {
         x.friendFrom = PopulateUtil.user(x.notice && x.notice.from) || {};
         x.sortTime = x.createdAt;
     });
-    console.log('withTracker', chatList, newFriendNotice);
     return {
         chatList,
         allUnRead,
