@@ -42,7 +42,7 @@ class ChatHeader extends Component {
     }
 
     render() {
-        const { chatGroup, chatUser } = this.props;
+        const { chatGroup } = this.props;
         const { location } = this.props;
         const Id = chatGroup.type === 'user' ? chatGroup.members.filter(value => value !== Meteor.userId()) : '';
         const chUSer = Meteor.users.findOne({ _id: Id[0] }) || {};
@@ -66,7 +66,7 @@ class ChatHeader extends Component {
                                 <Icon icon="icon-wenjian icon" onClick={this.handleFriendFile} />
                                 <Icon
                                     icon="icon-gerenziliao icon"
-                                    onClick={() => this.props.handleFriendId(chatUser._id)}
+                                    onClick={() => this.props.handleFriendId(chUSer._id)}
                                 />
                             </div>
                         </div>

@@ -120,7 +120,6 @@ class ChatFriendInfo extends Component {
                             </li>
                             {
                                 this.props.friendId !== Meteor.userId() ?
-
                                     <li >
                                         {
                                             isFriend ?
@@ -199,7 +198,7 @@ class ChatFriendInfo extends Component {
     }
 }
 export default withTracker(({ friendId }) => {
-    console.log(friendId);
+    console.log(friendId, Meteor.userId());
     Meteor.subscribe('users');
     Meteor.subscribe('group');
     const user = Meteor.user() || {};
@@ -207,6 +206,7 @@ export default withTracker(({ friendId }) => {
     const groupId = group._id || '';
     const chatUser = Meteor.users.findOne({ _id: friendId }) || {};
     console.log(groupId);
+    console.log(chatUser);
     return {
         user,
         chatUser,
