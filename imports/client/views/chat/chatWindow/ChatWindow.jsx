@@ -224,7 +224,7 @@ class ChatWindow extends Component {
     }
 }
 
-export default withTracker(({ count, match }) => {
+export default withTracker(({ match }) => {
     const to = match.params.to;
     Meteor.subscribe('message');
     Meteor.subscribe('group');
