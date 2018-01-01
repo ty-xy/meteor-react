@@ -5,28 +5,26 @@ import pureRender from 'pure-render-decorator';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Progress, Spin } from 'antd';
 import format from 'date-format';
-import ReactChatView from 'react-chatview';
+// import ReactChatView from 'react-chatview';
 // import qiniu from 'qiniu-js';
-// /* global Qiniu */
-// /* global plupload */
 
 import Message from '../../../../../imports/schema/message';
 import Group from '../../../../../imports/schema/group';
 import PopulateUtil from '../../../../util/populate';
 import feedback from '../../../../util/feedback';
-import formatDate from '../../../../util/formatDate';
 import userInfo from '../../../../util/user';
-// import { doDown, doUp, doMove } from '../../../../util/resize';
 
 import ChatHeader from './ChatHeader';
 import ChatFriendInfo from './ChatFriendInfo';
-import Avatar from '../../../components/Avatar';
 import VideoMeeting from '../../../features/VideoMeeting';
 
 import Text from './component/Text';
 import Files from './component/Files';
 import Send from './component/Send';
+import Messages from './component/Message';
 
+const limit = 20;
+let count = 1;
 
 @pureRender
 class ChatWindow extends Component {
@@ -61,6 +59,7 @@ class ChatWindow extends Component {
             uploadLoadImg: '',
             messages: [],
             to: '',
+            count: 1,
         };
         this.onScrollHandle = null;
         this.lastTime = '';
@@ -72,29 +71,10 @@ class ChatWindow extends Component {
                 feedback.dealError(err);
             }
         });
+        this.setState({ messages: this.props.messages });
     }
-    componentDidMount() {
-        // document.onmousedown = doDown;
-        // document.onmouseup = doUp;
-        // document.onmousemove = doMove;
-        let timeoutId;
-
-        this.chatview.scrollTop = (this.chatview.scrollHeight - this.chatview.scrollTop) * (this.props.count);
-        console.log('componentDidMount', this.chatview, this.chatview.getBoundingClientRect(), this.chatview.scrollHeight, this.chatview.clientHeight, this.props.count);
-        this.chatview.addEventListener('scroll', (e) => {
-            // if (this.props.isLoadingMore) {
-            //     return;
-            // }
-            // console.log('scroll', e, e.target.scrollTop);
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-            // 如果在50ms 以内没有执行scroll 就会执行callBack，如果有下一次滚动，定时器就会被清空
-            if (e.target.scrollTop < 10) {
-                this.props.getMoreMessage();
-            }
-            // timeoutId = setTimeout(cb, 50);
-        }, false);
+    componentWillReceiveProps(nextProps) {
+        this.setState({ messages: nextProps.messages, num: Math.random() });
     }
     componentDidUpdate() {
         const { match, chatGroup } = this.props;
@@ -105,17 +85,18 @@ class ChatWindow extends Component {
                 }
             });
         }
-        console.log('componentDidUpdate', this.chatview.scrollTop);
-        // if (prevProps.chatGroup && chatGroup && prevProps.chatGroup.notice !== chatGroup.notice) {
-        //     this.setState({
-        //         isNewNotice: true,
-        //     });
-        // }
     }
     componentWillUnmount() {
         document.onmousedown = null;
         document.onmouseup = null;
         document.onmousemove = null;
+    }
+    getMoreMessage = () => {
+        let countNum = this.state.count;
+        countNum++;
+        this.setState({
+            count: countNum,
+        });
     }
     handleToggle = (value) => {
         this.setState({
@@ -172,20 +153,13 @@ class ChatWindow extends Component {
             isShowVideo: !this.state.isShowVideo,
         });
     }
-    // 聊天窗口点击人员头像查看信息
-    handleChatUser = (fromId, toId, groupId) => {
-        console.log('handleChatUser', fromId, toId, groupId);
-        if (fromId === Meteor.userId()) {
-            return;
+    chatScroll = (e) => {
+        if (e.target.scrollTop < 10) {
+            count++;
+            const messages = Message.find({ groupId: this.props.match.params.to }, { sort: { createdAt: -1 }, limit: limit * count }).fetch().reverse();
+            console.log('messages', messages);
+            this.setState({ messages });
         }
-        this.handleFriendId(fromId);
-        // if (toId === groupId) {
-        //     // 是一个群里的成员,允许创建临时会话
-        //     this.setState({
-        //         temporaryChat: true,
-        //     });
-        //     this.handleFriendId(fromId);
-        // }
     }
     renderContent = (type, content) => {
         switch (type) {
@@ -198,9 +172,8 @@ class ChatWindow extends Component {
         }
     }
     render() {
-        const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const { uploadLoadding } = this.state;
-        // console.log('messages', this.props);
+        console.log('messages', this.state.messages);
         return (<div className="ejianlian-chat-window">
             {
                 this.state.isShowVideo ?
@@ -231,58 +204,21 @@ class ChatWindow extends Component {
                     :
                     null
             }
-
-            <div
-                className="chat-message-list"
-                ref={i => this.chatview = i}
-            >
-                {
-                    this.props.messages.map((message, index) => (
-                        <div
-                            key={message._id}
-                            className="chat-message"
-                            id={index === 29 * (this.props.count - 1) ? `scrollto${this.props.count}` : ''}
-                        >
-                            {
-                                message.showYearMonth ?
-                                    <div className="message-time">{formatDate.dealMessageTime(message.createdAt)}</div>
-                                    :
-                                    null
-                            }
-                            <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
-                                <p className="user-avatar" onClick={() => this.handleChatUser(message.from._id, message.to, groupId)}>
-                                    <Avatar name={message.from.profile.name} avatarColor={message.from.profile.avatarColor} avatar={message.from.profile.avatar} />
-                                </p>
-                                <div className="user-message-wrap">
-                                    {
-                                        message.to === groupId ?
-                                            <p className="user-nickname">{message.from.profile.name}</p>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        this.renderContent(message.type, message.content)
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    ))
-                }
-                {
-                    uploadLoadding && <div className="self-message">
-                        <p className="user-avatar">
-                            <span className="avatar" style={{ backgroundColor: 'rgb(245, 91, 137)' }}>{userInfo.getName().substr(-2, 2)}</span>
-                        </p>
-                        <div className="user-message-wrap">
-                            <p className="user-nickname">{userInfo.getName()}</p>
-                            <div className="user-img">
-                                <img src="http://cdn.zg18.com/commonImg.png" ref={i => this.imgPreview = i} />
-                                <Progress percent={this.state.percent} className="img-progress" />
-                            </div>
+            {
+                uploadLoadding && <div className="self-message">
+                    <p className="user-avatar">
+                        <span className="avatar" style={{ backgroundColor: 'rgb(245, 91, 137)' }}>{userInfo.getName().substr(-2, 2)}</span>
+                    </p>
+                    <div className="user-message-wrap">
+                        <p className="user-nickname">{userInfo.getName()}</p>
+                        <div className="user-img">
+                            <img src="http://cdn.zg18.com/commonImg.png" ref={i => this.imgPreview = i} />
+                            <Progress percent={this.state.percent} className="img-progress" />
                         </div>
                     </div>
-                }
-            </div>
+                </div>
+            }
+            <Messages {...this.props} messages={this.state.messages} chatScroll={this.chatScroll} handleFriendId={this.handleFriendId} />
             <Send {...this.props} />
         </div>);
     }
@@ -308,10 +244,9 @@ export default withTracker(({ count, match }) => {
             }
         });
     }
-    const messages = Message.find({ groupId: to }, { sort: { createdAt: -1 }, limit: 30 * count }).fetch().reverse();
+    const messages = Message.find({ groupId: to }, { sort: { createdAt: -1 }, limit }).fetch().reverse();
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
-        d.from = PopulateUtil.message(d.from);
         d.showYearMonth = false;
         if (i) {
             const prev = data[i - 1];

@@ -7,8 +7,20 @@ Message.schema = new SimpleSchema({
         type: Date,
     },
     from: {
+        type: Object,
+    },
+    'from.name': {
         type: String,
-        regEx: SimpleSchema.RegEx.Id,
+    },
+    'from._id': {
+        type: String,
+        optional: true,
+    },
+    'from.avatar': {
+        type: String,
+    },
+    'from.avatarColor': {
+        type: String,
     },
     to: {
         type: [Object],

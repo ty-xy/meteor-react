@@ -5,6 +5,7 @@ import { Popover, Tooltip } from 'antd';
 import Icon from '../../../../components/Icon';
 import feedback from '../../../../../util/feedback';
 import expressions from '../../../../../util/expressions';
+// import { doDown, doUp, doMove } from '../../../../util/resize';
 
 
 class Send extends PureComponent {
@@ -28,6 +29,9 @@ class Send extends PureComponent {
     }
     componentDidMount() {
         const { match } = this.props;
+        // document.onmousedown = doDown;
+        // document.onmouseup = doUp;
+        // document.onmousemove = doMove;
         if (match.params.to) {
             this.$message.addEventListener('keydown', this.handleSendMessage);
         }
@@ -63,9 +67,10 @@ class Send extends PureComponent {
             (err, res) => {
                 if (err) {
                     feedback.dealError(err);
+                } else {
+                    this.lastTime = res;
+                    this.$message.value = '';
                 }
-                this.lastTime = res;
-                this.$message.value = '';
             });
     }
     // 发送文字和表情
