@@ -91,6 +91,7 @@ class Chat extends Component {
     }
     getMoreMessage = () => {
         let countNum = this.state.count;
+        console.log('getMoreMessage', countNum);
         countNum++;
         this.setState({
             count: countNum,

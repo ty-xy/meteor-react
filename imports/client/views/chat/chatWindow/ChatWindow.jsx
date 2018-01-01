@@ -77,8 +77,26 @@ class ChatWindow extends Component {
         // document.onmousedown = doDown;
         // document.onmouseup = doUp;
         // document.onmousemove = doMove;
+        let timeoutId;
+
+        this.chatview.scrollTop = (this.chatview.scrollHeight - this.chatview.scrollTop) * (this.props.count);
+        console.log('componentDidMount', this.chatview, this.chatview.getBoundingClientRect(), this.chatview.scrollHeight, this.chatview.clientHeight, this.props.count);
+        this.chatview.addEventListener('scroll', (e) => {
+            // if (this.props.isLoadingMore) {
+            //     return;
+            // }
+            // console.log('scroll', e, e.target.scrollTop);
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            // 如果在50ms 以内没有执行scroll 就会执行callBack，如果有下一次滚动，定时器就会被清空
+            if (e.target.scrollTop < 10) {
+                this.props.getMoreMessage();
+            }
+            // timeoutId = setTimeout(cb, 50);
+        }, false);
     }
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         const { match, chatGroup } = this.props;
         if (chatGroup._id === match.params.to) {
             Meteor.call('readMessageLast', chatGroup._id, (err) => {
@@ -87,11 +105,12 @@ class ChatWindow extends Component {
                 }
             });
         }
-        if (prevProps.chatGroup && chatGroup && prevProps.chatGroup.notice !== chatGroup.notice) {
-            this.setState({
-                isNewNotice: true,
-            });
-        }
+        console.log('componentDidUpdate', this.chatview.scrollTop);
+        // if (prevProps.chatGroup && chatGroup && prevProps.chatGroup.notice !== chatGroup.notice) {
+        //     this.setState({
+        //         isNewNotice: true,
+        //     });
+        // }
     }
     componentWillUnmount() {
         document.onmousedown = null;
@@ -120,7 +139,8 @@ class ChatWindow extends Component {
             isShowGroupSet: false,
         });
     }
-    handleMessageListScroll() {
+    handleMessageListScroll = () => {
+        console.log('handleMessageListScroll');
         this.setState({ showHistoryLoading: true });
         return new Promise((resolve) => {
             this.props.getMoreMessage().then(() => {
@@ -212,16 +232,16 @@ class ChatWindow extends Component {
                     null
             }
 
-            <ReactChatView
-                className="content chat-message-list"
-                flipped
-                scrollLoadThreshold={50}
-                onInfiniteLoad={this.handleMessageListScroll.bind(this)}
+            <div
+                className="chat-message-list"
+                ref={i => this.chatview = i}
             >
                 {
-                    this.props.messages.map(message => (
+                    this.props.messages.map((message, index) => (
                         <div
                             key={message._id}
+                            className="chat-message"
+                            id={index === 29 * (this.props.count - 1) ? `scrollto${this.props.count}` : ''}
                         >
                             {
                                 message.showYearMonth ?
@@ -262,7 +282,7 @@ class ChatWindow extends Component {
                         </div>
                     </div>
                 }
-            </ReactChatView>
+            </div>
             <Send {...this.props} />
         </div>);
     }

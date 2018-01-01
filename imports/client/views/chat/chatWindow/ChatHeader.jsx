@@ -59,7 +59,7 @@ class ChatHeader extends Component {
         return (
             <div className="chat-window-header">
                 {
-                    location.state.type === 'user' ?
+                    location.state && location.state.type === 'user' ?
                         <div className="chat-to-user">
                             {name}
                             <div className="chat-other-account">
