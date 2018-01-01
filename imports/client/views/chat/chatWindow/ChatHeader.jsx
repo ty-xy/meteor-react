@@ -46,8 +46,6 @@ class ChatHeader extends Component {
         const { location } = this.props;
         const Id = chatGroup.type === 'user' ? chatGroup.members.filter(value => value !== Meteor.userId()) : '';
         const chUSer = Meteor.users.findOne({ _id: Id[0] }) || {};
-        // console.log(chUSer.profile.name);
-        // const { profile = {}, _id = '' } = this.props.chatUser || {};
         const { name } = chUSer.profile || {};
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const memberIds = this.props.chatGroup ? this.props.chatGroup.members : [];
@@ -56,6 +54,7 @@ class ChatHeader extends Component {
 
         const { type, avatar, isDisturb = [], noticeTime = new Date() } = chatGroup;
         const stickTop = chatGroup.stickTop ? chatGroup.stickTop.find(x => x.userId && x.userId === Meteor.userId()) : {};
+        console.log(this.props, this.props.chatGroup.type, location);
         return (
             <div className="chat-window-header">
                 {

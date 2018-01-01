@@ -181,6 +181,7 @@ class ChatWindow extends Component {
         const groupId = this.props.chatGroup ? this.props.chatGroup._id : '';
         const { uploadLoadding } = this.state;
         // console.log('messages', this.props);
+        console.log(groupId);
         return (<div className="ejianlian-chat-window">
             {
                 this.state.isShowVideo ?

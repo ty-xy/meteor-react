@@ -109,6 +109,7 @@ class Chat extends Component {
             deps,
         });
         this.handleChatType(chatType);
+        this.props.history.push({ pathname: `/chat/${currentKey}/teammembers` });
     }
     // 跳到哪个模块
     handleClick = (index) => {
@@ -234,6 +235,7 @@ class Chat extends Component {
                                 handleClick={this.handleClick.bind(this, 1)}
                                 handleNewFriend={this.handleChatType}
                                 handleToggle={this.handleToggle}
+                                {...this.props}
                             /> : null}
                         {this.state.selectedLinkMan === 2 && this.state.selected === 2 ?
                             <GroupList
@@ -268,7 +270,7 @@ class Chat extends Component {
                                     />)}
                             />
                             <Route
-                                path={`${match.url}/teammembers`}
+                                path={`${match.url}/:to/teammembers`}
                                 render={props => (
                                     <TeamMembers
                                         {...props}

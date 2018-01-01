@@ -56,8 +56,10 @@ class ContactList extends Component {
         console.log(type);
     }
     compare = property => (a, b) => b[property] - a[property];
-    deleteChat = (userId, type, unreadMessage) => {
-        console.log(type);
+    deleteChat = (userId, type, unreadMessage, e) => {
+        console.log(type, userId);
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
         if (unreadMessage > 0) {
             Meteor.call('readMessages', this.props.allUnRead.map(x => x._id), Meteor.userId(), (err) => {
                 if (err) {
@@ -86,7 +88,6 @@ class ContactList extends Component {
             onClick={() => {
                 this.props.handleToggle(notice._id);
                 this.handleChatNewfriend();
-                // this.props.handleNewFriend('newFriend');
             }}
         >
             <div className="user-avatar new-friend-notice">
@@ -113,7 +114,7 @@ class ContactList extends Component {
             className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[id] })}
         >
             <div className="icon-guanbi-close">
-                <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(id, type, unreadMessage)} />
+                <Icon icon="icon-guanbi" size={20} onClick={e => this.deleteChat(id, type, unreadMessage, e)} />
             </div>
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
@@ -154,7 +155,7 @@ class ContactList extends Component {
                     null
             }
             <div className="icon-guanbi-close">
-                <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(_id, type, unreadMessage)} />
+                <Icon icon="icon-guanbi" size={20} onClick={e => this.deleteChat(_id, type, unreadMessage, e)} />
             </div>
             <div className="user-avatar">
                 <Avatar avatar={avatar || avatarUrl.avatarGroup} name="群聊" />
@@ -241,17 +242,23 @@ export default withTracker(() => {
         item.lastMessage = allNum.createdAt;
     });
     const selfGroup = UserUtil.getGroups();
+
     const selfFriend = UserUtil.getFriends();
+    console.log(selfGroup, selfFriend);
     const friendMessage = selfFriend.map(i => IdUtil.merge(Meteor.userId(), i));
     const chatMessageId = [...selfGroup, ...friendMessage];
+    console.log(chatMessageId);
     // 应该过滤出所有与我有关的消息
     const allMessage = Message.find({ to: { $in: chatMessageId } }).fetch();
     // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
+    console.log(allMessage);
     let allUnRead = [];
     allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
+    console.log(allUnRead.length);
     // 所以有未读消息时点击删除事此时这个消息列表已经删除,但是此时未读消息条数不会立刻更新,判断有未读消息,不存在该聊天窗口,则创建新的聊天窗口,过了一会数据更新了,未读消息为0
     if (allUnRead.length > 0) {
         allUnRead.forEach((k) => {
+            console.log(k.to.length);
             if (k.to.length <= 17) {
                 // if (!chatList.find(j => j.group && j.group._id === k.to)) {
                 Meteor.call('addChatList', k.to, 'groupId', (err) => {
