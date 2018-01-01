@@ -23,19 +23,43 @@ class ContactList extends Component {
     static propTypes = {
         changeTo: PropTypes.func.isRequired,
         chatList: PropTypes.array,
+        history: PropTypes.object,
         handleToggle: PropTypes.func,
         selectedChat: PropTypes.object,
         allUnRead: PropTypes.array,
-        handleNewFriend: PropTypes.func,
+        // handleNewFriend: PropTypes.func,
         newFriendNotice: PropTypes.array,
+    }
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+    componentWillMount() {
+        // Meteor.call(
+        //     'getContactListNum',
+        //     { chatList: UserUtil.getChatList() },
+        //     (res, err) => {
+        //         console.log('componentWillMount', res, err, this.props, UserUtil.getChatList());
+        //     },
+        // );
     }
     componentWillUpdate(nextProps) {
         if (nextProps.allUnRead && this.props.allUnRead < nextProps.allUnRead) {
             NoticeSound.play();
         }
     }
+    handleChatNewfriend = () => {
+        this.props.history.push({ pathname: '/chat/newfriend' });
+    }
+    handleChatWindow = (id, type) => {
+        this.props.history.push({ pathname: `/chat/${id}/window`, state: { type } });
+        console.log(type);
+    }
     compare = property => (a, b) => b[property] - a[property];
-    deleteChat = (userId, type, unreadMessage) => {
+    deleteChat = (userId, type, unreadMessage, e) => {
+        console.log(type, userId);
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
         if (unreadMessage > 0) {
             Meteor.call('readMessages', this.props.allUnRead.map(x => x._id), Meteor.userId(), (err) => {
                 if (err) {
@@ -63,7 +87,7 @@ class ContactList extends Component {
             key={index}
             onClick={() => {
                 this.props.handleToggle(notice._id);
-                this.props.handleNewFriend('newFriend');
+                this.handleChatNewfriend();
             }}
         >
             <div className="user-avatar new-friend-notice">
@@ -79,17 +103,18 @@ class ContactList extends Component {
             </div>
         </div>
     )
-    renderUser = (user, lastMessage, time, type, index, unreadMessage) => (
+    renderUser = (user, lastMessage, time, type, index, unreadMessage, id) => (
         <div
             key={index}
             onClick={() => {
-                this.props.handleToggle(user._id);
-                this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id, '', 'message');
+                this.props.handleToggle(id);
+                // this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id, '', 'message');
+                this.handleChatWindow(id, type);
             }}
-            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[user._id] })}
+            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[id] })}
         >
             <div className="icon-guanbi-close">
-                <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(user._id, type, unreadMessage)} />
+                <Icon icon="icon-guanbi" size={20} onClick={e => this.deleteChat(id, type, unreadMessage, e)} />
             </div>
             <div className="user-avatar">
                 <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
@@ -105,24 +130,23 @@ class ContactList extends Component {
                             </span>
                             :
                             null
-
                     }
-
                 </p>
             </div>
         </div>
     )
-    renderGroup = (group, lastMessage, time, type, i, unreadMessage) => {
-        const isMyDisturb = group.isDisturb && group.isDisturb.includes(Meteor.userId());
-        const selfStickTop = group.stickTop.find(x => x.userId && x.userId === Meteor.userId());
+    renderGroup = (_id, isDisturb, avatar, name, stickTop, lastMessage, time, type, i, unreadMessage) => {
+        const isMyDisturb = isDisturb.includes(Meteor.userId());
+        const selfStickTop = stickTop.find(x => x.userId && x.userId === Meteor.userId());
         // console.log(9090, isMyDisturb, unreadMessage);
         return (<div
             onClick={() => {
-                this.props.handleToggle(group._id);
-                this.props.changeTo(group._id, group._id, '', 'message');
+                this.props.handleToggle(_id);
+                // this.props.changeTo(group._id, group._id, '', 'message');
+                this.handleChatWindow(_id, type);
             }}
             key={i}
-            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[group._id] })}
+            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[_id] })}
         >
             {
                 selfStickTop && selfStickTop.userId === Meteor.userId() ?
@@ -131,13 +155,13 @@ class ContactList extends Component {
                     null
             }
             <div className="icon-guanbi-close">
-                <Icon icon="icon-guanbi" size={20} onClick={() => this.deleteChat(group._id, type, unreadMessage)} />
+                <Icon icon="icon-guanbi" size={20} onClick={e => this.deleteChat(_id, type, unreadMessage, e)} />
             </div>
             <div className="user-avatar">
-                <Avatar avatar={group.avatar ? group.avatar : avatarUrl.avatarGroup} name="群聊" />
+                <Avatar avatar={avatar || avatarUrl.avatarGroup} name="群聊" />
             </div>
             <div className="user-message">
-                <p>{group.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
+                <p>{name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
                 <p className="last-message">
                     <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                     {
@@ -161,13 +185,13 @@ class ContactList extends Component {
         );
     }
     renderChatListItem = (item, i) => {
-        if (item.user) {
-            if (item.unreadMessage > 0 && !this.props.chatList.find(j => j.user && j.user._id === item.user._id)) {
-                Meteor.call('addChatList', item.user._id, 'userId', err => feedback.dealError(err));
-            }
-            return this.renderUser(item.user, item.lastMessage, item.time, item.type, i, item.unreadMessage);
-        } else if (item.group) {
-            return this.renderGroup(item.group, item.lastMessage, item.time, item.type, i, item.unreadMessage);
+        if (item.type === 'user') {
+            const mem = item.members ? item.members.filter(value => value !== Meteor.userId()) : '';
+            const users = Meteor.users.findOne({ _id: mem[0] });
+            console.log('renderChatListItem', item);
+            return this.renderUser(users, item.lastMessage, item.time, item.type, i, item.unreadMessage, item._id, mem);
+        } else if (item.type === 'team' || item.type === 'group') {
+            return this.renderGroup(item._id, item.isDisturb || [], item.avatar, item.name, item.stickTop || [], item.lastMessage, item.time, item.type, i, item.unreadMessage);
         } else if (item.notice) {
             return this.renderNewFriend(item.notice, i, item.friendFrom);
         }
@@ -187,14 +211,16 @@ class ContactList extends Component {
         if (this.props.newFriendNotice.length > 0) {
             const lastNewFriendNotice = this.props.newFriendNotice.sort(this.compare('sortTime'))[0];
             defaultTopChat.push(lastNewFriendNotice);
+            Object.assign(chatList, this.props.newFriendNotice);
         }
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
         const sortedChatList = [...newStickTopChat, ...newDefaultTopChat];
+        console.log('sortedChatList', sortedChatList, newStickTopChat, newDefaultTopChat, chatList);
         return (
             <div className="ejianlian-chat-message-list">
                 {
-                    sortedChatList.length > 0 ?
-                        sortedChatList.map((item, i) => this.renderChatListItem(item, i))
+                    chatList.length > 0 ?
+                        chatList.map((item, i) => this.renderChatListItem(item, i))
                         :
                         <div className="no-content">暂无聊天列表</div>
                 }
@@ -208,19 +234,31 @@ export default withTracker(() => {
     Meteor.subscribe('group');
     Meteor.subscribe('notice');
     const chatList = UserUtil.getChatList();
-
+    chatList.forEach((item, index) => {
+        Object.assign(item, Group.findOne({ _id: item.groupId }));
+        const allNum = Message.find({ 'to.userId': Meteor.userId(), groupId: item.groupId }).fetch() || [];
+        const isReadNum = Message.find({ to: { userId: Meteor.userId(), isRead: true }, groupId: chatList[index].groupId }).fetch() || [];
+        item.unreadMessage = (allNum.length - isReadNum.length) || 0;
+        item.lastMessage = allNum.createdAt;
+    });
     const selfGroup = UserUtil.getGroups();
+
     const selfFriend = UserUtil.getFriends();
+    console.log(selfGroup, selfFriend);
     const friendMessage = selfFriend.map(i => IdUtil.merge(Meteor.userId(), i));
     const chatMessageId = [...selfGroup, ...friendMessage];
+    console.log(chatMessageId);
     // 应该过滤出所有与我有关的消息
     const allMessage = Message.find({ to: { $in: chatMessageId } }).fetch();
     // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
+    console.log(allMessage);
     let allUnRead = [];
     allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
+    console.log(allUnRead.length);
     // 所以有未读消息时点击删除事此时这个消息列表已经删除,但是此时未读消息条数不会立刻更新,判断有未读消息,不存在该聊天窗口,则创建新的聊天窗口,过了一会数据更新了,未读消息为0
     if (allUnRead.length > 0) {
         allUnRead.forEach((k) => {
+            console.log(k.to.length);
             if (k.to.length <= 17) {
                 // if (!chatList.find(j => j.group && j.group._id === k.to)) {
                 Meteor.call('addChatList', k.to, 'groupId', (err) => {
@@ -245,22 +283,6 @@ export default withTracker(() => {
             }
         });
     }
-    // 已存在聊天列表中显示未读消息
-    chatList.forEach((x) => {
-        if (x.type === 'user') {
-            x.user = Meteor.users.findOne({ _id: x.userId });
-            const messages = Message.find({ to: IdUtil.merge(Meteor.userId(), x.userId) }, { sort: { createdAt: -1 } }).fetch();
-            x.lastMessage = messages.length === 0 ? null : messages[0];
-            x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
-            x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
-        } else if (x.type === 'group') {
-            x.group = Group.findOne({ _id: x.groupId });
-            const messages = Message.find({ to: x.groupId }, { sort: { createdAt: -1 } }).fetch();
-            x.lastMessage = messages.length === 0 ? null : messages[0];
-            x.sortTime = x.lastMessage ? x.lastMessage.createdAt : x.time;
-            x.unreadMessage = messages.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId())).length;
-        }
-    });
     // 找出别人向你发起的未处理的好友认证
     const newFriendNotice = Notice.find({ type: 0, to: Meteor.userId(), dealResult: 0 }).fetch();
     newFriendNotice.forEach((x) => {

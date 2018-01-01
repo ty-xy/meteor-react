@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Button } from 'antd';
+import { Route } from 'react-router-dom';
 
 
 import ContactList from './chatSideLeft/ContactList';
@@ -26,6 +27,7 @@ import Icon from '../../components/Icon';
 
 
 import InviteModel from '../manage/audit/component/MyModel';
+
 
 // let count = 1;
 @pureRender
@@ -89,6 +91,7 @@ class Chat extends Component {
     }
     getMoreMessage = () => {
         let countNum = this.state.count;
+        console.log('getMoreMessage', countNum);
         countNum++;
         this.setState({
             count: countNum,
@@ -107,6 +110,7 @@ class Chat extends Component {
             deps,
         });
         this.handleChatType(chatType);
+        this.props.history.push({ pathname: `/chat/${currentKey}/teammembers` });
     }
     // 跳到哪个模块
     handleClick = (index) => {
@@ -161,6 +165,7 @@ class Chat extends Component {
             </InviteModel>
         );
     }
+
     renderTeamMembers = (teamId, currentDeps, deps) => (<TeamMembers
         teamId={teamId}
         depsId={currentDeps}
@@ -169,26 +174,6 @@ class Chat extends Component {
         handleToggle={this.handleToggle}
         handleClick={this.handleClick.bind(this, 1)}
     />)
-    renderChatType = (chatType) => {
-        switch (chatType) {
-        case 'message':
-            return (<ChatWindow
-                to={this.state.to}
-                userId={this.state.userId}
-                changeTo={this.changeTo}
-                handleToggle={this.handleToggle}
-                handleClick={this.handleClick.bind(this, 1)}
-                getMoreMessage={this.getMoreMessage}
-                count={this.state.count}
-            />);
-        case 'newFriend':
-            return <NewFriend />;
-        case 'teamMembers':
-            return this.renderTeamMembers(this.state.currentKey, this.state.currentDeps, this.state.deps);
-        default:
-            return <EmptyChat />;
-        }
-    }
     render() {
         return (
             <div className="ejianlian-chat">
@@ -223,6 +208,7 @@ class Chat extends Component {
                     <div className="ejianlian-chat-user-list">
                         {this.state.selected === 1 ?
                             <ContactList
+                                {...this.props}
                                 changeTo={this.changeTo}
                                 handleToggle={this.handleToggle}
                                 selectedChat={this.state.selectedChat}
@@ -250,6 +236,7 @@ class Chat extends Component {
                                 handleClick={this.handleClick.bind(this, 1)}
                                 handleNewFriend={this.handleChatType}
                                 handleToggle={this.handleToggle}
+                                {...this.props}
                             /> : null}
                         {this.state.selectedLinkMan === 2 && this.state.selected === 2 ?
                             <GroupList
@@ -266,11 +253,42 @@ class Chat extends Component {
                         handleToggle={this.handleToggle}
                     />
                 </div>
-                <div className="chat-right">
-                    {
-                        this.renderChatType(this.state.chatType)
+                <Route
+                    path="/chat"
+                    component={({ match }) => (
+                        <div className="chat-right">
+                            <Route exact path={`${match.url}`} component={EmptyChat} />
+                            <Route path={`${match.url}/newfriend`} component={NewFriend} />
+                            <Route
+                                path={`${match.url}/:to/window`}
+                                render={props => (
+                                    <ChatWindow
+                                        {...props}
+                                        handleToggle={this.handleToggle}
+                                        handleClick={this.handleClick.bind(this, 1)}
+                                        getMoreMessage={this.getMoreMessage}
+                                        count={this.state.count}
+                                    />)}
+                            />
+                            <Route
+                                path={`${match.url}/:to/teammembers`}
+                                render={props => (
+                                    <TeamMembers
+                                        {...props}
+                                        teamId={this.state.currentKey}
+                                        depsId={this.state.currentDeps}
+                                        deps={this.state.deps}
+                                        changeTo={this.changeTo}
+                                        handleToggle={this.handleToggle}
+                                        handleClick={this.handleClick.bind(this, 1)}
+                                    />
+                                )}
+                            />
+                        </div>
+                    )
                     }
-                </div>
+                />
+
             </div>
         );
     }

@@ -25,6 +25,11 @@ import ProjectFile from '../imports/schema/projectfile';
 import TaskList from '../imports/schema/taskList';
 import File from '../imports/schema/file';
 
+
+// if (Meteor.isServer) {
+//     Message.rawCollection().createIndex({ groupId: 1 }, { unique: true });
+// }
+
 // Meteor.startup(() => {
 //     // Server
 //     const server = http.createServer();
@@ -53,12 +58,8 @@ Meteor.publish('users', () => Meteor.users.find(
         fields: fields.user,
     },
 ));
-console.log('Meteor.iserver', Meteor.isServer);
 
-Meteor.publish('message', (channels) => {
-    console.log('channels', channels);
-    return Message.find(channels || {});
-});
+Meteor.publish('message', channels => Message.find(channels || {}));
 Meteor.publish('group', () => Group.find({}));
 Meteor.publish('files', () => File.find({}));
 
@@ -80,3 +81,4 @@ Meteor.publish('leave', () => Leave.find({}));
 Meteor.publish('business', () => Business.find({}));
 Meteor.publish('checkbill', () => CheckBill.find({}));
 Meteor.publish('commonaudit', () => CommonAudit.find({}));
+

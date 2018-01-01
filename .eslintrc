@@ -16,7 +16,7 @@
         "Package": true
     }, 
     "rules": {
-        "indent": [2, 4],
+        "indent": 0,
         "linebreak-style": 0,
         "global-require": 0,
         "new-cap": 0,
@@ -48,8 +48,8 @@
         "no-return-assign": 0,
         "no-await-in-loop": 0,
 
-        "react/jsx-indent": [2, 4],
-        "react/jsx-indent-props": [2, 4],
+        "react/jsx-indent": 0,
+        "react/jsx-indent-props": 0,
         "react/jsx-filename-extension": 0,
         "react/prefer-stateless-function": 0,
         "react/require-default-props": 0,
@@ -65,7 +65,8 @@
         "jsx-a11y/alt-text": 0,
         "no-nested-ternary": 0,
         "jsx-a11y/media-has-caption": 0,
-        "no-mixed-operators": 0
-
+        "no-mixed-operators": 0,
+        "no-tabs": 0,
+        "no-mixed-spaces-and-tabs": 0
     }
 }

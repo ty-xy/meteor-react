@@ -8,6 +8,7 @@ import Avatar from '../../../components/Avatar';
 import feedback from '../../../../util/feedback';
 import IdUtil from '../../../../util/id';
 import avatarUrl from '../../../../util/avatarUrl';
+import Group from '../../../../schema/group';
 
 @pureRender
 class ChatFriendInfo extends Component {
@@ -15,11 +16,13 @@ class ChatFriendInfo extends Component {
         handleFriendInfo: PropTypes.func,
         user: PropTypes.object,
         friendId: PropTypes.string,
+        groupId: PropTypes.string,
         chatUser: PropTypes.object,
         temporaryChat: PropTypes.bool,
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
+        history: PropTypes.object,
     };
     constructor(...args) {
         super(...args);
@@ -67,6 +70,9 @@ class ChatFriendInfo extends Component {
             feedback.dealSuccess('删除好友成功');
             this.props.handleFriendInfo();
         });
+        Meteor.call('deleteGroup', this.props.groupId, (err) => {
+            console.log(err);
+        });
     }
     handleDeleteFriend = () => {
         this.props.handleFriendInfo();
@@ -82,10 +88,13 @@ class ChatFriendInfo extends Component {
                 }
             });
         }
-        this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.friendId, 'userId', 'message');
-        this.props.handleToggle(this.props.friendId);
+        this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.groupId, 'groupId', 'message');
+        this.props.handleToggle(this.props.groupId);
         this.props.handleFriendInfo();
         this.props.handleClick();
+        console.log(this.props.history);
+        this.props.history.push({ pathname: `/chat/${this.props.groupId}/window`, state: { type: 'user' } });
+        console.log(this.props.history);
     }
     render() {
         const userProfile = this.props.user.profile || {};
@@ -115,7 +124,6 @@ class ChatFriendInfo extends Component {
                             </li>
                             {
                                 this.props.friendId !== Meteor.userId() ?
-
                                     <li >
                                         {
                                             isFriend ?
@@ -194,12 +202,18 @@ class ChatFriendInfo extends Component {
     }
 }
 export default withTracker(({ friendId }) => {
+    console.log(friendId, Meteor.userId());
     Meteor.subscribe('users');
+    Meteor.subscribe('group');
     const user = Meteor.user() || {};
+    const group = Group.findOne({ $and: [{ type: 'user', members: { $all: [Meteor.userId(), friendId] } }] }) || {};
+    const groupId = group._id || '';
     const chatUser = Meteor.users.findOne({ _id: friendId }) || {};
+    console.log(chatUser);
     return {
         user,
         chatUser,
         friendId,
+        groupId,
     };
 })(ChatFriendInfo);

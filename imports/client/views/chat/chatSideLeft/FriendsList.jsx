@@ -38,6 +38,7 @@ class FriendsList extends Component {
         });
     }
     render() {
+        console.log(this.props.users);
         return (
             <div className="ejianlian-chat-friend-list">
                 <div className="chat-friend-pannel" onClick={() => this.props.handleNewFriend('newFriend')}>
@@ -80,6 +81,7 @@ class FriendsList extends Component {
                 {
                     this.state.isShowFriendInfo ?
                         <ChatFriendInfo
+                            {...this.props}
                             handleFriendInfo={this.handleFriendInfo}
                             friendId={this.state.chatFriendId}
                             temporaryChat

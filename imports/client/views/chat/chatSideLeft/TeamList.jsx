@@ -120,6 +120,7 @@ export default withTracker(() => {
     const companyList = companyIds.map(_id =>
         Company.findOne({ _id }),
     );
+    console.log(companyList);
     return {
         companyList,
     };

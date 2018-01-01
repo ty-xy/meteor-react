@@ -2,26 +2,28 @@ import { Meteor } from 'meteor/meteor';
 import Messages from '../../imports/schema/message';
 
 Meteor.methods({
-    readMessage(messageId, userId) {
+    readMessage(groupId) {
         Messages.update(
-            { _id: messageId },
+            { groupId, 'to.userId': Meteor.userId() },
             {
-                $push: {
-                    readedMembers: userId,
+                $set: {
+                    'to.$.isRead': true,
                 },
             },
+            { multi: true },
         );
     },
-    readMessages(messageIds, userId) {
-        messageIds.map(messageId =>
-            Messages.update(
-                { _id: messageId },
-                {
-                    $push: {
-                        readedMembers: userId,
+    readMessageLast(groupId) {
+        Messages.findAndModify(
+            {
+                query: { groupId, 'to.userId': Meteor.userId() },
+                sort: { $natural: -1 },
+                update: {
+                    $set: {
+                        'to.$.isRead': true,
                     },
                 },
-            ),
+            },
         );
     },
 });

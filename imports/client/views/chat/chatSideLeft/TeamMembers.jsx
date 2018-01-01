@@ -97,6 +97,7 @@ class TeamMembers extends Component {
     </div>)
 
     render() {
+        console.log(this.props);
         const { formLayout } = this.state;
         const formItemLayout = formLayout === 'horizontal' ? {
             labelCol: { span: 4 },
@@ -106,7 +107,7 @@ class TeamMembers extends Component {
             wrapperCol: { span: 14, offset: 4 },
         } : null;
         const { getFieldDecorator } = this.props.form;
-        const { name = '' } = this.props.currentCompany;
+        const { name = '' } = this.props.currentCompany || {};
         return (
             <div className="team-members">
                 <Table
@@ -118,6 +119,7 @@ class TeamMembers extends Component {
                 {
                     this.state.isShowFriendInfo ?
                         <ChatFriendInfo
+                           {...this.props}
                             handleFriendInfo={this.handleFriendInfo}
                             friendId={this.state.chatFriendId}
                             temporaryChat={this.state.chatFriendId !== Meteor.userId()}
@@ -195,14 +197,13 @@ export default Form.create({})(
                 x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;
             });
         } else {
-            currentMembers = currentCompany.members || [];
+            currentMembers = (currentCompany && currentCompany.members) || [];
             currentMembers.forEach((x) => {
                 x.key = x.userId;
                 x.profile = Meteor.users.findOne({ _id: x.userId }, { fields: fields.searchUser }).profile;
                 x.profile._id = x.userId;
             });
         }
-
         return {
             currentMembers,
             teamId,

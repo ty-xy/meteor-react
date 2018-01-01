@@ -8,13 +8,13 @@ Meteor.methods({
                 {
                     $pull: {
                         'profile.chatList': {
-                            userId: chatId,
+                            groupId: chatId,
                         },
                     },
 
                 },
             );
-        } else if (type === 'group') {
+        } else if (type === 'group' || type === 'team') {
             Meteor.users.update(
                 { _id: Meteor.userId() },
                 {
