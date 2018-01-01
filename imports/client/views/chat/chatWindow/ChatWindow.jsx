@@ -173,7 +173,6 @@ class ChatWindow extends Component {
     }
     render() {
         const { uploadLoadding } = this.state;
-        console.log('messages', this.state.messages);
         return (<div className="ejianlian-chat-window">
             {
                 this.state.isShowVideo ?

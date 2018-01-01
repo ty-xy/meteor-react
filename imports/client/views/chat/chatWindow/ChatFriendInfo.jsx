@@ -22,6 +22,7 @@ class ChatFriendInfo extends Component {
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
+        history: PropTypes.object,
     };
     constructor(...args) {
         super(...args);
@@ -88,9 +89,12 @@ class ChatFriendInfo extends Component {
             });
         }
         this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.groupId, 'groupId', 'message');
-        this.props.handleToggle(this.props.friendId);
+        this.props.handleToggle(this.props.groupId);
         this.props.handleFriendInfo();
         this.props.handleClick();
+        console.log(this.props.history);
+        this.props.history.push({ pathname: `/chat/${this.props.groupId}/window`, state: { type: 'user' } });
+        console.log(this.props.history);
     }
     render() {
         const userProfile = this.props.user.profile || {};
@@ -202,10 +206,9 @@ export default withTracker(({ friendId }) => {
     Meteor.subscribe('users');
     Meteor.subscribe('group');
     const user = Meteor.user() || {};
-    const group = Group.findOne({ $and: [{ type: 'user', members: [Meteor.userId(), friendId] }] }) || {};
+    const group = Group.findOne({ $and: [{ type: 'user', members: { $all: [Meteor.userId(), friendId] } }] }) || {};
     const groupId = group._id || '';
     const chatUser = Meteor.users.findOne({ _id: friendId }) || {};
-    console.log(groupId);
     console.log(chatUser);
     return {
         user,

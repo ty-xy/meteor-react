@@ -58,7 +58,10 @@ class Send extends PureComponent {
             }
             resMes.to.push(user);
         });
-        console.log('resMes', resMes);
+        console.log('resMes', resMes, members.filter(value => value !== Meteor.userId()));
+        Meteor.call('addChatlist', chatGroup._id, members.filter(value => value !== Meteor.userId())[0], (err) => {
+                feedback.dealError(err);
+            });
         Meteor.call(
             'insertMessage',
             {

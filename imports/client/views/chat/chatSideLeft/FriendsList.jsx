@@ -81,6 +81,7 @@ class FriendsList extends Component {
                 {
                     this.state.isShowFriendInfo ?
                         <ChatFriendInfo
+                            {...this.props}
                             handleFriendInfo={this.handleFriendInfo}
                             friendId={this.state.chatFriendId}
                             temporaryChat
