@@ -4,9 +4,7 @@ import UserUtil from '../../imports/util/user';
 
 Meteor.methods({
     addChatlist(chatId, user) {
-        console.log(Meteor.users.findOne({ _id: user }));
         const temporaryChat = Meteor.users.findOne({ _id: user }).profile.chatList.find(item => item.groupId && item.groupId === chatId);
-        console.log(temporaryChat);
         if (temporaryChat) {
             return;
         }
@@ -59,7 +57,7 @@ Meteor.methods({
                 },
             );
         } else {
-            console.log(type);
+            // console.log(type);
         }
     },
 });

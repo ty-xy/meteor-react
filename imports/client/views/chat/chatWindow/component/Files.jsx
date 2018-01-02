@@ -90,7 +90,6 @@ class File extends PureComponent {
     render() {
         const { content } = this.props;
 		const result = PopulateUtil.file(content);
-		console.log('result', result, content);
         return this.renderFiles(result);
     }
 }

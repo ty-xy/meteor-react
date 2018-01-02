@@ -33,7 +33,6 @@ Meteor.methods({
             };
             Files.schema.validate(newFile);
             const fileId = Files.insert(newFile);
-            console.log(fileId);
             resolve(fileId);
             qiniu.uploadBytes(`file_${Date.now()}_${name}`, imageBinary)
                 .then(Meteor.bindEnvironment((imageKey) => {
@@ -62,7 +61,6 @@ Meteor.methods({
         });
     },
     clientInsertFile(name, type, size, url) {
-        console.log('clientInsertFile', name, type, size, url);
         const newFile = {
             createdAt: new Date(),
             from: Meteor.userId(),
