@@ -35,12 +35,21 @@ class Send extends PureComponent {
         if (match.params.to) {
             this.$message.addEventListener('keydown', this.handleSendMessage);
         }
-        this.$message.setAttribute('contentEditable', true);
+        this.messageContext.setAttribute('contentEditable', true);
+        this.placeholder.setAttribute('contentEditable', false);
     }
     handleSendMessage = (e) => {
         if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault();
             this.sendText();
+        }
+        if (this.messageContext.innerText.length > 0) {
+            this.placeholder.style = 'opacity: 0';
+        }
+        if (e.keyCode === 8 && this.messageContext.innerText.length < 1) {
+            this.placeholder.style = 'opacity: 1';
+            e.preventDefault();
+            return 'false';
         }
     }
     sendMessage = (content, type) => {
@@ -73,13 +82,13 @@ class Send extends PureComponent {
                     feedback.dealError(err);
                 } else {
                     this.lastTime = res;
-                    this.$message.innerHTML = '';
+                    this.messageContext.innerHTML = '';
                 }
             });
     }
     // 发送文字和表情
     sendText = () => {
-        this.sendMessage(this.$message.innerHTML.replace(/\n|\r\n/g, '<br/>'), 'text');
+        this.sendMessage(this.messageContext.innerHTML.replace(/\n|\r\n/g, '<br/>'), 'text');
     }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
@@ -87,10 +96,10 @@ class Send extends PureComponent {
         newSpan.innerText = `#(${name})`;
         newSpan.style = 'margin: 0 3px';
         newSpan.setAttribute('contentEditable', false);
-        this.$message.appendChild(newSpan);
+        this.messageContext.appendChild(newSpan);
         const nbsp = document.createElement('span');
-        nbsp.style = 'width: 4px';
-        this.$message.appendChild(nbsp);
+        nbsp.style = 'width: 4px; height: 14px';
+        this.messageContext.appendChild(nbsp);
     }
     // 发送文件
     sendFile = () => {
@@ -201,7 +210,8 @@ class Send extends PureComponent {
                             <span>sjdkf</span>
                         </textarea> */}
                         <div className="chat-send-div" ref={i => this.$message = i}>
-                            请输入：
+                            <div ref={i => this.messageContext = i} className="chat-send-context" />
+                            <span ref={i => this.placeholder = i} className="chat-send-placeholder">输入内容(shift+enter换行)</span>
                         </div>
                         <p className="chat-send-message" onClick={this.sendText}>发送</p>
                     </div>
