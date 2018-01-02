@@ -228,6 +228,7 @@ export default withTracker(({ match }) => {
     Meteor.subscribe('message');
     Meteor.subscribe('group');
     Meteor.subscribe('files');
+    Meteor.subscribe('user');
     const chatGroup = Group.findOne({ _id: to }) || {};
     // PopulateUtil.group(chatGroup);
     const files = Message.find({ groupId: to, type: 'file' }, { sort: { createdAt: -1 } }).fetch().map(msg => PopulateUtil.file(msg.content));
@@ -260,6 +261,7 @@ export default withTracker(({ match }) => {
         chatUser: Meteor.users.findOne({ _id: Meteor.userId() }) || {},
         chatGroup,
         files,
+        users: Meteor.users.find().fetch(),
     };
 })(ChatWindow);
 

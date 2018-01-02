@@ -39,7 +39,7 @@ class ChatFriendFile extends Component {
                                                 <div className="user-avatar">
                                                     <FileIcon type={item.type} />
                                                 </div>
-                                                <div className="user-message">
+                                                <div className="user-message user-message-file">
                                                     <p>{item.name}</p>
                                                     <p className="last-message">
                                                         <span>来自{item.fileFrom} &nbsp;</span>

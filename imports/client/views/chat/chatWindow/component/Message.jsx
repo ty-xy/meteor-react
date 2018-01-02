@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import formatDate from '../../../../../util/formatDate';
+import { userIdToInfo } from '../../../../../util/user';
 import Text from './Text';
 import Files from './Files';
 import Avatar from '../../../../components/Avatar';
@@ -13,6 +14,7 @@ class Message extends PureComponent {
         messages: PropTypes.array,
         chatScroll: PropTypes.func,
         count: PropTypes.count,
+        users: PropTypes.array,
 	}
 	constructor(props) {
 		super(props);
@@ -82,7 +84,11 @@ class Message extends PureComponent {
                             }
                             <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
                                 <p className="user-avatar" onClick={() => this.handleChatUser(message.from._id, message.to, groupId)}>
-                                    <Avatar name={message.from.name} avatarColor={message.from.avatarColor} avatar={message.from.avatar} />
+                                    <Avatar
+                                        name={userIdToInfo.getName(this.props.users, message.from._id)}
+                                        avatarColor={userIdToInfo.getAvatarColor(this.props.users, message.from._id)}
+                                        avatar={userIdToInfo.getAvatar(this.props.users, message.from._id)}
+                                    />
                                 </p>
                                 <div className="user-message-wrap">
                                     {

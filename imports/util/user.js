@@ -78,6 +78,9 @@ export const userIdToInfo = {
     getAvatar(users, userId) {
         return userIdToInfo.getProfile(users, userId).avatar || '';
     },
+    getAvatarColor(users, userId) {
+        return userIdToInfo.getProfile(users, userId).avatarColor || '';
+    },
     getMaincompany(users, userId) {
         return userIdToInfo.getProfile(users, userId).mainCompany || '';
     },
