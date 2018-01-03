@@ -18,11 +18,7 @@ class Message extends PureComponent {
     }
     constructor(props) {
         super(props);
-        const messages = [];
-          for (let i = 1; i < 50; i++) {
-            messages.push(`${i}_yo`);
-          }
-        this.state = { messages };
+        this.state = { };
     }
     componentDidUpdate() {
         // this.scrollView.scrollTop = this.scrollView.scrollHeight;
