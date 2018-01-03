@@ -679,3 +679,11 @@
  zg gwt    fix: send textarea
  zg gwt    feat: 表情能整个删除
  zg-xym    build results on build 81
+----------------------------------
+
+2018-01-03 19:05:52,   build 83
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    fix: 自动获取焦点
+ zg gwt    fix: remove reverse;
+ zg-xym    build results on build 82
