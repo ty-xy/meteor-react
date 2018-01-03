@@ -145,7 +145,6 @@ Meteor.methods({
     },
     // 更新部门名称
     editCompanyDep({ companyId, name, id, isAutoChat, admin, groupId }) {
-        console.log('admin', admin, name, groupId);
         Company.update(
             { _id: companyId, 'deps.id': id },
             {
@@ -190,7 +189,6 @@ Meteor.methods({
     },
     // 批量设置部门人员
     batchSetDep({ companyId, _users, groupId, oldgroup, oldDep }) {
-        console.log('batchSetDep', companyId, _users, groupId, oldgroup, oldDep);
         let name = '';
         const company = Company.findOne({ _id: companyId }) || {};
         (company.deps || []).forEach((item) => {
@@ -227,7 +225,6 @@ Meteor.methods({
                 },
                 (err, res) => {
                     if (res && item.dep) {
-                        console.log('deleteMember', groupId, oldgroup, item.userId);
                         // 删除旧部中的userid
                         Company.update(
                             { _id: companyId, 'deps.id': oldDep },
@@ -264,7 +261,7 @@ Meteor.methods({
     },
     // 公司添加人员
     async addMember({ companyId = UserUtil.getCurrentBackendCompany(), userId, dep = '', departmentGroupId, pos, companyGroupId }) {
-        // console.log('addMember', companyId, dep, userId, departmentGroupId, pos, companyGroupId);
+        console.log('addMember', companyId, dep, userId, departmentGroupId, pos, companyGroupId);
         const member = {
             userId,
             dep,
@@ -311,7 +308,6 @@ Meteor.methods({
                 (err, r) => (err ? reject(0) : resolve(r)));
         });
         const rr = await pro();
-        console.log('pro', rr, membersNum, isAutoChat, departmentGroupId);
         if (rr) {
             if (dep) {
                 // 更新部门人员
@@ -412,7 +408,6 @@ Meteor.methods({
             dep,
             pos,
         };
-        console.log('editMember', userId, '旧部', oldDep, '新群聊', groupId, '就群聊', oldgroup);
         // 删除旧部
         await Company.update(
             { _id: companyId, 'deps.id': oldDep },
@@ -443,7 +438,6 @@ Meteor.methods({
             );
             if (!groupId) {
                 // 新增群聊
-                console.log('新增群聊');
                 let name = '';
                 const company = Company.findOne({ _id: companyId }) || {};
                 (company.deps || []).forEach((item) => {
@@ -481,7 +475,6 @@ Meteor.methods({
                 );
             } else {
                 // 添加到移入的群聊
-                console.log('添加到群聊');
                 await Meteor.call(
                     'addGroupMembers',
                     {

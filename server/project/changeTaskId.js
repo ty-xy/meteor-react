@@ -29,7 +29,6 @@ Meteor.methods({
         const taskArray = TaskBoard.findOne({ _id: tastBoardId }).sortArray;
         const index = taskArray.indexOf(item);
         taskArray.splice(index, 1);
-        console.log(index, taskArray);
         TaskBoard.update(
             { _id: tastBoardId },
             {

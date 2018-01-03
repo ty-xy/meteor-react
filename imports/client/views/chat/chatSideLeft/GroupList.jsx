@@ -16,10 +16,10 @@ const SubMenu = Menu.SubMenu;
 @pureRender
 class GroupList extends Component {
     static propTypes = {
-        changeTo: PropTypes.func,
         handleClick: PropTypes.func,
         selfGroups: PropTypes.array,
         teamGroups: PropTypes.array,
+        history: PropTypes.object,
     };
     constructor(...args) {
         super(...args);
@@ -28,9 +28,10 @@ class GroupList extends Component {
             isShowMyGroup: false,
         };
     }
-    handleClick = (e) => {
+    // 跳转到chat
+    handleToChat = (id) => {
         this.props.handleClick();
-        this.props.changeTo(e.key, e.key, 'groupId', 'message');
+        this.props.history.push({ pathname: `/chat/${id}/window`, state: { type: 'group' } });
     }
     handleShowCompany = () => {
         this.setState({
@@ -63,7 +64,7 @@ class GroupList extends Component {
                     }
                     <div className="team-organization">
                         <Menu
-                            onClick={this.handleClick}
+                            onClick={e => this.handleToChat(e.key)}
                             mode="inline"
                             className="team-menu"
                         >
@@ -106,10 +107,7 @@ class GroupList extends Component {
                                         <div
                                             key={index}
                                             className="friend-list-item"
-                                            onClick={() => {
-                                                this.props.handleClick();
-                                                this.props.changeTo(item._id, item._id, 'groupId', 'message');
-                                            }}
+                                            onClick={() => this.handleToChat(item._id)}
                                         >
                                             <p>
                                                 <Avatar name={item.name} avatar={item.avatar ? item.avatar : avatarUrl.avatarGroup} />
@@ -140,9 +138,15 @@ export default withTracker(() => {
         const companyInfo = Company.findOne({ _id: team.companyId });
         const subGroupIds = companyInfo && companyInfo.subGroupIds;
         if (subGroupIds) {
-            team.subGroup = subGroupIds.map(subGroupId => Group.findOne({ _id: subGroupId }));
+            team.subGroup = [];
+            subGroupIds.forEach((subGroupId) => {
+                if (Group.findOne({ _id: subGroupId })) {
+                    team.subGroup.push(Group.findOne({ _id: subGroupId }));
+                }
+            });
         }
     });
+    console.log('teamGroups', teamGroups);
     return {
         selfGroups,
         teamGroups,

@@ -230,7 +230,7 @@ class GroupSetting extends Component {
                         </div>
                         {
                             this.props.admin === Meteor.userId() ?
-                                <button onClick={this.editGroupName}>编辑</button>
+                                <button onClick={this.editGroupName}>{this.state.isChangeName ? '确定' : '编辑'}</button>
                                 :
                                 null
                         }

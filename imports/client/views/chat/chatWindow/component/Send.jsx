@@ -35,11 +35,21 @@ class Send extends PureComponent {
         if (match.params.to) {
             this.$message.addEventListener('keydown', this.handleSendMessage);
         }
+        this.messageContext.setAttribute('contentEditable', true);
+        this.placeholder.setAttribute('contentEditable', false);
     }
     handleSendMessage = (e) => {
         if (e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault();
             this.sendText();
+        }
+        if (this.messageContext.innerText.length > 0) {
+            this.placeholder.style = 'z-index: -1';
+        }
+        if (e.keyCode === 8 && this.messageContext.innerText.length < 1) {
+            this.placeholder.style = 'z-index: 1';
+            e.preventDefault();
+            return 'false';
         }
     }
     sendMessage = (content, type) => {
@@ -58,7 +68,7 @@ class Send extends PureComponent {
             }
             resMes.to.push(user);
         });
-        console.log('resMes', resMes, members.filter(value => value !== Meteor.userId()));
+        // console.log('resMes', resMes, members.filter(value => value !== Meteor.userId()));
         Meteor.call('addChatlist', chatGroup._id, members.filter(value => value !== Meteor.userId())[0], (err) => {
                 feedback.dealError(err);
             });
@@ -72,17 +82,25 @@ class Send extends PureComponent {
                     feedback.dealError(err);
                 } else {
                     this.lastTime = res;
-                    this.$message.value = '';
+                    this.messageContext.innerHTML = '';
+                    this.placeholder.style = 'z-index: 1';
                 }
             });
     }
     // 发送文字和表情
     sendText = () => {
-        this.sendMessage(this.$message.value.replace(/\n|\r\n/g, '<br/>'), 'text');
+        this.sendMessage(this.messageContext.innerHTML.replace(/\n|\r\n/g, '<br/>'), 'text');
     }
     handleClick = (e) => {
         const name = e.currentTarget.dataset.name;
-        this.$message.value += `#(${name})`;
+        const newSpan = document.createElement('span');
+        newSpan.innerText = `#(${name})`;
+        newSpan.style = 'margin: 0 3px';
+        newSpan.setAttribute('contentEditable', false);
+        this.messageContext.appendChild(newSpan);
+        const nbsp = document.createElement('span');
+        nbsp.style = 'width: 4px; height: 14px';
+        this.messageContext.appendChild(nbsp);
     }
     // 发送文件
     sendFile = () => {
@@ -189,7 +207,13 @@ class Send extends PureComponent {
                         </p>
                     </div>
                     <div className="chat-send-bts">
-                        <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)" />
+                        {/* <textarea name="" id="" cols="30" rows="10" ref={i => this.$message = i} placeholder="输入内容(shift+enter换行)">
+                            <span>sjdkf</span>
+                        </textarea> */}
+                        <div className="chat-send-div" ref={i => this.$message = i}>
+                            <div ref={i => this.messageContext = i} className="chat-send-context" />
+                            <span ref={i => this.placeholder = i} className="chat-send-placeholder">输入内容(shift+enter换行)</span>
+                        </div>
                         <p className="chat-send-message" onClick={this.sendText}>发送</p>
                     </div>
                 </div>
