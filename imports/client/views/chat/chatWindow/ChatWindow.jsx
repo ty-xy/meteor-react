@@ -153,13 +153,15 @@ class ChatWindow extends Component {
             isShowVideo: !this.state.isShowVideo,
         });
     }
-    chatScroll = (e) => {
-        if (e.target.scrollTop < 10) {
-            count++;
+    chatScroll = () => {
+        count++;
+        this.setState({ showHistoryLoading: true });
+        return new Promise((resolve) => {
             const messages = Message.find({ groupId: this.props.match.params.to }, { sort: { createdAt: -1 }, limit: limit * count }).fetch().reverse();
             console.log('messages', messages);
-            this.setState({ messages });
-        }
+            this.setState({ messages, showHistoryLoading: false });
+            resolve();
+        });
     }
     renderContent = (type, content) => {
         switch (type) {
@@ -197,12 +199,8 @@ class ChatWindow extends Component {
 
             }
             <ChatHeader {...this.props} handleFriendId={this.handleFriendId} handleFriendInfo={this.handleFriendInfoClose} />
-            {
-                this.state.showHistoryLoading ?
-                    <Spin />
-                    :
-                    null
-            }
+            {this.state.showHistoryLoading ? <Spin /> : null}
+            <Messages {...this.props} messages={this.state.messages} chatScroll={this.chatScroll} handleFriendId={this.handleFriendId} />
             {
                 uploadLoadding && <div className="self-message">
                     <p className="user-avatar">
@@ -217,7 +215,6 @@ class ChatWindow extends Component {
                     </div>
                 </div>
             }
-            <Messages {...this.props} messages={this.state.messages} chatScroll={this.chatScroll} handleFriendId={this.handleFriendId} />
             <Send {...this.props} />
         </div>);
     }

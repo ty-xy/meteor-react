@@ -27,7 +27,7 @@ class ContactList extends Component {
         handleToggle: PropTypes.func,
         selectedChat: PropTypes.object,
         allUnRead: PropTypes.array,
-        // handleNewFriend: PropTypes.func,
+        location: PropTypes.object,
         newFriendNotice: PropTypes.array,
     }
     constructor(props) {
@@ -103,50 +103,52 @@ class ContactList extends Component {
             </div>
         </div>
     )
-    renderUser = (user, lastMessage, time, type, index, unreadMessage, id) => (
-        <div
-            key={index}
-            onClick={() => {
-                this.props.handleToggle(id);
-                // this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id, '', 'message');
-                this.handleChatWindow(id, type);
-            }}
-            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[id] })}
-        >
-            <div className="icon-guanbi-close">
-                <Icon icon="icon-guanbi" size={20} onClick={e => this.deleteChat(id, type, unreadMessage, e)} />
+    renderUser = (user, lastMessage, time, type, index, unreadMessage, id) => {
+        const arr = this.props.location.pathname.split('/');
+        return (
+            <div
+                key={index}
+                onClick={() => {
+                    this.props.handleToggle(id);
+                    // this.props.changeTo(IdUtil.merge(Meteor.userId(), user._id), user._id, '', 'message');
+                    this.handleChatWindow(id, type);
+                }}
+                className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': arr.indexOf(id) > 0 })}
+            >
+                <div className="icon-guanbi-close">
+                    <Icon icon="icon-guanbi" size={20} onClick={e => this.deleteChat(id, type, unreadMessage, e)} />
+                </div>
+                <div className="user-avatar">
+                    <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
+                </div>
+                <div className="user-message">
+                    <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
+                    <p className="last-message">
+                        <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
+                        {
+                            unreadMessage !== 0 ?
+                                <span className="notice-red-dot">
+                                    {unreadMessage}
+                                </span>
+                                :
+                                null
+                        }
+                    </p>
+                </div>
             </div>
-            <div className="user-avatar">
-                <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
-            </div>
-            <div className="user-message">
-                <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
-                <p className="last-message">
-                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
-                    {
-                        unreadMessage !== 0 ?
-                            <span className="notice-red-dot">
-                                {unreadMessage}
-                            </span>
-                            :
-                            null
-                    }
-                </p>
-            </div>
-        </div>
-    )
+        );
+    }
     renderGroup = (_id, isDisturb, avatar, name, stickTop, lastMessage, time, type, i, unreadMessage) => {
         const isMyDisturb = isDisturb.includes(Meteor.userId());
         const selfStickTop = stickTop.find(x => x.userId && x.userId === Meteor.userId());
-        // console.log(9090, isMyDisturb, unreadMessage);
+        const arr = this.props.location.pathname.split('/');
         return (<div
             onClick={() => {
                 this.props.handleToggle(_id);
-                // this.props.changeTo(group._id, group._id, '', 'message');
                 this.handleChatWindow(_id, type);
             }}
             key={i}
-            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': this.props.selectedChat && this.props.selectedChat[_id] })}
+            className={classnames('chat-user-pannel', { 'chat-user-pannel-avtive': arr.indexOf(_id) > 0 })}
         >
             {
                 selfStickTop && selfStickTop.userId === Meteor.userId() ?
@@ -188,7 +190,6 @@ class ContactList extends Component {
         if (item.type === 'user') {
             const mem = item.members ? item.members.filter(value => value !== Meteor.userId()) : '';
             const users = Meteor.users.findOne({ _id: mem[0] });
-            console.log('renderChatListItem', item);
             return this.renderUser(users, item.lastMessage, item.time, item.type, i, item.unreadMessage, item._id, mem);
         } else if (item.type === 'team' || item.type === 'group') {
             return this.renderGroup(item._id, item.isDisturb || [], item.avatar, item.name, item.stickTop || [], item.lastMessage, item.time, item.type, i, item.unreadMessage);
@@ -216,11 +217,34 @@ class ContactList extends Component {
         const newDefaultTopChat = defaultTopChat.sort(this.compare('sortTime'));
         const sortedChatList = [...newStickTopChat, ...newDefaultTopChat];
         console.log('sortedChatList', sortedChatList, newStickTopChat, newDefaultTopChat, chatList);
+        const newArr = [];
+        const spliceNum = [];
+        chatList.forEach((item, index) => {
+            if (newArr.indexOf(item.groupId) < 0) {
+                newArr.push(item.groupId);
+            } else {
+                spliceNum.push(index);
+            }
+        });
+        let res = [];
+        if (spliceNum.length) {
+            spliceNum.forEach((i, index) => {
+                if (index === 0) {
+                    res = res.concat(chatList.splice(0, i));
+                } else {
+                    res = res.concat(chatList.splice(i, chatList[index + 1] - 1 || 0));
+                }
+            });
+        } else {
+            res = chatList;
+        }
+
+        console.log('newArr1', spliceNum, newArr, spliceNum, res);
         return (
             <div className="ejianlian-chat-message-list">
                 {
-                    chatList.length > 0 ?
-                        chatList.map((item, i) => this.renderChatListItem(item, i))
+                    res.length > 0 ?
+                    res.map((item, i) => this.renderChatListItem(item, i))
                         :
                         <div className="no-content">暂无聊天列表</div>
                 }

@@ -261,7 +261,7 @@ Meteor.methods({
     },
     // 公司添加人员
     async addMember({ companyId = UserUtil.getCurrentBackendCompany(), userId, dep = '', departmentGroupId, pos, companyGroupId }) {
-        // console.log('addMember', companyId, dep, userId, departmentGroupId, pos, companyGroupId);
+        console.log('addMember', companyId, dep, userId, departmentGroupId, pos, companyGroupId);
         const member = {
             userId,
             dep,

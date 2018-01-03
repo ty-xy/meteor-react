@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default function Avatar({ name, avatar, avatarColor }) {
-    console.log('users, userId', name, avatar);
     return (
         avatar ?
             <img

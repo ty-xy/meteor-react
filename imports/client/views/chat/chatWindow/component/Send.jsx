@@ -44,10 +44,10 @@ class Send extends PureComponent {
             this.sendText();
         }
         if (this.messageContext.innerText.length > 0) {
-            this.placeholder.style = 'opacity: 0';
+            this.placeholder.style = 'z-index: -1';
         }
         if (e.keyCode === 8 && this.messageContext.innerText.length < 1) {
-            this.placeholder.style = 'opacity: 1';
+            this.placeholder.style = 'z-index: 1';
             e.preventDefault();
             return 'false';
         }
@@ -68,7 +68,7 @@ class Send extends PureComponent {
             }
             resMes.to.push(user);
         });
-        console.log('resMes', resMes, members.filter(value => value !== Meteor.userId()));
+        // console.log('resMes', resMes, members.filter(value => value !== Meteor.userId()));
         Meteor.call('addChatlist', chatGroup._id, members.filter(value => value !== Meteor.userId())[0], (err) => {
                 feedback.dealError(err);
             });
@@ -83,6 +83,7 @@ class Send extends PureComponent {
                 } else {
                     this.lastTime = res;
                     this.messageContext.innerHTML = '';
+                    this.placeholder.style = 'z-index: 1';
                 }
             });
     }

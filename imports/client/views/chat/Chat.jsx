@@ -242,6 +242,7 @@ class Chat extends Component {
                             <GroupList
                                 changeTo={this.changeTo}
                                 handleClick={this.handleClick.bind(this, 1)}
+                                {...this.props}
                             /> : null}
                         {this.state.selected === 3 ?
                             <TeamList
