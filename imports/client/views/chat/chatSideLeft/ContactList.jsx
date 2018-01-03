@@ -94,7 +94,9 @@ class ContactList extends Component {
                 <Icon icon="icon-icon15 icon" />
             </div>
             <div className="user-message">
-                <p>新的好友<span className="message-createAt">{formatDate.renderDate(notice.createdAt)}</span></p>
+                <p>新的好友
+                    {/* <span className="message-createAt">{formatDate.renderDate(notice.createdAt)}</span> */}
+                    </p>
                 <p className="last-message">{friendFrom.profile && friendFrom.profile.name}请求添加好友
                     <span className="notice-red-dot">
                         {this.props.newFriendNotice.length}
@@ -122,7 +124,9 @@ class ContactList extends Component {
                     <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
                 </div>
                 <div className="user-message">
-                    <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
+                    <p>{user.profile.name}
+                    <span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span>
+                    </p>
                     <p className="last-message">
                         <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                         {
@@ -163,7 +167,9 @@ class ContactList extends Component {
                 <Avatar avatar={avatar || avatarUrl.avatarGroup} name="群聊" />
             </div>
             <div className="user-message">
-                <p>{name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
+                <p>{name}
+                {/* <span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span> */}
+                </p>
                 <p className="last-message">
                     <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
                     {
@@ -263,10 +269,9 @@ export default withTracker(() => {
         const allNum = Message.find({ 'to.userId': Meteor.userId(), groupId: item.groupId }).fetch() || [];
         const isReadNum = Message.find({ to: { userId: Meteor.userId(), isRead: true }, groupId: chatList[index].groupId }).fetch() || [];
         item.unreadMessage = (allNum.length - isReadNum.length) || 0;
-        item.lastMessage = allNum.createdAt;
+        item.lastMessage = allNum[allNum.length - 1] || { content: '' };
     });
     const selfGroup = UserUtil.getGroups();
-
     const selfFriend = UserUtil.getFriends();
     console.log(selfGroup, selfFriend);
     const friendMessage = selfFriend.map(i => IdUtil.merge(Meteor.userId(), i));

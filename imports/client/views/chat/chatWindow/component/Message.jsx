@@ -2,10 +2,14 @@ import React, { PureComponent } from 'react';
 import { Meteor } from 'meteor/meteor';
 import PropTypes from 'prop-types';
 import ReactChatView from 'react-chatview';
+import { withTracker } from 'meteor/react-meteor-data';
 import { userIdToInfo } from '../../../../../util/user';
+
+
 import Text from './Text';
 import Files from './Files';
 import Avatar from '../../../../components/Avatar';
+import formatDate from '../../../../../util/formatDate';
 
 class Message extends PureComponent {
 	static propTypes = {
@@ -63,17 +67,18 @@ class Message extends PureComponent {
                 ref={i => this.scrollView = i}
             >
                 {
-                    this.props.messages.map(message => (
-                        <div
+                    this.props.messages.map((message) => {
+                        console.log(message.showYearMonth);
+                       return (<div
                             key={message._id}
                             className="chat-message"
-                        >
-                            {/* {
+                       >
+                            {
                                 message.showYearMonth ?
                                     <div className="message-time">{formatDate.dealMessageTime(message.createdAt)}</div>
                                     :
                                     null
-                            } */}
+                            }
                             <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
                                 <p className="user-avatar" onClick={() => this.handleChatUser(message.from._id, message.to, groupId)}>
                                     <Avatar
@@ -94,11 +99,17 @@ class Message extends PureComponent {
                                     }
                                 </div>
                             </div>
-                        </div>
-                    ))
+                        </div>);
+                    })
                 }
             </ReactChatView>);
       }
 }
 
-export default Message;
+export default withTracker((n) => {
+   console.log(111, n);
+   const m = 1;
+   return {
+    m,
+   };
+})(Message);
