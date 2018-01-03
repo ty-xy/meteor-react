@@ -157,7 +157,7 @@ class ChatWindow extends Component {
         count++;
         this.setState({ showHistoryLoading: true });
         return new Promise((resolve) => {
-            const messages = Message.find({ groupId: this.props.match.params.to }, { sort: { createdAt: -1 }, limit: limit * count }).fetch().reverse();
+            const messages = Message.find({ groupId: this.props.match.params.to }, { sort: { createdAt: -1 }, limit: limit * count }).fetch();
             console.log('messages', messages);
             this.setState({ messages, showHistoryLoading: false });
             resolve();
@@ -241,7 +241,7 @@ export default withTracker(({ match }) => {
             }
         });
     }
-    const messages = Message.find({ groupId: to }, { sort: { createdAt: -1 }, limit }).fetch().reverse();
+    const messages = Message.find({ groupId: to }, { sort: { createdAt: -1 }, limit }).fetch();
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.showYearMonth = false;
