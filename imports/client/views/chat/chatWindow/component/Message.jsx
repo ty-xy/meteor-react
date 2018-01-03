@@ -6,6 +6,7 @@ import { userIdToInfo } from '../../../../../util/user';
 import Text from './Text';
 import Files from './Files';
 import Avatar from '../../../../components/Avatar';
+import formatDate from '../../../../../util/formatDate';
 
 class Message extends PureComponent {
 	static propTypes = {
@@ -17,11 +18,7 @@ class Message extends PureComponent {
     }
     constructor(props) {
         super(props);
-        const messages = [];
-          for (let i = 1; i < 50; i++) {
-            messages.push(`${i}_yo`);
-          }
-        this.state = { messages };
+        this.state = { };
     }
     componentDidUpdate() {
         // this.scrollView.scrollTop = this.scrollView.scrollHeight;
@@ -68,12 +65,12 @@ class Message extends PureComponent {
                             key={message._id}
                             className="chat-message"
                         >
-                            {/* {
+                            {
                                 message.showYearMonth ?
                                     <div className="message-time">{formatDate.dealMessageTime(message.createdAt)}</div>
                                     :
                                     null
-                            } */}
+                            }
                             <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
                                 <p className="user-avatar" onClick={() => this.handleChatUser(message.from._id, message.to, groupId)}>
                                     <Avatar

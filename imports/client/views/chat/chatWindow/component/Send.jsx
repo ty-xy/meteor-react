@@ -13,6 +13,7 @@ class Send extends PureComponent {
         match: PropTypes.object,
         chatGroup: PropTypes.object,
         location: PropTypes.object,
+        handleToggle: PropTypes.func,
     }
     constructor(props) {
         super(props);
@@ -37,6 +38,7 @@ class Send extends PureComponent {
         }
         this.messageContext.setAttribute('contentEditable', true);
         this.placeholder.setAttribute('contentEditable', false);
+        this.messageContext.focus();
     }
     handleSendMessage = (e) => {
         if (e.keyCode === 13 && !e.shiftKey) {
@@ -84,6 +86,8 @@ class Send extends PureComponent {
                     this.lastTime = res;
                     this.messageContext.innerHTML = '';
                     this.placeholder.style = 'z-index: 1';
+                    this.props.handleToggle();
+                    this.messageContext.focus();
                 }
             });
     }

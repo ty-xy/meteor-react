@@ -89,15 +89,6 @@ class Chat extends Component {
             }
         }
     }
-    getMoreMessage = () => {
-        let countNum = this.state.count;
-        console.log('getMoreMessage', countNum);
-        countNum++;
-        this.setState({
-            count: countNum,
-        });
-        return Promise.resolve(true);
-    }
     handleChatType = (chatType) => {
         this.setState({
             chatType,
@@ -267,7 +258,6 @@ class Chat extends Component {
                                         {...props}
                                         handleToggle={this.handleToggle}
                                         handleClick={this.handleClick.bind(this, 1)}
-                                        getMoreMessage={this.getMoreMessage}
                                         count={this.state.count}
                                     />)}
                             />

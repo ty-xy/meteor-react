@@ -24,7 +24,7 @@ import Send from './component/Send';
 import Messages from './component/Message';
 
 const limit = 20;
-let count = 1;
+// let count = 1;
 
 @pureRender
 class ChatWindow extends Component {
@@ -38,7 +38,6 @@ class ChatWindow extends Component {
         changeTo: PropTypes.func,
         handleToggle: PropTypes.func,
         handleClick: PropTypes.func,
-        getMoreMessage: PropTypes.func,
     }
     constructor(...args) {
         super(...args);
@@ -91,13 +90,6 @@ class ChatWindow extends Component {
         document.onmouseup = null;
         document.onmousemove = null;
     }
-    getMoreMessage = () => {
-        let countNum = this.state.count;
-        countNum++;
-        this.setState({
-            count: countNum,
-        });
-    }
     handleToggle = (value) => {
         this.setState({
             selectedChat: {
@@ -118,16 +110,6 @@ class ChatWindow extends Component {
         this.setState({
             isShowFriendInfo: false,
             isShowGroupSet: false,
-        });
-    }
-    handleMessageListScroll = () => {
-        console.log('handleMessageListScroll');
-        this.setState({ showHistoryLoading: true });
-        return new Promise((resolve) => {
-            this.props.getMoreMessage().then(() => {
-                this.setState({ showHistoryLoading: false });
-            });
-            resolve();
         });
     }
     handleClick = (e) => {
@@ -154,10 +136,11 @@ class ChatWindow extends Component {
         });
     }
     chatScroll = () => {
+        let count = this.state.count;
         count++;
-        this.setState({ showHistoryLoading: true });
+        this.setState({ showHistoryLoading: true, count });
         return new Promise((resolve) => {
-            const messages = Message.find({ groupId: this.props.match.params.to }, { sort: { createdAt: -1 }, limit: limit * count }).fetch().reverse();
+            const messages = Message.find({ groupId: this.props.match.params.to }, { sort: { createdAt: -1 }, limit: limit * count }).fetch();
             console.log('messages', messages);
             this.setState({ messages, showHistoryLoading: false });
             resolve();
@@ -215,7 +198,7 @@ class ChatWindow extends Component {
                     </div>
                 </div>
             }
-            <Send {...this.props} />
+            <Send handleToggl={this.handleToggle} {...this.props} />
         </div>);
     }
 }
@@ -241,7 +224,7 @@ export default withTracker(({ match }) => {
             }
         });
     }
-    const messages = Message.find({ groupId: to }, { sort: { createdAt: -1 }, limit }).fetch().reverse();
+    const messages = Message.find({ groupId: to }, { sort: { createdAt: -1 }, limit }).fetch();
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.showYearMonth = false;
