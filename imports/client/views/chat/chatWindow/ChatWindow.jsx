@@ -141,6 +141,17 @@ class ChatWindow extends Component {
         return new Promise((resolve) => {
             const messages = Message.find({ groupId: this.props.match.params.to }, { sort: { createdAt: -1 }, limit: limit * count }).fetch();
             console.log('messages', messages);
+            messages.forEach((d, i, data) => {
+                d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
+                d.showYearMonth = false;
+
+                if (i) {
+                    const prev = data[i - 1];
+                    d.showYearMonth = (prev.createdAt.getTime() - d.createdAt.getTime()) > 2 * 60 * 1000;
+                } else {
+                    d.showYearMonth = true;
+                }
+            });
             this.setState({ messages, showHistoryLoading: false });
             resolve();
         });
@@ -226,9 +237,10 @@ export default withTracker(({ match }) => {
     messages.forEach((d, i, data) => {
         d.readed = d.readedMembers && d.readedMembers.includes(Meteor.userId());
         d.showYearMonth = false;
+
         if (i) {
             const prev = data[i - 1];
-            d.showYearMonth = d.createdAt.getTime() - prev.createdAt.getTime() > 10 * 60 * 1000;
+            d.showYearMonth = (prev.createdAt.getTime() - d.createdAt.getTime()) > 2 * 60 * 1000;
         } else {
             d.showYearMonth = true;
         }
