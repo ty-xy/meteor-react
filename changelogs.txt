@@ -687,3 +687,13 @@
  zg gwt    fix: 自动获取焦点
  zg gwt    fix: remove reverse;
  zg-xym    build results on build 82
+----------------------------------
+
+2018-01-04 13:59:10,   build 84
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge branch 'master' into feature/management_gwt
+ zg gwt    Merge remote-tracking branch 'origin/master' into feature/management_gwt
+ zg gwt    fix: 临时创建会话，
+ zg gwt    test: 测试push
+ zg-xym    build results on build 83

@@ -29,8 +29,14 @@ class MainManage extends Component {
             sendBtnStatus: 0,
             BizId: '',
             newAdminId: '',
+            current: '',
         };
     }
+    // componentWillMount
+    // componentWillReceiveProps(nextProps) {
+    //     console.log(nextProps.currentCompany, 'next');
+    //     // this.setState({ messages: nextProps.messages, num: Math.random() });
+    // }
     showModal = () => {
         this.setState({
             visible: true,
@@ -104,7 +110,8 @@ class MainManage extends Component {
         this.setState({
             newAdminId,
         });
-        // Meteor.call('changeMainManage', companyId, oldAdminId, newAdminId, (err) => {
+        // console.log(newAdminId);
+        // Meteor.call('changeMainManage', this.props.currentCompany._id, this.props.currentCompany.admin, newAdminId, (err) => {
         //     if (err) {
         //         console.error(err.reason);
         //     }
@@ -125,6 +132,7 @@ class MainManage extends Component {
         const userNameError = isFieldTouched('username') && getFieldError('username');
         const verificationCodeError = isFieldTouched('verificationCode') && getFieldError('verificationCode');
         const { adminInfo = {} } = this.props.currentCompany;
+        const { profile = {} } = Meteor.users.findOne({ _id: this.state.newAdminId }) || '';
         return (
             <div className="company-main-manage-set company-set-arae">
                 <div className="set-title">
@@ -139,7 +147,17 @@ class MainManage extends Component {
                             {
                                 adminInfo && adminInfo.name ?
                                     <div className="upload-team-avatar">
-                                        <Avatar avatar={adminInfo && adminInfo.avatar} name={adminInfo && adminInfo.name} avatarColor={adminInfo && adminInfo.avatarColor} />
+                                        {this.state.newAdminId ?
+                                        <Avatar
+                                        avatar={profile && profile.avatar}
+                                         name={profile && profile.name}
+                                         avatarColor={profile && profile.avatarColor}
+                                        /> :
+                                        <Avatar
+                                        avatar={adminInfo && adminInfo.avatar}
+                                         name={adminInfo && adminInfo.name}
+                                         avatarColor={adminInfo && adminInfo.avatarColor}
+                                        />}
                                         <p className="edit-avatar" onClick={this.showModal}>更改</p>
                                     </div>
                                     :
