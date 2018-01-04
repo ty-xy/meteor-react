@@ -8,11 +8,13 @@ class Index extends Component {
     static propTypes = {
         history: PropTypes.object,
         location: PropTypes.object,
+        // hash: PropTypes.string,
     }
     componentWillMount() {
         Meteor.autorun(() => {
             const user = Meteor.user();
             const { history, location } = this.props;
+            console.log(this.props);
             if (!user && this.isLogin === true) {
                 this.isLogin = false;
                 if (location.search && location.search.indexOf('companyId')) {

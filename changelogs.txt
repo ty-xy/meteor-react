@@ -558,3 +558,113 @@
  zg gwt    feat: 新增聊天窗口上下扩展
  zg xym    Update build.sh
  zg-xym    build results on build 68
+----------------------------------
+
+2017-12-25 18:19:02,   build 70
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    Merge branch 'master' into feature/management_gwt
+ zg gwt    feat: 静态资源放到七牛CDN； 替换表情包
+ zg-xym    build results on build 69
+----------------------------------
+
+2017-12-25 22:16:14,   build 71
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    style: 修改表情包样式问题； 取消启动时的socket
+ zg-xym    build results on build 70
+----------------------------------
+
+2017-12-26 09:59:35,   build 72
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    test: 测试聊天信息
+ zg-xym    build results on build 71
+----------------------------------
+
+2017-12-26 10:27:30,   build 73
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    test: 取消首页数据
+ zg-xym    build results on build 72
+----------------------------------
+
+2017-12-26 13:38:22,   build 74
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    test: 取消左侧消息提示
+ zg-xym    build results on build 73
+----------------------------------
+
+2017-12-26 14:20:59,   build 75
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    feature: 后台头像设置裁剪；  test: 增加前台数据订阅
+ zg-xym    build results on build 74
+----------------------------------
+
+2017-12-26 16:55:45,   build 76
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    test: 恢复聊天窗口消息
+ zg-xym    build results on build 75
+----------------------------------
+
+2017-12-26 17:22:55,   build 77
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    Merge branch 'master' into feature/project_ty
+ zg xy    fix:修改项目的样式
+ zg-xym    build results on build 76
+----------------------------------
+
+2017-12-26 17:26:15,   build 78
+
+ zg-xym    Merge branch 'master' of gitlab.com:zg-xym/eJianLian-web
+ zg-xym    build results on build 77
+----------------------------------
+
+2017-12-27 09:48:53,   build 79
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    fix:登陆出现闪屏
+ zg-xym    build results on build 78
+----------------------------------
+
+2017-12-27 11:44:38,   build 80
+
+ zg xym    Merge branch 'git-checkout--b-'taoyan1017project' into 'master'
+ zg xy    fix:index.jsx还原
+ zg-xym    build results on build 79
+----------------------------------
+
+2018-01-01 21:49:46,   build 81
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    merge: 合并陶燕代码
+ zg gwt    refactor: 拆分message组件
+ zg xy    fix:点击还好友聊天，发送信息，对方可以知道
+ zg gwt    refactor: 拆分message组件
+ zg gwt    fix: 滚动问题
+ zg xy    fix:修改人员信息
+ zg gwt    refactor: 增加个人未读消息的展示
+ zg xy    fix：点击好友列表出现，在信息里面出现聊天的人
+ zg xy    Merge branch 'feature/management_gwt' into feature/chat_router
+ zg xy    fix:创建个人聊天一个群组以后，后续创建会有BUG
+ zg gwt    merge： feature/chat_router
+ zg gwt    refactor: 分离发送组件
+ zg xy    fix:把个人聊更改成群聊
+ zg gwt    refactor: 完成个人详情页面不同地方的展示
+ zg gwt    fix conflict
+ zg gwt    merge
+ zg gwt    Merge branch 'feature/chat_router' of gitlab.com:zg-xym/eJianLian-web into feature/chat_router
+ zg xy    fix:修改个人聊天
+ zg gwt    提取文件和text组件
+ zg gwt    refactor: 优化发送聊天消息卡顿现象
+ zg gwt    refactor: 判断已读和未读消息
+ zg gwt    refactor: 显示左侧列表维度条数
+ zg gwt    feat: 消息发送
+ zg gwt    refactor: 发送消息模块， 修改聊天群组表结构
+ zg gwt    refactor: chatwindow header component
+ zg gwt    refactor: chat router
+ zg-xym    build results on build 80
