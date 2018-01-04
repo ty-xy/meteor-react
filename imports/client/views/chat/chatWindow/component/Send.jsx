@@ -100,6 +100,7 @@ class Send extends PureComponent {
         const newSpan = document.createElement('span');
         newSpan.innerText = `#(${name})`;
         newSpan.style = 'margin: 0 3px';
+        this.placeholder.style = 'z-index: -1';
         newSpan.setAttribute('contentEditable', false);
         this.messageContext.appendChild(newSpan);
         const nbsp = document.createElement('span');

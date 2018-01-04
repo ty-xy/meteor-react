@@ -5,6 +5,7 @@ import Group from '../../imports/schema/group';
 import SMSClient from '../../imports/util/SMSClient';
 import avatarUrl from '../../imports/util/avatarUrl';
 import UserUtil from '../../imports/util/user';
+import qiniu from '../../imports/util/qiniu';
 
 const avatarTeam = avatarUrl.avatarTeam;
 
@@ -72,6 +73,20 @@ Meteor.methods({
                 },
             },
         );
+    },
+    changeCompanyInfoImg(imageBase64, _id) {
+        const imgType = imageBase64.substring(imageBase64.indexOf('/') + 1, imageBase64.lastIndexOf(';'));
+        imageBase64 = imageBase64.replace(/data:image\/(jpeg|jpg|png|gif);base64,/, '');
+        const imageBinary = Buffer.from(imageBase64, 'base64');
+        qiniu.uploadBytes(`avatar_${_id}_${Date.now()}.${imgType}`, imageBinary)
+            .then(Meteor.bindEnvironment(logo => Company.update(
+                { _id },
+                {
+                    $set: {
+                        logo,
+                    },
+                },
+            )));
     },
     // 更换主管理员
     changeMainManage(companyId, oldManageId, newManageId) {

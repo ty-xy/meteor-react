@@ -17,6 +17,7 @@ import formatDate from '../../../../util/formatDate';
 import PopulateUtil from '../../../../util/populate';
 import NoticeSound from '../../../../util/sound';
 import avatarUrl from '../../../../util/avatarUrl';
+import Text from './component/Text';
 
 @pureRender
 class ContactList extends Component {
@@ -125,10 +126,10 @@ class ContactList extends Component {
                 </div>
                 <div className="user-message">
                     <p>{user.profile.name}
-                    <span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span>
+                    <span className="message-createAt">{lastMessage.createdAt ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span>
                     </p>
                     <p className="last-message">
-                        <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
+                        <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : <Text content={lastMessage.content.replace(/<br\/>/g, ' ')} />) : '可以开始聊天了'}</span>
                         {
                             unreadMessage !== 0 ?
                                 <span className="notice-red-dot">
@@ -172,7 +173,7 @@ class ContactList extends Component {
                 <span className="message-createAt">{lastMessage && lastMessage.createdAt ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span>
                 </p>
                 <p className="last-message">
-                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
+                    <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : <Text content={lastMessage.content.replace(/<br\/>/g, ' ')} />) : '可以开始聊天了'}</span>
                     {
                         unreadMessage !== 0 ?
                             <span className={isMyDisturb ? 'notice-red-dot-no notice-red-dot' : 'notice-red-dot'}>

@@ -25,6 +25,7 @@ class CreateTeam extends Component {
         handleSubmit: PropTypes.func.isRequired, // 点击确定的回调函数
         currentCompany: PropTypes.object, // 如果是修改信息部分,为前所选公司信息
         team: PropTypes.array,
+        currentCompanyId: PropTypes.string,
     }
     constructor() {
         super();
@@ -74,8 +75,8 @@ class CreateTeam extends Component {
     }
     // 提交图片保存
     handleAvatar=(img) => {
-        const _id = Meteor.userId();
-        Meteor.call('changeAvatar', img, _id, (err) => {
+        const _id = this.props.currentCompanyId;
+        Meteor.call('changeCompanyInfoImg', img, _id, (err) => {
             if (err) {
                 return console.error(err.reason);
             }
@@ -116,7 +117,7 @@ class CreateTeam extends Component {
             wrapperCol: { span: 17, offset: 6 },
         } : null;
         const { getFieldDecorator } = this.props.form;
-        const { name = '', industryType = '', residence = [] } = this.props.currentCompany || {};
+        const { name = '', industryType = '', residence = [], logo } = this.props.currentCompany || {};
         return (
             <div>
                 <Form layout={formLayout} onSubmit={this.handleSubmit} className="info-setting">
@@ -137,7 +138,7 @@ class CreateTeam extends Component {
                         />
                         <div className="group-avatar-wrap">
                             {/* 头像裁剪 */}
-                            <AvatarSelf />
+                            <Avatar name={name} avatar={logo} avatarColor="#00B5F3" />
                             <div className="choose-new-avatar">
                                 修改
                                 <input type="file" id="avatar" accept="image/png,image/jpg,image/jpeg,image/svg" onChange={this.handleUploadImg} ref={i => this.fileInput = i} />
