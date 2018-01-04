@@ -35,6 +35,10 @@ Meteor.methods({
             superiorId,
         };
         Group.schema.validate(newGroup);
+        const twoGroup = Group.findOne({ members: { $all: members, $size: members.length } }) || {};
+        if (twoGroup._id) {
+            return twoGroup._id;
+        }
         const groupId = await Group.insert(newGroup);
         await groupMembers.map((user =>
             Meteor.users.update(

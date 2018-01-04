@@ -119,7 +119,7 @@ class ContactList extends Component {
                     <Icon icon="icon-guanbi" size={20} onClick={e => this.deleteChat(id, type, unreadMessage, e)} />
                 </div>
                 <div className="user-avatar">
-                    <Avatar avatarColor={user.profile.avatarColor} name={user.profile.name} avatar={user.profile.avatar} />
+                    <Avatar avatarColor={user.profile.avatarColor || ''} name={user.profile.name || ''} avatar={user.profile.avatar || ''} />
                 </div>
                 <div className="user-message">
                     <p>{user.profile.name}<span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span></p>
@@ -188,8 +188,9 @@ class ContactList extends Component {
     }
     renderChatListItem = (item, i) => {
         if (item.type === 'user') {
-            const mem = item.members ? item.members.filter(value => value !== Meteor.userId()) : '';
-            const users = Meteor.users.findOne({ _id: mem[0] });
+            const mem = item.members ? item.members.filter(value => value !== Meteor.userId()) : [];
+            const users = Meteor.users.findOne({ _id: mem[0] }) || { profile: {} };
+            console.log('mem', mem, users);
             return this.renderUser(users, item.lastMessage, item.time, item.type, i, item.unreadMessage, item._id, mem);
         } else if (item.type === 'team' || item.type === 'group') {
             return this.renderGroup(item._id, item.isDisturb || [], item.avatar, item.name, item.stickTop || [], item.lastMessage, item.time, item.type, i, item.unreadMessage);
@@ -239,7 +240,6 @@ class ContactList extends Component {
             res = chatList;
         }
 
-        console.log('newArr1', spliceNum, newArr, spliceNum, res);
         return (
             <div className="ejianlian-chat-message-list">
                 {
@@ -258,6 +258,7 @@ export default withTracker(() => {
     Meteor.subscribe('group');
     Meteor.subscribe('notice');
     const chatList = UserUtil.getChatList();
+    console.log('withTracker', chatList);
     chatList.forEach((item, index) => {
         Object.assign(item, Group.findOne({ _id: item.groupId }));
         const allNum = Message.find({ 'to.userId': Meteor.userId(), groupId: item.groupId }).fetch() || [];
@@ -265,24 +266,20 @@ export default withTracker(() => {
         item.unreadMessage = (allNum.length - isReadNum.length) || 0;
         item.lastMessage = allNum.createdAt;
     });
+    console.log('withTracker', chatList);
     const selfGroup = UserUtil.getGroups();
 
     const selfFriend = UserUtil.getFriends();
-    console.log(selfGroup, selfFriend);
     const friendMessage = selfFriend.map(i => IdUtil.merge(Meteor.userId(), i));
     const chatMessageId = [...selfGroup, ...friendMessage];
-    console.log(chatMessageId);
     // 应该过滤出所有与我有关的消息
     const allMessage = Message.find({ to: { $in: chatMessageId } }).fetch();
     // 判断有未知消息的聊天是否存在用户的聊天列表中,如果没有,则创建
-    console.log(allMessage);
     let allUnRead = [];
     allUnRead = allMessage.filter(i => i.readedMembers && !i.readedMembers.includes(Meteor.userId()));
-    console.log(allUnRead.length);
     // 所以有未读消息时点击删除事此时这个消息列表已经删除,但是此时未读消息条数不会立刻更新,判断有未读消息,不存在该聊天窗口,则创建新的聊天窗口,过了一会数据更新了,未读消息为0
     if (allUnRead.length > 0) {
         allUnRead.forEach((k) => {
-            console.log(k.to.length);
             if (k.to.length <= 17) {
                 // if (!chatList.find(j => j.group && j.group._id === k.to)) {
                 Meteor.call('addChatList', k.to, 'groupId', (err) => {
