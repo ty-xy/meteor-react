@@ -50,7 +50,6 @@ class ChatWindow extends Component {
             videoTracks: null,
             isShowVideo: false,
             isShowNotice: false,
-            temporaryChat: false,
             chatFriendId: '',
             isNewFriend: false,
             isNewNotice: false,
@@ -171,11 +170,10 @@ class ChatWindow extends Component {
             {
                 this.state.isShowFriendInfo ?
                     <ChatFriendInfo
+                        {...this.props}
                         handleFriendInfo={this.handleFriendInfoClose}
                         friendId={this.state.chatFriendId}
-                        temporaryChat={this.state.temporaryChat}
                         handleToggle={this.handleToggle}
-                        handleClick={this.handleClick}
                     />
                     :
                     null

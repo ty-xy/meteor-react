@@ -18,10 +18,8 @@ class ChatFriendInfo extends Component {
         friendId: PropTypes.string,
         groupId: PropTypes.string,
         chatUser: PropTypes.object,
-        temporaryChat: PropTypes.bool,
+        chatGroup: PropTypes.object,
         changeTo: PropTypes.func,
-        handleToggle: PropTypes.func,
-        handleClick: PropTypes.func,
         history: PropTypes.object,
     };
     constructor(...args) {
@@ -82,19 +80,16 @@ class ChatFriendInfo extends Component {
     handleTemporaryChat = () => {
         const haveChat = Meteor.user().profile.chatList.find(item => item.userId && item.userId === this.props.friendId);
         if (!haveChat) {
-            Meteor.call('addTemporaryChat', this.props.friendId, (err) => {
+            Meteor.call('addTemporaryChat', this.props.friendId, (err, res) => {
                 if (err) {
                     console.error(err.reason);
+                } else {
+                    console.log(res);
+                    this.props.handleFriendInfo();
+                    // this.props.history.push({ pathname: `/chat/${this.props.chatGroup.groupId}/window`, state: { type: 'user' } });
                 }
             });
         }
-        this.props.changeTo(IdUtil.merge(Meteor.userId(), this.props.friendId), this.props.groupId, 'groupId', 'message');
-        this.props.handleToggle(this.props.groupId);
-        this.props.handleFriendInfo();
-        this.props.handleClick();
-        console.log(this.props.history);
-        this.props.history.push({ pathname: `/chat/${this.props.groupId}/window`, state: { type: 'user' } });
-        console.log(this.props.history);
     }
     render() {
         const userProfile = this.props.user.profile || {};
@@ -102,7 +97,7 @@ class ChatFriendInfo extends Component {
         const { profile = {}, username = '', _id = '' } = this.props.chatUser || {};
         const isFriend = userProfile && userProfile.friends && userProfile.friends.includes(_id);
         const { name = '', avatarColor = '', avatar = '', company = [], isHideInfo = false } = profile;
-        const { temporaryChat = false } = this.props;
+        const { members = [] } = this.props.chatGroup || {};
         const bgUrl = avatar || avatarUrl.avatarBg;
         const divStyle = {
             backgroundImage: `url(${bgUrl})`,
@@ -169,7 +164,7 @@ class ChatFriendInfo extends Component {
                         }
                     </ul>
                     {
-                        temporaryChat ?
+                        members.indexOf(Meteor.userId()) >= 0 ?
                             <div className="friend-btn-wrap" style={{ display: this.state.isAddFriend ? 'none' : 'block' }}>
                                 <button className="friend-btn" onClick={this.handleTemporaryChat}>
                                     <i className="iconfont icon-xiaoxi1" />&nbsp;
