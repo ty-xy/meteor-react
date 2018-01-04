@@ -169,6 +169,7 @@ class ContactList extends Component {
             <div className="user-message">
                 <p>{name}
                 {/* <span className="message-createAt">{lastMessage ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span> */}
+                <span className="message-createAt">{lastMessage && lastMessage.createdAt ? formatDate.renderDate(lastMessage.createdAt) : formatDate.renderDate(time)} </span>
                 </p>
                 <p className="last-message">
                     <span className="last-content">{lastMessage ? (lastMessage.type === 'file' ? '[文件]' : lastMessage.content.replace(/<br\/>/g, ' ')) : '可以开始聊天了'}</span>
