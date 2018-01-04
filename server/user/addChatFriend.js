@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import assert from '../../imports/util/assert';
+import Group from '../../imports/schema/group';
 
 Meteor.methods({
     // 添加好友
@@ -57,33 +58,53 @@ Meteor.methods({
         }
     },
     // 同在一个群里可以发起临时会话
-    addTemporaryChat(friendId) {
-        const temporaryChat = Meteor.user().profile.chatList.find(item => item.userId && item.userId === friendId);
-        assert(!temporaryChat, 400, '已存在聊天窗口');
-        Meteor.users.update(
+    async addTemporaryChat(friendId) {
+        // const temporaryChat = Group.find({});
+        const twoGroup = Group.findOne({ members: { $all: [Meteor.userId(), friendId], $size: 2 } }) || {};
+        const chatList = Meteor.user().profile.chatList.find(item => item.groupId === twoGroup._id);
+        if (twoGroup._id) {
+            // 判断左侧列表是否存在
+            if (!chatList) {
+                await Meteor.users.update(
+                    Meteor.userId(),
+                    {
+                        $addToSet: { 'profile.chatList': {
+                            type: 'user',
+                            groupId: twoGroup._id,
+                            time: new Date(),
+                        } },
+                    },
+                );
+            }
+            return twoGroup._id;
+        }
+        const newGroup = {
+            createdAt: new Date(),
+            notice: '',
+            noticeTime: new Date(),
+            isDisturb: [],
+            stickTop: [],
+            name: '',
+            members: [friendId, Meteor.userId()],
+            type: 'user',
+            companyId: '',
+            admin: Meteor.userId(),
+            superiorId: '',
+            avatar: '',
+        };
+        Group.schema.validate(newGroup);
+        const groupId = await Group.insert(newGroup);
+        await Meteor.users.update(
             Meteor.userId(),
             {
-                $push: {
-                    // 'profile.chatList': {
-                    //     type: 'user',
-                    //     userId: friendId,
-                    //     time: new Date(),
-                    // },
-                },
+                $addToSet: { 'profile.chatList': {
+                    type: 'user',
+                    groupId,
+                    time: new Date(),
+                } },
             },
         );
-        Meteor.users.update(
-            friendId,
-            {
-                $push: {
-                    // 'profile.chatList': {
-                    //     type: 'user',
-                    //     userId: Meteor.userId(),
-                    //     time: new Date(),
-                    // },
-                },
-            },
-        );
+        return groupId;
     },
 });
 
