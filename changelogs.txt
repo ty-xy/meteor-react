@@ -697,3 +697,15 @@
  zg gwt    fix: 临时创建会话，
  zg gwt    test: 测试push
  zg-xym    build results on build 83
+----------------------------------
+
+2018-01-04 16:30:42,   build 85
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    消息缩略图
+ zg gwt    Merge branch 'master' into feature/management_gwt
+ zg gwt    fix： 表情OK不显示的问题
+ zg xym    Merge branch 'feature/chat_router' into 'master'
+ zg xy    Merge branch 'master' into feature/chat_router
+ zg gwt    fix: 公司信息logo更改的bug
+ zg-xym    build results on build 84
