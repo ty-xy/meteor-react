@@ -14,7 +14,7 @@
     "parser": "babel-eslint",
     "globals": {
         "Package": true
-    }, 
+    },
     "rules": {
         "indent": 0,
         "linebreak-style": 0,
@@ -24,7 +24,6 @@
         "consistent-return": 0,
         "max-len": 0,
         "require-yield": 0,
-
         "import/no-extraneous-dependencies": 0,
         "import/no-unresolved": 0,
         "import/no-commonjs": 0,
@@ -37,17 +36,18 @@
                 "jsx": "never"
             }
         ],
-
         "no-console": 0,
         "no-plusplus": 0,
         "no-param-reassign": 0,
-        "no-restricted-syntax": [2, "WithStatement"],
+        "no-restricted-syntax": [
+            2,
+            "WithStatement"
+        ],
         "no-invalid-this": 0,
         "no-underscore-dangle": 0,
         "import/no-dynamic-require": 0,
         "no-return-assign": 0,
         "no-await-in-loop": 0,
-
         "react/jsx-indent": 0,
         "react/jsx-indent-props": 0,
         "react/jsx-filename-extension": 0,
