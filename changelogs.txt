@@ -709,3 +709,10 @@
  zg xy    Merge branch 'master' into feature/chat_router
  zg gwt    fix: 公司信息logo更改的bug
  zg-xym    build results on build 84
+----------------------------------
+
+2018-01-08 16:09:04,   build 86
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    fix: 七牛云上传位置
+ zg-xym    build results on build 85
