@@ -2,7 +2,7 @@ import qiniu from 'qiniu';
 
 const accessKey = 'ptgtsBOAlMf_mihyVKf6Zbjor7JgiSs2wWM7zj4b';
 const secretKey = 'ZN6cH2DawqguO-sQFL7AaDnldpvGNl6Vt7iCd9G_';
-const domain = '//oxldjnom8.bkt.clouddn.com/';
+const domain = 'http://cdn.zg18.com/';
 const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
 const putPolicy = new qiniu.rs.PutPolicy({
     scope: 'ejianlian',
