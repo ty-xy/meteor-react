@@ -8,12 +8,13 @@ Meteor.methods({
         const newMessage = {
             content,
             createdAt,
-            from: {
-                _id: Meteor.userId(),
-                name: Meteor.user().profile.name,
-                avatar: Meteor.user().profile.avatar,
-                avatarColor: Meteor.user().profile.avatarColor,
-            },
+            // from: {
+            //     _id: Meteor.userId(),
+            //     name: Meteor.user().profile.name,
+            //     avatar: Meteor.user().profile.avatar,
+            //     avatarColor: Meteor.user().profile.avatarColor,
+            // },
+            from: Meteor.userId(),
             to,
             type,
             chatType,
