@@ -716,3 +716,10 @@
  zg xym    Merge branch 'feature/management_gwt' into 'master'
  zg gwt    fix: 七牛云上传位置
  zg-xym    build results on build 85
+----------------------------------
+
+2018-01-22 10:26:41,   build 87
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    fix: chatwindow
+ zg-xym    build results on build 86
