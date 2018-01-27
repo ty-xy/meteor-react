@@ -723,3 +723,10 @@
  zg xym    Merge branch 'feature/management_gwt' into 'master'
  zg gwt    fix: chatwindow
  zg-xym    build results on build 86
+----------------------------------
+
+2018-01-27 17:42:25,   build 88
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    feat: 添加视频通话逻辑
+ zg-xym    build results on build 87
