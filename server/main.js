@@ -25,6 +25,7 @@ import ProjectFile from '../imports/schema/projectfile';
 import TaskList from '../imports/schema/taskList';
 import File from '../imports/schema/file';
 
+import Video from '../imports/schema/video';
 
 // if (Meteor.isServer) {
 //     Message.rawCollection().createIndex({ groupId: 1 }, { unique: true });
@@ -81,4 +82,6 @@ Meteor.publish('leave', () => Leave.find({}));
 Meteor.publish('business', () => Business.find({}));
 Meteor.publish('checkbill', () => CheckBill.find({}));
 Meteor.publish('commonaudit', () => CommonAudit.find({}));
+
+Meteor.publish('video', () => Video.find({}));
 
