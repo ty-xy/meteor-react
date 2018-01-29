@@ -1,17 +1,20 @@
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-const VideoMeeting = new Mongo.Collection('videoMeeting');
-VideoMeeting.schema = new SimpleSchema({
+const video = new Mongo.Collection('video');
+video.schema = new SimpleSchema({
     createdAt: {
         type: Date,
     },
-    creator: {
+    from: {
+        type: String,
+    },
+    groupId: {
         type: String,
     },
     members: {
-        type: [Object],
+        type: [String],
     },
 });
 
-export default VideoMeeting;
+export default video;

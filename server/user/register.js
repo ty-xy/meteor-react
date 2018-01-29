@@ -29,6 +29,7 @@ Meteor.methods({
                 currentBackendCompany: '', // 进后台选择的当前公司
                 verifyFriend: '0', // '0': 需要好友认证;'1': 允许任何人; '2': 不允许任何人
                 isHideInfo: false, // 默认隐藏个人信息
+                video: null,
             },
         });
     },

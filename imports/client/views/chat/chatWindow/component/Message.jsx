@@ -63,30 +63,28 @@ class Message extends PureComponent {
                 ref={i => this.scrollView = i}
             >
                 {
-                    this.props.messages.map((message) => {
-                        console.log(message.showYearMonth);
-                       return (<div
+                    this.props.messages.map(message => (<div
                             key={message._id}
                             className="chat-message"
-                       >
+                    >
                             {
                                 message.showYearMonth ?
                                     <div className="message-time">{formatDate.dealMessageTime(message.createdAt)}</div>
                                     :
                                     null
                             }
-                            <div className={message.from._id === Meteor.userId() ? 'self-message' : 'message'}>
-                                <p className="user-avatar" onClick={() => this.handleChatUser(message.from._id, message.to, groupId)}>
+                            <div className={message.from === Meteor.userId() ? 'self-message' : 'message'}>
+                                <p className="user-avatar" onClick={() => this.handleChatUser(message.from, message.to, groupId)}>
                                     <Avatar
-                                        name={userIdToInfo.getName(this.props.users, message.from._id)}
-                                        avatarColor={userIdToInfo.getAvatarColor(this.props.users, message.from._id)}
-                                        avatar={userIdToInfo.getAvatar(this.props.users, message.from._id)}
+                                        name={userIdToInfo.getName(this.props.users, message.from)}
+                                        avatarColor={userIdToInfo.getAvatarColor(this.props.users, message.from)}
+                                        avatar={userIdToInfo.getAvatar(this.props.users, message.from)}
                                     />
                                 </p>
                                 <div className="user-message-wrap">
                                     {
-                                        message.from._id !== Meteor.userId() ?
-                                            <p className="user-nickname">{message.from.name}</p>
+                                        message.from !== Meteor.userId() ?
+                                            <p className="user-nickname">{userIdToInfo.getName(this.props.users, message.from)}</p>
                                             :
                                             null
                                     }
@@ -95,8 +93,8 @@ class Message extends PureComponent {
                                     }
                                 </div>
                             </div>
-                        </div>);
-                    })
+                        </div>),
+                    )
                 }
             </ReactChatView>);
       }
