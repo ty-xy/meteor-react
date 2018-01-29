@@ -5,9 +5,9 @@ const formateDate = {
         const today = new Date();
         const yesterday = new Date();
         yesterday.setDate(today.getDate() - 1);
-        if (value.toLocaleDateString() === today.toLocaleDateString()) {
+        if (value && value.length > 0 && value.toLocaleDateString() === today.toLocaleDateString()) {
             return format('hh:mm', value);
-        } else if (value.toLocaleDateString() === yesterday.toLocaleDateString()) {
+        } else if (value && value.length > 0 && value.toLocaleDateString() === yesterday.toLocaleDateString()) {
             return `昨天${format('hh:mm', value)}`;
         }
         return format('yyyy-MM-dd', value);
