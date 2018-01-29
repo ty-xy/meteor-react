@@ -730,3 +730,11 @@
  zg xym    Merge branch 'feature/management_gwt' into 'master'
  zg gwt    feat: 添加视频通话逻辑
  zg-xym    build results on build 87
+----------------------------------
+
+2018-01-29 13:22:27,   build 89
+
+ zg xym    Merge branch 'feature/chat_router' into 'master'
+ zg xy    Merge branch 'master' into feature/chat_router
+ zg xy    add:增加查询好友的方法
+ zg-xym    build results on build 88
