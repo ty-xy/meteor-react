@@ -4,13 +4,13 @@ import Group from '../../imports/schema/group';
 
 
 Meteor.methods({
-    async callVideo(groupId) {
+    async callVideo(roomID, groupId) {
         const group = Group.findOne({ _id: groupId }) || {};
         const members = (group.members || []).filter(_id => _id !== Meteor.userId());
         const videoMeeting = {
             createdAt: new Date(),
             from: Meteor.userId(),
-            groupId,
+            groupId: roomID,
             members,
         };
         Video.schema.validate(videoMeeting);
@@ -20,7 +20,21 @@ Meteor.methods({
                 { _id },
                 {
                     $set: {
-                        'profile.video': { videoId, groupId },
+                        'profile.video': { videoId, roomID, groupId },
+                    },
+                },
+            )
+        ));
+        return videoId;
+    },
+    hangUpVideo(groupId) {
+        const group = Group.findOne({ _id: groupId }) || {};
+        (group.members || []).map(_id => (
+            Meteor.users.update(
+                { _id },
+                {
+                    $set: {
+                        'profile.video': {},
                     },
                 },
             )

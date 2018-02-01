@@ -67,6 +67,11 @@ Notice.schema = new SimpleSchema({
         type: Number,
         optional: true,
     },
+    // 移动端是否显示
+    show: {
+        type: Boolean,
+        optional: true,
+    },
 });
 
 export default Notice;
