@@ -738,3 +738,10 @@
  zg xy    Merge branch 'master' into feature/chat_router
  zg xy    add:增加查询好友的方法
  zg-xym    build results on build 88
+----------------------------------
+
+2018-02-01 18:18:52,   build 90
+
+ zg xym    Merge branch 'feature/management_gwt' into 'master'
+ zg gwt    feat: 视频挂断
+ zg-xym    build results on build 89
