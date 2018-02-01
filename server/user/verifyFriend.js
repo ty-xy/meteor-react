@@ -13,6 +13,7 @@ Meteor.methods({
             noticeContent,
             type: 0,
             dealResult: 0,
+            show: true,
         };
         Notice.schema.validate(newNotice);
         Notice.insert(newNotice);
@@ -23,6 +24,18 @@ Meteor.methods({
             {
                 $set: {
                     dealResult: index,
+                },
+            },
+            { multi: true },
+        );
+    },
+    // 设置列表展示
+    hideFriendNotice() {
+        Notice.update(
+            { to: Meteor.userId() },
+            {
+                $set: {
+                    show: false,
                 },
             },
         );
