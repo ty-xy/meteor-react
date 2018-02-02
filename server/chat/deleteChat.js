@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 
 Meteor.methods({
     deleteChat(chatId, type) {
+        console.log('deleteChat');
         if (type === 'user') {
             Meteor.users.update(
                 { _id: Meteor.userId() },
@@ -23,7 +24,6 @@ Meteor.methods({
                             groupId: chatId,
                         },
                     },
-
                 },
             );
         } else {
