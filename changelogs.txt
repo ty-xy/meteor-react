@@ -750,3 +750,11 @@
 2018-02-02 12:21:49,   build 91
 
  zg-xym    build results on build 90
+----------------------------------
+
+2018-02-02 15:50:06,   build 92
+
+ zg xym    Merge branch 'feature/chat_router' into 'master'
+ zg xy    Merge branch 'master' into feature/chat_router
+ zg xy    fix：修改个人账号的方法
+ zg-xym    build results on build 91
