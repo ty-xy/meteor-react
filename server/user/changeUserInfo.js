@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
+// import bcrypt from 'bcrypt';
 
 import qiniu from '../../imports/util/qiniu';
 import assert from '../../imports/util/assert';
@@ -19,6 +20,12 @@ Meteor.methods({
                 },
             )));
     },
+    // 确定这个手机号，有没有被注册
+     makeSureRegister(newUserName) {
+        const findResult = Meteor.users.findOne({ username: newUserName });
+        // console.log(findResult.services);
+        assert(findResult === undefined, 400, '该手机号已被注册');
+     },
     // 修改用户名(手机号)
     changeUserName(newUserName) {
         const findResult = Meteor.users.findOne({ username: newUserName });
@@ -32,11 +39,29 @@ Meteor.methods({
             },
         );
     },
+    // 确定没有这个手机好
+    makeSureNumber(username) {
+        const result = Meteor.users.findOne({ username });
+        if (!result) {
+            assert(false, 400, '该手机号尚未注册');
+        }
+    },
+    // 校验密码的正确性
+    // validatePassword(newUserName, password) {
+    //     const findResult = Meteor.users.findOne({ username: newUserName });
+
+    // },
     // 忘记密码后重新修改密码
-    setUserPassword({ newPassword }) {
-        Accounts.setPassword(Meteor.userId(), newPassword, (err) => {
-            console.error(err);
-        });
+    setUserPassword({ newPassword, username }) {
+        const user = Meteor.users.findOne({ username });
+        console.log(user, username);
+        if (user) {
+            Accounts.setPassword(user._id, newPassword, (err) => {
+                console.error(err);
+            });
+        } else {
+            assert(false, 400, '该手机号尚未注册');
+        }
     },
     changeUserBaseInfo({ name, signature = '', sex = '', age = '', address = [] }) {
         Meteor.users.update(
